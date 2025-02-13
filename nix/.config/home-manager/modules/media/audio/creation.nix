@@ -6,5 +6,6 @@
     rnnoise # neural network noise reduction
     sunvox # fast and powerful modular synthesizer with pattern-based sequencer
     tenacity # audio editor
+    vital # serum-like digital synth
   ];
 }
