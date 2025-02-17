@@ -8,6 +8,7 @@
     rnnoise # neural network noise reduction
     sunvox # fast and powerful modular synthesizer with pattern-based sequencer
     tenacity # audio editor
+    vcv-rack # powerful soft modular synth
     vital # serum-like digital synth
   ];
 }
