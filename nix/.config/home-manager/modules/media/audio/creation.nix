@@ -1,5 +1,7 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
+    guitarix # virtual guitar amplifier for Linux running with JACK
+    gxplugins-lv2 # set of extra lv2 plugins from the guitarix project
     noisetorch # virtual microphone to suppress the noise
     orca-c # esoteric programming language designed to quickly create procedural sequencers
     reaper # А вот в рипере!
