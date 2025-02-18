@@ -6,6 +6,7 @@
     orca-c # esoteric programming language designed to quickly create procedural sequencers
     reaper # А вот в рипере!
     rnnoise # neural network noise reduction
+    stochas # nice free sequencer
     sunvox # fast and powerful modular synthesizer with pattern-based sequencer
     tenacity # audio editor
     vcv-rack # powerful soft modular synth
