@@ -7,7 +7,7 @@ setopt correct # use autocorrection
 setopt extendedglob # enable extended globbing
 setopt glob_star_short # */** -> **
 setopt hash_list_all  # whenever a command completion is attempted, make sure the entire command path is hashed first.
-setopt interactivecomments # allow interactive comments after '#' in command line
+setopt nointeractivecomments # allow interactive comments after '#' in command line
 setopt longlistjobs # display PID when suspending processes as well
 setopt magic_equal_subst # ~ substitution and tab completion after a = (for --x=filename args)
 setopt multios # support multiple redirections
