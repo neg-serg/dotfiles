@@ -8,6 +8,7 @@
     rnnoise # neural network noise reduction
     stochas # nice free sequencer
     sunvox # fast and powerful modular synthesizer with pattern-based sequencer
+    surge-XT # great wavetable synth 
     tenacity # audio editor
     vcv-rack # powerful soft modular synth
     vital # serum-like digital synth
