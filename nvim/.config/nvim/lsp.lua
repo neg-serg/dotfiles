@@ -162,7 +162,6 @@ local servers={
       rootMarkers={".git/"},
       languages={
         lua={{formatCommand="lua-format -i --indent-width=2 --tab-width=2 --column-limit=120", formatStdin=true}},
-        nix={{formatCommand="alejandra", formatStdin=true}},
         css=js_jsx_ts_tsx_vue_args,
         scss=js_jsx_ts_tsx_vue_args,
         html=js_jsx_ts_tsx_vue_args,
@@ -180,7 +179,6 @@ local servers={
   jdtls={cmd={"jdt-ls"}},
   jsonls={on_attach=on_attach_without_formatting},
   julials={settings={julia={format={indent=2}}}},
-  rnix={},
   ocamllsp={},
   omnisharp={
     settings={omnisharp={useGlobalMono="always"}},
@@ -225,7 +223,20 @@ local servers={
   vimls={},
   vuels={},
   yamlls={},
-  zls={}
+  zls={},
+  nixd={
+    cmd={"nixd"},
+    settings={
+        nixd={
+            nixpkgs={
+                expr="import <nixpkgs> {}",
+            },
+            formatting={
+                command="alejandra",
+            },
+        },
+    },
+  }
 }
 
 local snippet_capabilities={textDocument={completion={completionItem={snippetSupport=true}}}}
