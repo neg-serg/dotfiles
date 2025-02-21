@@ -162,7 +162,7 @@ local servers={
       rootMarkers={".git/"},
       languages={
         lua={{formatCommand="lua-format -i --indent-width=2 --tab-width=2 --column-limit=120", formatStdin=true}},
-        nix={{formatCommand="nixfmt", formatStdin=true}},
+        nix={{formatCommand="alejandra", formatStdin=true}},
         css=js_jsx_ts_tsx_vue_args,
         scss=js_jsx_ts_tsx_vue_args,
         html=js_jsx_ts_tsx_vue_args,
