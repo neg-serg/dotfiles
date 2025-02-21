@@ -2,6 +2,7 @@
   pkgs,
   config,
   negwmPkg,
+  stable,
   ...
 }:
 with {
@@ -22,7 +23,7 @@ with {
     i3-get-window-criteria # xwindowinfo (test)
     i3lock-fancy-rapid # TRY: better lock
     i3 # my favorite wm
-    maim # screenshot tool for x11
+    stable.maim # screenshot tool for x11
     negwmPkg.negwm # my own i3 helper
     polybar # my favorite panel so far
     xdragon # drag and drop from console
