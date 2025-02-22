@@ -23,7 +23,6 @@ return {'stevearc/oil.nvim',  -- nice netrw replacement
             restore_win_options=true, -- Restore window options to previous values when leaving an oil buffer
             skip_confirm_for_simple_edits=false, -- Skip the confirmation popup for simple operations
             delete_to_trash=false, -- Deleted files will be removed with the trash_command (below).
-            trash_command="trash-put", -- Change this to customize the command used when deleting to trash
             prompt_save_on_select_new_entry=true, -- Selecting a new/moved/renamed file or directory will prompt you to save changes first
             -- Keymaps in oil buffer. Can be any value that `vim.keymap.set` accepts OR a table of keymap
             -- options with a `callback` (e.g. {callback=function() ... end, desc="", nowait=true})
