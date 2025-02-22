@@ -2,7 +2,7 @@
 -- │ █▓▒░ Wansmer/langmapper.nvim                                                      │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {
-  'Wansmer/langmapper.nvim',
+  'neg-serg/langmapper.nvim',
   lazy = false,
   priority = 1, -- High priority is needed if you will use `autoremap()`
   config = function()
@@ -22,6 +22,9 @@ return {
         escape(ru_shift) .. ';' .. escape(en_shift),
         escape(ru) .. ';' .. escape(en),
     }, ',')
-    require('langmapper').setup({--[[ your config ]]})
+    require('langmapper').setup({
+        disable_hack_modes = {},
+        automapping_modes = { 'n', 'v', 'x', 's', 'i' },
+    })
   end,
 }
