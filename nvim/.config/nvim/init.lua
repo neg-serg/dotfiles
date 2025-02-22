@@ -17,3 +17,4 @@ require'04-aucmds'
 require'08-cmds'
 require'14-abbr'
 require'62-sort-operator'
+require'langmapper'.automapping({ global = true, buffer = true })
