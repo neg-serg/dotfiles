@@ -2,7 +2,7 @@
 -- │ █▓▒░ Wansmer/langmapper.nvim                                                      │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {
-  'neg-serg/langmapper.nvim',
+  'Wansmer/langmapper.nvim',
   lazy = false,
   priority = 1, -- High priority is needed if you will use `autoremap()`
   config = function()
