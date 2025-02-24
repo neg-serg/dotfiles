@@ -1,11 +1,11 @@
 {
   config,
-  pkgs,
+  stable,
   ...
 }: {
   programs.beets = {
     enable = true;
-    package = pkgs.beets;
+    package = stable.beets;
     settings = {
       plugins = [
         "bpm"
