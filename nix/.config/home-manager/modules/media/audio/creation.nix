@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
+    bespokesynth # nice modular synth
     guitarix # virtual guitar amplifier for Linux running with JACK
     gxplugins-lv2 # set of extra lv2 plugins from the guitarix project
     noisetorch # virtual microphone to suppress the noise
