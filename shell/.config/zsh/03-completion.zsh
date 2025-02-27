@@ -47,6 +47,7 @@ zstyle ':completion:*:*:(mp|mpv|mpa):*' tag-order files
 zstyle ':completion:*:*:(mp|mpv|mpa):*' file-sort name
 zstyle ':completion:*:*:(mp|mpv|mpa):*' menu select auto
 zstyle ':completion:*:*:(mp|mpv|mpa):*' file-patterns '(#i)*.(rmvb|mkv|vob|ts|mp4|m4a|iso|wmv|webm|flv|ogv|avi|mpg|mpeg|iso|nrg|mp3|alac|ogg|flac|rm|wv|m4v):files:mpv\ play *(-/):directories:directories'
+zstyle ':completion:*:*:(wine|wine64):*' file-patterns '*.exe:files:wine\ exec *(-/):directories:directories'
 zstyle ':completion:*:default' select-prompt \
     "%{${fg[cyan]}%}Match %{${fg_bold[cyan]}%}%m%{${fg_no_bold[cyan]}%} Line %{${fg_bold[cyan]}%}%l%{${fg_no_bold[blue]}%} %p%{${reset_color}%}"
     zstyle ':completion:*:default' \
