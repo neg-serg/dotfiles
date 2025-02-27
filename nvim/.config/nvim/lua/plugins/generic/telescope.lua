@@ -11,6 +11,7 @@ return {'nvim-telescope/telescope.nvim', -- modern fuzzy-finder over lists
         'MrcJkb/telescope-manix', -- manix support
         'nvim-telescope/telescope-frecency.nvim', -- MRU frecency
         'renerocksai/telekasten.nvim', -- telekasten support
+        'nvim-telescope/telescope-live-grep-args.nvim', -- ripgrep integration
     },
     config=function()
         local telescope=require'telescope'
@@ -195,10 +196,21 @@ return {'nvim-telescope/telescope.nvim', -- modern fuzzy-finder over lists
                     layout_config={height=12},
                 }
             },
+            live_grep_args={
+                auto_quoting=true, -- enable/disable auto-quoting define mappings, e.g.
+                mappings={ -- extend mappings
+                    i={
+                        ["<C-k>"]=lga_actions.quote_prompt(),
+                        ["<C-i>"]=lga_actions.quote_prompt({ postfix=" --iglob " }),
+                        ["<C-space>"]=lga_actions.to_fuzzy_refine, -- freeze the current list and start a fuzzy search in the frozen list
+                    },
+                },
+            }
         }
         telescope.load_extension'file_browser'
         telescope.load_extension'frecency'
         telescope.load_extension'undo'
+        telescope.load_extension'live_grep_args'
 
         local opts={silent=true, noremap=true}
         Map('n', 'cd', function()
