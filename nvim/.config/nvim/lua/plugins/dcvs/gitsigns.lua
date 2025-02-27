@@ -7,21 +7,28 @@ return {'lewis6991/gitsigns.nvim', -- fast git decorations
         local status, gitsigns=pcall(require, 'gitsigns')
         if (not status) then return end
         gitsigns.setup {
-            -- signs={
-            --     add={hl='GitSignsAdd', text='▎', show_count=false, numhl='GitSignsAddNr', linehl='GitSignsAddLn'},
-            --     change={hl='GitSignsChange', text='▎', show_count=false, numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
-            --     delete={hl='GitSignsDelete', text='_', show_count=false, numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-            --     topdelete={hl='GitSignsDelete', text='‾', show_count=false, numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-            --     changedelete={hl='GitSignsChange', text='~', show_count=false, numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
-            -- },
+            signs={
+                -- add={hl='GitSignsAdd', text='▎', show_count=false, numhl='GitSignsAddNr', linehl='GitSignsAddLn'},
+                -- change={hl='GitSignsChange', text='▎', show_count=false, numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+                -- delete={hl='GitSignsDelete', text='_', show_count=false, numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+                -- topdelete={hl='GitSignsDelete', text='‾', show_count=false, numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+                -- changedelete={hl='GitSignsChange', text='~', show_count=false, numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+                add={text='▎', show_count=false},
+                change={text='▎', show_count=false},
+                delete={text='_', show_count=false},
+                topdelete={text='‾', show_count=false},
+                changedelete={text='~', show_count=false},
+            },
             count_chars={
                 [1]  ="",   [2]="₂",  [3]="₃",
                 [4]  ="₄",  [5]="₅",  [6]="₆",
                 [7]  ="₇",  [8]="₈",  [9]="₉",
                 ["+"]="₊",
             },
-            numhl=false,
-            linehl=false,
+            linehl=false, -- toggle with `:Gitsigns toggle_linehl`
+            numhl=false, -- toggle with `:Gitsigns toggle_nunhl`
+            signcolumn=true,  -- toggle with `:Gitsigns toggle_signs`
+            word_diff=false, -- toggle with `:Gitsigns toggle_word_diff`
             watch_gitdir={interval=500, follow_files=true},
             sign_priority=6,
             update_debounce=100,
