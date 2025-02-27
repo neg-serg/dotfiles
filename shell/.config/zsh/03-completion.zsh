@@ -42,11 +42,11 @@ zstyle ':completion:*:manuals' separate-sections true
 zstyle ':completion:*:manuals.*' insert-sections true
 zstyle ':completion:*:man:*' menu yes select
 zstyle ':completion:*' special-dirs ..
-zstyle ':completion:*:(mv|cp|file|mp|mpv):*' ignored-patterns '(#i)*.(url|mht)'
-zstyle ':completion:*:*:(mp|mpv):*' tag-order files
-zstyle ':completion:*:*:(mp|mpv):*' file-sort name
-zstyle ':completion:*:*:(mp|mpv):*' menu select auto
-zstyle ':completion:*:*:(mp|mpv):*' file-patterns '(#i)*.(rmvb|mkv|vob|ts|mp4|m4a|iso|wmv|webm|flv|ogv|avi|mpg|mpeg|iso|nrg|mp3|alac|ogg|flac|rm|wv|m4v):files:mpv\ play *(-/):directories:directories'
+zstyle ':completion:*:(mv|cp|file|mp|mpv|mpa):*' ignored-patterns '(#i)*.(url|mht)'
+zstyle ':completion:*:*:(mp|mpv|mpa):*' tag-order files
+zstyle ':completion:*:*:(mp|mpv|mpa):*' file-sort name
+zstyle ':completion:*:*:(mp|mpv|mpa):*' menu select auto
+zstyle ':completion:*:*:(mp|mpv|mpa):*' file-patterns '(#i)*.(rmvb|mkv|vob|ts|mp4|m4a|iso|wmv|webm|flv|ogv|avi|mpg|mpeg|iso|nrg|mp3|alac|ogg|flac|rm|wv|m4v):files:mpv\ play *(-/):directories:directories'
 zstyle ':completion:*:default' select-prompt \
     "%{${fg[cyan]}%}Match %{${fg_bold[cyan]}%}%m%{${fg_no_bold[cyan]}%} Line %{${fg_bold[cyan]}%}%l%{${fg_no_bold[blue]}%} %p%{${reset_color}%}"
     zstyle ':completion:*:default' \
