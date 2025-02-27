@@ -5,7 +5,7 @@
     cider # apple music player
     dr14_tmeter # compute the DR14 of a given audio file according to the procedure from Pleasurize Music Foundation
     id3v2 # id3v2 edit
-    stable.ncpamixer # cli-pavucontrol
+    ncpamixer # cli-pavucontrol
     nicotine-plus # download music via soulseek
     opensoundmeter # sound measurement application for tuning audio systems in real-time
     picard # autotags
