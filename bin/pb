@@ -34,17 +34,6 @@ services:
 
 environment variables:
    UA: user-agent string (defaults to some chrome one)
-
-envs for pastebin.com:
-   PB_API_DEV: developer api key [required] https://pastebin.com/api#1
-   PB_API_USR: user api key [optional] https://pastebin.com/api#8
-   PRIVACY: paste visibility  [optional] valid values: public|0, unlisted|1, private|2
-   ANON: paste w/o a user key even if defined [optional]
-
-examples:
-   dmesg | pb iop
-   PB_API_DEV=XXXX PRIVACY=0 pb pb /tmp/leak.txt
-   UA="Mozilla/5.0 (PlayStation 4 5.55) AppleWebKit/601.2" pb uguu waifu.jpg
 EOF
 	exit 0
 }
