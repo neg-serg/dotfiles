@@ -24,6 +24,12 @@ return {'epwalsh/obsidian.nvim', -- obsidian helpers for neovim
                       end,
                       opts={ noremap=false, expr=true, buffer=true },
                   },
+                  ["<cr>"] = {
+                      action = function()
+                          return require("obsidian").util.smart_action()
+                      end,
+                      opts = { buffer = true, expr = true },
+                  },
               },
               note_id_func=function(title)
                   local suffix=""
