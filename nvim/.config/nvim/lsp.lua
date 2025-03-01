@@ -55,8 +55,6 @@ lsp.handlers['textDocument/publishDiagnostics']=lsp.with(lsp.diagnostic.on_publi
 })
 saga.init_lsp_saga {
   use_saga_diagnostic_sign=true,
-  code_action_prompt={enable=false},
-  code_action_keys={quit='<esc>', exec='<cr>'},
   rename_action_keys={quit='<esc>', exec='<cr>'}
 }
 local function on_attach(client, bufnr)
@@ -75,8 +73,6 @@ local function on_attach(client, bufnr)
   buf_keymap('n', '<leader>dp', '<cmd>lua vim.lsp.diagnostic.goto_prev()<cr>', opts)
   buf_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_next()<cr>', opts)
   buf_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<cr>', opts)
-  buf_keymap('n', '<leader>a', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
-  buf_keymap('v', '<leader>a', '<cmd>lua vim.lsp.buf.range_code_action()<cr>', opts)
   -- Set some keybinds conditional on server capabilities
   if client.server_capabilities.document_formatting then
     buf_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<cr>", opts)
