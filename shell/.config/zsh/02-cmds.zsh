@@ -130,7 +130,8 @@ else
     alias wget='wget --continue --show-progress --progress=bar:force:noscroll'
 fi
 local rlwrap_list=(bb fennel guile irb)
-local noglob_list=(fc find ftp history lftp links2 locate lynx nix nixos-remote nixos-rebuild rake rsync scp sftp you-get yt wget wget2)
+local noglob_list=(fc find ftp history lftp links2 locate lynx nix nixos-remote nixos-rebuild rake rsync sftp you-get yt wget wget2)
+_exists scp && alias scp="noglob scp -r"
 for c in ${noglob_list[@]}; {_exists "$c" && alias "$c=noglob $c"}
 for c in ${rlwrap_list[@]}; {_exists "$c" && alias "$c=rlwrap $c"}
 for c in ${nocorrect_list[@]}; {_exists "$c" && alias "$c=nocorrect $c"}
