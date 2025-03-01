@@ -92,7 +92,7 @@ _zpcompinit_custom() {
 }
 
 zmodload -i zsh/complist
-autoload -Uz -- history-search-end split-shell-arguments lookupinit dircolors_init ylock
+autoload -Uz -- history-search-end split-shell-arguments lookupinit dircolors_init ylock greynoise
 autoload -Uz run-help ${^fpath}/run-help-*(N:t) || return
 (( $+aliases[run-help] )) && unalias run-help  # make run-help more useful
 
