@@ -96,7 +96,6 @@ _exists mtr && alias mtrr='mtr -wzbe'
 _exists nvidia-settings && alias nvidia-settings="nvidia-settings --config=$XDG_CONFIG_HOME/nvidia/settings"
 _exists nvim && alias nvim='v'
 _exists objdump && alias objdump='objdump -M intel -d'
-_exists patool && {alias se='patool extract'; alias pk='patool create';}
 _exists pbzip2 && alias bzip2='pbzip2'
 _exists pigz && alias gzip='pigz'
 _exists plocate && alias locate='plocate'
