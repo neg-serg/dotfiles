@@ -20,6 +20,7 @@ with {
   ];
   programs.neovim.plugins = with pkgs.vimPlugins; [
     clangd_extensions-nvim # llvm-based engine
+    luajitPackages.magick # for magick rock
     nvim-treesitter.withAllGrammars # ts support
   ];
   xdg.configFile = {
