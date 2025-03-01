@@ -140,8 +140,13 @@ _exists git && {
     alias add="git add"
     alias checkout='git checkout'
     alias gd='git diff -w -U0 --word-diff-regex=[^[:space:]]'
+    alias gm="git merge"
     alias gp='git push'
+    alias gpr="gh pr create"
+    alias gr="git rebase -i"
     alias gs='git status --short -b'
+    alias gu="git reset @ --"
+    alias gx="git reset --hard @"
     alias pull="git pull"
     alias push='git push'
     alias resolve="git mergetool --tool=nwim"
