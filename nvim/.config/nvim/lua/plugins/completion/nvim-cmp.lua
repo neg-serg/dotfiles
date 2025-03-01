@@ -101,4 +101,4 @@ return {'hrsh7th/nvim-cmp', -- completion engine
         'hrsh7th/cmp-nvim-lsp', -- cmp lsp support
         'hrsh7th/cmp-nvim-lua', -- cmp neovim lua api support
         'hrsh7th/cmp-path', -- cmp path completion support
-    }} -- better nvim-cmp sorter
+    }}
