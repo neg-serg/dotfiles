@@ -1,5 +1,6 @@
 {
   pkgs,
+  stable,
   config,
   ...
 }:
@@ -18,7 +19,6 @@ with {
   home.packages = with pkgs; [
     himalaya # modern cli for mail
     kyotocabinet # mail client helper library
-    neomutt # mail client
-    notmuch # mail indexer
+    stable.neomutt # mail client
   ];
 }
