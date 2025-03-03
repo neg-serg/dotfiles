@@ -18,11 +18,14 @@ with {
     ruff # python linter
     rust-analyzer # rust lsp
   ];
-  programs.neovim.plugins = with pkgs.vimPlugins; [
-    clangd_extensions-nvim # llvm-based engine
-    luajitPackages.magick # for magick rock
-    nvim-treesitter.withAllGrammars # ts support
-  ];
+  programs.neovim = {
+    plugins = with pkgs.vimPlugins; [
+      clangd_extensions-nvim # llvm-based engine
+      nvim-treesitter.withAllGrammars # ts support
+    ];
+    extraLuaPackages = ps: [ ps.magick ];
+    extraPackages = [ pkgs.imagemagick ];
+  };
   xdg.configFile = {
     # █▓▒░ nvim ─────────────────────────────────────────────────────────────────────────
     "nvim" = {
