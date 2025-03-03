@@ -23,7 +23,7 @@ with {
       clangd_extensions-nvim # llvm-based engine
       nvim-treesitter.withAllGrammars # ts support
     ];
-    extraLuaPackages = ps: [ ps.magick ];
+    extraLuaPackages = [ luajitPackages.magick ];
     extraPackages = [ pkgs.imagemagick ];
   };
   xdg.configFile = {
