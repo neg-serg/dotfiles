@@ -12,6 +12,7 @@ return {'nvim-telescope/telescope.nvim', -- modern fuzzy-finder over lists
         'nvim-telescope/telescope-frecency.nvim', -- MRU frecency
         'renerocksai/telekasten.nvim', -- telekasten support
         'nvim-telescope/telescope-live-grep-args.nvim', -- ripgrep integration
+        'nvim-telescope/telescope-file-browser.nvim', -- file browser via telescope
     },
     config=function()
         local telescope=require'telescope'
