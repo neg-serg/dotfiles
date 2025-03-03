@@ -180,6 +180,32 @@ local servers={
     settings={omnisharp={useGlobalMono="always"}},
     cmd={'omnisharp', "-l", "Error", "--languageserver", "--hostPID", tostring(vim.fn.getpid())}
   },
+  rls={
+    settings={
+      rust={
+        unstable_features=true,
+        build_on_save=false,
+        all_features=true,
+        on_attach=function(client, bufnr)
+          default_on_attach(client, bufnr)
+          local opts={ noremap=true, silent=true, buffer=bufnr }
+          vim.keymap.set("n", "<localleader>rr", ":RustLsp runnables<CR>", opts)
+          vim.keymap.set("n", "<localleader>rp", ":RustLsp parentModule<CR>", opts)
+          vim.keymap.set("n", "<localleader>rm", ":RustLsp expandMacro<CR>", opts)
+          vim.keymap.set("n", "<localleader>rc", ":RustLsp openCargo", opts)
+          vim.keymap.set("n", "<localleader>rg", ":RustLsp crateGraph x11", opts)
+          vim.keymap.set("n", "<localleader>rd", ":RustLsp debuggables<cr>", opts)
+        end,
+        dap={
+          adapter={
+            type="executable",
+            command="${cfg.dap.package}/bin/lldb-dap",
+            name="rustacean_lldb",
+          },
+        },
+      },
+    },
+  },
   rust_analyzer={
     settings={
       ["rust-analyzer"]={
