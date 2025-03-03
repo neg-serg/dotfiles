@@ -6,7 +6,4 @@ return {'akinsho/git-conflict.nvim', -- visualize and resolve git conflicts
         local status, git_conflict = pcall(require, 'git-conflict')
         if (not status) then return end
         git_conflict.setup()
-    end,
-        cmd={'GitConflictChooseOurs', 'GitConflictChooseTheirs', 'GitConflictChooseBoth',
-            'GitConflictChooseNone', 'GitConflictNextConflict', 'GitConflictPrevConflict',
-            'GitConflictListQf'}}
+    end}
