@@ -191,6 +191,7 @@ local servers={
       }
     }
   },
+  marksman={},
   stylelint_lsp={cmd={"stylelint"}}, -- not yet working, needs stylelint-lsp in nixpkgs upstream
   svelte={},
   taplo={},
