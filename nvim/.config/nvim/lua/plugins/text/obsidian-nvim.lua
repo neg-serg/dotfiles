@@ -2,7 +2,7 @@
 -- │ █▓▒░ epwalsh/obsidian.nvim                                                        │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {'epwalsh/obsidian.nvim', -- obsidian helpers for neovim
-    tag='v3.4.1',
+    tag='v3.9.0',
     dependencies={
         'nvim-lua/plenary.nvim',
         'hrsh7th/nvim-cmp',
