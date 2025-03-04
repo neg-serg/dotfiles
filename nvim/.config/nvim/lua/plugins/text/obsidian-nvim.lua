@@ -3,6 +3,8 @@
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {'epwalsh/obsidian.nvim', -- obsidian helpers for neovim
     tag='v3.9.0',
+    lazy=true,
+    ft='markdown',
     dependencies={
         'nvim-lua/plenary.nvim',
         'hrsh7th/nvim-cmp',
