@@ -21,11 +21,8 @@
       "--border=\"block\""
       "--border-label-pos=\"0\""
       "--preview-window=\"border-bold\""
-      "--padding=\"0\""
-      "--margin=\"1\""
-      "--pointer=\"◈\""
-      "--separator=\"~\""
-      "--scrollbar=\"▌\""
+      # --padding="0" --margin="1" --prompt="❯ " --marker="❯"
+      # --pointer="◈" --separator="~" --scrollbar="▌" --layout="reverse"'
       "--exact" # Substring matching by default, `'`-quote for subsequence matching.
       "--height=6"
       "--info=hidden"
