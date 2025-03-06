@@ -13,9 +13,9 @@
       "--bind 'ctrl-j:execute(echo {+} | xargs -o ~/bin/v)+abort'"
       "--bind 'ctrl-space:select-all'"
       "--bind 'ctrl-t:accept'"
-      "--bind 'ctrl-v:execute(echo {+} | xargs -o nvim)'"
+      "--bind 'ctrl-v:execute(echo {+} | xargs -o ~/bin/v)'"
       "--bind 'ctrl-y:execute-silent(echo {+} | xclip -i)'"
-      "--bind 'tab:execute(echo {+} | xargs -o ~/bin/v)+abort'"
+      "--bind 'tab:execute(echo {+} | xargs -o handlr open)+abort'"
 
       "--ansi"
       "--border=none"
@@ -30,16 +30,16 @@
       "--with-nth=1.."
     ];
 
+    # FZF_CTRL_R_OPTS
     historyWidgetOptions = [
-      # FZF_CTRL_R_OPTS
       "--sort"
       "--exact"
       "--preview 'echo {}'"
       "--preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
     ];
 
+    # FZF_CTRL_T_OPTS
     fileWidgetOptions = [
-      # FZF_CTRL_T_OPTS
       "--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
     ];
 
