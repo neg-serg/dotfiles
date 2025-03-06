@@ -16,6 +16,13 @@ alias ll='ls -lah'
 alias mv='mv -i'
 alias mk='mkdir -p'
 alias rd='rmdir'
+_exists procs && _exists gum && k() {
+    procs "$1" --no-header \
+        | awk -F '│' '{printf $1}{printf "│"}{print $3}' \
+        | gum choose --no-limit \
+        | awk '{print $1}' \
+        | xargs kill -9
+}
 if _exists ugrep; then
     # ------------------------------------------------------------------
     alias egrep='ug -E' # search with extended regular expressions (ERE)
