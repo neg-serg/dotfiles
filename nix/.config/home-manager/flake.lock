@@ -461,11 +461,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1741128660,
-        "narHash": "sha256-GWaZ+KGxWYbOB15CSqktwngq0ccA1l2Ov3aUfl9jeY4=",
+        "lastModified": 1741174782,
+        "narHash": "sha256-dYRebJk58/d5Ej1G6xTOadTfG6tU5zFgXYrLsRJlrgw=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "b1b964ea9348aef08cab514fa88e9c99def6fd63",
+        "rev": "def0dbbcea715d4514ca343ab4d6d7f3a1742da0",
         "type": "github"
       },
       "original": {
@@ -643,11 +643,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1741150731,
-        "narHash": "sha256-xgh0ihspXwIeiVgjB5MR8b+QF7SYDwD7ShKdhPAWlI8=",
+        "lastModified": 1741176112,
+        "narHash": "sha256-OaJNFhMmoOU4VI4Jx1ToU49QunXyHIpMr2Cqk/PdRCI=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "d325772e9e7213ee7e003dba641e664899c7b790",
+        "rev": "3265fe46d70429493444910b6f2fe24ebedf6705",
         "type": "github"
       },
       "original": {
@@ -675,11 +675,11 @@
     },
     "nixpkgs-stable": {
       "locked": {
-        "lastModified": 1740932899,
-        "narHash": "sha256-F0qDu2egq18M3edJwEOAE+D+VQ+yESK6YWPRQBfOqq8=",
+        "lastModified": 1741048562,
+        "narHash": "sha256-W4YZ3fvWZiFYYyd900kh8P8wU6DHSiwaH0j4+fai1Sk=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "1546c45c538633ae40b93e2d14e0bb6fd8f13347",
+        "rev": "6af28b834daca767a7ef99f8a7defa957d0ade6f",
         "type": "github"
       },
       "original": {
@@ -723,11 +723,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1741150731,
-        "narHash": "sha256-xgh0ihspXwIeiVgjB5MR8b+QF7SYDwD7ShKdhPAWlI8=",
+        "lastModified": 1741176112,
+        "narHash": "sha256-OaJNFhMmoOU4VI4Jx1ToU49QunXyHIpMr2Cqk/PdRCI=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "d325772e9e7213ee7e003dba641e664899c7b790",
+        "rev": "3265fe46d70429493444910b6f2fe24ebedf6705",
         "type": "github"
       },
       "original": {
