@@ -81,7 +81,7 @@ with {
     base16Scheme = {
       base00 = "#020202"; # Background
       base01 = "#010912"; # Alternate background(for toolbars)
-      base02 = "#8d9eb2"; # Scrollbar highlight ???
+      base02 = "#0f2329"; # Scrollbar highlight ???
       base03 = "#15181f"; # Selection background
       base04 = "#6c7e96"; # Alternate(darker) text
       base05 = "#8d9eb2"; # Default text
