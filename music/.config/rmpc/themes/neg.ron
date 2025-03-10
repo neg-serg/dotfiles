@@ -3,68 +3,55 @@
 #![enable(unwrap_variant_newtypes)]
 (
     album_art_position: Right,
-    album_art_width_percent: 30,
+    album_art_width_percent: 20,
     default_album_art_path: None,
-    show_song_table_header: false,
     draw_borders: false,
     browser_column_widths: [50, 38, 42],
     background_color: None,
     text_color: "250",
     header_background_color: None,
     modal_background_color: None,
-    tab_bar: (enabled: false,),
     highlighted_item_style: (fg: "70", bg: None, modifiers: "Italic"),
     current_item_style: (fg: "25", bg: "0", modifiers: "Bold"),
     borders_style: (fg: "25"),
     highlight_border_style: (fg: "25"),
+    show_song_table_header: false,
     symbols: (song: "🎵", dir: "", marker: "❯"),
-    progress_bar: (
-        symbols: ["─", "╼", ""],
-        track_style: (fg: "238"),
-        elapsed_style: (fg: "238"),
-        thumb_style: (fg: "238"),
-    ),
+    tab_bar: (),
+    progress_bar: ( symbols: ["─", "╼", ""], track_style: (fg: "238"), elapsed_style: (fg: "238"), thumb_style: (fg: "238"),),
     scrollbar: (symbols: ["", "", "", ""],),
     song_table_format: [
-        (
-            prop: (kind: Property(Track), style: (fg: "green"), default: (kind: Text("Unknown"))),
-            width_percent: 2,
-        ),
-        (
-            prop: (kind: Property(Artist), style: (fg: "31"), default: (kind: Text("Unknown"))),
-            width_percent: 15,
-        ),
-        (
-            prop: (kind: Property(Title), default: (kind: Text("Unknown"))),
-            width_percent: 40,
-        ),
-        (
-            prop: (kind: Property(Duration), default: (kind: Text("-"))),
-            width_percent: 10,
-            alignment: Right,
-        ),
-        (
-            prop: (kind: Property(Album), style: (fg: "blue"), default: (kind: Text("Unknown Album"), style: (fg: "white"))),
-            alignment: Right,
-            width_percent: 20,
-        ),
+        ( prop: (kind: Property(Track), style: (fg: "green"), default: (kind: Text("Unknown"))), width_percent: 2,),
+        ( prop: (kind: Property(Artist), style: (fg: "31"), default: (kind: Text("Unknown"))), width_percent: 15,),
+        ( prop: (kind: Property(Title), default: (kind: Text("Unknown"))), width_percent: 40,),
+        ( prop: (kind: Property(Duration), default: (kind: Text("-"))), width_percent: 10, alignment: Right,),
+        ( prop: (kind: Property(Album), style: (fg: "blue"), default: (kind: Text("Unknown Album"), style: (fg: "white"))), alignment: Right, width_percent: 20,),
     ],
     header: (rows: [],),
     browser_song_format: [
-        (
-            kind: Group([
-                (kind: Property(Track)),
-                (kind: Text(" ")),
-            ])
-        ),
-        (
-            kind: Group([
-                (kind: Property(Artist)),
-                (kind: Text(" - ")),
-                (kind: Property(Title)),
-            ]),
-            default: (kind: Property(Filename))
-        ),
+        ( kind: Group([ (kind: Property(Track)), (kind: Text(" ")), ])),
+        ( kind: Group([ (kind: Property(Artist)), (kind: Text(" - ")), (kind: Property(Title)), ]), default: (kind: Property(Filename))),
     ],
+    // layout: Split(
+    //     direction: Vertical,
+    //     panes: [
+    //     (
+    //         size: "8",
+    //         pane: Split(
+    //             direction: Horizontal,
+    //             panes: [
+    //                 ( size: "21", pane: Pane(AlbumArt),),
+    //                 ( size: "100%", pane: Split(
+    //                     direction: Vertical,
+    //                     panes: [
+    //                         ( size: "5", pane: Pane(Header),),
+    //                         ( size: "1", pane: Pane(ProgressBar),),
+    //                         ( size: "3", pane: Pane(Tabs),),
+    //                     ]
+    //                 )
+    //             ), ]
+    //         ),
+    //     ), ( size: "100%", pane: Pane(TabContent),),
+    // ],),
 )
 

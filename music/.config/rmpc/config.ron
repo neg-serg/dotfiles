@@ -3,15 +3,19 @@
 #![enable(unwrap_variant_newtypes)]
 (
     address: "127.0.0.1:6600",
-    theme: Some("neg"),
+    theme: Some("default"),
     cache_dir: None,
     on_song_change: None,
-    volume_step: 5,
+    volume_step: 1,
     status_update_interval_ms: 1000,
     select_current_song_on_change: false,
+    enable_mouse: true,
     album_art: (
         method: Auto,
-        max_size_px: (width: 600, height: 600),
+        max_size_px: (width: 1200, height: 1200),
+        disabled_protocols: ["http://", "https://"],
+        vertical_align: Center,
+        horizontal_align: Center,
     ),
     keybinds: (
         global: {
