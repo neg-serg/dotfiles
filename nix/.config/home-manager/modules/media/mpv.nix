@@ -83,7 +83,7 @@
       geometry = "100%:100%";
       #--[Subtitles]---------------------------------------------
       sub-auto = "fuzzy";
-      sub-font = ["Helvetica Neue LT Std" "HelveticaNeue LT CYR 57 Cond"];
+      sub-font = lib.mkForce ["Helvetica Neue LT Std" "HelveticaNeue LT CYR 57 Cond"];
       sub-gauss = ".82";
       sub-gray = "yes";
       sub-scale = "0.7";
@@ -93,11 +93,11 @@
       osd-bar-align-y = "0";
       osd-bar-h = "3";
       osd-bar = "no";
-      osd-border-color = "#cc000000";
+      osd-border-color = lib.mkForce "#cc000000";
       osd-border-size = "1";
-      osd-color = "#bb6d839e";
-      osd-font = "Iosevka";
-      osd-font-size = "24";
+      osd-color = lib.mkForce "#bb6d839e";
+      osd-font = lib.mkForce "Iosevka";
+      osd-font-size = lib.mkDefault "24";
       osd-status-msg = "$\{time-pos\} / $\{duration\} ($\{percent-pos\}%)$\{?estimated-vf-fps: FPS: $\{estimated-vf-fps\}\}";
       #--[Youtube-DL]--------------------------------------------
       ytdl-format = "bestvideo+bestaudio/best";
@@ -275,7 +275,7 @@
         controls_persistency = "";
         # A comma delimited list of color overrides in RGB HEX format. Defaults:
         # foreground=ffffff,foreground_text=000000,background=000000,background_text=ffffff,curtain=111111,success=a5e075,error=ff616e
-        color = "foreground=005faf,foreground_text=000000,background=000000,background_text=6d839e";
+        color = lib.mkForce "foreground=005faf,foreground_text=000000,background=000000,background_text=6d839e";
         # A comma delimited list of opacity overrides for various UI element backgrounds and shapes.
         # This does not affect any text, which is always rendered fully opaque. Defaults:
         # timeline=0.9,position=1,chapters=0.8,slider=0.9,slider_gauge=1,controls=0,speed=0.6,menu=1,submenu=0.4,border=1,title=1,tooltip=1,thumbnail=1,curtain=0.8,idle_indicator=0.8,audio_indicator=0.5,buffering_indicator=0.3,playlist_position=0.8
