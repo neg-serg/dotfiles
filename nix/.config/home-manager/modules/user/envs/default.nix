@@ -21,6 +21,7 @@
     EZA_COLORS = "da=03:uu=01:gu=0:ur=0:uw=03:ux=04;38;5;24:gr=0:gx=01;38;5;24:tx=01;38;5;24;ur=00;ue=00:tr=00:tw=00:tx=00";
     GHCUP_USE_XDG_DIRS = 1;
     GREP_COLOR = "37;45";
+    CRAWL_DIR = "${config.home.sessionVariables.XDG_DATA_HOME}/crawl/";
     GREP_COLORS = "ms=0;32:mc=1;33:sl=:cx=:fn=1;32:ln=1;36:bn=36:se=1;30";
     HTTPIE_CONFIG_DIR = "${config.home.sessionVariables.XDG_CONFIG_HOME}/httpie";
     INPUTRC = "${config.home.sessionVariables.XDG_CONFIG_HOME}/inputrc";
