@@ -43,6 +43,6 @@
     _JAVA_OPTIONS = "-Djava.util.prefs.userRoot=${config.home.sessionVariables.XDG_CONFIG_HOME}/java";
     __GL_VRR_ALLOWED = 1;
     PIPEWIRE_LOG_SYSTEMD = "true";
-    PIPEWIRE_DEBUG = 2;
+    PIPEWIRE_DEBUG = 0;
   };
 }
