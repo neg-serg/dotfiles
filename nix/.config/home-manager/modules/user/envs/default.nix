@@ -18,18 +18,22 @@
     CARGO_HOME = "${config.home.sessionVariables.XDG_DATA_HOME}/cargo";
     CCACHE_CONFIGPATH = "${config.home.sessionVariables.XDG_CONFIG_HOME}/ccache.config";
     CCACHE_DIR = "${config.home.sessionVariables.XDG_CACHE_HOME}/ccache";
+    CRAWL_DIR = "${config.home.sessionVariables.XDG_DATA_HOME}/crawl/";
     EZA_COLORS = "da=03:uu=01:gu=0:ur=0:uw=03:ux=04;38;5;24:gr=0:gx=01;38;5;24:tx=01;38;5;24;ur=00;ue=00:tr=00:tw=00:tx=00";
     GHCUP_USE_XDG_DIRS = 1;
+    __GL_VRR_ALLOWED = 1;
     GREP_COLOR = "37;45";
-    CRAWL_DIR = "${config.home.sessionVariables.XDG_DATA_HOME}/crawl/";
     GREP_COLORS = "ms=0;32:mc=1;33:sl=:cx=:fn=1;32:ln=1;36:bn=36:se=1;30";
     HTTPIE_CONFIG_DIR = "${config.home.sessionVariables.XDG_CONFIG_HOME}/httpie";
     INPUTRC = "${config.home.sessionVariables.XDG_CONFIG_HOME}/inputrc";
+    _JAVA_OPTIONS = "-Djava.util.prefs.userRoot=${config.home.sessionVariables.XDG_CONFIG_HOME}/java";
     LIBSEAT_BACKEND = "logind";
     MPV_HOME = "${config.home.sessionVariables.XDG_CONFIG_HOME}/mpv";
     PARALLEL_HOME = "${config.home.sessionVariables.XDG_CONFIG_HOME}/parallel";
     PASSWORD_STORE_DIR = "${config.home.sessionVariables.XDG_DATA_HOME}/pass";
     PASSWORD_STORE_ENABLE_EXTENSIONS_DEFAULT = "true";
+    PIPEWIRE_DEBUG = 0;
+    PIPEWIRE_LOG_SYSTEMD = "true";
     PYLINTHOME = "${config.home.sessionVariables.XDG_CONFIG_HOME}/pylint";
     TERMINAL = "kitty";
     TERMINFO = "${config.home.sessionVariables.XDG_DATA_HOME}/terminfo";
@@ -41,9 +45,5 @@
     XINITRC = "${config.home.sessionVariables.XDG_CONFIG_HOME}/xinit/xinitrc";
     XSERVERRC = "${config.home.sessionVariables.XDG_CONFIG_HOME}/xinit/xserverrc";
     ZDOTDIR = "${config.home.sessionVariables.XDG_CONFIG_HOME}/zsh";
-    _JAVA_OPTIONS = "-Djava.util.prefs.userRoot=${config.home.sessionVariables.XDG_CONFIG_HOME}/java";
-    __GL_VRR_ALLOWED = 1;
-    PIPEWIRE_LOG_SYSTEMD = "true";
-    PIPEWIRE_DEBUG = 0;
   };
 }
