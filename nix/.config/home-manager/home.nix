@@ -1,5 +1,14 @@
 {pkgs, ...}: {
-  nix.package = pkgs.nix;
+  nix = {
+    package = pkgs.nix;
+    settings = {
+      use-xdg-base-directories = true;
+      build-users-group = "nixbld";
+      bash-prompt-prefix = "(nix:$name) ";
+      max-jobs = "auto";
+      extra-nix-path = "nixpkgs=flake:nixpkgs";
+    };
+  };
   imports = [
     ./secrets
     ./modules
