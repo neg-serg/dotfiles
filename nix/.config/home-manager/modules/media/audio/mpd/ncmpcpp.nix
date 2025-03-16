@@ -23,7 +23,7 @@
       song_window_title_format = "ncmpcpp";
       default_find_mode = "wrapped";
       block_search_constraints_change_if_items_found = "no";
-      follow_now_playing_lyrics = "yes";
+      follow_now_playing_lyrics = "no";
       #--=[ Playlist ]=---------------
       playlist_disable_highlight_delay = "1";
       playlist_show_remaining_time = "yes";
