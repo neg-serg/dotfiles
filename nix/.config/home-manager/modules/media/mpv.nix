@@ -97,7 +97,7 @@
       osd-border-size = "1";
       osd-color = lib.mkForce "#bb6d839e";
       osd-font = lib.mkForce "Iosevka";
-      osd-font-size = lib.mkDefault "24";
+      osd-font-size = lib.mkForce "20";
       osd-status-msg = "$\{time-pos\} / $\{duration\} ($\{percent-pos\}%)$\{?estimated-vf-fps: FPS: $\{estimated-vf-fps\}\}";
       #--[Youtube-DL]--------------------------------------------
       ytdl-format = "bestvideo+bestaudio/best";
