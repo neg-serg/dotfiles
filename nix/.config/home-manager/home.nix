@@ -1,14 +1,5 @@
 {config, pkgs, ...}: {
-  nix = {
-    enable = true;
-    package = pkgs.nix;
-    settings = {
-      use-xdg-base-directories = true;
-      build-users-group = "nixbld";
-      max-jobs = "auto";
-      extra-nix-path = "nixpkgs=flake:nixpkgs";
-    };
-  };
+  nix.package = pkgs.nix;
   imports = [
     ./secrets
     ./modules
