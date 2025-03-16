@@ -1,4 +1,4 @@
-{config, ...}: {
+{pkgs, config, ...}: {
   home.sessionVariables = {
     XDG_CACHE_HOME = "${config.home.homeDirectory}/.cache";
     XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
@@ -14,7 +14,7 @@
     XDG_VIDEOS_DIR = "${config.home.homeDirectory}/vid";
     XDG_RUNTIME_DIR = "/run/user/$UID";
 
-    BROWSER = "firefox";
+    BROWSER = "${pkgs.firefox}/bin/firefox";
     CARGO_HOME = "${config.home.sessionVariables.XDG_DATA_HOME}/cargo";
     CCACHE_CONFIGPATH = "${config.home.sessionVariables.XDG_CONFIG_HOME}/ccache.config";
     CCACHE_DIR = "${config.home.sessionVariables.XDG_CACHE_HOME}/ccache";
