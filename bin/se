@@ -1,0 +1,24 @@
+#!/usr/bin/env zsh
+main() {
+    if [[ -f $1 ]]; then
+        case $1 in
+            *.7z) 7z x "$1" ;;
+            *.bz2) bunzip2 "$1" ;;
+            *.gz) rapidgzip -d -P 0 "$1" ;;
+            *.rar) unrar x "$1" ;;
+            *.tar.bz2) tar -x --use-compress-program=lbzip2 -f "$1" ;;
+            *.tar.gz) tar -x --use-compress-program=rapidgzip -f "$1" ;;
+            *.tar) tar xvf "$1" ;;
+            *.tar.zstd) tar xf "$1";;
+            *.tbz2) tar -x --use-compress-program=lbzip2 -f "$1" ;;
+            *.tgz) tar -x --use-compress-program=rapidgzip -f "$1" ;;
+            *.txz) XZ_DEFAULTS="-T 0" tar xf "$1" ;; # XZ_DEFAULTS="-T 0" is enough
+            *.tzstd) tar xf "$1";;
+            *.xz) XZ_DEFAULTS="-T 0" unxz "$1" ;; # XZ_DEFAULTS="-T 0" is enough
+            *.zip) punzip -d "${1%%.zip}" "$1" ;;
+            *.Z) uncompress "$1" ;;
+        esac
+    fi
+}
+
+main "$@"

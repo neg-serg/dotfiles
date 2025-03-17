@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+main() {
+    if [[ $# -gt 1 ]]; then
+        case $1 in
+            *.tar) tar cfv "$1" "${@:2}";; # because of the nature of tar it's impossible to make it parallel
+            *.tar.xz) tar -cf - "${@:2}" | xz --threads=0 > "$1";;
+            *.tar.gz) tar - "${@:2}" | pv | pigz > "$1";;
+            *.tgz) tar - "${@:2}" | pv | pigz > "$1";;
+            *.tar.zstd) tar cf - "${@:2}" | zstd --threads=0 > "$1";;
+            *.tzst) tar cf - "${@:2}" | zstd --threads=0 > "$1";;
+            *.tar.bzip2) tar cf - "${@:2}" | lbzip2 > "$1";;
+            *.tar.bz) tar cf - "${@:2}" | lbzip2 > "$1";;
+            *.tar.bz2) tar cf - "${@:2}" | lbzip2 > "$1";;
+            *.tbz2) tar cf - "${@:2}" | lbzip2 > "$1";;
+            *.tbz) tar cf - "${@:2}" | lbzip2 > "$1";;
+            *.zip) pzip "$1" "${@:2}";;
+        esac
+    fi
+}
+
+main "$@"

@@ -249,47 +249,6 @@ _exists flatpak && {
     alias zoom='flatpak run us.zoom.Zoom'
 }
 
-se() {
-    if [[ -f $1 ]]; then
-        case $1 in
-            *.7z) 7z x "$1" ;;
-            *.bz2) bunzip2 "$1" ;;
-            *.gz) rapidgzip -d -P 0 "$1" ;;
-            *.rar) unrar x "$1" ;;
-            *.tar.bz2) tar -x --use-compress-program=lbzip2 -f "$1" ;;
-            *.tar.gz) tar -x --use-compress-program=rapidgzip -f "$1" ;;
-            *.tar) tar xvf "$1" ;;
-            *.tar.zstd) tar xf "$1";;
-            *.tbz2) tar -x --use-compress-program=lbzip2 -f "$1" ;;
-            *.tgz) tar -x --use-compress-program=rapidgzip -f "$1" ;;
-            *.txz) XZ_DEFAULTS="-T 0" tar xf "$1" ;; # XZ_DEFAULTS="-T 0" is enough
-            *.tzstd) tar xf "$1";;
-            *.xz) XZ_DEFAULTS="-T 0" unxz "$1" ;; # XZ_DEFAULTS="-T 0" is enough
-            *.zip) punzip -d "${1%%.zip}" "$1" ;;
-            *.Z) uncompress "$1" ;;
-        esac
-    fi
-}
-
-pk() {
-    if [[ $# -gt 1 ]]; then
-        case $1 in
-            *.tar) tar cfv "$1" "${@:2}";; # because of the nature of tar it's impossible to make it parallel
-            *.tar.xz) tar -cf - "${@:2}" | xz --threads=0 > "$1";;
-            *.tar.gz) tar - "${@:2}" | pv | pigz > "$1";;
-            *.tgz) tar - "${@:2}" | pv | pigz > "$1";;
-            *.tar.zstd) tar cf - "${@:2}" | zstd --threads=0 > "$1";;
-            *.tzst) tar cf - "${@:2}" | zstd --threads=0 > "$1";;
-            *.tar.bzip2) tar cf - "${@:2}" | lbzip2 > "$1";;
-            *.tar.bz) tar cf - "${@:2}" | lbzip2 > "$1";;
-            *.tar.bz2) tar cf - "${@:2}" | lbzip2 > "$1";;
-            *.tbz2) tar cf - "${@:2}" | lbzip2 > "$1";;
-            *.tbz) tar cf - "${@:2}" | lbzip2 > "$1";;
-            *.zip) pzip "$1" "${@:2}";;
-        esac
-    fi
-}
-
 autoload zc
 unfunction _exists
 # vim: ft=zsh:nowrap
