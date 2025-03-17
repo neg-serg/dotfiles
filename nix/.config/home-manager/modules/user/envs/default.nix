@@ -44,6 +44,7 @@
     XAUTHORITY = "${config.home.sessionVariables.XDG_RUNTIME_DIR}/Xauthority";
     XINITRC = "${config.home.sessionVariables.XDG_CONFIG_HOME}/xinit/xinitrc";
     XSERVERRC = "${config.home.sessionVariables.XDG_CONFIG_HOME}/xinit/xserverrc";
+    XZ_DEFAULTS="-T 0";
     ZDOTDIR = "${config.home.sessionVariables.XDG_CONFIG_HOME}/zsh";
   };
 }
