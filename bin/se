@@ -1,10 +1,8 @@
 #!/usr/bin/env zsh
+
 main() {
     if [[ -f $1 ]]; then
         case $1 in
-            *.7z) 7z x "$1" ;;
-            *.bz2) bunzip2 "$1" ;;
-            *.gz) rapidgzip -d -P 0 "$1" ;;
             *.rar) unrar x "$1" ;;
             *.tar.bz2) tar -x --use-compress-program=lbzip2 -f "$1" ;;
             *.tar.gz) tar -x --use-compress-program=rapidgzip -f "$1" ;;
@@ -14,11 +12,45 @@ main() {
             *.tgz) tar -x --use-compress-program=rapidgzip -f "$1" ;;
             *.txz) XZ_DEFAULTS="-T 0" tar xf "$1" ;; # XZ_DEFAULTS="-T 0" is enough
             *.tzstd) tar xf "$1";;
-            *.xz) XZ_DEFAULTS="-T 0" unxz "$1" ;; # XZ_DEFAULTS="-T 0" is enough
-            *.zip) punzip -d "${1%%.zip}" "$1" ;;
+            *.zip) punzip "$1" ;;
             *.Z) uncompress "$1" ;;
+
+            *.7z) 7z x "$1" ;;
+            *.bz2) lbunzip2 "$1" ;;
+            *.gz) rapidgzip -d -P 0 "$1" ;;
+            *.xz) XZ_DEFAULTS="-T 0" unxz "$1" ;; # XZ_DEFAULTS="-T 0" is enough
         esac
     fi
 }
 
-main "$@"
+main() {
+    if [[ -f $1 ]]; then
+        case $1 in
+            *.rar) unrar x "$1" "${1%%.rar}" ;;
+            *.tar.bz2) tar -x --use-compress-program=lbzip2 -f "$1" ;;
+            *.tar.gz) tar -x --use-compress-program=rapidgzip -f "$1" ;;
+            *.tar) tar -C "${1%%.tar}" xf "$1" ;;
+            *.tar.zstd) tar -C "${1%%.tar.zstd}" xf "$1";;
+            *.tbz2) tar -C "${1%%.tbz2}" -x --use-compress-program=lbzip2 -f "$1" ;;
+            *.tgz) tar -C "${1%%.tgz}" -x --use-compress-program=rapidgzip -f "$1" ;;
+            *.txz) XZ_DEFAULTS="-T 0" tar -C "${1%%.txz}" xf "$1" ;; # XZ_DEFAULTS="-T 0" is enough
+            *.tar.xz) XZ_DEFAULTS="-T 0" tar -C "${1%%.tar.xz}" xf "$1" ;; # XZ_DEFAULTS="-T 0" is enough
+            *.tzstd) tar -C "${1%%.tzstd}" xf "$1";;
+            *.tzst) tar -C "${1%%.tzst}" xf "$1";;
+            *.zip) punzip -d "${1%%.zip}" "$1" ;;
+            *.Z) uncompress "$1" ;;
+
+            *.7z) 7z x "$1" ;;
+            *.bz2) lbunzip2 "$1" ;;
+            *.gz) rapidgzip -d -P 0 "$1" ;;
+            *.xz) XZ_DEFAULTS="-T 0" unxz "$1" ;; # XZ_DEFAULTS="-T 0" is enough
+        esac
+    fi
+}
+
+if [[ $1 == "here" ]]; then
+    shift
+    main_here "$@"
+else
+    main "$@"
+fi
