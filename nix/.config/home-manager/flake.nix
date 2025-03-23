@@ -25,6 +25,7 @@
       url = "git+ssh://git@github.com/neg-serg/iosevka-neg";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
     # nixos-generators = {
     #   url = "github:nix-community/nixos-generators";
     #   inputs.nixpkgs.follows = "nixpkgs";
@@ -52,6 +53,7 @@
     sops-nix,
     stylix,
     iosevka-neg,
+    yandex-browser,
     # home-manager-shell,
     # nixos-generators,
     # nixpkgs-wayland,
@@ -67,6 +69,7 @@
       negwmPkg = negwm.packages.${system};
       oldstable = nixpkgs-oldstable.legacyPackages.${system};
       stable = nixpkgs-stable.legacyPackages.${system};
+      yandex-browser = yandex-browser.packages.${system};
     }; {
       packages.${system}.default = nixpkgs.legacyPackages.${system}.zsh;
       homeConfigurations."neg" = home-manager.lib.homeManagerConfiguration {
@@ -79,6 +82,7 @@
           inherit negwmPkg;
           inherit executorPkg;
           inherit iosevkaneg;
+          inherit yandex-browser;
         };
         modules = [
           ./home.nix
