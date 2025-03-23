@@ -12,9 +12,9 @@
     gzdoom # open-source doom
     jazz2 # open source reimplementation of classic Jazz Jackrabbit 2 game
     nethack # roguelike
+    openmw # Unofficial open source engine reimplementation of the game Morrowind
     shattered-pixel-dungeon # roguelike
     stable.brogue # roguelike
-    stable.openmw # Unofficial open source engine reimplementation of the game Morrowind
     stable.unnethack # roguelike
     xaos # smooth fractal explorer
   ];
