@@ -26,7 +26,7 @@ set $circle-dw [class="org.nicotine_plus.Nicotine"]
 set $circle-term [instance="term"]
 set $circle-vid [class="mpv"]
 set $circle-keyboard [class="^(Bazecor|wootility-lekker)$"]
-set $circle-web [class="^(firefox|floorpdeveloperedition|floorp|Tor Browser|Chromium|Chromium-browser|Thorium-browser|Palemoon|Pale moon)$"]
+set $circle-web [class="^(firefox|floorpdeveloperedition|floorp|Tor Browser|Chromium|Chromium-browser|Thorium-browser|Palemoon|Pale moon|Yandex-browser)$"]
 for_window $circle-daw move to workspace $daw,focus
 for_window $circle-patchbay move to workspace $patchbay,focus
 for_window $circle-dev move to workspace $dev,focus
