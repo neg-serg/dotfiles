@@ -1,0 +1,2 @@
+#!/bin/sh
+nix profile diff-closures --profile /nix/var/nix/profiles/system && nvd diff /run/booted-system /run/current-system
