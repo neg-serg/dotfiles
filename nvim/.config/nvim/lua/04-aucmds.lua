@@ -45,7 +45,7 @@ au({"BufReadPost"}, {callback=restore_cursor, group=main, desc="auto line return
 au({'BufReadPre','FileReadPre'}, {command=[[let @/ = '']], group=mode_change})
 au({'BufWritePost'}, {pattern='fonts.conf', command='!fc-cache', group=custom_updates})
 au({'TextYankPost'}, {
-    callback=function() require'vim.highlight'.on_yank({timeout=60, higroup="Search"}) end,
+    callback=function() vim.hl.on_yank{timeout=60, higroup="Search"} end,
     group=hi_yank})
 au({'DirChanged'}, {pattern={'window','tab','tabpage','global'}, callback=function()
     vim.cmd("silent !zoxide add " .. vim.fn.getcwd())
