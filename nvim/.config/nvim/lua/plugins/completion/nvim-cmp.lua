@@ -39,7 +39,7 @@ return {'hrsh7th/nvim-cmp', -- completion engine
       Value="",
       Enum="",
       Keyword="",
-      Snippet="",
+      Snippet="",
       Color="",
       File="",
       Reference="",
