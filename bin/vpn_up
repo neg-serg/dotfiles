@@ -1,2 +1,0 @@
-#!/bin/sh
-pass show vpn | sudo openconnect --user "$(pass show vpn_user)" "$(pass show vpn_url)" --passwd-on-stdin --background
