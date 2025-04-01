@@ -1,3 +1,0 @@
-#!/bin/sh
-ext=$(python -c 'import os.path; import sys; print(os.path.splitext(sys.argv[1])[1])' "$(realpath /proc/self/fd/0)")
-exec bat -n ${ext:+-l} ${ext#.}
