@@ -1,8 +1,0 @@
-#!/usr/bin/env sh
-echo /dev/video[0-9]* | xargs \
-mpv --fullscreen=no \
-    --x11-name="webcam" \
-    --demuxer-lavf-format=video4linux2 \
-    --demuxer-lavf-o-set=input_format=mjpeg \
-    --title="webcam" \
-    "av://v4l2:$webcam"
