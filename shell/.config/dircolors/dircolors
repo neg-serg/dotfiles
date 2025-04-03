@@ -291,13 +291,13 @@ STICKY_OTHER_WRITABLE 38;5;86;48;5;234;1     # Dir that is sticky and other-writ
 .localstorage     00;38;5;99 # Data store
 .mdb              00;38;5;99 # Data store
 .mde              00;38;5;99 # Data store
-.nc               00;38;5;99 # Data store # NetCDF
+.nc               00;38;5;99 # Data store (NetCDF)
 .sqlite           00;38;5;99 # Data store
 .typelib          00;38;5;99 # Data store
-.accdb            00;38;5;161 # Data store # MS Access
-.accde            00;38;5;161 # Data store # MS Access
-.accdr            00;38;5;161 # Data store # MS Access
-.accdt            00;38;5;161 # Data store # MS Access
+.accdb            00;38;5;161 # Data store (MS Access)
+.accde            00;38;5;161 # Data store (MS Access)
+.accdr            00;38;5;161 # Data store (MS Access)
+.accdt            00;38;5;161 # Data store (MS Access)
 # ┌───────────────────────────────────────────────────────────┐
 # │ Markup                                                    │
 # └───────────────────────────────────────────────────────────┘
@@ -750,7 +750,7 @@ zshrc             03;38;5;103 # UNIX Shell
 .t                01;38;5;28 # Perl stuff or turing language
 .tcl              03;38;5;34 # Tcl
 .tk               03;38;5;34 # Tk
-.xsh              00;03;38;5;33 # Code (interpreted) (xonsh)
+.xsh              03;38;5;33 # Code (interpreted) (xonsh)
 .scpt             03;38;5;219 # AppleScript
 .swift            03;38;5;219 # Swift
 .comp             00;38;5;142 # SPIR-V shaders
@@ -890,12 +890,12 @@ zshrc             03;38;5;103 # UNIX Shell
 .bbl                  01;38;5;244 # Scum
 .blg                  01;38;5;244 # Scum
 .cache                01;38;5;244 # Scum
-.car                  38;5;57     # macOS asset catalog
+.car                  00;38;5;57  # macOS asset catalog
 .CFUserTextEncoding   00;38;5;244 # macOS
 .class                01;38;5;244 # Scum
 *CodeResources        00;38;5;244 # macOS code signing apps
 .DS_Store             00;38;5;244 # macOS
-.dylib                38;5;241    # macOS shared lib
+.dylib                00;38;5;241 # macOS shared lib
 .entitlements         1           # Xcode files
 .ex                   00;38;5;244 # Scum
 .example              00;38;5;244 # Scum
@@ -904,12 +904,12 @@ zshrc             03;38;5;103 # UNIX Shell
 .incomplete           01;38;5;244 # Scum
 .localized            00;38;5;244 # macOS
 .mfasl                01;38;5;244 # Mozilla XUL precompiled javacript
-.nib                  38;5;57     # macOS UI
+.nib                  00;38;5;57  # macOS UI
 .orig                 04;38;5;241 # Undo files
 .pbxproj              1           # Xcode files
 *PkgInfo              00;38;5;244 # macOS app bundle id
 .pyc                  01;38;5;244 # Scum (python compiled)
-.storyboard           38;5;196    # Xcode files
+.storyboard           00;38;5;196 # Xcode files
 .strings              1           # Xcode files
 .tg                   00;38;5;244 # telegram stuff ?
 .vcard                00;38;5;244 # contact information
@@ -948,14 +948,14 @@ zshrc             03;38;5;103 # UNIX Shell
 *LICENSE.md       38;5;243;04 # Documentation
 *NOTICE           38;5;243;04 # Documentation
 *PATENTS          38;5;243;04 # Documentation
-*PKGBUILD         00;38;5;60 # Arch linux build
-*README           38;5;243;04 # Documentation
-*README.markdown  38;5;243;04 # Documentation
-*README*.md       38;5;243;04 # Documentation
-*README.rst       38;5;243;04 # Documentation
-*readme.txt       38;5;243;04 # Documentation
-*README.txt       38;5;243;04 # Documentation
+*PKGBUILD         00;38;5;60  # Arch linux build
+*README           04;38;5;243 # Documentation
+*README.markdown  04;38;5;243 # Documentation
+*README*.md       04;38;5;243 # Documentation
+*README.rst       04;38;5;243 # Documentation
+*readme.txt       04;38;5;243 # Documentation
+*README.txt       04;38;5;243 # Documentation
 *TODO             01;38;5;91 # Todo list
-*VERSION          38;5;243;04 # Documentation
+*VERSION          04;38;5;243 # Documentation
 
 # vim:filetype=dircolors
