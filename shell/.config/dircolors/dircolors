@@ -885,7 +885,7 @@ zshrc             03;38;5;103 # UNIX Shell
 *#                    00;38;5;244 # Scum
 *~                    03;38;5;244 # Undo file
 .added                00;38;5;244 # Temporary torrent
-.archimate            38;5;57     # arhimate schemes
+.archimate            00;38;5;154 # arhimate schemes
 .aux                  01;38;5;244 # LaTeX helper
 .bbl                  01;38;5;244 # Scum
 .blg                  01;38;5;244 # Scum
