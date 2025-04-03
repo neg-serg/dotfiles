@@ -882,37 +882,38 @@ zshrc             03;38;5;103 # UNIX Shell
 # ┌───────────────────────────────────────────────────────────┐
 # │ Scum                                                      │
 # └───────────────────────────────────────────────────────────┘
-*#                    00;38;5;236 # Scum
-*~                    03;38;5;236 # Undo file
-.added                00;38;5;236 # Temporary torrent
-.aux                  01;38;5;236 # LaTeX helper
-.bbl                  01;38;5;236 # Scum
-.blg                  01;38;5;236 # Scum
-.cache                01;38;5;236 # Scum
+*#                    00;38;5;244 # Scum
+*~                    03;38;5;244 # Undo file
+.added                00;38;5;244 # Temporary torrent
+.archimate            38;5;57     # arhimate schemes
+.aux                  01;38;5;244 # LaTeX helper
+.bbl                  01;38;5;244 # Scum
+.blg                  01;38;5;244 # Scum
+.cache                01;38;5;244 # Scum
 .car                  38;5;57     # macOS asset catalog
-.CFUserTextEncoding   00;38;5;236 # macOS
-.class                01;38;5;236 # Scum
-*CodeResources        00;38;5;236 # macOS code signing apps
-.DS_Store             00;38;5;236 # macOS
+.CFUserTextEncoding   00;38;5;244 # macOS
+.class                01;38;5;244 # Scum
+*CodeResources        00;38;5;244 # macOS code signing apps
+.DS_Store             00;38;5;244 # macOS
 .dylib                38;5;241    # macOS shared lib
 .entitlements         1           # Xcode files
-.ex                   00;38;5;236 # Scum
-.example              00;38;5;236 # Scum
-.feature              00;38;5;236 # Scum
-.ics                  00;38;5;236 # calendar information
-.incomplete           01;38;5;236 # Scum
-.localized            00;38;5;236 # macOS
-.mfasl                01;38;5;236 # Mozilla XUL precompiled javacript
+.ex                   00;38;5;244 # Scum
+.example              00;38;5;244 # Scum
+.feature              00;38;5;244 # Scum
+.ics                  00;38;5;244 # calendar information
+.incomplete           01;38;5;244 # Scum
+.localized            00;38;5;244 # macOS
+.mfasl                01;38;5;244 # Mozilla XUL precompiled javacript
 .nib                  38;5;57     # macOS UI
 .orig                 04;38;5;241 # Undo files
 .pbxproj              1           # Xcode files
-*PkgInfo              00;38;5;236 # macOS app bundle id
-.pyc                  01;38;5;236 # Scum (python compiled)
+*PkgInfo              00;38;5;244 # macOS app bundle id
+.pyc                  01;38;5;244 # Scum (python compiled)
 .storyboard           38;5;196    # Xcode files
 .strings              1           # Xcode files
-.tg                   00;38;5;236 # telegram stuff ?
-.vcard                00;38;5;236 # contact information
-.vcf                  00;38;5;236 # contact information
+.tg                   00;38;5;244 # telegram stuff ?
+.vcard                00;38;5;244 # contact information
+.vcf                  00;38;5;244 # contact information
 .xcconfig             1           # Xcode files
 .xcsettings           1           # Xcode files
 .xcuserstate          1           # Xcode files
