@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-kitty -T sysupdate --class sysupdate \
-      -e nh home switch ~/.dotfiles/nix/.config/home-manager || dunstify 'System upgrade has failed' && \
-       dunstify 'The system has been updated' && \
-       echo -e "System updated successfully." || \
-       echo -e "System update failed!"
