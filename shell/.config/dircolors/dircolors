@@ -920,14 +920,14 @@ zshrc             03;38;5;103 # UNIX Shell
 # ┌───────────────────────────────────────────────────────────┐
 # │ Backup / temporary files                                  │
 # └───────────────────────────────────────────────────────────┘
-.bak              01;38;5;244 # Backup / temporary files
-.bck              00;38;5;244 # Backup / temporary files
-.ii               00;38;5;244 # Backup / temporary files (gcc tmp file)
-.sassc            00;38;5;244 # Backup / temporary files
-.swo              00;38;5;244 # Backup / temporary files
-.swp              01;38;5;244 # Backup / temporary files
-.temp             00;38;5;244 # Backup / temporary files
-.tmp              00;38;5;244 # Backup / temporary files
+.bak              01;38;5;247 # Backup / temporary files
+.bck              00;38;5;247 # Backup / temporary files
+.ii               00;38;5;247 # Backup / temporary files (gcc tmp file)
+.sassc            00;38;5;247 # Backup / temporary files
+.swo              00;38;5;247 # Backup / temporary files
+.swp              01;38;5;247 # Backup / temporary files
+.temp             00;38;5;247 # Backup / temporary files
+.tmp              00;38;5;247 # Backup / temporary files
 # ┌───────────────────────────────────────────────────────────┐
 # │ Documentation                                             │
 # └───────────────────────────────────────────────────────────┘
