@@ -1,6 +1,7 @@
 {
   master,
   config,
+  stable,
   ...
 }:
 with {
@@ -12,7 +13,7 @@ with {
     neovim # neovim from master
     neovim-remote # nvr for neovim
     nil # nixos language server
-    pylyzer # python type checker
+    stable.pylyzer # python type checker
     pyright # python lsp
     ruff-lsp # python lsp
     ruff # python linter
