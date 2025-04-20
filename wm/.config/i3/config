@@ -50,14 +50,14 @@ set $scratchpad-mixer [instance="ncpamixer"]
 set $scratchpad-teardrop [instance="teardrop"]
 set $scratchpad-torrment [instance="torrment"]
 set $scratchpad-transients [instance="Places" window_role="^(GtkFileChooserDialog|gimp-file-open)$"]
-for_window $scratchpad-discord floating enable, move absolute position 1549 389, resize set 1880 1000
-for_window $scratchpad-im floating enable, move absolute position 2359 1, resize set 1088 1390
-for_window $scratchpad-ncmpcpp floating enable, move absolute position 674 765, resize set 1932 590
-for_window $scratchpad-neomutt floating enable, move absolute position 0 0, resize set 3440 1397
-for_window $scratchpad-mixer floating enable, move absolute position 1828 804, resize set 1612 590
-for_window $scratchpad-teardrop floating enable, move absolute position 0 0, resize set 3440 866
-for_window $scratchpad-torrment floating enable, move absolute position 0 0, resize set 3440 866
-for_window $scratchpad-transients floating enable, move absolute position 686 504, resize set 1896 890
+for_window $scratchpad-discord floating enable, move absolute position 1729 583, resize set 2098 1500
+for_window $scratchpad-im floating enable, move absolute position 2633 1, resize set 1214 2085
+for_window $scratchpad-ncmpcpp floating enable, move absolute position 752 1147, resize set 2156 885
+for_window $scratchpad-neomutt floating enable, move absolute position 0 0, resize set 3840 2095
+for_window $scratchpad-mixer floating enable, move absolute position 2040 1206, resize set 1799 885
+for_window $scratchpad-teardrop floating enable, move absolute position 0 0, resize set 3840 1299
+for_window $scratchpad-torrment floating enable, move absolute position 0 0, resize set 3840 1299
+for_window $scratchpad-transients floating enable, move absolute position 765 756, resize set 2116 1335
 
 # :>> Config section workspaces
 set $term "︁ 𐌰:term"
