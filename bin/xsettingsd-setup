@@ -27,8 +27,8 @@ echo "using ${dpi}dpi" >&2
 xrandr --dpi "$dpi"
 cfg="$XDG_CONFIG_HOME/xsettingsd/xsettingsd.conf"
 if [ ! -s "$cfg" ]; then
-                         mkdir -v "$(dirname "$cfg")"
-                                                       touch "$cfg"
+    mkdir -v "$(dirname "$cfg")"
+    touch "$cfg"
 fi
 DPI_BIG_ENOUGH=${DPI_BIG_ENOUGH:-120}
 {
