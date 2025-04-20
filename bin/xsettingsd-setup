@@ -20,7 +20,7 @@ dpis=$(xrandr --current |
       while read -r output pixels mm; do
         if [ "$mm" -eq 1 ]; then mm=796; fi # Samsung G8 OLED fix
         showdpi "$output" "$pixels" "$mm"
-    done | tr '\n' ' ')
+      done | tr '\n' ' ')
 dpi=${dpis%% *}
 dpi=${dpi:-96}
 echo "using ${dpi}dpi" >&2
