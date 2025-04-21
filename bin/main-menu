@@ -7,6 +7,8 @@ album_copy
 path_copy
 pipewire_output
 alsa_output
+game_start
+game_end
 bt_headphones
 translate
 touchpad
@@ -59,6 +61,14 @@ alsa_output(){
     mpc play
     sleep "$timeout";
     mpc play
+}
+
+game_start(){
+    systemctl --user stop picom
+}
+
+game_end(){
+    systemctl --user start picom
 }
 
 bt_headphones(){
