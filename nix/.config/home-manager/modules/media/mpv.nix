@@ -18,7 +18,7 @@
       correct-downscaling = true;
       gpu-shader-cache-dir = "/home/neg/tmp/";
       hwdec-codecs = "all";
-      icc-cache-dir = "/home/neg/tmp/";
+      # icc-cache-dir = "/home/neg/tmp/";
       vd-lavc-dr = true;
       vd-lavc-threads = "12";
       vo = "gpu-next";
@@ -34,7 +34,7 @@
       tscale = "oversample"; # smoothmotion
       interpolation = true;
       #--[Color]-------------------------------------------------
-      icc-profile-auto = true;
+      # icc-profile-auto = true;
       # see https://github.com/mpv-player/mpv/wiki/Video-output---shader-stage-diagram
       target-prim = "adobe";
       # target-prim = "auto";
