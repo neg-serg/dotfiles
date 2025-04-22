@@ -15,7 +15,6 @@ with {
     nil # nixos language server
     stable.pylyzer # python type checker
     pyright # python lsp
-    ruff-lsp # python lsp
     ruff # python linter
     rust-analyzer # rust lsp
   ];
