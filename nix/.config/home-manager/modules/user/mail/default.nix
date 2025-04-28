@@ -18,6 +18,6 @@ with {
   home.packages = with pkgs; [
     himalaya # modern cli for mail
     kyotocabinet # mail client helper library
-    # stable.neomutt # mail client
+    neomutt # mail client
   ];
 }
