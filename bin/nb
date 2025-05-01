@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
-for r in "$HOME/1st_level"; do git -C "$r" pull; done
-if [ $(git -C ~/1st_level status --short -b |wc -l) -ge 2 ]; then
+git -C "$HOME/1st_level" pull
+find ~/music -maxdepth 1  -type d | sort > ~/1st_level/music/list
+if [ "$(git -C ~/1st_level status --short -b |wc -l)" -ge 2 ]; then
     zk -W ~/1st_level index
     git -C ~/1st_level add . \
         && git -C ~/1st_level commit -am "update notes $(date '+%d-%m-%Y %H:%M:%S')" \
