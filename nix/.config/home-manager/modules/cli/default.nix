@@ -11,6 +11,7 @@
     ./fzf.nix
     ./ripgrep.nix
     ./shell.nix # shells which not in nixOs and their completions
+    ./yazi.nix
   ];
   home.packages = with pkgs; [
     babashka # native clojure for scripts
@@ -40,7 +41,6 @@
     urlscan # extract urls from text
     urlwatch # watch for urls
     viddy # modern watch command
-    yazi # yet another file manager
     zoxide # better fasd for some
   ];
 }
