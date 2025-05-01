@@ -2,6 +2,7 @@
 -- │ █▓▒░ stevearc/oil.nvim                                                            │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {'stevearc/oil.nvim',  -- nice netrw replacement
+    enabled=false,
     config=function()
         require'oil'.setup({
             columns={
