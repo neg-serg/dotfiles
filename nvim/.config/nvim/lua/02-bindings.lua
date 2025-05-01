@@ -1,7 +1,5 @@
 vim.g.mapleader = ','
 
-map('n', 'e', '[Qleader]')
-
 Map('i', '<C-j>', '<ESC>', {nowait = true})
 Map('v', '<C-j>', '<ESC>', {nowait = true})
 Map('n', '<C-j>', '<C-w>j', {nowait = true})
@@ -23,17 +21,17 @@ Map('', '<left>', '<NOP>')
 Map('', '<right>', '<NOP>')
 map('n', '<C-S-c>', '<cmd> %y+ <CR>', {silent=true})
 
-map('n', '[Qleader]n', ':normal :<C-u>cnext<CR>', {silent=true})
-map('n', '[Qleader]p', ':normal :<C-u>cprevious<CR>', {silent=true})
-map('n', '[Qleader]R', ':normal :<C-u>crewind<CR>', {silent=true})
-map('n', '[Qleader]N', ':normal :<C-u>cfirst<CR>', {silent=true})
-map('n', '[Qleader]P', ':normal :<C-u>clast<CR>', {silent=true})
-map('n', '[Qleader]l', ':normal :<C-u>clist<CR>', {silent=true})
+map('n', 'en', ':normal :<C-u>cnext<CR>', {silent=true})
+map('n', 'ep', ':normal :<C-u>cprevious<CR>', {silent=true})
+map('n', 'eR', ':normal :<C-u>crewind<CR>', {silent=true})
+map('n', 'eN', ':normal :<C-u>cfirst<CR>', {silent=true})
+map('n', 'eP', ':normal :<C-u>clast<CR>', {silent=true})
+map('n', 'el', ':normal :<C-u>clist<CR>', {silent=true})
 
-map('n', '[Qleader]w', ':w!<cr>', {silent=true})
-map('n', '[Qleader]W', ':SudaWrite<cr>', {silent=true})
-map('n', '[Qleader]s', ':source %<CR>', {silent=true})
-map('n', '[Qleader]u', ':Lazy update<CR>', {silent=true})
+map('n', 'ew', ':w!<cr>', {silent=true})
+map('n', 'eW', ':SudaWrite<cr>', {silent=true})
+map('n', 'es', ':source %<CR>', {silent=true})
+map('n', 'eu', ':Lazy update<CR>', {silent=true})
 Map('n', '<C-c>', '<C-[>')
 Map('i', '<C-c>', '<C-[>')
 -- These create newlines like o and O but stay in normal mode
