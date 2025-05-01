@@ -40,6 +40,7 @@
     urlscan # extract urls from text
     urlwatch # watch for urls
     viddy # modern watch command
+    yazi # yet another file manager
     zoxide # better fasd for some
   ];
 }
