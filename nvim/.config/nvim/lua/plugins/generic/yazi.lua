@@ -26,6 +26,7 @@ return {"mikavilpas/yazi.nvim",
         send_to_quickfix_list = "<c-q>",
         change_working_directory = "<tab>",
     },
+    yazi_floating_window_border = "double",
   },
   init = function()
     require'yazi'.setup()
