@@ -19,7 +19,8 @@ Map('', '<up>', '<NOP>')
 Map('', '<down>', '<NOP>')
 Map('', '<left>', '<NOP>')
 Map('', '<right>', '<NOP>')
-map('n', '<C-S-c>', '<cmd> %y+ <CR>', {silent=true})
+
+map('v', '<C-e>', '"+y', {silent=true, noremap=true})
 
 map('n', 'en', ':normal :<C-u>cnext<CR>', {silent=true})
 map('n', 'ep', ':normal :<C-u>cprevious<CR>', {silent=true})
