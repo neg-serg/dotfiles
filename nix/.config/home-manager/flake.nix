@@ -26,13 +26,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
+    nixpkgs-wayland = {
+      url = "github:colemickens/nixpkgs-wayland";
+      flake = false;
+    };
     # nixos-generators = {
     #   url = "github:nix-community/nixos-generators";
     #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-    # nixpkgs-wayland = {
-    #   url = "github:colemickens/nixpkgs-wayland";
-    #   flake = false;
     # };
     # nvfetcher = {
     #   url = "github:berberman/nvfetcher";
@@ -46,17 +46,17 @@
     chaotic,
     executor,
     home-manager,
+    iosevka-neg,
     negwm,
     nixpkgs-master,
     nixpkgs-oldstable,
     nixpkgs-stable,
+    nixpkgs-wayland,
     sops-nix,
     stylix,
-    iosevka-neg,
     yandex-browser,
     # home-manager-shell,
     # nixos-generators,
-    # nixpkgs-wayland,
     # nvfetcher,
     ...
   }:
@@ -70,6 +70,7 @@
       oldstable = nixpkgs-oldstable.legacyPackages.${system};
       stable = nixpkgs-stable.legacyPackages.${system};
       yandex-browser = yandex-browser.packages.${system};
+      nixpkgs-wayland = nixpkgs-wayland.packages.${system};
     }; {
       packages.${system}.default = nixpkgs.legacyPackages.${system}.zsh;
       homeConfigurations."neg" = home-manager.lib.homeManagerConfiguration {
@@ -83,6 +84,7 @@
           inherit executorPkg;
           inherit iosevkaneg;
           inherit yandex-browser;
+          inherit nixpkgs-wayland;
         };
         modules = [
           ./home.nix
