@@ -77,7 +77,7 @@ with {
       dunst.enable = false;
     };
 
-    targets.firefox.profileNames = ["default"];
+    targets.firefox.profileNames = ["8ymzp4k3.default"];
 
     base16Scheme = {
       base00 = "#020202"; # Background
