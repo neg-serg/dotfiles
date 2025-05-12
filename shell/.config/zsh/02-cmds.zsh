@@ -201,7 +201,12 @@ if [[ -e /etc/NIXOS ]]; then
     _exists nixos-rebuild && {
         alias nrb='sudo nixos-rebuild'
     }
+    dos622(){nix run github:matthewcroughan/NixThePlanet#msdos622}
     foobar(){nix run github:emmanuelrosa/erosanix#foobar2000}
+    macos(){nix run github:matthewcroughan/NixThePlanet#macos-ventura}
+    win30(){nix run github:matthewcroughan/NixThePlanet#win30}
+    win31(){nix run github:matthewcroughan/NixThePlanet#wfwg311}
+    win98(){nix run github:matthewcroughan/NixThePlanet#win98}
     flake-checker(){nix run github:DeterminateSystems/flake-checker}
     kernel-shell(){
         nix-shell -E 'with import <nixpkgs> {};
