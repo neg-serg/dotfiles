@@ -208,11 +208,17 @@ if [[ -e /etc/NIXOS ]]; then
     win31(){nix run github:matthewcroughan/NixThePlanet#wfwg311}
     win98(){nix run github:matthewcroughan/NixThePlanet#win98}
     flake-checker(){nix run github:DeterminateSystems/flake-checker}
-    kernel-shell(){
+    linux-kernel(){
         nix-shell -E 'with import <nixpkgs> {};
             (builtins.getFlake "github:chaotic-cx/nyx/nyxpkgs-unstable").packages.x86_64-linux.linuxPackages_cachyos.kernel.overrideAttrs
             (o: {nativeBuildInputs=o.nativeBuildInputs ++ [ pkg-config ncurses ];})'
         # unpackPhase && cd linux-*; patchPhase; make nconfig
+    }
+    linux-nconfig(){
+        nix-shell -E 'with import <nixpkgs> {};
+            (builtins.getFlake "github:chaotic-cx/nyx/nyxpkgs-unstable").packages.x86_64-linux.linuxPackages_cachyos.kernel.overrideAttrs
+            (o: {nativeBuildInputs=o.nativeBuildInputs ++ [ pkg-config ncurses ];})'
+        unpackPhase && cd linux-*; patchPhase; make nconfig
     }
     xkcdpass(){echo "$(nix run nixpkgs#xkcdpass -- -d '-' -n 3 -C capitalize)$((RANDOM % 9))"}
     _exists nh && {
