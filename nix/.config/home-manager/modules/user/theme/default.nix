@@ -77,6 +77,8 @@ with {
       dunst.enable = false;
     };
 
+    targets.firefox.profileNames = ["default"];
+
     base16Scheme = {
       base00 = "#020202"; # Background
       base01 = "#010912"; # Alternate background(for toolbars)
