@@ -10,7 +10,6 @@
     MOZ_DBUS_REMOTE = "1";
     MOZ_ENABLE_WAYLAND = "1";
   };
-  config.stylix.targets.firefox.profileNames = ["default"];
   xdg.mimeApps.defaultApplications = {
     "text/html" = "firefox.desktop";
     "x-scheme-handler/http" = "firefox.desktop";
