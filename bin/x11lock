@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-# Author: Dolores Portalatin <hello@doloresportalatin.info>
-# Dependencies: imagemagick, i3lock-color-git, scrot, wmctrl (optional)
-set -o errexit -o noclobber -o nounset
-i3lockr --blur 20 -- "--inside-color=0040ce1c" "--ring-color=0000003e" "--line-color=00000000" \
-    "--keyhl-color=ffffff80" "--ringver-color=ffffff00" "--separator-color=22222260" \
-    "--insidever-color=ffffff1c" "--ringwrong-color=ffffff55" "--insidewrong-color=ffffff1c" \
-    "--verif-color=ffffff00" "--wrong-color=ff000000" "--time-color=ffffff00" \
-    "--date-color=ffffff00" "--layout-color=ffffff00"
