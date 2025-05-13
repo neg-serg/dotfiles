@@ -5,8 +5,7 @@
     fuzzel # wayland launcher
     swww # wallpaper daemon for wayland
     wdisplays # gui for configuring displays in Wayland compositors
-    wofi # rofi for wayland
-    wpaperd # wallpaper daemon for wayland
+    wev # xev for wayland
     wtype # xdotool for wayland
     ydotool # xdotool systemwide
   ];
