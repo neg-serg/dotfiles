@@ -1,23 +1,8 @@
 #!/usr/bin/env sh
 
 source /etc/profile
-port=15555
-negwm_path="$HOME/src/negwm"
-
-send(){
-    echo "$@" | nc localhost $port -w 0
-}
 
 if command -v nvr >/dev/null 2>&1; then
-    if [ -n "$DISPLAY" ]; then
-        send 'circle next dev'
-        while ! xdotool search --sync --all --class '^nwim$' > /dev/null 2>&1; do :; done
-    fi
-    if [ $# -eq 0 ]; then
-        exit 1
-    else
-        nvr --servername /tmp/nvim.sock +':if &buftype == "terminal" | :quit | :endif'
-    fi
     nvr --servername /tmp/nvim.sock """$@"""
 else
     ${EDITOR:-vi} "$@"
