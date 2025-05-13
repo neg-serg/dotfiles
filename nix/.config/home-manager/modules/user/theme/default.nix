@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   iosevkaneg,
   ...
@@ -98,8 +97,8 @@ with {
         package = pkgs.cantarell-fonts;
       };
       sansSerif = {
-        name = "Cantarell";
-        package = pkgs.cantarell-fonts;
+        name = "Iosevka";
+        package = iosevkaneg.nerd-font;
       };
       monospace = {
         name = "Iosevka";
