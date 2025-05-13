@@ -118,6 +118,10 @@ with {
       source = l "${dots}/wm/.config/i3";
       recursive = true;
     };
+    "hypr/hyprland.conf" = {
+      source = l "${dots}/wm/.config/hypr/hyprland.conf";
+      recursive = false;
+    };
     "kitty" = {
       source = l "${dots}/wm/.config/kitty";
       recursive = true;
