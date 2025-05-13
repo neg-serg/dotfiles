@@ -51,19 +51,6 @@ with {
     };
   };
 
-  home.file = {
-    "${config.xdg.configHome}/xinit/xsettingsd".text = ''
-      # Used by xsettingsd-setup
-      Net/IconThemeName "kora" # gtk-icon-theme-name
-      Net/EnableEventSounds 0
-      Gtk/FontName "Iosevka 10"
-      Gtk/KeyThemeName "Emacs"
-      Gtk/ButtonImages 1
-      Gtk/MenuImages 1
-      Gtk/DecorationLayout ":menu"
-    '';
-  };
-
   stylix = {
     enable = true;
     image = pkgs.fetchurl {
@@ -72,12 +59,11 @@ with {
     };
 
     targets = {
+      dunst.enable = false;
+      firefox.profileNames = ["8ymzp4k3.default"];
       kitty.enable = false;
       zathura.enable = false;
-      dunst.enable = false;
     };
-
-    targets.firefox.profileNames = ["8ymzp4k3.default"];
 
     base16Scheme = {
       base00 = "#020202"; # Background
