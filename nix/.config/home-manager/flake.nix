@@ -15,9 +15,6 @@
     };
     executor.url = "github:neg-serg/executor";
     negwm.url = "github:neg-serg/negwm";
-    nixpkgs-master.url = "github:nixos/nixpkgs/master";
-    nixpkgs-oldstable.url = "github:nixos/nixpkgs/nixos-24.05";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
     nixpkgs.url = "github:nixos/nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
     stylix.url = "github:danth/stylix";
@@ -48,9 +45,6 @@
     home-manager,
     iosevka-neg,
     negwm,
-    nixpkgs-master,
-    nixpkgs-oldstable,
-    nixpkgs-stable,
     nixpkgs-wayland,
     sops-nix,
     stylix,
@@ -65,10 +59,7 @@
       pkgs = nixpkgs.legacyPackages.${system};
       executorPkg = executor.packages.${system};
       iosevkaneg = iosevka-neg.packages.${system};
-      master = nixpkgs-master.legacyPackages.${system};
       negwmPkg = negwm.packages.${system};
-      oldstable = nixpkgs-oldstable.legacyPackages.${system};
-      stable = nixpkgs-stable.legacyPackages.${system};
       yandex-browser = yandex-browser.packages.${system};
       nixpkgs-wayland = nixpkgs-wayland.packages.${system};
     }; {
@@ -77,9 +68,6 @@
         inherit pkgs;
         extraSpecialArgs = {
           inherit inputs;
-          inherit oldstable;
-          inherit master;
-          inherit stable;
           inherit negwmPkg;
           inherit executorPkg;
           inherit iosevkaneg;
