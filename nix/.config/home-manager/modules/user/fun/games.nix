@@ -1,8 +1,9 @@
-{pkgs, stable, ...}: {
+{pkgs, ...}: {
   home.packages = with pkgs; [
     abuse # classic side-scrolling shooter customizable with LISP
     airshipper # for veloren voxel game
     angband # roguelike
+    brogue # roguelike
     crawl # roguelike
     crawlTiles # roguelike
     endless-sky # space exploration game
@@ -14,8 +15,7 @@
     nethack # roguelike
     openmw # Unofficial open source engine reimplementation of the game Morrowind
     shattered-pixel-dungeon # roguelike
-    stable.brogue # roguelike
-    stable.unnethack # roguelike
+    # unnethack # roguelike
     xaos # smooth fractal explorer
   ];
 }
