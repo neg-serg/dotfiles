@@ -1,4 +1,4 @@
-{pkgs, stable, ...}: {
+{pkgs, ...}: {
   home.packages = with pkgs; [
     ape # monkey audio codec
     cdparanoia # cdrip / cdrecord
@@ -11,7 +11,7 @@
     picard # autotags
     roomeqwizard # room acoustics software
     screenkey # screencast tool to display your keys inspired by Screenflick
-    stable.sonic-visualiser # audio analyzer
+    sonic-visualiser # audio analyzer
     sox # audio processing
     streamlink # CLI for extracting streams from websites
     unflac # split2flac alternative
