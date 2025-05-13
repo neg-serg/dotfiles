@@ -1,7 +1,7 @@
-{master, ...}: {
+{pkgs, ...}: {
   programs.yt-dlp = {
     enable = true;
-    package = master.yt-dlp; # download from youtube and another sources
+    package = pkgs.yt-dlp; # download from youtube and another sources
     settings = {
       cookies-from-browser = "firefox";
       downloader-args = "aria2c:'-c -x8 -s8 -k1M'";
