@@ -4,10 +4,8 @@ with {
 }; {
   home.packages = with pkgs; [
     advancecomp # AdvanceCOMP PNG Compression Utility
-    darktable # photo editing
     exiftool # extract media metadata
     exiv2 # metadata manipulation
-    gcolor3 # color selector
     graphviz # graphics
     jpegoptim # jpeg optimization
     lutgen # fast lut generator
