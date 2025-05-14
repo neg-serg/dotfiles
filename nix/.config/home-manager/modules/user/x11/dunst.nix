@@ -16,7 +16,7 @@
         corner_radius = 4;
         ellipsize = "end";
         follow = "mouse";
-        font = lib.mkForce "Iosevka Medium 14";
+        font = lib.mkForce "Iosevka Medium 10";
         format = "<span font_desc='Iosevka Medium 14' foreground='#2e72ac'>%s</span>\\n%b";
         frame_color = "#000000";
         frame_width = 10;
