@@ -2,10 +2,11 @@
 
 source /etc/profile
 
-if command -v nvr >/dev/null 2>&1; then
-    nvr --servername /tmp/nvim.sock """$@"""
-else
-    ${EDITOR:-vi} "$@"
-fi
+# if command -v nvr >/dev/null 2>&1; then
+#     nvr --servername /tmp/nvim.sock """$@"""
+# else
+#     ${EDITOR:-vi} "$@"
+# fi
+nvim "$@"
 
 # vim:filetype=sh
