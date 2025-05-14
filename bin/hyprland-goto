@@ -4,10 +4,10 @@
 state="$(hyprctl -j clients)"
 active_window="$(hyprctl -j activewindow)"
 
-current_addr="$(echo "$active_window" | gojq -r '.address')"
+current_addr="$(echo "$active_window" | jq -r '.address')"
 
 window="$(echo "$state" |
-    gojq -r '.[] | select(.monitor != -1 ) | "\(.address)    \(.workspace.name)    \(.title)"' |
+    jq -r '.[] | select(.monitor != -1 ) | "\(.address)    \(.workspace.name)    \(.title)"' |
     sed "s|$current_addr|focused ->|" |
     sort -r |
     tofi --fuzzy-match true)"
@@ -20,7 +20,7 @@ if [[ "$addr" =~ focused* ]]; then
     exit 0
 fi
 
-fullscreen_on_same_ws="$(echo "$state" | gojq -r ".[] | select(.fullscreen > 0) | select(.workspace.name == \"$ws\") | .address")"
+fullscreen_on_same_ws="$(echo "$state" | jq -r ".[] | select(.fullscreen > 0) | select(.workspace.name == \"$ws\") | .address")"
 
 if [[ "$window" != "" ]]; then
     if [[ "$fullscreen_on_same_ws" == "" ]]; then
