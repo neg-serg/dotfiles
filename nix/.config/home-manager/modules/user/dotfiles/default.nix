@@ -130,6 +130,10 @@ with {
       source = l "${dots}/wm/.config/hypr/bindings.conf";
       recursive = false;
     };
+    "hypr/autostart.conf" = {
+      source = l "${dots}/wm/.config/hypr/autostart.conf";
+      recursive = false;
+    };
     "kitty" = {
       source = l "${dots}/wm/.config/kitty";
       recursive = true;
