@@ -3,7 +3,7 @@
   ...
 }:
 {
-  systemd.user.startServices = false;
+  systemd.user.startServices = true;
   systemd.user.services = {
     openrgb = {
       Unit = {
