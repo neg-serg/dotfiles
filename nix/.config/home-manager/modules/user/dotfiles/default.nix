@@ -126,6 +126,10 @@ with {
       source = l "${dots}/wm/.config/hypr/rules.conf";
       recursive = false;
     };
+    "hypr/bindings.conf" = {
+      source = l "${dots}/wm/.config/hypr/bindings.conf";
+      recursive = false;
+    };
     "kitty" = {
       source = l "${dots}/wm/.config/kitty";
       recursive = true;
