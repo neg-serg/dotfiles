@@ -1,5 +1,5 @@
 {...}: {
-  services.imapnotify.enable = true;
+  services.imapnotify.enable = false;
   accounts.email.accounts."gmail" = {
     imapnotify = {
       enable = true;
