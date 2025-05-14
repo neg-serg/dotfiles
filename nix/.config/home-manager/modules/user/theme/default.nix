@@ -60,6 +60,7 @@ with {
     targets = {
       dunst.enable = false;
       firefox.profileNames = ["8ymzp4k3.default"];
+      hyprpaper.enable = false;
       kitty.enable = false;
       zathura.enable = false;
     };
