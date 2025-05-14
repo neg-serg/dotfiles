@@ -24,7 +24,6 @@ with {
     mpvc # CLI controller for mpv
     playerctl # media controller for everything
     # sacd-extract
-    simplescreenrecorder # screen recorder
   ];
   xdg.configFile = {
     "wireplumber" = {
