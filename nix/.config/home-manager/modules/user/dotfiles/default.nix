@@ -122,6 +122,10 @@ with {
       source = l "${dots}/wm/.config/hypr/hyprland.conf";
       recursive = false;
     };
+    "hypr/rules.conf" = {
+      source = l "${dots}/wm/.config/hypr/rules.conf";
+      recursive = false;
+    };
     "kitty" = {
       source = l "${dots}/wm/.config/kitty";
       recursive = true;
