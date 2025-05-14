@@ -8,7 +8,6 @@
     hypridle # idle daemon
     hyprland-qt-support # qt support
     hyprland-qtutils # utility apps for hyprland
-    hyprpaper # setup wallpaper
     hyprpicker # color picker
     hyprpolkitagent # better polkit agent
     hyprsysteminfo # show system info
@@ -26,6 +25,5 @@
     wtype # xdotool for wayland
     ydotool # xdotool systemwide
   ];
-  services.hyprpaper.enable = true;
   programs.hyprlock.enable = true;
 }
