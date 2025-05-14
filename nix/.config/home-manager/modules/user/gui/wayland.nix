@@ -10,6 +10,7 @@
     wdisplays # gui for configuring displays in Wayland compositors
     wev # xev for wayland
     wf-recorder # tool to make screencasts
+    wl-clipboard # copy-paste for wayland
     wlr-randr # xrandr for wayland
     wtype # xdotool for wayland
     ydotool # xdotool systemwide
