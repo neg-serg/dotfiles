@@ -1,6 +1,5 @@
 {
   imports = [
-    ./apps.nix
-    ./stuff.nix
+    ./dunst.nix
   ];
 }
