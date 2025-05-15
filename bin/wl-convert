@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+
+set_mono(){
+    if [ ! -f "$HOME/tmp/mono__$(basename $img)" ]; then
+        convert "$img" -colors 2 "$HOME/tmp/mono__$(basename $img)"
+    fi
+    hsetroot -cover "$HOME/tmp/mono__$(basename $img)"
+}
+
+set_retro(){
+    if [ ! -f "$HOME/tmp/retro__$(basename $img)" ]; then
+        convert "$img" -colors 12 "$HOME/tmp/retro__$(basename $img)"
+    fi
+    hsetroot -cover "$HOME/tmp/retro__$(basename $img)"
+}
+
+set_normal(){
+    hsetroot -cover "$img"
+}
+
+img=$(~/bin/wl -l|tail -1)
+img=${img/#\~/$HOME}
+
+case "$1" in
+    mono) set_mono "$img" ;;
+    retro) set_retro "$img" ;;
+    normal) set_normal "$img" ;;
+    *) ;;
+esac
