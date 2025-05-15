@@ -1,2 +1,0 @@
-#!/bin/sh
-ffmpeg -f x11grab -r 120 -s 3440x1440 -i :0.0 -c:v qtrle output$$.mov
