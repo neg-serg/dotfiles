@@ -134,6 +134,10 @@ with {
       source = l "${dots}/wm/.config/hypr/autostart.conf";
       recursive = false;
     };
+    "hypr/workspaces.conf" = {
+      source = l "${dots}/wm/.config/hypr/workspaces.conf";
+      recursive = false;
+    };
     "kitty" = {
       source = l "${dots}/wm/.config/kitty";
       recursive = true;
