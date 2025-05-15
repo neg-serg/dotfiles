@@ -13,6 +13,7 @@
         home-manager.follows = "home-manager";
       };
     };
+    bzmenu.url = "github:e-tho/bzmenu";
     executor.url = "github:neg-serg/executor";
     negwm.url = "github:neg-serg/negwm";
     nixpkgs.url = "github:nixos/nixpkgs";
@@ -40,6 +41,7 @@
 
   outputs = inputs @ {
     nixpkgs,
+    bzmenu,
     chaotic,
     executor,
     home-manager,
@@ -62,6 +64,7 @@
       negwmPkg = negwm.packages.${system};
       yandex-browser = yandex-browser.packages.${system};
       nixpkgs-wayland = nixpkgs-wayland.packages.${system};
+      bzmenu = bzmenu.packages.${system};
     }; {
       packages.${system}.default = nixpkgs.legacyPackages.${system}.zsh;
       homeConfigurations."neg" = home-manager.lib.homeManagerConfiguration {
