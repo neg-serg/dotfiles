@@ -14,11 +14,8 @@
       };
     };
     bzmenu.url = "github:e-tho/bzmenu";
-    executor.url = "github:neg-serg/executor";
-    negwm.url = "github:neg-serg/negwm";
     nixpkgs.url = "github:nixos/nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
-    stylix.url = "github:danth/stylix";
     iosevka-neg = {
       url = "git+ssh://git@github.com/neg-serg/iosevka-neg";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -43,13 +40,10 @@
     nixpkgs,
     bzmenu,
     chaotic,
-    executor,
     home-manager,
     iosevka-neg,
-    negwm,
     nixpkgs-wayland,
     sops-nix,
-    stylix,
     yandex-browser,
     # home-manager-shell,
     # nixos-generators,
@@ -59,9 +53,7 @@
     with rec {
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      executorPkg = executor.packages.${system};
       iosevkaneg = iosevka-neg.packages.${system};
-      negwmPkg = negwm.packages.${system};
       yandex-browser = yandex-browser.packages.${system};
       nixpkgs-wayland = nixpkgs-wayland.packages.${system};
       bzmenu = bzmenu.packages.${system};
@@ -71,8 +63,6 @@
         inherit pkgs;
         extraSpecialArgs = {
           inherit inputs;
-          inherit negwmPkg;
-          inherit executorPkg;
           inherit iosevkaneg;
           inherit yandex-browser;
           inherit nixpkgs-wayland;
@@ -80,7 +70,6 @@
         modules = [
           ./home.nix
           chaotic.homeManagerModules.default
-          stylix.homeManagerModules.stylix
           sops-nix.homeManagerModules.sops
         ];
       };
