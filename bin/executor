@@ -1,5 +1,0 @@
-#!/bin/sh
-if [ $# -eq 0 ]; then
-    exit 0
-fi
-eval "$(echo "$@" | nc localhost 15556 -N)"
