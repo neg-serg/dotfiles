@@ -11,7 +11,7 @@
   programs.zathura = {
     enable = true;
     options = {
-      font = "Iosevka 11";
+      font = "Iosevka 10";
       database = "sqlite";
       statusbar-h-padding = 0;
       statusbar-v-padding = 0;
