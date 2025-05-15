@@ -110,10 +110,6 @@ with {
       source = l "${dots}/wm/.config/handlr";
       recursive = true;
     };
-    "i3" = {
-      source = l "${dots}/wm/.config/i3";
-      recursive = true;
-    };
     "hypr/hyprland.conf" = {
       source = l "${dots}/wm/.config/hypr/hyprland.conf";
       recursive = false;
@@ -136,10 +132,6 @@ with {
     };
     "kitty" = {
       source = l "${dots}/wm/.config/kitty";
-      recursive = true;
-    };
-    "negwm" = {
-      source = l "${dots}/wm/.config/negwm";
       recursive = true;
     };
     "warpd" = {
