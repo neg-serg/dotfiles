@@ -10,6 +10,7 @@
     hyprland-qtutils # utility apps for hyprland
     hyprpicker # color picker
     hyprpolkitagent # better polkit agent
+    hyprprop # xrop for hyprland
     hyprsysteminfo # show system info
     hyprutils # small library for hyprland
     libsForQt5.qt5ct kdePackages.qt6ct # qt integration stuff
