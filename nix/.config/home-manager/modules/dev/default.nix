@@ -2,7 +2,6 @@
   imports = [
     ./android
     ./benchmarks
-    ./docker
     ./editor
     ./git
     ./hack
