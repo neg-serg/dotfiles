@@ -25,6 +25,7 @@
       url = "github:colemickens/nixpkgs-wayland";
       flake = false;
     };
+    hyprpanel.url = "github:Jas-SinghFSU/HyprPanel";
     # nixos-generators = {
     #   url = "github:nix-community/nixos-generators";
     #   inputs.nixpkgs.follows = "nixpkgs";
@@ -52,7 +53,10 @@
   }:
     with rec {
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ inputs.hyprpanel.overlay ];
+      };
       iosevkaneg = iosevka-neg.packages.${system};
       yandex-browser = yandex-browser.packages.${system};
       nixpkgs-wayland = nixpkgs-wayland.packages.${system};
