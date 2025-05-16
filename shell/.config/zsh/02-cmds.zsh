@@ -101,7 +101,6 @@ _exists journalctl && journalctl() {command journalctl "${@:--b}";}
 _exists khal && alias cal='khal calendar'
 _exists mtr && alias mtrr='mtr -wzbe'
 _exists nvidia-settings && alias nvidia-settings="nvidia-settings --config=$XDG_CONFIG_HOME/nvidia/settings"
-_exists nvim && alias nvim='v'
 _exists objdump && alias objdump='objdump -M intel -d'
 _exists pbzip2 && alias bzip2='pbzip2'
 _exists pigz && alias gzip='pigz'
