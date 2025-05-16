@@ -15,6 +15,7 @@
     hyprsysteminfo # show system info
     hyprutils # small library for hyprland
     libsForQt5.qt5ct kdePackages.qt6ct # qt integration stuff
+    matugen # modern theme generator
     pyprland # hyperland plugin system
     slurp # select region in wayland compositor
     swww # wallpaper daemon for wayland
