@@ -130,6 +130,10 @@ with {
       source = l "${dots}/wm/.config/hypr/workspaces.conf";
       recursive = false;
     };
+    "hyprpanel" = {
+      source = l "${dots}/wm/.config/hyprpanel";
+      recursive = true;
+    };
     "kitty" = {
       source = l "${dots}/wm/.config/kitty";
       recursive = true;
