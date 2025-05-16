@@ -1,12 +1,4 @@
 #!/usr/bin/env sh
-
-source /etc/profile
-
-# if command -v nvr >/dev/null 2>&1; then
-#     nvr --servername /tmp/nvim.sock """$@"""
-# else
-#     ${EDITOR:-vi} "$@"
-# fi
+. /etc/profile
 nvim "$@"
-
 # vim:filetype=sh
