@@ -11,6 +11,14 @@ with {
     iosevkaneg.nerd-font # install my custom iosevka build
   ];
 
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+    package = alkano-aio;
+    name = "alkano-aio";
+    size = 35;
+  };
+
   fonts.fontconfig = {
     enable = true;
     defaultFonts = {
