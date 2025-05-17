@@ -1,5 +1,21 @@
 {pkgs, ...}: {
   home.sessionVariables = {};
+  wayland.windowManager.hyprland = {
+    enable = true;
+    package = null;
+    portalPackage = null;
+    settings = {
+        source = [
+            "/home/neg/.config/hypr/init.conf"
+        ];
+        permission = [
+          "/home/neg/.local/state/nix/profile/bin/grim, screencopy, allow"
+          "/home/neg/.local/state/nix/profile/bin/xdg-desktop-portal-hyprland, screencopy, allow"
+          "/home/neg/.local/state/nix/profile/bin/hyprpm, plugin, allow"
+        ];
+    };
+    systemd.variables = ["--all"];
+  };
   home.packages = with pkgs; [
     fuzzel # wayland launcher
     grim # to take screenshots

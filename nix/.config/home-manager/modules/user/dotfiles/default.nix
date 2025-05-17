@@ -110,8 +110,8 @@ with {
       source = l "${dots}/wm/.config/handlr";
       recursive = true;
     };
-    "hypr/hyprland.conf" = {
-      source = l "${dots}/wm/.config/hypr/hyprland.conf";
+    "hypr/init.conf" = {
+      source = l "${dots}/wm/.config/hypr/init.conf";
       recursive = false;
     };
     "hypr/rules.conf" = {
