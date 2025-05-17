@@ -359,22 +359,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-wayland": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1695316434,
-        "narHash": "sha256-4OqfFpYb3N63YzhRsPTf6X93GgDp1/GMr+TQgTLsHIM=",
-        "owner": "colemickens",
-        "repo": "nixpkgs-wayland",
-        "rev": "eb0910fc7291b9673698ebbd5258a7df81dc32c2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "colemickens",
-        "repo": "nixpkgs-wayland",
-        "type": "github"
-      }
-    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1744536153,
@@ -463,7 +447,6 @@
         "hyprpanel": "hyprpanel",
         "iosevka-neg": "iosevka-neg",
         "nixpkgs": "nixpkgs_5",
-        "nixpkgs-wayland": "nixpkgs-wayland",
         "sops-nix": "sops-nix",
         "yandex-browser": "yandex-browser"
       }

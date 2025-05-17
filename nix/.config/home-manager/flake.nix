@@ -21,10 +21,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
-    nixpkgs-wayland = {
-      url = "github:colemickens/nixpkgs-wayland";
-      flake = false;
-    };
     hyprpanel.url = "github:Jas-SinghFSU/HyprPanel";
     # nixos-generators = {
     #   url = "github:nix-community/nixos-generators";
@@ -43,7 +39,6 @@
     chaotic,
     home-manager,
     iosevka-neg,
-    nixpkgs-wayland,
     sops-nix,
     yandex-browser,
     # home-manager-shell,
@@ -59,7 +54,6 @@
       };
       iosevkaneg = iosevka-neg.packages.${system};
       yandex-browser = yandex-browser.packages.${system};
-      nixpkgs-wayland = nixpkgs-wayland.packages.${system};
       bzmenu = bzmenu.packages.${system};
     }; {
       packages.${system}.default = nixpkgs.legacyPackages.${system}.zsh;
@@ -69,7 +63,6 @@
           inherit inputs;
           inherit iosevkaneg;
           inherit yandex-browser;
-          inherit nixpkgs-wayland;
         };
         modules = [
           ./home.nix
