@@ -9,9 +9,7 @@
             "/home/neg/.config/hypr/init.conf"
         ];
         permission = [
-          "/home/neg/.local/state/nix/profile/bin/grim, screencopy, allow"
-          "/home/neg/.local/state/nix/profile/bin/xdg-desktop-portal-hyprland, screencopy, allow"
-          "/home/neg/.local/state/nix/profile/bin/hyprpm, plugin, allow"
+          "${pkgs.grim}/bin/grim, screencopy, allow"
         ];
     };
     systemd.variables = ["--all"];
