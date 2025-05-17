@@ -1,7 +1,6 @@
 {pkgs, ...}: {
   home.sessionVariables = {};
   home.packages = with pkgs; [
-    fnott # wayland notifications
     fuzzel # wayland launcher
     grim # to take screenshots
     hyprcursor # is a new cursor theme format that has many advantages over the widely used xcursor.
