@@ -33,6 +33,7 @@
     miller # awk/cut/join alternative
     par # better fmt
     patool # python archive unpack
+    ranger # need for termfilechooser
     rhash # compute hashsums
     sad # more simple sed alternative
     sd # bettter sed
