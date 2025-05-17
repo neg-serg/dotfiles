@@ -23,10 +23,12 @@
     yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
     hyprpanel.url = "github:Jas-SinghFSU/HyprPanel";
     nvfetcher = { url = "github:berberman/nvfetcher"; inputs.nixpkgs.follows = "nixpkgs"; };
+    ags.url = "github:aylur/ags"; 
     hyprland.url = "github:hyprwm/Hyprland";
   };
 
   outputs = inputs @ {
+    ags,
     bzmenu,
     chaotic,
     home-manager,
