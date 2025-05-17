@@ -22,28 +22,19 @@
     };
     yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
     hyprpanel.url = "github:Jas-SinghFSU/HyprPanel";
-    # nixos-generators = {
-    #   url = "github:nix-community/nixos-generators";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-    # nvfetcher = {
-    #   url = "github:berberman/nvfetcher";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-    # simple-osd-daemons.url = "github:balsoft/simple-osd-daemons";
+    nvfetcher = { url = "github:berberman/nvfetcher"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
   outputs = inputs @ {
-    nixpkgs,
     bzmenu,
     chaotic,
     home-manager,
+    home-manager-shell,
     iosevka-neg,
+    nixpkgs,
+    nvfetcher,
     sops-nix,
     yandex-browser,
-    # home-manager-shell,
-    # nixos-generators,
-    # nvfetcher,
     ...
   }:
     with rec {
