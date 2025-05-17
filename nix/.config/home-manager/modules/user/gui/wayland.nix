@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, inputs, ...}: {
   home.sessionVariables = {};
   wayland.windowManager.hyprland = {
     enable = true;
@@ -13,6 +13,17 @@
         ];
     };
     systemd.variables = ["--all"];
+  };
+  imports = [ inputs.ags.homeManagerModules.default ];
+  programs.ags = {
+    enable = true;
+    configDir = null;
+    extraPackages = with pkgs; [
+      inputs.ags.packages.${pkgs.system}.notifd
+      inputs.ags.packages.${pkgs.system}.battery
+      inputs.ags.packages.${pkgs.system}.io
+      fzf
+    ];
   };
   home.packages = with pkgs; [
     fuzzel # wayland launcher
