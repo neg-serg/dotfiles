@@ -23,6 +23,7 @@
     yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
     hyprpanel.url = "github:Jas-SinghFSU/HyprPanel";
     nvfetcher = { url = "github:berberman/nvfetcher"; inputs.nixpkgs.follows = "nixpkgs"; };
+    hyprland.url = "github:hyprwm/Hyprland";
   };
 
   outputs = inputs @ {
@@ -30,6 +31,7 @@
     chaotic,
     home-manager,
     home-manager-shell,
+    hyprland,
     iosevka-neg,
     nixpkgs,
     nvfetcher,
