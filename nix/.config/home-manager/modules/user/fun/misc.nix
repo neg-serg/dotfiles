@@ -16,6 +16,7 @@ with {
     solfege # ear training program
     taoup # The Tao of Unix Programming
     toilet # text banners
+    xephem # astronomy app
     xlife # cellular automata
   ];
 }
