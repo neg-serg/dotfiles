@@ -54,7 +54,7 @@ repeat_action() {
 copy_name() {
     tee "$ff"
     fname="$(realpath "$(cat "$ff")")"
-    echo "$fname" | xsel -bi
+    echo "$fname" | wl-copy
     ~/bin/pic-notify "$fname"
     trap finish EXIT
 }
