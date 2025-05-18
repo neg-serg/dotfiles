@@ -1,17 +1,17 @@
 {
   description = "Home Manager configuration of neg";
   inputs = {
-    ags.url = "github:aylur/ags";
-    bzmenu.url = "github:e-tho/bzmenu";
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    ags = { url = "github:aylur/ags"; };
+    bzmenu = { url = "github:e-tho/bzmenu"; };
+    chaotic = { url = "github:chaotic-cx/nyx/nyxpkgs-unstable"; };
     home-manager-shell = { url = "sourcehut:~dermetfan/home-manager-shell"; inputs = { nixpkgs.follows = "nixpkgs"; home-manager.follows = "home-manager"; }; };
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
-    hyprland.url = "github:hyprwm/Hyprland";
-    hyprpanel.url = "github:Jas-SinghFSU/HyprPanel";
+    hyprland = { url = "github:hyprwm/Hyprland"; };
+    hyprpanel = { url = "github:Jas-SinghFSU/HyprPanel"; };
     iosevka-neg = { url = "git+ssh://git@github.com/neg-serg/iosevka-neg"; inputs.nixpkgs.follows = "nixpkgs"; };
-    nixpkgs.url = "github:nixos/nixpkgs";
+    nixpkgs = { url = "github:nixos/nixpkgs"; };
     nvfetcher = { url = "github:berberman/nvfetcher"; inputs.nixpkgs.follows = "nixpkgs"; };
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix = { url = "github:Mic92/sops-nix"; };
     yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
