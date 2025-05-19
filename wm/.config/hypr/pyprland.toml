@@ -1,16 +1,46 @@
 [pyprland]
 plugins = [
-  "scratchpads",
   "fetch_client_menu",
+  "scratchpads",
+  "toggle_special",
 ]
+
+[scratchpads.im]
+animation = "fromRight"
+command = "QT_QPA_PLATFORMTHEME=gtk3 telegram-desktop"
+class = "org.telegram.desktop"
+size = "30% 90%"
+lazy = false
+
+[scratchpads.discord]
+animation = "fromRight"
+command = "vesktop"
+class = "vesktop"
+size = "50% 40%"
+
+[scratchpads.music]
+animation = "fromTop"
+command = "kitty --class music -e ncmpcpp"
+margin = "80%"
+class = "music"
+size = "70% 40%"
+lazy = false
+
+[scratchpads.torrement]
+animation = "fromTop"
+command = "kitty --class torrment -e rustmission"
+class = "torrment"
+size = "50% 40%"
+lazy = false
 
 [scratchpads.teardown]
 animation = "fromTop"
 command = "kitty --class teardown -e btop"
 class = "teardown"
 size = "90% 60%"
+lazy = false
 
-[scratchpads.volume]
+[scratchpads.mixer]
 animation = "fromRight"
 command = "pwvucontrol"
 class = "com.saivert.pwvucontrol"
