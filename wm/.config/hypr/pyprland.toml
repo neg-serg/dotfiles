@@ -1,30 +1,14 @@
 [pyprland]
 plugins = [
   "scratchpads",
-  "lost_windows",
-  "toggle_dpms",
-  "magnify",
+  "fetch_client_menu",
 ]
 
-[scratchpads.stb]
-animation = "fromBottom"
-command = "kitty --class kitty-stb sstb"
-class = "kitty-stb"
-lazy = true
-size = "75% 45%"
-
-[scratchpads.stb-logs]
+[scratchpads.teardown]
 animation = "fromTop"
-command = "kitty --class kitty-stb-logs stbLog"
-class = "kitty-stb-logs"
-lazy = true
-size = "75% 40%"
-
-[scratchpads.term]
-animation = "fromTop"
-command = "kitty --class kitty-dropterm"
-class = "kitty-dropterm"
-size = "75% 60%"
+command = "kitty --class teardown -e btop"
+class = "teardown"
+size = "90% 60%"
 
 [scratchpads.volume]
 animation = "fromRight"
