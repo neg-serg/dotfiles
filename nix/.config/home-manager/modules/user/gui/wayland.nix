@@ -1,20 +1,5 @@
-{pkgs, inputs, hy3, ...}: {
+{pkgs, inputs, ...}: {
   home.sessionVariables = {};
-  wayland.windowManager.hyprland = {
-    enable = true;
-    package = null;
-    portalPackage = null;
-    settings = {
-        source = [
-            "/home/neg/.config/hypr/init.conf"
-        ];
-        permission = [
-          "${pkgs.grim}/bin/grim, screencopy, allow"
-        ];
-    };
-    plugins = [ hy3.packages.x86_64-linux.hy3 ];
-    systemd.variables = ["--all"];
-  };
   imports = [ inputs.ags.homeManagerModules.default ];
   programs.ags = {
     enable = true;
