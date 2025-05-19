@@ -27,7 +27,7 @@ class = "music"
 size = "70% 40%"
 lazy = false
 
-[scratchpads.torrement]
+[scratchpads.torrment]
 animation = "fromTop"
 command = "kitty --class torrment -e rustmission"
 class = "torrment"
