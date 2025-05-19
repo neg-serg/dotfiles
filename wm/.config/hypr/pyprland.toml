@@ -20,25 +20,28 @@ size = "50% 40%"
 lazy = true
 
 [scratchpads.music]
-animation = "fromTop"
+animation = ""
 command = "kitty --class music -e ncmpcpp"
 margin = "80%"
 class = "music"
+position = "15% 50%"
 size = "70% 40%"
 lazy = false
 
 [scratchpads.torrment]
-animation = "fromTop"
+animation = ""
 command = "kitty --class torrment -e rustmission"
 class = "torrment"
-size = "50% 40%"
+position = "1% 0%"
+size = "98% 40%"
 lazy = false
 
 [scratchpads.teardown]
-animation = "fromTop"
+animation = ""
 command = "kitty --class teardown -e btop"
 class = "teardown"
-size = "90% 60%"
+position = "1% 0%"
+size = "98% 50%"
 lazy = false
 
 [scratchpads.mixer]
