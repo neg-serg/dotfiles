@@ -19,11 +19,10 @@
   programs.ags = {
     enable = true;
     configDir = null;
-    extraPackages = with pkgs; [
+    extraPackages = [
       inputs.ags.packages.${pkgs.system}.notifd
       inputs.ags.packages.${pkgs.system}.battery
       inputs.ags.packages.${pkgs.system}.io
-      fzf
     ];
   };
   home.packages = with pkgs; [
