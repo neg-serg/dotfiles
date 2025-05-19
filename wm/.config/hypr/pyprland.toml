@@ -17,6 +17,7 @@ animation = "fromRight"
 command = "vesktop"
 class = "vesktop"
 size = "50% 40%"
+lazy = true
 
 [scratchpads.music]
 animation = "fromTop"
