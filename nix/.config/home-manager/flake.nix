@@ -4,7 +4,6 @@
     ags = { url = "github:aylur/ags"; };
     bzmenu = { url = "github:e-tho/bzmenu"; };
     chaotic = { url = "github:chaotic-cx/nyx/nyxpkgs-unstable"; };
-    home-manager-shell = { url = "sourcehut:~dermetfan/home-manager-shell"; inputs = { nixpkgs.follows = "nixpkgs"; home-manager.follows = "home-manager"; }; };
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     hy3 = { url = "github:outfoxxed/hy3"; inputs.hyprland.follows = "hyprland"; };
     hyprland = { url = "github:hyprwm/Hyprland"; };
@@ -21,7 +20,6 @@
     bzmenu,
     chaotic,
     home-manager,
-    home-manager-shell,
     hy3, 
     hyprland,
     iosevka-neg,
