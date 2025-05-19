@@ -6,6 +6,7 @@
     chaotic = { url = "github:chaotic-cx/nyx/nyxpkgs-unstable"; };
     home-manager-shell = { url = "sourcehut:~dermetfan/home-manager-shell"; inputs = { nixpkgs.follows = "nixpkgs"; home-manager.follows = "home-manager"; }; };
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
+    hy3 = { url = "github:outfoxxed/hy3"; inputs.hyprland.follows = "hyprland"; };
     hyprland = { url = "github:hyprwm/Hyprland"; };
     hyprpanel = { url = "github:Jas-SinghFSU/HyprPanel"; };
     iosevka-neg = { url = "git+ssh://git@github.com/neg-serg/iosevka-neg"; inputs.nixpkgs.follows = "nixpkgs"; };
@@ -21,6 +22,7 @@
     chaotic,
     home-manager,
     home-manager-shell,
+    hy3, 
     hyprland,
     iosevka-neg,
     nixpkgs,
@@ -43,6 +45,7 @@
       homeConfigurations."neg" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         extraSpecialArgs = {
+          inherit hy3;
           inherit inputs;
           inherit iosevkaneg;
           inherit yandex-browser;

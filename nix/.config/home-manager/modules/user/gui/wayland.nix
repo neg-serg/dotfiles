@@ -1,4 +1,4 @@
-{pkgs, inputs, ...}: {
+{pkgs, inputs, hy3, ...}: {
   home.sessionVariables = {};
   wayland.windowManager.hyprland = {
     enable = true;
@@ -12,6 +12,7 @@
           "${pkgs.grim}/bin/grim, screencopy, allow"
         ];
     };
+    plugins = [ hy3.packages.x86_64-linux.hy3 ];
     systemd.variables = ["--all"];
   };
   imports = [ inputs.ags.homeManagerModules.default ];

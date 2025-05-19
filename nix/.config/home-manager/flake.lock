@@ -403,6 +403,26 @@
         "type": "github"
       }
     },
+    "hy3": {
+      "inputs": {
+        "hyprland": [
+          "hyprland"
+        ]
+      },
+      "locked": {
+        "lastModified": 1747077256,
+        "narHash": "sha256-ryaXKevnISRiJb93QIAv7tGc6ZJqSkwETKm4oGh8HWI=",
+        "owner": "outfoxxed",
+        "repo": "hy3",
+        "rev": "567dc9dd20e15d95a56a81c516a70dba30bc2c9c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "outfoxxed",
+        "repo": "hy3",
+        "type": "github"
+      }
+    },
     "hyprcursor": {
       "inputs": {
         "hyprlang": [
@@ -926,6 +946,7 @@
         "chaotic": "chaotic",
         "home-manager": "home-manager_2",
         "home-manager-shell": "home-manager-shell",
+        "hy3": "hy3",
         "hyprland": "hyprland",
         "hyprpanel": "hyprpanel",
         "iosevka-neg": "iosevka-neg",
