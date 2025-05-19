@@ -29,6 +29,7 @@
     fuzzel # wayland launcher
     grim # to take screenshots
     matugen # modern theme generator
+    satty # screenshot helper tool
     slurp # select region in wayland compositor
     swww # wallpaper daemon for wayland
     tofi # an extremely fast and simple dmenu / rofi replacement for wlroots-based Wayland compositors
