@@ -130,6 +130,10 @@ with {
       source = l "${dots}/wm/.config/hypr/workspaces.conf";
       recursive = false;
     };
+    "hypr/pyprland.toml" = {
+      source = l "${dots}/wm/.config/hypr/pyprland.toml";
+      recursive = false;
+    };
     "hyprpanel" = {
       source = l "${dots}/wm/.config/hyprpanel";
       recursive = true;
