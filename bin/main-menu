@@ -31,20 +31,20 @@ generate_menu() {
 }
 
 title_copy(){
-    mpc current | xsel -bi
+    mpc current | wl-copy
 }
 
 album_copy(){
-    mpc current -f "[%album%]"|xsel -bi
+    mpc current -f "[%album%]" | wl-copy
 }
 
 artist_copy(){
-    mpc current -f "[%artist%]"|xsel -bi
+    mpc current -f "[%artist%]" | wl-copy
 }
 
 path_copy(){
     mpd_music_dir="$XDG_MUSIC_DIR"
-    echo "$mpd_music_dir/$(mpc -f '%file%' current)" | xsel -bi
+    echo "$mpd_music_dir/$(mpc -f '%file%' current)" | wl-copy
 }
 
 pipewire_output(){
