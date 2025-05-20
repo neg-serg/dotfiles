@@ -3,7 +3,17 @@ plugins = [
   "fetch_client_menu",
   "scratchpads",
   "toggle_special",
+  "wallpapers",
 ]
+
+[wallpapers]
+unique = true # set a different wallpaper for each screen
+path = "~/pic/wl"
+interval = 60 # change every hour
+extensions = ["jpg", "jpeg", ".png", ".webp"]
+recurse = true
+command = 'swww img --transition-type any "[file]"'
+clear_command = "swww clear"
 
 [scratchpads.im]
 animation = "fromRight"
