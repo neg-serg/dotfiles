@@ -27,6 +27,7 @@ class = "music"
 position = "15% 50%"
 size = "70% 40%"
 lazy = false
+unfocus = "hide"
 
 [scratchpads.torrment]
 animation = ""
@@ -35,6 +36,7 @@ class = "torrment"
 position = "1% 0%"
 size = "98% 40%"
 lazy = false
+unfocus = "hide"
 
 [scratchpads.teardown]
 animation = ""
