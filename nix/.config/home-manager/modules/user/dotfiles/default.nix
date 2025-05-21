@@ -75,13 +75,17 @@ with {
       source = l "${dots}/nix/.config/home-manager";
       recursive = true;
     };
-    # █▓▒░ rofi ─────────────────────────────────────────────────────────────────────────
+    # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
     "rofi-pass" = {
       source = l "${dots}/rofi/.config/rofi-pass";
       recursive = true;
     };
     "rofi" = {
       source = l "${dots}/rofi/.config/rofi";
+      recursive = true;
+    };
+    "fuzzel" = {
+      source = l "${dots}/fuzzel/.config/fuzzel";
       recursive = true;
     };
     # █▓▒░ shell ──────────────────────────────────────────────────────────────────────────
