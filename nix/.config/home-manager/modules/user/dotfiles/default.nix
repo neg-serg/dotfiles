@@ -110,10 +110,6 @@ with {
       recursive = false;
     };
     # █▓▒░ wm ────────────────────────────────────────────────────────────────────────
-    "greenclip" = {
-      source = l "${dots}/wm/.config/greenclip.toml";
-      recursive = true;
-    };
     "handlr" = {
       source = l "${dots}/wm/.config/handlr";
       recursive = true;
