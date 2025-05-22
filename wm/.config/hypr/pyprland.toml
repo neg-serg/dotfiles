@@ -10,7 +10,7 @@ plugins = [
 [wallpapers]
 unique = true # set a different wallpaper for each screen
 path = "~/pic/wl"
-interval = 60 # change every hour
+interval = 180 # change every three hours
 extensions = ["jpg", "jpeg", ".png", ".webp"]
 recurse = true
 command = 'swww img --transition-type any "[file]"'
