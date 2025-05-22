@@ -84,6 +84,10 @@ with {
       source = l "${dots}/rofi/.config/rofi";
       recursive = true;
     };
+    "tofi" = {
+      source = l "${dots}/tofi/.config/tofi";
+      recursive = true;
+    };
     "fuzzel" = {
       source = l "${dots}/fuzzel/.config/fuzzel";
       recursive = true;
