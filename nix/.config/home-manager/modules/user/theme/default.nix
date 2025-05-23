@@ -16,7 +16,13 @@ with {
     x11.enable = true;
     package = alkano-aio;
     name = "alkano-aio";
-    size = 35;
+    size = 23;
+  };
+
+  home.sessionVariables = {
+    XCURSOR_PATH = "${alkano-aio}/share/icons";
+    XCURSOR_SIZE = 23;
+    XCURSOR_THEME = "alkano-aio";
   };
 
   fonts.fontconfig = {
@@ -27,6 +33,8 @@ with {
       monospace = [ "Iosevka" ];
     };
   };
+
+  qt.platformTheme = "qt6ct";
   
   gtk = {
     enable = true;
@@ -39,7 +47,7 @@ with {
     cursorTheme = {
       name = "alkano-aio";
       package = alkano-aio;
-      size = 35;
+      size = 23;
     };
 
     iconTheme = {
