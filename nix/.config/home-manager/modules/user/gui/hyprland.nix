@@ -10,7 +10,7 @@
         permission = [
           "${pkgs.grim}/bin/grim, screencopy, allow"
           "${pkgs.hyprlock}/bin/hyprlock, screencopy, allow"
-          "${hy3.packages.x86_64-linux.hy3}, plugin, allow"
+          "${hy3.packages.x86_64-linux.hy3}/lib/libhy3.so, plugin, allow"
         ];
     };
     plugins = [ hy3.packages.x86_64-linux.hy3 ];
