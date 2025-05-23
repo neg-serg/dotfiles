@@ -28,7 +28,7 @@ animation = "fromRight"
 command = "telegram-desktop"
 class = "org.telegram.desktop"
 size = "30% 90%"
-lazy = false
+lazy = true
 
 [scratchpads.discord]
 animation = "fromRight"
@@ -44,7 +44,7 @@ margin = "80%"
 class = "music"
 position = "15% 50%"
 size = "70% 40%"
-lazy = false
+lazy = true
 unfocus = "hide"
 
 [scratchpads.torrment]
@@ -53,7 +53,7 @@ command = "kitty --class torrment -e rustmission"
 class = "torrment"
 position = "1% 0%"
 size = "98% 40%"
-lazy = false
+lazy = true
 unfocus = "hide"
 
 [scratchpads.teardown]
@@ -62,7 +62,7 @@ command = "kitty --class teardown -e btop"
 class = "teardown"
 position = "1% 0%"
 size = "98% 50%"
-lazy = false
+lazy = true
 
 [scratchpads.mixer]
 animation = "fromRight"
