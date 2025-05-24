@@ -221,6 +221,7 @@ if [[ -e /etc/NIXOS ]]; then
     }
     alias nixify='nix-shell -p nur.repos.kampka.nixify'
     alias S="nix shell"
+    nlocate(){ nix run github:nix-community/nix-index-database "$@" }
     q(){ nix shell 'nixpkgs#'$1 }
     qi(){ NIXPKGS_ALLOW_UNFREE=1 nix shell --impure 'nixpkgs#'$1 }
     flakify() {
