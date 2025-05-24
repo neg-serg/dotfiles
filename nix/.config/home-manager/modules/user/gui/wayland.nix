@@ -11,6 +11,7 @@
     ];
   };
   home.packages = with pkgs; [
+    clipse # yet another clipboard manager
     fuzzel # wayland launcher
     grim # to take screenshots
     inputs.iwmenu.packages.${pkgs.system}.default # wifi menu
@@ -23,7 +24,7 @@
     wf-recorder # tool to make screencasts
     wl-clipboard # copy-paste for wayland
     wpgtk # yet another colorscheme generator
-    wtype # xdotool for wayland
+    wtype # typing for wayland
     ydotool # xdotool systemwide
   ];
   programs.hyprlock.enable = true;
