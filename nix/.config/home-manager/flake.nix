@@ -9,6 +9,7 @@
     hyprland = { url = "github:hyprwm/Hyprland"; };
     hyprpanel = { url = "github:Jas-SinghFSU/HyprPanel"; };
     iosevka-neg = { url = "git+ssh://git@github.com/neg-serg/iosevka-neg"; inputs.nixpkgs.follows = "nixpkgs"; };
+    matugen = { url = "github:/InioX/Matugen"; };
     nixpkgs = { url = "github:nixos/nixpkgs"; };
     nvfetcher = { url = "github:berberman/nvfetcher"; inputs.nixpkgs.follows = "nixpkgs"; };
     sops-nix = { url = "github:Mic92/sops-nix"; };
@@ -23,6 +24,7 @@
     hy3, 
     hyprland,
     iosevka-neg,
+    matugen,
     nixpkgs,
     nvfetcher,
     sops-nix,
