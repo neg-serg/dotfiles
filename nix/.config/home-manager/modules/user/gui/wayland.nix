@@ -13,7 +13,8 @@
   home.packages = with pkgs; [
     fuzzel # wayland launcher
     grim # to take screenshots
-    inputs.matugen.packages.${system}.default # modern theme generator
+    inputs.iwmenu.packages.${pkgs.system}.default # wifi menu
+    inputs.matugen.packages.${pkgs.system}.default # modern theme generator
     satty # screenshot helper tool
     slurp # select region in wayland compositor
     swww # wallpaper daemon for wayland
