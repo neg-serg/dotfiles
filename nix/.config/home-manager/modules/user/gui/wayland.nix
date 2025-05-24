@@ -22,6 +22,7 @@
     wev # xev for wayland
     wf-recorder # tool to make screencasts
     wl-clipboard # copy-paste for wayland
+    wpgtk # yet another colorscheme generator
     wtype # xdotool for wayland
     ydotool # xdotool systemwide
   ];
