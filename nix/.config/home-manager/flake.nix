@@ -4,6 +4,7 @@
     ags = { url = "github:aylur/ags"; };
     bzmenu = { url = "github:e-tho/bzmenu"; };
     chaotic = { url = "github:chaotic-cx/nyx/nyxpkgs-unstable"; };
+    crane = { url = "github:ipetkov/crane"; };
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     hy3 = { url = "github:outfoxxed/hy3"; inputs.hyprland.follows = "hyprland"; };
     hyprland = { url = "github:hyprwm/Hyprland"; };
