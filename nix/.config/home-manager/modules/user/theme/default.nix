@@ -35,7 +35,9 @@ with {
     };
   };
 
-  qt.platformTheme = "qt6ct";
+  qt = {
+    platformTheme = "qt6ct";
+  };
   
   gtk = {
     enable = true;
