@@ -398,6 +398,8 @@
         #--[ Volume ]-------------------
         "0" = "no-osd add volume +1; script-binding uosc/flash-volume";
         "9" = "no-osd add volume -1; script-binding uosc/flash-volume";
+        "WHEEL_UP" = "no-osd add volume +1; script-binding uosc/flash-volume";
+        "WHEEL_DOWN" = "no-osd add volume -1; script-binding uosc/flash-volume";
         "m" = "no-osd cycle mute; script-binding uosc/flash-volume";
         "A" = "cycle audio 1";
         #--[ Playlist control ]---------
