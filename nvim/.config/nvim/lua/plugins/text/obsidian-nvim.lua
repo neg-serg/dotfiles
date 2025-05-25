@@ -7,7 +7,6 @@ return {'epwalsh/obsidian.nvim', -- obsidian helpers for neovim
     ft='markdown',
     dependencies={
         'nvim-lua/plenary.nvim',
-        'hrsh7th/nvim-cmp',
         'nvim-telescope/telescope.nvim'},
     config=function()
         require'obsidian'.setup({
@@ -16,7 +15,7 @@ return {'epwalsh/obsidian.nvim', -- obsidian helpers for neovim
               },
               new_notes_location="current_dir",
               completion={
-                  nvim_cmp=true, -- If using nvim-cmp, otherwise set to false
+                  nvim_cmp=false, -- If using nvim-cmp, otherwise set to false
                   min_chars=2, -- Trigger completion at 2 chars
               },
               mappings={
