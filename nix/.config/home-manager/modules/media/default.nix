@@ -7,7 +7,6 @@ with {
   l = config.lib.file.mkOutOfStoreSymlink;
   dots = "${config.home.homeDirectory}/.dotfiles";
   mkvcleaner = pkgs.callPackage ../../packages/mkvcleaner {};
-  sacd-extract = pkgs.callPackage ../../packages/sacd-extract {};
 }; {
   imports = [
     ./audio
@@ -23,7 +22,6 @@ with {
     mkvcleaner # clean mkv files from useless data
     mpvc # CLI controller for mpv
     playerctl # media controller for everything
-    # sacd-extract
   ];
   xdg.configFile = {
     "wireplumber" = {
