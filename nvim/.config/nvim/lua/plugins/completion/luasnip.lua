@@ -14,7 +14,5 @@ return {'L3MON4D3/LuaSnip', -- snippets engine
         if (not status) then return end
         luasnip_snips.lazy_load()
     end,
-    dependencies={
-        'rafamadriz/friendly-snippets', -- additional snippets'
-        'hrsh7th/nvim-cmp'}, -- autocompletion engine
+    dependencies={'rafamadriz/friendly-snippets',},
     event={'BufRead','BufNewFile','InsertEnter'}}
