@@ -21,9 +21,9 @@ return {'neovim/nvim-lspconfig',
             local hl="DiagnosticSign" .. type
             vim.fn.sign_define(hl, {text=icon, texthl=hl, numhl=hl})
         end
-        lspconfig.bashls.setup{}
-        lspconfig.clangd.setup{}
-        lspconfig.nil_ls.setup{}
-        lspconfig.pyright.setup{}
+        vim.lsp.config('bashls', {})
+        vim.lsp.config('clangd', {})
+        vim.lsp.config('nil_ls', {})
+        vim.lsp.config('pyright', {})
     end,
 }
