@@ -9,6 +9,7 @@ with {
   home.packages = with pkgs; [
     dconf # gnome registry
     iosevkaneg.nerd-font # install my custom iosevka build
+    kdePackages.qtstyleplugin-kvantum
   ];
 
   home.pointerCursor = {
@@ -56,12 +57,8 @@ with {
     };
 
     theme = {
-      name = "Tokyonight-Dark-Compact";
-      package = pkgs.tokyonight-gtk-theme.override {
-        colorVariants = [ "dark" ];
-        sizeVariants = [ "compact" ];
-        tweakVariants = [ "moon" ];
-      };
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
     };
   };
 
