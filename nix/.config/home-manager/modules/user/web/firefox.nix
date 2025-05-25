@@ -2,8 +2,8 @@
   programs.firefox = {
     enable = true;
     nativeMessagingHosts = [
-        pkgs.pywalfox-native
-        pkgs.tridactyl-native 
+      pkgs.pywalfox-native
+      pkgs.tridactyl-native 
     ];
   };
   home.sessionVariables = {
