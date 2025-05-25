@@ -7,6 +7,7 @@
     lowdown # cat for markdown
     recoll # full-text search tool
     sioyek # nice zathura alternative
+    tesseract # ocr
   ];
   programs.zathura = {
     enable = true;
