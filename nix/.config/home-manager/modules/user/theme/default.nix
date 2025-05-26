@@ -10,6 +10,7 @@ with {
     dconf # gnome registry
     iosevkaneg.nerd-font # install my custom iosevka build
     kdePackages.qtstyleplugin-kvantum
+    adw-gtk3 # For Adwaita-dark theme
   ];
 
   home.pointerCursor = {
@@ -62,6 +63,9 @@ with {
       name = "Adwaita-dark";
       package = pkgs.gnome-themes-extra;
     };
+
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
   };
 
   dconf = {
