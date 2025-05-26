@@ -8,9 +8,10 @@ with {
   alkano-aio = pkgs.callPackage ./alkano-aio.nix {};
 }; {
   home.packages = with pkgs; [
+    adw-gtk3 # adwaita port to gtk3
     dconf # gnome registry
     iosevkaneg.nerd-font # install my custom iosevka build
-    kdePackages.qtstyleplugin-kvantum
+    kdePackages.qtstyleplugin-kvantum # nice qt themes
   ];
 
   home.pointerCursor = {
@@ -59,8 +60,15 @@ with {
       package = pkgs.kora-icon-theme;
     };
 
-    gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
-    gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
+    gtk3 = {
+      extraConfig.gtk-application-prefer-dark-theme = 1;
+      extraCss = ''/*@import "colors.css";*/'';
+    };
+
+    gtk4 = {
+      extraConfig.gtk-application-prefer-dark-theme = 1;
+      extraCss = ''/*@import "colors.css";*/'';
+    };
   };
 
   dconf = {
@@ -105,7 +113,7 @@ with {
     targets.foot.enable = true;
     targets.gnome.enable = true;
     targets.gtk = {
-      enable = true;
+      enable = false;
       flatpakSupport.enable = true;
     };
     targets.helix.enable = true;
