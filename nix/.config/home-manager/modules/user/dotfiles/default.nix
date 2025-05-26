@@ -146,6 +146,10 @@ with {
       source = l "${dots}/wm/.config/kitty";
       recursive = true;
     };
+    "swaync" = {
+      source = l "${dots}/wm/swaync/.config/swaync";
+      recursive = true;
+    };
     "warpd" = {
       source = l "${dots}/wm/.config/warpd";
       recursive = true;
