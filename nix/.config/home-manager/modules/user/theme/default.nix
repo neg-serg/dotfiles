@@ -107,6 +107,19 @@ with {
     targets.gtk = {
         enable = true;
         flatpakSupport.enable = true;
+        extraCss = ''
+          @define-color window_bg_color #000000;
+          @define-color view_bg_color #000000;
+          @define-color sidebar_bg_color #000000;
+          @define-color sidebar_backdrop_color #000000;
+          @define-color secondary_sidebar_bg_color #000000;
+          @define-color secondary_sidebar_backdrop_color #000000;
+          @define-color card_bg_color #000000;
+          @define-color dialog_bg_color #000000;
+          @define-color popover_bg_color #000000;
+          @define-color thumbnail_bg_color #000000;
+          @define-color scrollbar_outline_color #000000;
+        '';
     };
     targets.helix.enable = true;
     targets.sxiv.enable = true;
