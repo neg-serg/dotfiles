@@ -105,8 +105,8 @@ with {
     targets.foot.enable = true;
     targets.gnome.enable = true;
     targets.gtk = {
-        enable = true;
-        flatpakSupport.enable = true;
+      enable = true;
+      flatpakSupport.enable = true;
     };
     targets.helix.enable = true;
     targets.sxiv.enable = true;
