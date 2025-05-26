@@ -11,7 +11,6 @@ with {
     dconf # gnome registry
     iosevkaneg.nerd-font # install my custom iosevka build
     kdePackages.qtstyleplugin-kvantum
-    adw-gtk3 # For Adwaita-dark theme
   ];
 
   home.pointerCursor = {
@@ -105,7 +104,10 @@ with {
     targets.btop.enable = true;
     targets.foot.enable = true;
     targets.gnome.enable = true;
-    targets.gtk = { enable = true; flatpakSupport.enable = true; };
+    targets.gtk = {
+        enable = true;
+        flatpakSupport.enable = true;
+    };
     targets.helix.enable = true;
     targets.sxiv.enable = true;
     targets.zed.enable = true;
