@@ -15,6 +15,7 @@
     nixpkgs = { url = "github:nixos/nixpkgs"; };
     nvfetcher = { url = "github:berberman/nvfetcher"; inputs.nixpkgs.follows = "nixpkgs"; };
     sops-nix = { url = "github:Mic92/sops-nix"; };
+    stylix = { url = "github:danth/stylix"; inputs.nixpkgs.follows = "nixpkgs"; };
     yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
@@ -30,6 +31,7 @@
     nixpkgs,
     nvfetcher,
     sops-nix,
+    stylix,
     yandex-browser,
     ...
   }:
@@ -54,6 +56,7 @@
         };
         modules = [
           ./home.nix
+          stylix.homeModules.stylix
           chaotic.homeManagerModules.default
           sops-nix.homeManagerModules.sops
         ];
