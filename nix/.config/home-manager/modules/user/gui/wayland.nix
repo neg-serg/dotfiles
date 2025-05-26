@@ -16,6 +16,7 @@
     grim # to take screenshots
     inputs.iwmenu.packages.${pkgs.system}.default # wifi menu
     inputs.matugen.packages.${pkgs.system}.default # modern theme generator
+    nwg-look # tool to test and set gtk themes
     satty # screenshot helper tool
     slurp # select region in wayland compositor
     swayimg # wayland-native image viewer
