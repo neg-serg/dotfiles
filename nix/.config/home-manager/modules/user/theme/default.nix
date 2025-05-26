@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   iosevkaneg,
   ...
@@ -16,9 +17,9 @@ with {
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
-    package = alkano-aio;
-    name = "alkano-aio";
-    size = 23;
+    package = lib.mkDefault alkano-aio;
+    name = lib.mkDefault "Alkano-aio";
+    size = lib.mkDefault 23;
   };
 
   home.sessionVariables = {
@@ -57,11 +58,6 @@ with {
     iconTheme = {
       name = "kora";
       package = pkgs.kora-icon-theme;
-    };
-
-    theme = {
-      name = "Adwaita-dark";
-      package = pkgs.gnome-themes-extra;
     };
 
     gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
@@ -103,18 +99,16 @@ with {
 
   stylix = {
     enable = true;
-    image = pkgs.fetchurl {
-      url = "https://i.imgur.com/HbYZDyA.jpeg";
-      sha256 = "sha256-Axp121bLA7vMXCmpB/K2jaFR3PldUxOHfbWJxKV5Z8w=";
-    };
+    autoEnable = false;
 
-    targets = {
-      dunst.enable = false;
-      firefox.profileNames = ["8ymzp4k3.default"];
-      hyprpaper.enable = false;
-      kitty.enable = false;
-      zathura.enable = false;
-    };
+    targets.bemenu.enable = true;
+    targets.btop.enable = true;
+    targets.foot.enable = true;
+    targets.gnome.enable = true;
+    targets.gtk = { enable = true; flatpakSupport.enable = true; };
+    targets.helix.enable = true;
+    targets.sxiv.enable = true;
+    targets.zed.enable = true;
 
     base16Scheme = {
       base00 = "#020202"; # Background
@@ -136,30 +130,18 @@ with {
     };
 
     cursor = {
-      size = 35;
+      size = 23;
       name = "Alkano-aio";
       package = alkano-aio;
     };
 
     polarity = "dark";
-
     fonts = {
-      serif = {
-        name = "Cantarell";
-        package = pkgs.cantarell-fonts;
-      };
-      sansSerif = {
-        name = "Iosevka";
-        package = iosevkaneg.nerd-font;
-      };
-      monospace = {
-        name = "Iosevka";
-        package = iosevkaneg.nerd-font;
-      };
-      sizes = {
-        applications = 10;
-        desktop = 10;
-      };
+      serif = { name = "Cantarell"; package = pkgs.cantarell-fonts; };
+      sansSerif = { name = "Iosevka"; package = iosevkaneg.nerd-font; };
+      monospace = { name = "Iosevka"; package = iosevkaneg.nerd-font; };
+      sizes = { applications = 10; desktop = 10; };
     };
+
   };
 }
