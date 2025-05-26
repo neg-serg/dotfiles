@@ -25,7 +25,6 @@
     hypridle # idle daemon
     hyprland-qt-support # qt support
     hyprland-qtutils # utility apps for hyprland
-    hyprpanel # nice panel for hyprland
     hyprpicker # color picker
     hyprpolkitagent # better polkit agent
     hyprprop # xrop for hyprland
