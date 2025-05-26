@@ -18,6 +18,7 @@
     inputs.matugen.packages.${pkgs.system}.default # modern theme generator
     satty # screenshot helper tool
     slurp # select region in wayland compositor
+    swaynotificationcenter # try another notification center
     swww # wallpaper daemon for wayland
     tofi # an extremely fast and simple dmenu / rofi replacement for wlroots-based Wayland compositors
     wev # xev for wayland
