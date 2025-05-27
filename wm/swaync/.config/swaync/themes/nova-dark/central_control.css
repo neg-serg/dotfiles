@@ -1,11 +1,11 @@
-@define-color text            @foreground;
-@define-color background-alt  alpha(@color1, .4);
-@define-color selected        @color6;
-@define-color hover           alpha(@selected, .4);
-@define-color urgent          @color2;
+@define-color text            #b8c5d9;
+@define-color background-alt  alpha(#b8c5d9, .4);
+@define-color selected        #002c52;
+@define-color hover           alpha(#002c52, .4);
+@define-color urgent          #005f87;
 
 * {
-  color:            @text;
+  color: @text;
   all: unset;
   font-size: 14px;
   font-family: "Iosevka";
@@ -17,9 +17,8 @@
 }
   
 /* CONTROL CENTER ------------------------------------------------------------------------ */
-
 .control-center {
-  background: alpha(@background, .55);
+  background: alpha(@background, .85);
   border-radius: 4px;
   border: 1px solid @selected;
   box-shadow: 0 0 10px 0 rgba(0,0,0,.6);

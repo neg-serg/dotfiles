@@ -4,16 +4,16 @@
   "positionY": "bottom",
   "cssPriority": "user",
 
-  "control-center-width": 880,
+  "control-center-width": 1120,
   "control-center-height": 860, 
   "control-center-margin-top": 2,
   "control-center-margin-bottom": 2,
   "control-center-margin-right": 1,
   "control-center-margin-left": 0,
 
-  "notification-window-width": 800,
+  "notification-window-width": 1120,
   "notification-icon-size": 250,
-  "notification-body-image-height": 250,
+  "notification-body-image-height": 350,
   "notification-body-image-width": 250,
 
   "timeout": 4,
@@ -29,7 +29,7 @@
   "script-fail-notify": true,
   "notification-visibility": {
     "example-name": { "state": "muted", "urgency": "Low", "app-name": "Spotify" }
-  },
+   },
   "widgets": [ "label", "buttons-grid", "mpris", "title", "dnd", "notifications" ],
   "widget-config": {
     "title": { "text": "Notifications", "clear-all-button": true, "button-text": " 󰎟 " },
