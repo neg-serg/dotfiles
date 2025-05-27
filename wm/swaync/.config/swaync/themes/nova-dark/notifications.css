@@ -67,13 +67,13 @@
 }
 
 .summary {
-  font-weight: 800;
-  font-size: 1.5rem;
+  font-weight: 600;
+  font-size: 1.4rem;
 }
 
 .body {
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .floating-notifications.background .notification-row .notification-background .close-button {
