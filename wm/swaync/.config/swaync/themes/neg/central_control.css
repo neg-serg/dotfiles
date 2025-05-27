@@ -1,5 +1,5 @@
-@define-color text            #b8c5d9;
-@define-color background-alt  alpha(#b8c5d9, .4);
+@define-color text            #6C7E96;
+@define-color background-alt  alpha(#6C7E96, .4);
 @define-color selected        #002c52;
 @define-color hover           alpha(#002c52, .4);
 @define-color urgent          #005f87;
@@ -81,9 +81,7 @@
   background-color: @selected;
 }
 
-progressbar,
-progress,
-trough {
+progressbar, progress, trough {
   border-radius: 4px;
 }
 
@@ -92,11 +90,10 @@ progressbar {
 }
 
 /* Notifications expanded-group */
-
 .notification-group {
   margin: 2px 8px 2px 8px;
-
 }
+
 .notification-group-headers {
   font-weight: bold;
   font-size: 1.25rem;
@@ -108,8 +105,7 @@ progressbar {
   color: @text;
 }
 
-.notification-group-collapse-button,
-.notification-group-close-all-button {
+.notification-group-collapse-button, .notification-group-close-all-button {
   background: transparent;
   color: @text;
   margin: 4px; 
@@ -123,7 +119,6 @@ progressbar {
 }  
 
 /* WIDGETS --------------------------------------------------------------------------- */
-
   /* Notification clear button */
 .widget-title {
   font-size: 1.2em;
@@ -175,7 +170,7 @@ progressbar {
   border-radius: 4px;
 }
 
-  /* Buttons menu */
+/* Buttons menu */
 .widget-buttons-grid {
   font-size: x-large;
   padding: 6px 2px;
