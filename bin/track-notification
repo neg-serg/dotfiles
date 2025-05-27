@@ -119,6 +119,7 @@ def track_notify(art):
         if line is not None and line:
             output += line + '\n'
     output=f"\n{output}\n​"
+    subprocess.check_output(["swaync-client", "--hide-latest"])
     subprocess.check_output(
         ["dunstify", "-p", "-a", "mpd", "-h", "string:fgcolor:#17272D",
         "-u", "normal", "-i", art, "", output, "-t", "4000"])

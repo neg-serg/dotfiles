@@ -94,6 +94,7 @@ with {
           "-p mpc-cli"
           "-p sox"
           "-p dunst"
+          "-p swaynotificationcenter"
           "-p id3lib"
           "--run %h/bin/track-notification"
         ];
