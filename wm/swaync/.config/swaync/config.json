@@ -5,9 +5,8 @@
   "cssPriority": "user",
   "control-center-width": 800,
   "notification-window-width": 800,
-  "notification-icon-size": 200,
-  "notification-body-image-height": 20,
-  "notification-body-image-width": 20,
+  "notification-body-image-height": 240,
+  "notification-body-image-width": 240,
   "timeout": 4,
   "timeout-low": 2,
   "timeout-critical": 6,
@@ -23,8 +22,6 @@
   "widget-config": {
     "title": { "text": "Notifications", "clear-all-button": true, "button-text": "󰎟" },
     "label": { "max-lines": 1, "text": " " },
-    "mpris": { "image-size": 128, "image-radius": 10 },
-    "volume": { "label": "󰕾", "show-per-app": true },
-    "buttons-grid": { "actions": [ { "label": " ", "command": "amixer set Master toggle" }, { "label": "", "command": "amixer set Capture toggle" } ] }
+    "mpris": { "image-size": 240, "image-radius": 2 }
   }
 }
