@@ -11,7 +11,8 @@ with {
     adw-gtk3 # adwaita port to gtk3
     dconf # gnome registry
     iosevkaneg.nerd-font # install my custom iosevka build
-    kdePackages.qtstyleplugin-kvantum # nice qt themes
+    kdePackages.qtstyleplugin-kvantum # nice qt6 themes
+    libsForQt5.qtstyleplugin-kvantum # nice qt5 themes
   ];
 
   home.pointerCursor = {
