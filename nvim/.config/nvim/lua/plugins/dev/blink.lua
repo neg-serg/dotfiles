@@ -73,6 +73,30 @@ return {'saghen/blink.cmp',
     --   Operator = "󰆕",
     --   TypeParameter = "󰅲",
     -- },
+
+    -- local kind_symbols = {
+    --   Text = '',
+    --   Method = 'Ƒ',
+    --   Function = 'ƒ',
+    --   Constructor = '',
+    --   Variable = '',
+    --   Class = '',
+    --   Interface = 'ﰮ',
+    --   Module = '',
+    --   Property = '',
+    --   Unit = '',
+    --   Value = '',
+    --   Enum = '了',
+    --   Keyword = '',
+    --   Snippet = '﬌',
+    --   Color = '',
+    --   File = '',
+    --   Folder = '',
+    --   EnumMember = '',
+    --   Constant = '',
+    --   Struct = ''
+    -- }
+    -- 
   },
   opts_extend = { "sources.default" }
 }
