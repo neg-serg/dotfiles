@@ -21,7 +21,7 @@
       # icc-cache-dir = "/home/neg/tmp/";
       vd-lavc-dr = true;
       vd-lavc-threads = "12";
-      vo = "gpu-next";
+      vo = "vaapi";
       vulkan-swap-mode = "fifo-relaxed";
       #--[ Debanding ]-------------------------------------------
       deband-grain = 48; # dynamic grain: set to "0" if using the static grain shader
