@@ -112,7 +112,7 @@ _exists umimatrix && alias matrix='unimatrix -l Aang -s 95'
 _exists xz && alias xz='xz --threads=0'
 _exists zstd && alias zstd='zstd --threads=0'
 _exists mpv && {
-    alias mpv="mpv --vo=gpu"
+    alias mpv="mpv"
     alias mpa="${aliases[mpv]:-mpv} -mute "$@" > ${HOME}/tmp/mpv.log"
     alias mpi="${aliases[mpv]:-mpv} --interpolation=yes --tscale='oversample' \
         --video-sync='display-resample' "$@" > ${HOME}/tmp/mpv.log"
