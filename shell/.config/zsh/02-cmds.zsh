@@ -208,12 +208,6 @@ if [[ -e /etc/NIXOS ]]; then
             (o: {nativeBuildInputs=o.nativeBuildInputs ++ [ pkg-config ncurses ];})'
         # unpackPhase && cd linux-*; patchPhase; make nconfig
     }
-    linux-nconfig(){
-        nix-shell -E 'with import <nixpkgs> {};
-            (builtins.getFlake "github:chaotic-cx/nyx/nyxpkgs-unstable").packages.x86_64-linux.linuxPackages_cachyos.kernel.overrideAttrs
-            (o: {nativeBuildInputs=o.nativeBuildInputs ++ [ pkg-config ncurses ];})'
-        unpackPhase && cd linux-*; patchPhase; make nconfig
-    }
     xkcdpass(){echo "$(nix run nixpkgs#xkcdpass -- -d '-' -n 3 -C capitalize)$((RANDOM % 9))"}
     _exists nh && {
         alias seh="nh home switch $(readlink -f $HOME/.config/home-manager)"
