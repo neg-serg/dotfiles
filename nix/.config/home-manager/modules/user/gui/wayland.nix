@@ -23,6 +23,7 @@
     swaynotificationcenter # try another notification center
     swww # wallpaper daemon for wayland
     tofi # an extremely fast and simple dmenu / rofi replacement for wlroots-based Wayland compositors
+    waybar # temporary use this panel
     wev # xev for wayland
     wf-recorder # tool to make screencasts
     wl-clipboard # copy-paste for wayland
