@@ -118,7 +118,6 @@
                     (kind: Text(""), style: (fg: "#81a1c1", modifiers: "Bold")),
                     (kind: Property(Status(StateV2(playing_label: "  ", paused_label: "  ", stopped_label: "  ")))),
                     (kind: Text(" "), style: (fg: "#81a1c1", modifiers: "Bold")),
-                    (kind: Property(Widget(ScanStatus)))
                 ],
                 center: [
                     (kind: Property(Song(Title)), style: (fg: "#d8dee9",modifiers: "Bold"),
