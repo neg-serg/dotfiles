@@ -3,7 +3,7 @@
 #![enable(unwrap_variant_newtypes)]
 (
     address: "127.0.0.1:6600",
-    theme: Some("default"),
+    theme: Some("catpuccin"),
     cache_dir: None,
     on_song_change: None,
     volume_step: 1,
@@ -17,6 +17,39 @@
         vertical_align: Center,
         horizontal_align: Center,
     ),
+    tabs: [
+        (
+            name: "Queue",
+            pane: Split(
+                direction: Horizontal,
+                panes: [(size: "60%", pane: Pane(Queue)), (size: "40%", pane: Pane(AlbumArt))],
+                ),
+        ),
+        (
+            name: "Directories",
+            pane: Pane(Directories),
+        ),
+        (
+            name: "Artists",
+            pane: Pane(Artists),
+        ),
+        (
+            name: "Album Artists",
+            pane: Pane(AlbumArtists),
+        ),
+        (
+            name: "Albums",
+            pane: Pane(Albums),
+        ),
+        (
+            name: "Playlists",
+            pane: Pane(Playlists),
+        ),
+        (
+            name: "Search",
+            pane: Pane(Search),
+        ),
+    ],
     keybinds: (
         global: {
             ":":       CommandMode,
@@ -79,4 +112,3 @@
         },
     ),
 )
-
