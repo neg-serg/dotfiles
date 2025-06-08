@@ -32,26 +32,5 @@
         ( kind: Group([ (kind: Property(Track)), (kind: Text(" ")), ])),
         ( kind: Group([ (kind: Property(Artist)), (kind: Text(" - ")), (kind: Property(Title)), ]), default: (kind: Property(Filename))),
     ],
-    // layout: Split(
-    //     direction: Vertical,
-    //     panes: [
-    //     (
-    //         size: "8",
-    //         pane: Split(
-    //             direction: Horizontal,
-    //             panes: [
-    //                 ( size: "21", pane: Pane(AlbumArt),),
-    //                 ( size: "100%", pane: Split(
-    //                     direction: Vertical,
-    //                     panes: [
-    //                         ( size: "5", pane: Pane(Header),),
-    //                         ( size: "1", pane: Pane(ProgressBar),),
-    //                         ( size: "3", pane: Pane(Tabs),),
-    //                     ]
-    //                 )
-    //             ), ]
-    //         ),
-    //     ), ( size: "100%", pane: Pane(TabContent),),
-    // ],),
 )
 
