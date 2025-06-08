@@ -45,12 +45,12 @@
     header: (
         rows: [
             (
-                left: [ (kind: Text("["), style: (fg: "#b7bdf8", modifiers: "Bold")), (kind: Property(Status(State)), style: (fg: "#b7bdf8", modifiers: "Bold")), (kind: Text("]"), style: (fg: "#b7bdf8", modifiers: "Bold")) ],
-                center: [ (kind: Property(Song(Artist)), style: (fg: "#eed49f", modifiers: "Bold"), default: (kind: Text("Unknown"), style: (fg: "#eed49f", modifiers: "Bold"))),
+                left: [ (kind: Text("["), style: (fg: "#285981", modifiers: "Bold")), (kind: Property(Status(State)), style: (fg: "#285981", modifiers: "Bold")), (kind: Text("]"), style: (fg: "#285981", modifiers: "Bold")) ],
+                center: [ (kind: Property(Song(Artist)), style: (fg: "#367C36", modifiers: "Bold"), default: (kind: Text("Unknown"), style: (fg: "#367C36", modifiers: "Bold"))),
                     (kind: Text(" - ")),
-                    (kind: Property(Song(Title)), style: (fg: "#7dc4e4", modifiers: "Bold"), default: (kind: Text("No Song"), style: (fg: "#7dc4e4", modifiers: "Bold")))
+                    (kind: Property(Song(Title)), style: (fg: "#590038", modifiers: "Bold"), default: (kind: Text("No Song"), style: (fg: "#590038", modifiers: "Bold")))
                 ],
-                right: [ (kind: Text("Vol: "), style: (fg: "#b7bdf8", modifiers: "Bold")), (kind: Property(Status(Volume)), style: (fg: "#b7bdf8", modifiers: "Bold")), (kind: Text("% "), style: (fg: "#b7bdf8", modifiers: "Bold")) ]
+                right: [ (kind: Text("Vol: "), style: (fg: "#285981", modifiers: "Bold")), (kind: Property(Status(Volume)), style: (fg: "#285981", modifiers: "Bold")), (kind: Text("% "), style: (fg: "#285981", modifiers: "Bold")) ]
             )
         ],
     ),
