@@ -11,7 +11,6 @@
         panes: [
             ( pane: Pane(TabContent), size: "100%",),
             ( pane: Pane(ProgressBar), size: "1",),
-            ( pane: Pane(Header), size: "1",),
         ],
     ),
     progress_bar: ( symbols: ["─", "╼", ""], track_style: (fg: "#162b44"), elapsed_style: (fg: "#162b44"), thumb_style: (fg: "#162b44"),),
