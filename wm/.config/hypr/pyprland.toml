@@ -39,7 +39,7 @@
 
 [scratchpads.music]
     animation = ""
-    command = "kitty --class music -e ncmpcpp"
+    command = "kitty --class music -e rmpc"
     margin = "80%"
     class = "music"
     position = "15% 50%"
