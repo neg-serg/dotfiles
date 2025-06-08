@@ -3,7 +3,7 @@
 #![enable(unwrap_variant_newtypes)]
 (
     address: "127.0.0.1:6600",
-    theme: Some("catpuccin"),
+    theme: Some("neg"),
     cache_dir: None,
     on_song_change: None,
     volume_step: 1,
