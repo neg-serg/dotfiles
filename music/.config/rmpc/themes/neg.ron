@@ -6,17 +6,10 @@
     draw_borders: false,
     show_song_table_header: false,
     symbols: (song: "🎵", dir: "📁", marker: "\u{e0b0}"),
-    layout: Split(
-        direction: Vertical,
-        panes: [
-            ( pane: Pane(TabContent), size: "100%",),
-            ( pane: Pane(ProgressBar), size: "1",),
-        ],
-    ),
+    layout: Split(direction: Vertical, panes: [( pane: Pane(TabContent), size: "100%",), ( pane: Pane(ProgressBar), size: "1",),],),
     progress_bar: ( symbols: ["─", "╼", ""], track_style: (fg: "#162b44"), elapsed_style: (fg: "#162b44"), thumb_style: (fg: "#162b44"),),
     scrollbar: ( symbols: ["", "", "", ""], track_style: (), ends_style: (), thumb_style: (fg: "#000000"),),
     browser_column_widths: [20, 38, 42],
-    // browser_column_widths: [50, 38, 42],
     text_color: "#95a7bc",
     background_color: None,
     header_background_color: None,
@@ -29,10 +22,15 @@
     current_item_style: (fg: "#005faf", bg: "0", modifiers: "Bold"),
     song_table_format: [
         ( prop: (kind: Property(Track), style: (fg: "green"), default: (kind: Text("Unknown"))), width: "2%",),
-        ( prop: (kind: Property(Artist), style: (fg: "31"), default: (kind: Text("Unknown"))), width: "10%",),
-        ( prop: (kind: Property(Title), default: (kind: Text("Unknown"))), width: "100%",),
-        ( prop: (kind: Property(Duration), default: (kind: Text("-"))), width: "100%", alignment: Right,),
-        ( prop: (kind: Property(Album), default: (kind: Text("Unknown"))), width: "20%", alignment: Center,),
+        ( prop: (kind: Group([
+          (kind: Property(Artist)),
+          (kind: Text(" ❯ ")),
+          (kind: Property(Title)),
+        ]), default: (kind: Property(Filename))), width: "20%"),
+        // ( prop: (kind: Property(Artist), style: (fg: "31"), default: (kind: Text("Unknown"))), width: "10%",),
+        // ( prop: (kind: Property(Title), default: (kind: Text("Unknown"))), width: "100%",),
+        ( prop: (kind: Property(Duration), default: (kind: Text("-")), style: (fg: "31")), width: "100%", alignment: Right,),
+        ( prop: (kind: Property(Album), default: (kind: Text("Unknown"))), width: "20%", alignment: Right,),
     ],
     browser_song_format: [
         ( kind: Group([ (kind: Property(Track)), (kind: Text(" ")), ])),
