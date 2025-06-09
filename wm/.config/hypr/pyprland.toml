@@ -25,7 +25,7 @@
 
 [scratchpads.im]
     animation = "fromRight"
-    command = "telegram-desktop"
+    command = "Telegram"
     class = "org.telegram.desktop"
     size = "30% 90%"
     lazy = true
