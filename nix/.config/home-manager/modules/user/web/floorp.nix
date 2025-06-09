@@ -7,6 +7,7 @@
     ];
   };
   home.sessionVariables = {
+    DEFAULT_BROWSER = "${pkgs.floorp}/bin/floorp";
     MOZ_DBUS_REMOTE = "1";
     MOZ_ENABLE_WAYLAND = "1";
   };
