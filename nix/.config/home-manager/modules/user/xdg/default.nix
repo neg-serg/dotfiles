@@ -10,8 +10,8 @@ with rec {
       desktop = "kitty";
     };
     browser = {
-      cmd = "${pkgs.firefox}/bin/firefox";
-      desktop = "firefox";
+      cmd = "${pkgs.floorp}/bin/floorp";
+      desktop = "floorp";
     };
     editor = {
       cmd = "${pkgs.neovim}/bin/nvim";
