@@ -3,7 +3,7 @@
     enable = true;
     package = pkgs.yt-dlp; # download from youtube and another sources
     settings = {
-      cookies-from-browser = "firefox";
+      cookies-from-browser = "floorp";
       downloader-args = "aria2c:'-c -x8 -s8 -k1M'";
       downloader = "aria2c";
       embed-metadata = true;
