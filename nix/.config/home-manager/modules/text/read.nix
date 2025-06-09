@@ -8,6 +8,7 @@
     recoll # full-text search tool
     sioyek # nice zathura alternative
     tesseract # ocr
+    zotero # tool to organize cites
   ];
   programs.zathura = {
     enable = true;
