@@ -1,6 +1,11 @@
 {pkgs, ...}: {
-  programs.floorp.enable = true;
-  programs.floorp.nativeMessagingHosts = [ pkgs.tridactyl-native ];
+  programs.floorp = {
+    enable = true;
+    nativeMessagingHosts = [
+      pkgs.pywalfox-native
+      pkgs.tridactyl-native
+    ];
+  };
   home.sessionVariables = {
     DEFAULT_BROWSER = "${pkgs.floorp}/bin/floorp";
     MOZ_DBUS_REMOTE = "1";
