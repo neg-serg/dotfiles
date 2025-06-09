@@ -35,7 +35,7 @@
     keybinds: (
         global: {
             ":": CommandMode,
-            "3": ArtistsTab,
+            "2": ArtistsTab,
             "":  VolumeDown,
             "s": Stop,
             "": VolumeUp,
@@ -52,7 +52,7 @@
             "<": PreviousTrack,
             "f": SeekForward,
             "": ToggleConsume,
-            "2": DirectoriesTab,
+            "3": DirectoriesTab,
             "p": TogglePause,
             "z": ToggleRepeat,
             "b": SeekBack,
@@ -86,6 +86,7 @@
         },
         queue: {
             "C": DeleteAll,
+            "<Space>": JumpToCurrent,
             "<CR>": Play,
             "<C-s>": Save,
             "a": AddToPlaylist,
