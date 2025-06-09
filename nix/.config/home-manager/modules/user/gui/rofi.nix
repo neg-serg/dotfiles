@@ -9,6 +9,5 @@ with {
         rofi-games
       ];
     }) # modern dmenu alternative
-    rofi-pass # pass integration for pass
   ];
 }

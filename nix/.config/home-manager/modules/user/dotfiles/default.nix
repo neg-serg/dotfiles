@@ -76,10 +76,6 @@ with {
       recursive = true;
     };
     # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
-    "rofi-pass" = {
-      source = l "${dots}/rofi/.config/rofi-pass";
-      recursive = true;
-    };
     "rofi" = {
       source = l "${dots}/rofi/.config/rofi";
       recursive = true;
