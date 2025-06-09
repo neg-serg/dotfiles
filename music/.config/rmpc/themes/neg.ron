@@ -17,9 +17,9 @@
     modal_backdrop: false,
     tab_bar: (active_style: (fg: "black", bg: "#0a3749", modifiers: "Bold")),
     borders_style: (fg: "#10233a"),
-    highlighted_item_style: (modifiers: "Italic"),
-    highlight_border_style: (fg: "#1c334e"),
     current_item_style: (fg: "#005faf", bg: "0", modifiers: "Bold"),
+    highlight_border_style: (fg: "#1c334e"),
+    highlighted_item_style: (fg: "#810052", modifiers: "Italic"),
     song_table_format: [
         ( prop: (kind: Property(Track), style: (fg: "green"), default: (kind: Text("Unknown"))), width: "2%",),
         ( prop: (kind: Group([
