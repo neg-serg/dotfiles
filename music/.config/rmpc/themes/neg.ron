@@ -21,12 +21,12 @@
     highlight_border_style: (fg: "#1c334e"),
     highlighted_item_style: (fg: "#810052", modifiers: "Italic"),
     song_table_format: [
-        ( prop: (kind: Property(Track), style: (fg: "green"), default: (kind: Text("Unknown"))), width: "2%",),
+        ( prop: (kind: Property(Track), style: (fg: "green"), default: (kind: Text("Unknown"))), width: "1%",),
         ( prop: (kind: Group([
-          (kind: Property(Artist)),
-          (kind: Text(" ❯ ")),
+          (kind: Property(Artist), style: (fg: "blue")),
+          (kind: Text(" ❯ "), style: (fg: "#005faf")),
           (kind: Property(Title)),
-        ]), style: (fg: "red"), default: (kind: Property(Filename))), width: "100%"),
+        ]), default: (kind: Property(Filename))), width: "100%"),
         ( prop: (kind: Property(Duration), default: (kind: Text("-")), style: (fg: "31")), width: "5%", alignment: Right,),
         ( prop: (kind: Property(Album), default: (kind: Text("Unknown"))), width: "20%", alignment: Right,),
     ],
