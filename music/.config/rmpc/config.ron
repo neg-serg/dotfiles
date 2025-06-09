@@ -78,7 +78,6 @@
             "/": EnterSearch,
             "<C-c>": Close,
             "<Esc>": Close,
-            "q": Close,
             "K": MoveUp,
             "l": Right,
             "D": Delete,
