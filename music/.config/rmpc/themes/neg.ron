@@ -26,7 +26,7 @@
           (kind: Property(Artist)),
           (kind: Text(" ❯ ")),
           (kind: Property(Title)),
-        ]), default: (kind: Property(Filename))), width: "20%"),
+        ]), style: (fg: "red"), default: (kind: Property(Filename))), width: "20%"),
         // ( prop: (kind: Property(Artist), style: (fg: "31"), default: (kind: Text("Unknown"))), width: "10%",),
         // ( prop: (kind: Property(Title), default: (kind: Text("Unknown"))), width: "100%",),
         ( prop: (kind: Property(Duration), default: (kind: Text("-")), style: (fg: "31")), width: "100%", alignment: Right,),
