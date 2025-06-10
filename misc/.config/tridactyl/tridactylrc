@@ -27,7 +27,6 @@ set keytranslatemodes.inputmaps true
 set keytranslatemodes.exmaps true
 set keytranslatemodes.ignoremaps true
 
-set searchurls.!aw https://wiki.archlinux.org/index.php?title=Special:Search&search=
 set searchurls.bandcamp https://bandcamp.com/search?q=%s
 set searchurls.g https://google.com/search?q=%s
 set searchurls.gi https://google.com/search?q=%s&tbm=isch
@@ -36,12 +35,12 @@ set searchurls.imdb https://imdb.com/find?q=%s
 set searchurls.osm https://openstreetmap.org/search?query=%s
 set searchurls.pydoc https://docs.python.org/3/search.html?q=%s
 set searchurls.rustdoc https://doc.rust-lang.org/std/index.html?search=%s
-set searchurls.searxme https://searx.me/?q=%s&categories=general&language=en-US
 set searchurls.steam https://store.steampowered.com/search/?term=%s
 set searchurls.w https://en.wikipedia.org/w/index.php?search=%s&title=Special%3ASearch
 set searchurls.y https://youtube.com/results?search_query=%s
 jsb Object.keys(tri.config.get("searchurls")).reduce((prev, u) => prev.catch(()=>{}).then(_ => tri.excmds.setnull("searchurls." + u)), Promise.resolve())
 
+blacklistadd 192.168.0.1
 blacklistadd 192.168.1.1
 blacklistadd 192.168.88.1
 blacklistadd calendar.google.com
@@ -64,7 +63,6 @@ unbind <F1><C-q><SA-ArrowUp><SA-ArrowUp><SA-ArrowDown><SA-ArrowDown><SA-ArrowLef
 " Comment toggler for Reddit, Hacker News and Lobste.rs
 bind ;c hint -Jc [class*="expand"],[class="togg"],[class="comment_folder"]
 bindurl reddit.com gu urlparent 4
-
 bindurl youtu((\.be)|(be\.com)) f hint -J
 bindurl google(\.[a-zA-Z0-9]+){1,2}/search f hint -Jc #top_nav a, #search a, .card-section a, a.fl, #pnnext, #pnprev
 bindurl google(\.[a-zA-Z0-9]+){1,2}/search F hint -Jbc #top_nav a, #search a, .card-section a, a.fl, #pnnext, #pnprev
@@ -111,7 +109,6 @@ unbindurl mail\.google\.com k
 unbindurl mail\.google\.com x
 unbindurl mail\.google\.com e
 unbindurl youtube.com/watch f
-unbindurl dastereo.ru g x
 
 bind --mode=ex <C-c> ex.hide_and_clear
 unbind --mode=ex <C-w>
@@ -171,7 +168,6 @@ quickmark A magazine.artstation.com/
 quickmark E projecteuler.net/
 quickmark L libgen.li
 quickmark S uso.kkx.one
-quickmark V patreon.com/m/834691/posts?filters[tag]=Tutorial
 quickmark c twitch.tv/cooller
 quickmark e ektoplazm.com/
 quickmark g gmail.com
