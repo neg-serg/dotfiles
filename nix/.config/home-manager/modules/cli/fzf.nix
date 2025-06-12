@@ -58,6 +58,7 @@
       "marker" = lib.mkForce "#04141C";
       "prompt" = lib.mkForce "#005faf";
       "spinner" = lib.mkForce "#3f5876";
+      "border" = lib.mkForce "#04141C";
       "preview-fg" = lib.mkForce "#4f5d78";
     };
 
