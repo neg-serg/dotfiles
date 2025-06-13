@@ -6,6 +6,7 @@
     espanso # systemwide expander for keyboard
     haskellPackages.greenclip # yet another clipboard manager
     inputs.bzmenu.packages.${pkgs.system}.default # bluetooth support menu
+    matugen # modern theme generator like pywal
     wallust # better pywal
   ];
 }
