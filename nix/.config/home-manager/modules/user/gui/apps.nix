@@ -6,5 +6,6 @@
     espanso # systemwide expander for keyboard
     haskellPackages.greenclip # yet another clipboard manager
     inputs.bzmenu.packages.${pkgs.system}.default # bluetooth support menu
+    wallust # better pywal
   ];
 }
