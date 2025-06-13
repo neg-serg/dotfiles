@@ -1,7 +1,6 @@
 {pkgs, inputs, ...}:
 with {
   fabric-ui = pkgs.callPackage ../../../packages/fabric {};
-  hydepanel = pkgs.callPackage ../../../packages/hydepanel {};
 }; {
   home.sessionVariables = {};
   imports = [ inputs.ags.homeManagerModules.default ];
@@ -19,7 +18,6 @@ with {
     fabric-ui # python-based ui library
     fuzzel # wayland launcher
     grim # to take screenshots
-    hydepanel # panel built with fabric-ui
     inputs.iwmenu.packages.${pkgs.system}.default # wifi menu
     satty # screenshot helper tool
     slurp # select region in wayland compositor
