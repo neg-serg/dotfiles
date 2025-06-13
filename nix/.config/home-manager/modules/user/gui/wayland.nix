@@ -1,4 +1,7 @@
-{pkgs, inputs, ...}: {
+{pkgs, inputs, ...}:
+with {
+  fabric-ui = pkgs.callPackage ../../../packages/fabric {};
+}; {
   home.sessionVariables = {};
   imports = [ inputs.ags.homeManagerModules.default ];
   programs.ags = {
@@ -12,6 +15,7 @@
   };
   home.packages = with pkgs; [
     clipse # yet another clipboard manager
+    fabric-ui # python-based ui library
     fuzzel # wayland launcher
     grim # to take screenshots
     inputs.iwmenu.packages.${pkgs.system}.default # wifi menu
