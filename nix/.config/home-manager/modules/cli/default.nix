@@ -11,7 +11,6 @@
     ./fzf.nix
     ./ripgrep.nix
     ./shell.nix # shells which not in nixOs and their completions
-    ./starship.nix # universal command prompt
     ./yazi.nix
   ];
   programs.atuin = {
