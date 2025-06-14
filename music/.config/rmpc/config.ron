@@ -56,6 +56,8 @@
             "": ToggleConsume,
             "": ToggleRandom,
             "": ToggleSingle,
+            "U": Rescan,
+            "u": Update,
             "":  VolumeDown,
             "": VolumeUp,
             "w": ShowHelp,
