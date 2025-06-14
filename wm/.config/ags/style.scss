@@ -1,9 +1,9 @@
 @use "sass:color";
 
-$bg: #000000;
+$bg: #000000d4;
 $fg: #f1f1f1;
 $accent: #378DF7;
-$radius: 7px;
+$radius: 3px;
 
 window.Bar {
     border: none;
@@ -21,12 +21,10 @@ window.Bar {
         button {
             all: unset;
             background-color: transparent;
-
             &:hover label {
                 background-color: color.adjust($fg, $alpha: -0.84);
                 border-color: color.adjust($accent, $alpha: -0.8);
             }
-
             &:active label {
                 background-color: color.adjust($fg, $alpha: -0.8)
             }
@@ -38,6 +36,7 @@ window.Bar {
             margin: 2px;
             border-radius: $radius;
             border: 1pt solid transparent;
+            border-width: 0;
         }
 
         .focused label {
@@ -48,7 +47,6 @@ window.Bar {
 
     .SysTray {
         margin-right: 8px;
-
         button {
             padding: 0 4px;
         }
