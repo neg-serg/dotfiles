@@ -30,7 +30,7 @@ function Media() {
             <box>
                 <box
                     className="Cover"
-                    valign={Gtk.Align.CENTER}
+                    valign={Gtk.Align.LEFT}
                     css={bind(ps[0], "coverArt").as(cover =>
                         `background-image: url('${cover}');`
                     )}
@@ -42,45 +42,27 @@ function Media() {
                 />
             </box>
         ) : (
-            <label label="Nothing Playing" />
+            <label label="" />
         ))}
     </box>
 }
 
 function Workspaces() {
-    const hypr = Hyprland.get_default()
+    const hypr = Hyprland.get_default();
     return <box className="Workspaces">
-        {bind(hypr, "workspaces").as(wss => wss
-            .filter(ws => !(ws.id >= -99 && ws.id <= -2)) // filter out special workspaces
-            .sort((a, b) => a.id - b.id)
-            .map(ws => (
-                <button
-                    className={bind(hypr, "focusedWorkspace").as(fw => ws === fw ? "focused" : "")}
-                    onClicked={() => ws.focus()}>
-                    {ws.id}
-                </button>
-            ))
-        )}
-    </box>
-}
-
-function FocusedClient() {
-    const hypr = Hyprland.get_default()
-    const focused = bind(hypr, "focusedClient")
-
-    return <box
-        className="Focused"
-        visible={focused.as(Boolean)}>
-        {focused.as(client => (
-            client && <label label={bind(client, "title").as(String)} />
-        ))}
-    </box>
+        {bind(hypr, "focusedWorkspace").as(fw => fw ? (
+            <button
+                className="focused"
+                onClicked={() => fw.focus()}>
+                {fw.name}
+            </button>
+        ) : null)}
+    </box>;
 }
 
 function Time({ format = "%H:%M" }) {
     const time = Variable<string>("").poll(1000, () =>
         GLib.DateTime.new_now_local().format(format)!)
-
     return <label
         className="Time"
         onDestroy={() => time.drop()}
@@ -90,24 +72,15 @@ function Time({ format = "%H:%M" }) {
 
 export default function Bar(monitor: Gdk.Monitor) {
     const { BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor
-
     return <window
         className="Bar"
         gdkmonitor={monitor}
         exclusivity={Astal.Exclusivity.EXCLUSIVE}
         anchor={BOTTOM | LEFT | RIGHT}>
         <centerbox>
-            <box hexpand halign={Gtk.Align.START}>
-                <Time />
-            </box>
-            <box>
-                <Media />
-            </box>
-            <box hexpand halign={Gtk.Align.END} >
-                <SysTray />
-                <Workspaces />
-                <FocusedClient />
-            </box>
+            <box hexpand halign={Gtk.Align.START}> <Time />  <Workspaces /> </box>
+            <box> <Media /> </box>
+            <box hexpand halign={Gtk.Align.END} > <SysTray /> </box>
         </centerbox>
     </window>
 }
