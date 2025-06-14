@@ -10,6 +10,8 @@
     status_update_interval_ms: 1000,
     select_current_song_on_change: false,
     enable_mouse: true,
+    max_fps: 240,
+    reflect_changes_to_playlist: true,
     album_art: (
         method: Auto,
         max_size_px: (width: 600, height: 600),
