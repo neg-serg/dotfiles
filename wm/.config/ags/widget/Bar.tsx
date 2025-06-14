@@ -79,8 +79,8 @@ export default function Bar(monitor: Gdk.Monitor) {
         anchor={BOTTOM | LEFT | RIGHT}>
         <centerbox>
             <box hexpand halign={Gtk.Align.START}> <Time />  <Workspaces /> </box>
-            <box> <Media /> </box>
-            <box hexpand halign={Gtk.Align.END} > <SysTray /> </box>
+            <box> <SysTray /> </box>
+            <box hexpand halign={Gtk.Align.END} > <Media /> </box>
         </centerbox>
     </window>
 }
