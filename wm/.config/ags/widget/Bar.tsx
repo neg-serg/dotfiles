@@ -1,6 +1,6 @@
-import { App } from "astal/gtk3"
+import { App } from "astal/gtk4"
 import { Variable, GLib, bind } from "astal"
-import { Astal, Gtk, Gdk } from "astal/gtk3"
+import { Astal, Gtk, Gdk } from "astal/gtk4"
 import Hyprland from "gi://AstalHyprland"
 import Mpris from "gi://AstalMpris"
 import Battery from "gi://AstalBattery"
@@ -12,13 +12,19 @@ function SysTray() {
     const tray = Tray.get_default()
     return <box className="SysTray">
         {bind(tray, "items").as(items => items.map(item => (
-            <menubutton
-                tooltipMarkup={bind(item, "tooltipMarkup")}
-                usePopover={false}
-                actionGroup={bind(item, "actionGroup").as(ag => ["dbusmenu", ag])}
-                menuModel={bind(item, "menuModel")}>
-                <icon gicon={bind(item, "gicon")} />
-            </menubutton>
+            <button
+                className="tray-item"
+                tooltipText={bind(item, "tooltipMarkup")}
+                onClicked={() => item.activate()}
+                setup={(self) => {
+                    const ctrl = new Gtk.GestureClick()
+                    ctrl.set_button(3) // Правая кнопка
+                    ctrl.connect("pressed", () => item.showMenu())
+                    self.add_controller(ctrl)
+                }}
+            >
+                <image gicon={bind(item, "gicon")} pixelSize={16} />
+            </button>
         )))}
     </box>
 }
@@ -27,10 +33,9 @@ function Media() {
     const mpris = Mpris.get_default()
     return <box className="Media">
         {bind(mpris, "players").as(ps => ps[0] ? (
-            <box>
+            <box className="media-player">
                 <box
-                    className="Cover"
-                    valign={Gtk.Align.LEFT}
+                    className="cover-art"
                     css={bind(ps[0], "coverArt").as(cover =>
                         `background-image: url('${cover}');`
                     )}
@@ -87,16 +92,21 @@ function Delim2() {
 }
 
 export default function Bar(monitor: Gdk.Monitor) {
-    const { BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor
+    const { BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor;  // Используем Astal вместо Gdk
     return <window
         className="Bar"
-        gdkmonitor={monitor}
+        // layer="bottom"  // или "top", "bottom", "background"
+        monitor={monitor}
         exclusivity={Astal.Exclusivity.EXCLUSIVE}
         anchor={BOTTOM | LEFT | RIGHT}>
         <centerbox>
-            <box hexpand halign={Gtk.Align.START}> <Lhs /> <Time /> <Delim /> <Workspaces /> <Delim2 /> </box>
+            <box hexpand halign={Gtk.Align.START}> 
+                <Lhs /> <Time /> <Delim /> <Workspaces /> <Delim2 /> 
+            </box>
             <box> <SysTray /> </box>
-            <box hexpand halign={Gtk.Align.END} > <Media /> <Rhs /> </box>
+            <box hexpand halign={Gtk.Align.END}>
+                <Media /> <Rhs /> 
+            </box>
         </centerbox>
     </window>
 }
