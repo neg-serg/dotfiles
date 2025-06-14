@@ -21,7 +21,7 @@
     },
     "ags_2": {
       "inputs": {
-        "astal": "astal_2",
+        "astal": "astal_3",
         "nixpkgs": [
           "hyprpanel",
           "nixpkgs"
@@ -98,6 +98,26 @@
     "astal_2": {
       "inputs": {
         "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1749827284,
+        "narHash": "sha256-AXA0Trif4CNkp1bZl0x+fHmuNWksa1TTYo7jSrwx6XA=",
+        "owner": "aylur",
+        "repo": "astal",
+        "rev": "4e455bb6e7f256742849322d31427b9defc95c16",
+        "type": "github"
+      },
+      "original": {
+        "owner": "aylur",
+        "repo": "astal",
+        "type": "github"
+      }
+    },
+    "astal_3": {
+      "inputs": {
+        "nixpkgs": [
           "hyprpanel",
           "ags",
           "nixpkgs"
@@ -117,7 +137,7 @@
         "type": "github"
       }
     },
-    "astal_3": {
+    "astal_4": {
       "inputs": {
         "nixpkgs": [
           "hyprpanel",
@@ -868,7 +888,7 @@
     "hyprpanel": {
       "inputs": {
         "ags": "ags_2",
-        "astal": "astal_3",
+        "astal": "astal_4",
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
@@ -1254,6 +1274,7 @@
     "root": {
       "inputs": {
         "ags": "ags",
+        "astal": "astal_2",
         "bzmenu": "bzmenu",
         "chaotic": "chaotic",
         "crane": "crane",
