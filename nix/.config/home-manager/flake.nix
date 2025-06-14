@@ -2,7 +2,6 @@
   description = "Home Manager configuration of neg";
   inputs = {
     ags = { url = "github:aylur/ags"; };
-    ashell = { url = "github:MalpenZibo/ashell"; };
     bzmenu = { url = "github:e-tho/bzmenu"; };
     chaotic = { url = "github:chaotic-cx/nyx/nyxpkgs-unstable"; };
     crane = { url = "github:ipetkov/crane"; };
@@ -21,7 +20,6 @@
 
   outputs = inputs @ {
     ags,
-    ashell,
     bzmenu,
     chaotic,
     home-manager,
