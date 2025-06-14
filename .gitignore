@@ -333,3 +333,5 @@ misc/.config/zathura/
 media/.config/mpv/shaders/
 media/.config/mpv/
 shell/.config/tmux/plugins/
+@girs
+node_modules
