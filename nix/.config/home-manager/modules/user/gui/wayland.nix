@@ -14,6 +14,7 @@
     clipse # yet another clipboard manager
     fuzzel # wayland launcher
     grim # to take screenshots
+    inputs.astal.packages.${system}.default # astal library support
     inputs.iwmenu.packages.${pkgs.system}.default # wifi menu
     satty # screenshot helper tool
     slurp # select region in wayland compositor
