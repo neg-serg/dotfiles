@@ -70,6 +70,22 @@ function Time({ format = "%H:%M" }) {
     />
 }
 
+function Lhs() {
+    return <label className="lhs"> </label>;
+}
+
+function Rhs() {
+    return <label className="rhs"> </label>;
+}
+
+function Delim() {
+    return <label className="delim">|</label>;
+}
+
+function Delim2() {
+    return <label className="delim">{'>'}</label>;
+}
+
 export default function Bar(monitor: Gdk.Monitor) {
     const { BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor
     return <window
@@ -78,9 +94,9 @@ export default function Bar(monitor: Gdk.Monitor) {
         exclusivity={Astal.Exclusivity.EXCLUSIVE}
         anchor={BOTTOM | LEFT | RIGHT}>
         <centerbox>
-            <box hexpand halign={Gtk.Align.START}> <Time />  <Workspaces /> </box>
+            <box hexpand halign={Gtk.Align.START}> <Lhs /> <Time /> <Delim /> <Workspaces /> <Delim2 /> </box>
             <box> <SysTray /> </box>
-            <box hexpand halign={Gtk.Align.END} > <Media /> </box>
+            <box hexpand halign={Gtk.Align.END} > <Media /> <Rhs /> </box>
         </centerbox>
     </window>
 }

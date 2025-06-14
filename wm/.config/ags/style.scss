@@ -17,6 +17,27 @@ window.Bar {
         margin: 0 2px;
     }
 
+    .lhs {
+      margin: 0 -10pt;
+      color: #ff3366;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .rhs {
+      margin: 0 -10pt;
+      color: #ff3366;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .delim {
+      margin: 0 -10pt;
+      color: #ff3366;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
     .Workspaces  {
         margin-right: 0px;
         margin-left: 0px;
