@@ -31,6 +31,7 @@
   };
   home.packages = with pkgs; [
     babashka # native clojure for scripts
+    below # interactive tool to view and record historical system data
     choose # yet another cut/awk alternative
     convmv # convert filename encodings
     czkawka # find duplicate pictures and more
