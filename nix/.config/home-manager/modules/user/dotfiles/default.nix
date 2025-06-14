@@ -106,6 +106,10 @@ with {
       recursive = false;
     };
     # █▓▒░ wm ────────────────────────────────────────────────────────────────────────
+    "ashell" = {
+      source = l "${dots}/wm/.config/ashell";
+      recursive = true;
+    };
     "handlr" = {
       source = l "${dots}/wm/.config/handlr";
       recursive = true;
