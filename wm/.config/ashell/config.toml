@@ -7,16 +7,20 @@ clipboard_cmd = "cliphist-rofi-img | wl-copy"
 truncate_title_after_length = 150
 
 [modules]
-left = [ "Workspaces" ]
-right = [ "SystemInfo", [ "Clock", "Privacy", "Settings" ], "CustomNotifications" ]
-
-[updates]
-check_cmd = "checkupdates; paru -Qua"
-update_cmd = 'alacritty -e bash -c "paru; echo Done - Press enter to exit; read" &'
+left = [ "Clock", "Workspaces", "SystemInfo", "CustomNotifications"  ]
+right = [ [ "Privacy", "Settings" ], ]
 
 [workspaces]
 visibility_mode = "All"
 enable_workspace_filling = false
+format = "{icon}"
+persistent_workspaces = false
+show_special = false
+
+[appearance.workspaces]
+active_background = "#7aa2f755"  # Полупрозрачный акцент
+inactive_background = "transparent"
+font_name = "Iosevka"
 
 [keyboard_layout.labels]
 "English (US)" = "🇺🇸"
@@ -42,7 +46,7 @@ warn_threshold = 80
 alert_threshold = 90
 
 [clock]
-format = "%a %d %b %R"
+format = "%H %M"
 
 [media_player]
 max_title_length = 100
@@ -64,8 +68,7 @@ vpn_more_cmd = "nm-connection-editor"
 bluetooth_more_cmd = "blueman-manager"
 
 [appearance]
-# Увеличиваем шрифт и меняем на Iosevka
-font_name = "Iosevka 12"
+font_name = "Iosevka"
 opacity = 0.7
 
 # Холодная цветовая схема Mirodark
