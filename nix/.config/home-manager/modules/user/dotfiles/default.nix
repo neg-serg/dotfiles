@@ -110,6 +110,10 @@ with {
       source = l "${dots}/wm/.config/ashell";
       recursive = true;
     };
+    "ags" = {
+      source = l "${dots}/wm/.config/ags";
+      recursive = true;
+    };
     "handlr" = {
       source = l "${dots}/wm/.config/handlr";
       recursive = true;
