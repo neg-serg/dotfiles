@@ -1,6 +1,6 @@
 {
     "name": "astal-shell",
     "dependencies": {
-        "astal": "/home/neg/.local/share/ags"
+        "astal": "/usr/share/astal/gjs"
     }
 }

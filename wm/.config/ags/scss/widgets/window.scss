@@ -1,0 +1,27 @@
+@use "../variables" as vars;
+
+.window {
+    background-color: vars.$bg;
+    border-radius: 8px;
+    border-color: vars.$primary;
+    border-width: 2px;
+    border-style: solid;
+}
+
+.focusedWindow {
+    background-color: vars.$bg;
+    border-radius: 8px;
+    border-color: vars.$fg;
+    border-width: 2px;
+    border-style: solid;
+}
+
+.sideBar {
+    padding: 2px;
+    min-width: 40px;
+}
+
+.topBar {
+    padding: 2px;
+    min-height: 40px;
+}

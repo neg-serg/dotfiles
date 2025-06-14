@@ -9,6 +9,6 @@
         // "checkJs": true,
         // "allowJs": true,
         "jsx": "react-jsx",
-        "jsxImportSource": "astal/gtk3",
+        "jsxImportSource": "astal/gtk4",
     }
 }
