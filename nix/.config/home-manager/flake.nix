@@ -20,8 +20,8 @@
   };
 
   outputs = inputs @ {
-    ashell,
     ags,
+    ashell,
     bzmenu,
     chaotic,
     home-manager,
@@ -39,7 +39,9 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [ inputs.hyprpanel.overlay ];
+        overlays = [
+          inputs.hyprpanel.overlay
+        ];
       };
       iosevkaneg = iosevka-neg.packages.${system};
       yandex-browser = yandex-browser.packages.${system};
