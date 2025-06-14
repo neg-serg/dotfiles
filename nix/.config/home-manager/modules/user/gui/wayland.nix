@@ -5,9 +5,14 @@
     enable = true;
     configDir = null;
     extraPackages = [
-      inputs.ags.packages.${pkgs.system}.notifd
       inputs.ags.packages.${pkgs.system}.battery
+      inputs.ags.packages.${pkgs.system}.hyprland
       inputs.ags.packages.${pkgs.system}.io
+      inputs.ags.packages.${pkgs.system}.mpris
+      inputs.ags.packages.${pkgs.system}.notifd
+      inputs.ags.packages.${pkgs.system}.wireplumber
+      inputs.ags.packages.${pkgs.system}.network
+      inputs.ags.packages.${pkgs.system}.tray
     ];
   };
   home.packages = with pkgs; [
