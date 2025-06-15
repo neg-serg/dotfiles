@@ -227,6 +227,7 @@
     scripts = with pkgs.mpvScripts; [
       cutter # cut and automatically concat videos
       mpris # MPRIS plugin
+      quack # reduce audio volume after seeking
       quality-menu # ytdl-format quality menu
       seekTo # seek to spefici pos.
       sponsorblock # skip sponsored segments
