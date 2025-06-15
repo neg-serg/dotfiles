@@ -1,93 +1,71 @@
 pragma Singleton
-pragma ComponentBehavior: Bound
 
 import Quickshell
 import Quickshell.Io
 import QtQuick
 
-/**
- * Simple polled network state service.
- */
 Singleton {
     id: root
 
-    property bool wifi: true
-    property bool ethernet: false
-    property int updateInterval: 1000
-    property string networkName: ""
-    property int networkStrength
-    property string materialSymbol: ethernet ? "lan" :
-        (Network.networkName.length > 0 && Network.networkName != "lo") ? (
-        Network.networkStrength > 80 ? "signal_wifi_4_bar" :
-        Network.networkStrength > 60 ? "network_wifi_3_bar" :
-        Network.networkStrength > 40 ? "network_wifi_2_bar" :
-        Network.networkStrength > 20 ? "network_wifi_1_bar" :
-        "signal_wifi_0_bar"
-    ) : "signal_wifi_off"
-    function update() {
-        updateConnectionType.startCheck();
-        updateNetworkName.running = true;
-        updateNetworkStrength.running = true;
-    }
+    readonly property list<AccessPoint> networks: []
+    readonly property AccessPoint active: networks.find(n => n.active) ?? null
 
-    Timer {
-        interval: 10
+    reloadableId: "network"
+
+    Process {
         running: true
-        repeat: true
-        onTriggered: {
-            root.update();
-            interval = root.updateInterval;
+        command: ["nmcli", "m"]
+        stdout: SplitParser {
+            onRead: getNetworks.running = true
         }
     }
 
     Process {
-        id: updateConnectionType
-        property string buffer
-        command: ["sh", "-c", "nmcli -t -f NAME,TYPE,DEVICE c show --active"]
+        id: getNetworks
         running: true
-        function startCheck() {
-            buffer = "";
-            updateConnectionType.running = true;
-        }
+        command: ["sh", "-c", `nmcli -g ACTIVE,SIGNAL,FREQ,SSID,BSSID d w | jq -ncR '[(inputs | split("(?<!\\\\\\\\):"; "g")) | select(.[3] | length >= 4)]'`]
         stdout: SplitParser {
             onRead: data => {
-                updateConnectionType.buffer += data + "\n";
-            }
-        }
-        onExited: (exitCode, exitStatus) => {
-            const lines = updateConnectionType.buffer.trim().split('\n');
-            let hasEthernet = false;
-            let hasWifi = false;
-            lines.forEach(line => {
-                if (line.includes("ethernet"))
-                    hasEthernet = true;
-                else if (line.includes("wireless"))
-                    hasWifi = true;
-            });
-            root.ethernet = hasEthernet;
-            root.wifi = hasWifi;
-        }
-    }
+                const networks = JSON.parse(data).map(n => [n[0] === "yes", parseInt(n[1]), parseInt(n[2]), n[3], n[4].replace(/\\/g, "")]);
+                const rNetworks = root.networks;
 
-    Process {
-        id: updateNetworkName
-        command: ["sh", "-c", "nmcli -t -f NAME c show --active | head -1"]
-        running: true
-        stdout: SplitParser {
-            onRead: data => {
-                root.networkName = data;
+                const destroyed = rNetworks.filter(rn => !networks.find(n => n[2] === rn.frequency && n[3] === rn.ssid && n[4] === rn.bssid));
+                for (const network of destroyed)
+                    rNetworks.splice(rNetworks.indexOf(network), 1).forEach(n => n.destroy());
+
+                for (const network of networks) {
+                    const match = rNetworks.find(n => n.frequency === network[2] && n.ssid === network[3] && n.bssid === network[4]);
+                    if (match) {
+                        match.active = network[0];
+                        match.strength = network[1];
+                        match.frequency = network[2];
+                        match.ssid = network[3];
+                        match.bssid = network[4];
+                    } else {
+                        rNetworks.push(apComp.createObject(root, {
+                            active: network[0],
+                            strength: network[1],
+                            frequency: network[2],
+                            ssid: network[3],
+                            bssid: network[4]
+                        }));
+                    }
+                }
             }
         }
     }
 
-    Process {
-        id: updateNetworkStrength
-        running: true
-        command: ["sh", "-c", "nmcli -f IN-USE,SIGNAL,SSID device wifi | awk '/^\*/{if (NR!=1) {print $2}}'"]
-        stdout: SplitParser {
-            onRead: data => {
-                root.networkStrength = parseInt(data);
-            }
-        }
+    component AccessPoint: QtObject {
+        required property string ssid
+        required property string bssid
+        required property int strength
+        required property int frequency
+        required property bool active
+    }
+
+    Component {
+        id: apComp
+
+        AccessPoint {}
     }
 }

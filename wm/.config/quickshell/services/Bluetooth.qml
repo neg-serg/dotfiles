@@ -1,73 +1,80 @@
 pragma Singleton
-pragma ComponentBehavior: Bound
 
-import Quickshell;
-import Quickshell.Io;
-import QtQuick;
+import Quickshell
+import Quickshell.Io
+import QtQuick
 
-/**
- * Basic polled Bluetooth state.
- */
 Singleton {
     id: root
 
-    property int updateInterval: 1000
-    property string bluetoothDeviceName: ""
-    property string bluetoothDeviceAddress: ""
-    property bool bluetoothEnabled: false
-    property bool bluetoothConnected: false
+    property bool powered
+    property bool discovering
+    readonly property list<Device> devices: []
 
-    function update() {
-        updateBluetoothDevice.running = true
-        updateBluetoothStatus.running = true
-        updateBluetoothEnabled.running = true
-    }
-
-    Timer {
-        interval: 10
-        running: true
-        repeat: true
-        onTriggered: {
-            update()
-            interval = root.updateInterval
-        }
-    }
-
-    // Check if Bluetooth is enabled (controller powered on)
     Process {
-        id: updateBluetoothEnabled
-        command: ["sh", "-c", "bluetoothctl show | grep -q 'Powered: yes' && echo 1 || echo 0"]
         running: true
+        command: ["bluetoothctl"]
         stdout: SplitParser {
-            onRead: data => {
-                root.bluetoothEnabled = (parseInt(data) === 1)
+            onRead: {
+                getInfo.running = true;
+                getDevices.running = true;
             }
         }
     }
 
-    // Get the name and address of the first connected Bluetooth device
     Process {
-        id: updateBluetoothDevice
-        command: ["sh", "-c", "bluetoothctl info | awk -F': ' '/Name: /{name=$2} /Device /{addr=$2} END{print name \":\" addr}'"]
+        id: getInfo
         running: true
+        command: ["sh", "-c", "bluetoothctl show | paste -s"]
         stdout: SplitParser {
             onRead: data => {
-                let parts = data.split(":")
-                root.bluetoothDeviceName = parts[0] || ""
-                root.bluetoothDeviceAddress = parts[1] || ""
+                root.powered = data.includes("Powered: yes");
+                root.discovering = data.includes("Discovering: yes");
             }
         }
     }
 
-    // Check if any device is connected
     Process {
-        id: updateBluetoothStatus
-        command: ["sh", "-c", "bluetoothctl info | grep -q 'Connected: yes' && echo 1 || echo 0"]
+        id: getDevices
         running: true
+        command: ["fish", "-c", `for a in (bluetoothctl devices | cut -d ' ' -f 2); bluetoothctl info $a | jq -R 'reduce (inputs / ":") as [$key, $value] ({}; .[$key | ltrimstr("\t")] = ($value | ltrimstr(" ")))' | jq -c --arg addr $a '.Address = $addr'; end | jq -sc`]
         stdout: SplitParser {
             onRead: data => {
-                root.bluetoothConnected = (parseInt(data) === 1)
+                const devices = JSON.parse(data).filter(d => d.Name);
+                const rDevices = root.devices;
+
+                const destroyed = rDevices.filter(rd => !devices.find(d => d.Address === rd.address));
+                for (const device of destroyed)
+                    rDevices.splice(rDevices.indexOf(device), 1).forEach(d => d.destroy());
+
+                for (const device of devices) {
+                    const match = rDevices.find(d => d.address === device.Address);
+                    if (match) {
+                        match.lastIpcObject = device;
+                    } else {
+                        rDevices.push(deviceComp.createObject(root, {
+                            lastIpcObject: device
+                        }));
+                    }
+                }
             }
         }
+    }
+
+    component Device: QtObject {
+        required property var lastIpcObject
+        readonly property string name: lastIpcObject.Name
+        readonly property string alias: lastIpcObject.Alias
+        readonly property string address: lastIpcObject.Address
+        readonly property string icon: lastIpcObject.Icon
+        readonly property bool connected: lastIpcObject.Connected === "yes"
+        readonly property bool paired: lastIpcObject.Paired === "yes"
+        readonly property bool trusted: lastIpcObject.Trusted === "yes"
+    }
+
+    Component {
+        id: deviceComp
+
+        Device {}
     }
 }

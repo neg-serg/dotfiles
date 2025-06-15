@@ -1,43 +1,33 @@
 pragma Singleton
 pragma ComponentBehavior: Bound
 
-// From https://github.com/caelestia-dots/shell/ (`quickshell` branch) with modifications.
-// License: GPLv3
-
+import "root:/widgets"
 import Quickshell
 import Quickshell.Io
-import Quickshell.Hyprland
 import QtQuick
 
-/**
- * For managing brightness of monitors. Supports both brightnessctl and ddcutil.
- */
 Singleton {
     id: root
 
-    signal brightnessChanged()
-
     property var ddcMonitors: []
-    readonly property list<BrightnessMonitor> monitors: Quickshell.screens.map(screen => monitorComp.createObject(root, {
-        screen
-    }))
+    readonly property list<Monitor> monitors: variants.instances
 
     function getMonitorForScreen(screen: ShellScreen): var {
-        return monitors.find(m => m.screen === screen);
+        return monitors.find(m => m.modelData === screen);
     }
 
     function increaseBrightness(): void {
         const focusedName = Hyprland.focusedMonitor.name;
-        const monitor = monitors.find(m => focusedName === m.screen.name);
+        const monitor = monitors.find(m => focusedName === m.modelData.name);
         if (monitor)
-            monitor.setBrightness(monitor.brightness + 0.05);
+            monitor.setBrightness(monitor.brightness + 0.1);
     }
 
     function decreaseBrightness(): void {
         const focusedName = Hyprland.focusedMonitor.name;
-        const monitor = monitors.find(m => focusedName === m.screen.name);
+        const monitor = monitors.find(m => focusedName === m.modelData.name);
         if (monitor)
-            monitor.setBrightness(monitor.brightness - 0.05);
+            monitor.setBrightness(monitor.brightness - 0.1);
     }
 
     reloadableId: "brightness"
@@ -45,6 +35,14 @@ Singleton {
     onMonitorsChanged: {
         ddcMonitors = [];
         ddcProc.running = true;
+    }
+
+    Variants {
+        id: variants
+
+        model: Quickshell.screens
+
+        Monitor {}
     }
 
     Process {
@@ -70,83 +68,51 @@ Singleton {
         id: setProc
     }
 
-    component BrightnessMonitor: QtObject {
+    CustomShortcut {
+        name: "brightnessUp"
+        onPressed: root.increaseBrightness()
+    }
+
+    CustomShortcut {
+        name: "brightnessDown"
+        onPressed: root.decreaseBrightness()
+    }
+
+    component Monitor: QtObject {
         id: monitor
 
-        required property ShellScreen screen
-        readonly property bool isDdc: root.ddcMonitors.some(m => m.model === screen.model)
-        readonly property string busNum: root.ddcMonitors.find(m => m.model === screen.model)?.busNum ?? ""
+        required property ShellScreen modelData
+        readonly property bool isDdc: root.ddcMonitors.some(m => m.model === modelData.model)
+        readonly property string busNum: root.ddcMonitors.find(m => m.model === modelData.model)?.busNum ?? ""
         property real brightness
-        property bool ready: false
-
-        onBrightnessChanged: {
-            if (monitor.ready) {
-                root.brightnessChanged();
-            }
-        }
-
-        function initialize() {
-            monitor.ready = false;
-            initProc.command = isDdc ? ["ddcutil", "-b", busNum, "getvcp", "10", "--brief"] : ["sh", "-c", `echo "a b c $(brightnessctl g) $(brightnessctl m)"`];
-            initProc.running = true;
-        }
 
         readonly property Process initProc: Process {
             stdout: SplitParser {
                 onRead: data => {
                     const [, , , current, max] = data.split(" ");
                     monitor.brightness = parseInt(current) / parseInt(max);
-                    monitor.ready = true;
                 }
             }
         }
 
         function setBrightness(value: real): void {
-            value = Math.max(0.01, Math.min(1, value));
+            value = Math.max(0, Math.min(1, value));
             const rounded = Math.round(value * 100);
             if (Math.round(brightness * 100) === rounded)
                 return;
             brightness = value;
-            setProc.command = isDdc ? ["ddcutil", "-b", busNum, "setvcp", "10", rounded] : ["brightnessctl", "s", `${rounded}%`, "--quiet"];
+            setProc.command = isDdc ? ["ddcutil", "-b", busNum, "setvcp", "10", rounded] : ["brightnessctl", "s", `${rounded}%`];
             setProc.startDetached();
         }
 
-        Component.onCompleted: {
-            initialize();
-        }
-
         onBusNumChanged: {
-            initialize();
-        }
-    }
-
-    Component {
-        id: monitorComp
-
-        BrightnessMonitor {}
-    }
-
-    IpcHandler {
-        target: "brightness"
-
-        function increment() {
-            onPressed: root.increaseBrightness()
+            initProc.command = isDdc ? ["ddcutil", "-b", busNum, "getvcp", "10", "--brief"] : ["sh", "-c", `echo "a b c $(brightnessctl g) $(brightnessctl m)"`];
+            initProc.running = true;
         }
 
-        function decrement() {
-            onPressed: root.decreaseBrightness()
+        Component.onCompleted: {
+            initProc.command = isDdc ? ["ddcutil", "-b", busNum, "getvcp", "10", "--brief"] : ["sh", "-c", `echo "a b c $(brightnessctl g) $(brightnessctl m)"`];
+            initProc.running = true;
         }
-    }
-
-    GlobalShortcut {
-        name: "brightnessIncrease"
-        description: qsTr("Increase brightness")
-        onPressed: root.increaseBrightness()
-    }
-
-    GlobalShortcut {
-        name: "brightnessDecrease"
-        description: qsTr("Decrease brightness")
-        onPressed: root.decreaseBrightness()
     }
 }
