@@ -29,8 +29,12 @@
     hyprpolkitagent # better polkit agent
     hyprprop # xrop for hyprland
     hyprutils # small library for hyprland
-    libsForQt5.qt5ct kdePackages.qt6ct # qt integration stuff
+    kdePackages.qt5compat # quickshell compatibility
+    kdePackages.qt6ct # qt integration stuff
+    libsForQt5.qt5ct
     pyprland # hyperland plugin system
+    qt5.qtdeclarative   # QML-движок
+    libsForQt5.qt5.qtgraphicaleffects # Модуль GraphicalEffects
   ];
   programs.hyprlock.enable = true;
 }
