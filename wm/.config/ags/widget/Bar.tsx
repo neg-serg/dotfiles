@@ -94,7 +94,7 @@ export default function Bar(monitor: Gdk.Monitor) {
         exclusivity={Astal.Exclusivity.EXCLUSIVE}
         anchor={BOTTOM | LEFT | RIGHT}>
         <centerbox>
-            <box hexpand halign={Gtk.Align.START}> <Lhs /> <Time /> <Delim /> <Workspaces /> <Delim2 /> </box>
+            <box hexpand halign={Gtk.Align.START}> <Lhs /> <Time /> <Workspaces /> </box>
             <box> <SysTray /> </box>
             <box hexpand halign={Gtk.Align.END} > <Media /> <Rhs /> </box>
         </centerbox>
