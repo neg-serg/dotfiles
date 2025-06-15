@@ -5,6 +5,7 @@
   home.packages = with pkgs; [
     tomb # file encryption in linux
     keepass # password manager with strong cryptography
+    pass-git-helper # git credential helper interfacing with pass
     # password manager via gpg
     (pass.withExtensions (ext:
       with ext; [
