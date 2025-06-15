@@ -36,8 +36,8 @@
     cpufetch # fetch for cpu
     czkawka # find duplicate pictures and more
     dcfldd # better dd with progress bar and inline hash verification
-    diffoscope # diff for various format
     diff-so-fancy # human-readable diff
+    diffoscope # diff for various format
     enca # autoreencode
     entr # run commands when files change
     expect # do tty stuff noninteractively
