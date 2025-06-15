@@ -4,5 +4,6 @@
     memtester # memory test
     stress-ng # stress testing
     vrrtest # freesync/gsync working test
+    rewrk # http benchmark
   ];
 }
