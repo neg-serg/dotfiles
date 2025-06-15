@@ -10,6 +10,5 @@
     prettyping # fancy ping
     whois # get domain info
     xidel # download webpage parts
-    yewtube # youtube terminal viewer
   ];
 }
