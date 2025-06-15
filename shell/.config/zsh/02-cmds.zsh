@@ -215,6 +215,7 @@ if [[ -e /etc/NIXOS ]]; then
     }
     alias nixify='nix-shell -p nur.repos.kampka.nixify'
     alias S="nix shell"
+    nbuild(){ nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'}
     nlocate(){ nix run github:nix-community/nix-index-database "$@" }
     qi(){ NIXPKGS_ALLOW_UNFREE=1 nix shell --impure 'nixpkgs#'$1 }
     q(){ nix shell 'nixpkgs#'$1 }
