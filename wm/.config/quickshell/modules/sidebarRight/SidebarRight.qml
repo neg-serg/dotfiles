@@ -64,14 +64,7 @@ Scope {
             }
             width: sidebarWidth - Appearance.sizes.hyprlandGapsOut - Appearance.sizes.elevationMargin
             height: parent.height - Appearance.sizes.hyprlandGapsOut * 2
-
-            focus: GlobalStates.sidebarRightOpen
-            Keys.onPressed: (event) => {
-                if (event.key === Qt.Key_Escape) {
-                    sidebarRoot.hide();
-                }
-            }
-
+            
             sourceComponent: Item {
                 implicitHeight: sidebarRightBackground.implicitHeight
                 implicitWidth: sidebarRightBackground.implicitWidth
@@ -88,6 +81,13 @@ Scope {
                     color: Appearance.colors.colLayer0
                     radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 1
 
+                    Keys.onPressed: (event) => {
+                        if (event.key === Qt.Key_Escape) {
+                            sidebarRoot.hide();
+                        }
+                    }
+
+                    
                     ColumnLayout {
                         spacing: sidebarPadding
                         anchors.fill: parent
@@ -194,7 +194,7 @@ Scope {
                 }
             }
         }
-
+        
 
     }
 
