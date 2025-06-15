@@ -47,6 +47,7 @@
     massren # massive rename
     mergiraf # ast-aware git merge driver
     miller # awk/cut/join alternative
+    numbat # fancy scientific calculator
     par # better fmt
     patool # python archive unpack
     ranger # need for termfilechooser
