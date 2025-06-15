@@ -5,6 +5,8 @@
     dprint # code formatting platform
     flawfinder # examine c, cpp code for security flaws
     mypy # optional static-typing for python
+    radicle-explorer # web frontend for radicle
+    radicle-node # radicle server
     scc # parallel cloc
     shfmt # shell formatting
     stylua # lua styler
