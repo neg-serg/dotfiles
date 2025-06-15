@@ -16,6 +16,7 @@ with {
     pngquant # convert png from RGBA to 8 bit with alpha-channel
     qrencode # qr encoding
     scour # svg optimizer
+    viu # console image viewer
     zbar # bar code reader
   ];
 }
