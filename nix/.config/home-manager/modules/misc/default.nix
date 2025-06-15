@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     blesh # bluetooth shell
-    pwgen # generate passwords
+    pwgen-secure # generate passwords
   ];
 }
