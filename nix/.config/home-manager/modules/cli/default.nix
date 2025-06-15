@@ -33,6 +33,7 @@
     below # interactive tool to view and record historical system data
     choose # yet another cut/awk alternative
     convmv # convert filename encodings
+    cpufetch # fetch for cpu
     czkawka # find duplicate pictures and more
     dcfldd # better dd with progress bar and inline hash verification
     diffoscope # diff for various format
@@ -50,6 +51,7 @@
     numbat # fancy scientific calculator
     par # better fmt
     patool # python archive unpack
+    ramfetch # fetch for ram
     ranger # need for termfilechooser
     rhash # compute hashsums
     sad # more simple sed alternative
@@ -60,6 +62,7 @@
     urlscan # extract urls from text
     urlwatch # watch for urls
     viddy # modern watch command
+    zfxtop # fancy top in commandline
     zoxide # better fasd for some
   ];
 }
