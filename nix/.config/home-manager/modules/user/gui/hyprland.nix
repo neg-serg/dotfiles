@@ -1,4 +1,4 @@
-{pkgs, hy3, ...}: {
+{pkgs, hy3, inputs, ...}: {
   wayland.windowManager.hyprland = {
     enable = true;
     package = null;
@@ -29,12 +29,26 @@
     hyprpolkitagent # better polkit agent
     hyprprop # xrop for hyprland
     hyprutils # small library for hyprland
+    inputs.quickshell.packages.${pkgs.system}.default
+    kdePackages.kdialog
+    kdePackages.qt5compat
     kdePackages.qt5compat # quickshell compatibility
     kdePackages.qt6ct # qt integration stuff
-    libsForQt5.qt5ct
+    kdePackages.qtdeclarative
+    kdePackages.qtimageformats
+    kdePackages.qtmultimedia
+    kdePackages.qtpositioning
+    kdePackages.qtquicktimeline
+    kdePackages.qtsensors
+    kdePackages.qtsvg
+    kdePackages.qttools
+    kdePackages.qttranslations
+    kdePackages.qtvirtualkeyboard
+    kdePackages.qtwayland
+    libsForQt5.qt5ct # libraries for qt5ct support
+    libsForQt5.qt5.qtgraphicaleffects
     pyprland # hyperland plugin system
-    qt5.qtdeclarative   # QML-движок
-    libsForQt5.qt5.qtgraphicaleffects # Модуль GraphicalEffects
+    upower
   ];
   programs.hyprlock.enable = true;
 }
