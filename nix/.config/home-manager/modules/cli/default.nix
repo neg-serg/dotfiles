@@ -55,6 +55,7 @@
     sad # more simple sed alternative
     sd # bettter sed
     speedtest-cli # test network
+    taplo # fancy toml toolkit
     tealdeer # short man, tldr replacement written in rust
     urlscan # extract urls from text
     urlwatch # watch for urls
