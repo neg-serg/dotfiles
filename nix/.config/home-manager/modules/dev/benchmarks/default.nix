@@ -2,8 +2,9 @@
   nixpkgs.config.allowUnfree = true;
   home.packages = with pkgs; [
     memtester # memory test
+    rewrk # http benchmark
     stress-ng # stress testing
     vrrtest # freesync/gsync working test
-    rewrk # http benchmark
+    wrk2 # yet another http benchmark
   ];
 }
