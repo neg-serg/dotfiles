@@ -30,24 +30,13 @@ return {
       local Align = { provider = '%=' }
       local Space = { provider = ' ' }
 
-      -- Check for empty buffer
+      -- Check for empty/no file buffer
       local function is_empty()
         return vim.fn.empty(vim.fn.expand('%:t')) == 1
       end
 
-      -- Windline-style empty buffer indicator
-      local EmptyBufferIndicator = {
-        condition = is_empty,
-        hl = { fg = colors.white, bg = colors.black },
-        provider = function()
-          -- Show current directory path (relative) even in empty buffers
-          local dir = vim.fn.fnamemodify(vim.fn.getcwd(), ':~')
-          return '  '..dir..' ¦  New Buffer '
-        end
-      }
-
-      -- Main components for non-empty buffers
-      local NonEmptyComponents = {
+      -- Main components for files
+      local FileComponents = {
         condition = function() return not is_empty() end,
         
         -- Folder icon
@@ -56,7 +45,7 @@ return {
           hl = { fg = colors.blue, bg = colors.black }
         },
         
-        -- Current directory (relative path)
+        -- Current directory
         {
           provider = function()
             return vim.fn.fnamemodify(vim.fn.getcwd(), ':~')
@@ -64,7 +53,7 @@ return {
           hl = { fg = colors.white, bg = colors.black }
         },
         
-        -- Divider (matches Windline exactly)
+        -- Divider
         {
           provider = ' ¦ ',
           hl = { fg = colors.blue, bg = colors.black }
@@ -79,7 +68,7 @@ return {
           hl = { fg = colors.cyan, bg = colors.black }
         },
         
-        -- Filename only
+        -- Filename
         {
           provider = function()
             return vim.fn.expand('%:t')
@@ -87,17 +76,19 @@ return {
           hl = { fg = colors.white, bg = colors.black }
         },
         
-        -- Modification indicator
+        -- Modified indicator
         {
           condition = function() return vim.bo.modified end,
           provider = ' ',
           hl = { fg = colors.blue, bg = colors.black }
-        },
-        
-        Space,
+        }
+      }
+
+      -- Right-aligned components
+      local RightComponents = {
         Align,
         
-        -- LSP diagnostics
+        -- Diagnostics
         {
           condition = conditions.has_diagnostics,
           static = {
@@ -124,7 +115,7 @@ return {
           }
         },
         
-        -- LSP indicator
+        -- LSP
         {
           condition = conditions.lsp_attached,
           provider = '  ',
@@ -144,18 +135,28 @@ return {
         }
       }
 
+      -- Minimal indicator for empty buffers
+      local EmptyIndicator = {
+        condition = is_empty,
+        provider = '[N]',
+        hl = { fg = colors.white, bg = colors.black }
+      }
+
       -- Main statusline
       local DefaultStatusline = {
         hl = { fg = colors.white, bg = colors.black },
-        EmptyBufferIndicator,
-        NonEmptyComponents
+        -- Show either file components or minimal indicator
+        utils.surround({ '', '' }, colors.black, {
+          fallthrough = false,
+          EmptyIndicator,
+          FileComponents,
+        }),
+        -- Right components show in both cases
+        RightComponents
       }
 
       require('heirline').setup({
-        statusline = {
-          fallthrough = false,
-          DefaultStatusline
-        }
+        statusline = DefaultStatusline
       })
     end
   }
