@@ -1,7 +1,7 @@
+-- ┌───────────────────────────────────────────────────────────────────────────────────┐
+-- │ █▓▒░ rebelot/heirline.nvim                                                        │
+-- └───────────────────────────────────────────────────────────────────────────────────┘
 return {
-  -- ┌───────────────────────────────────────────────────────────────────────────────────┐
-  -- │ █▓▒░ rebelot/heirline.nvim                                                        │
-  -- └───────────────────────────────────────────────────────────────────────────────────┘
     'rebelot/heirline.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
@@ -70,6 +70,12 @@ return {
 
       -- Right side components
       local RightComponents = {
+        -- Macro recording indicator
+        {
+          condition = function() return vim.fn.reg_recording() ~= '' end,
+          provider = function() return '  REC @'..vim.fn.reg_recording()..' ' end,
+          hl = { fg = colors.red, bg = colors.black }
+        },
         Align,
         -- Diagnostics
         {
