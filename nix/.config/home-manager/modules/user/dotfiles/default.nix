@@ -50,7 +50,6 @@ in {
     
     # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
     "ags" = mkSymlink "wm/.config/ags" true;
-    "quickshell" = mkSymlink "wm/.config/quickshell" true;
     "handlr" = mkSymlink "wm/.config/handlr" true;
     "swaync" = mkSymlink "wm/swaync/.config/swaync" true;
     "warpd" = mkSymlink "wm/.config/warpd" true;
