@@ -49,6 +49,7 @@
     mergiraf # ast-aware git merge driver
     miller # awk/cut/join alternative
     numbat # fancy scientific calculator
+    ouch # cli archive extractor
     par # better fmt
     patool # python archive unpack
     ramfetch # fetch for ram
