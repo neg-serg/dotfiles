@@ -17,4 +17,5 @@ require'04-aucmds'
 require'08-cmds'
 require'14-abbr'
 require'62-sort-operator'
+require'75-smart-cd'.setup()
 require'langmapper'.automapping({ global = true, buffer = true })
