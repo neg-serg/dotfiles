@@ -210,7 +210,7 @@ if [[ -e /etc/NIXOS ]]; then
     }
     xkcdpass(){echo "$(nix run nixpkgs#xkcdpass -- -d '-' -n 3 -C capitalize)$((RANDOM % 9))"}
     _exists nh && {
-        alias seh="home-manager -b bck switch -j 32 --cores 32"
+        alias seh="home-manager -b bck switch -j 32 --cores 32 --flake ~/.config/home-manager"
         alias ser="nh os switch /etc/nixos"
     }
     alias nixify='nix-shell -p nur.repos.kampka.nixify'
