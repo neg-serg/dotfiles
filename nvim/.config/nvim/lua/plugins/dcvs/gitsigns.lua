@@ -7,6 +7,21 @@ return {'lewis6991/gitsigns.nvim', -- fast git decorations
         local status, gitsigns=pcall(require, 'gitsigns')
         if (not status) then return end
         gitsigns.setup {
+            current_line_blame=true,
+            current_line_blame_opts={
+                delay=1000,
+                virt_text = true,
+                virt_text_pos = 'right_align',  -- Или 'eol'
+            },
+            on_attach = function(bufnr)
+                local gs = package.loaded.gitsigns
+                vim.keymap.set('n', '<leader>b', function()
+                    gs.preview_hunk()
+                end, { buffer = bufnr, desc = 'Git: [H]over [B]lame' })
+                vim.keymap.set('n', '<leader>q', function()
+                    gs.blame_line({full=true})
+                end, { buffer=bufnr})
+            end,
             signs={
                 add={text='▎', show_count=false},
                 change={text='▎', show_count=false},
