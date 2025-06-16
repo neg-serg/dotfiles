@@ -10,7 +10,7 @@ Map('n', '<C-h>', '<C-w>h', {nowait = true})
 map('n', '_', "<Cmd>exe 'e ' . getcwd()<CR>")
 
 Map('n', 'q', '<NOP>')
-Map('n', 'Q', '<NOP>')
+Map('n', 'Q', 'q', {noremap=true})
 Map('', '<F1>', '<NOP>')
 
 map('t', '<Esc>', '<C-\\><C-n>', {silent=true}) -- Escape as normal
