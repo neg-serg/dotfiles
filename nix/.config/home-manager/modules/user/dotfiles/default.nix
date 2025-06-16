@@ -1,179 +1,77 @@
-{
-  config,
-  pkgs,
-  ...
-}:
-with {
+{ config, pkgs, ... }:
+let
   l = config.lib.file.mkOutOfStoreSymlink;
   dots = "${config.home.homeDirectory}/.dotfiles";
-}; {
+  mkSymlink = path: recursive: {
+    source = l "${dots}/${path}";
+    inherit recursive;
+  };
+in {
   xdg.configFile = {
     # █▓▒░ gdb ──────────────────────────────────────────────────────────────────────────
-    "gdb" = {
-      source = l "${dots}/gdb/.config/gdb";
-      recursive = true;
-    };
+    "gdb" = mkSymlink "gdb/.config/gdb" true;
+    
     # █▓▒░ git ──────────────────────────────────────────────────────────────────────────
-    "tig" = {
-      source = l "${dots}/git/.config/tig";
-      recursive = true;
-    };
+    "tig" = mkSymlink "git/.config/tig" true;
+    
     # █▓▒░ mail ─────────────────────────────────────────────────────────────────────────
-    "isync" = {
-      source = l "${dots}/mail/.config/isync";
-      recursive = true;
-    };
-    "mutt" = {
-      source = l "${dots}/mail/.config/mutt";
-      recursive = true;
-    };
+    "isync" = mkSymlink "mail/.config/isync" true;
+    "mutt" = mkSymlink "mail/.config/mutt" true;
+    
     # █▓▒░ media ────────────────────────────────────────────────────────────────────────
-    "nsxiv" = {
-      source = l "${dots}/media/.config/nsxiv";
-      recursive = true;
-    };
+    "nsxiv" = mkSymlink "media/.config/nsxiv" true;
+    
     # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
-    "amfora" = {
-      source = l "${dots}/misc/.config/amfora";
-      recursive = true;
-    };
-    "dosbox" = {
-      source = l "${dots}/misc/.config/dosbox";
-      recursive = true;
-    };
-    "icedtea-web" = {
-      source = l "${dots}/misc/.config/icedtea-web";
-      recursive = true;
-    };
-    "stig" = {
-      source = l "${dots}/misc/.config/stig";
-      recursive = true;
-    };
-    "rustmission" = {
-      source = l "${dots}/misc/.config/rustmission";
-      recursive = true;
-    };
-    "transmission-daemon" = {
-      source = l "${dots}/misc/.config/transmission-daemon";
-      recursive = true;
-    };
-    "tridactyl" = {
-      source = l "${dots}/misc/.config/tridactyl";
-      recursive = true;
-    };
+    "amfora" = mkSymlink "misc/.config/amfora" true;
+    "dosbox" = mkSymlink "misc/.config/dosbox" true;
+    "icedtea-web" = mkSymlink "misc/.config/icedtea-web" true;
+    "stig" = mkSymlink "misc/.config/stig" true;
+    "rustmission" = mkSymlink "misc/.config/rustmission" true;
+    "transmission-daemon" = mkSymlink "misc/.config/transmission-daemon" true;
+    "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
+    
     # █▓▒░ music ────────────────────────────────────────────────────────────────────────
-    "ncpamixer.conf" = {
-      source = l "${dots}/music/.config/ncpamixer.conf";
-      recursive = true;
-    };
-    "rmpc" = {
-      source = l "${dots}/music/.config/rmpc";
-      recursive = true;
-    };
+    "ncpamixer.conf" = mkSymlink "music/.config/ncpamixer.conf" true;
+    "rmpc" = mkSymlink "music/.config/rmpc" true;
+    
     # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
-    "home-manager" = {
-      source = l "${dots}/nix/.config/home-manager";
-      recursive = true;
-    };
+    "home-manager" = mkSymlink "nix/.config/home-manager" true;
+    
     # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
-    "rofi" = {
-      source = l "${dots}/rofi/.config/rofi";
-      recursive = true;
-    };
-    "tofi" = {
-      source = l "${dots}/tofi/.config/tofi";
-      recursive = true;
-    };
-    "fuzzel" = {
-      source = l "${dots}/fuzzel/.config/fuzzel";
-      recursive = true;
-    };
-    # █▓▒░ shell ──────────────────────────────────────────────────────────────────────────
-    "dircolors" = {
-      source = l "${dots}/shell/.config/dircolors";
-      recursive = true;
-    };
-    "inputrc" = {
-      source = l "${dots}/shell/.config/inputrc";
-      recursive = true;
-    };
-    "tmux" = {
-      source = l "${dots}/shell/.config/tmux";
-      recursive = true;
-    };
-    "zsh" = {
-      source = l "${dots}/shell/.config/zsh";
-      recursive = false;
-    };
-    # █▓▒░ wm ────────────────────────────────────────────────────────────────────────
-    "ags" = {
-      source = l "${dots}/wm/.config/ags";
-      recursive = true;
-    };
-    "quickshell" = {
-      source = l "${dots}/wm/.config/quickshell";
-      recursive = true;
-    };
-    "handlr" = {
-      source = l "${dots}/wm/.config/handlr";
-      recursive = true;
-    };
-    "hypr/init.conf" = {
-      source = l "${dots}/wm/.config/hypr/init.conf";
-      recursive = false;
-    };
-    "hypr/rules.conf" = {
-      source = l "${dots}/wm/.config/hypr/rules.conf";
-      recursive = false;
-    };
-    "hypr/bindings.conf" = {
-      source = l "${dots}/wm/.config/hypr/bindings.conf";
-      recursive = false;
-    };
-    "hypr/autostart.conf" = {
-      source = l "${dots}/wm/.config/hypr/autostart.conf";
-      recursive = false;
-    };
-    "hypr/workspaces.conf" = {
-      source = l "${dots}/wm/.config/hypr/workspaces.conf";
-      recursive = false;
-    };
-    "hypr/pyprland.toml" = {
-      source = l "${dots}/wm/.config/hypr/pyprland.toml";
-      recursive = false;
-    };
-    "kitty" = {
-      source = l "${dots}/wm/.config/kitty";
-      recursive = true;
-    };
-    "swaync" = {
-      source = l "${dots}/wm/swaync/.config/swaync";
-      recursive = true;
-    };
-    "warpd" = {
-      source = l "${dots}/wm/.config/warpd";
-      recursive = true;
-    };
+    "rofi" = mkSymlink "rofi/.config/rofi" true;
+    "tofi" = mkSymlink "tofi/.config/tofi" true;
+    "fuzzel" = mkSymlink "fuzzel/.config/fuzzel" true;
+    
+    # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
+    "dircolors" = mkSymlink "shell/.config/dircolors" true;
+    "inputrc" = mkSymlink "shell/.config/inputrc" true;
+    "tmux" = mkSymlink "shell/.config/tmux" true;
+    "zsh" = mkSymlink "shell/.config/zsh" false;
+    
+    # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
+    "ags" = mkSymlink "wm/.config/ags" true;
+    "quickshell" = mkSymlink "wm/.config/quickshell" true;
+    "handlr" = mkSymlink "wm/.config/handlr" true;
+    "swaync" = mkSymlink "wm/swaync/.config/swaync" true;
+    "warpd" = mkSymlink "wm/.config/warpd" true;
+    "kitty" = mkSymlink "wm/.config/kitty" true;
+    
+    # Hyprland configuration files
+    "hypr/init.conf" = mkSymlink "wm/.config/hypr/init.conf" false;
+    "hypr/rules.conf" = mkSymlink "wm/.config/hypr/rules.conf" false;
+    "hypr/bindings.conf" = mkSymlink "wm/.config/hypr/bindings.conf" false;
+    "hypr/autostart.conf" = mkSymlink "wm/.config/hypr/autostart.conf" false;
+    "hypr/workspaces.conf" = mkSymlink "wm/.config/hypr/workspaces.conf" false;
+    "hypr/pyprland.toml" = mkSymlink "wm/.config/hypr/pyprland.toml" false;
   };
-  xdg.dataFile = {
-    "hack-art" = {
-      source = l "${dots}/hack-art/.local/share/hack-art";
-      recursive = true;
-    };
-  };
+
+  xdg.dataFile."hack-art" = mkSymlink "hack-art/.local/share/hack-art" true;
+
   home.file = {
-    "bin" = {
-      source = l "${dots}/bin";
-      recursive = false;
-    };
-    ".ugrep" = {
-      source = l "${dots}/shell/.ugrep";
-      recursive = true;
-    };
-    ".zshenv" = {
-      source = l "${dots}/shell/.zshenv";
-      recursive = true;
-    };
+    "bin" = mkSymlink "bin" false;
+    ".ugrep" = mkSymlink "shell/.ugrep" true;
+    ".zshenv" = mkSymlink "shell/.zshenv" true;
+    
     "${config.xdg.configHome}/zsh-nix/ylock" = {
       executable = true;
       text = ''
@@ -184,10 +82,7 @@ with {
         fi
       '';
     };
-    "${config.xdg.configHome}/nixpkgs/config.nix".text = ''
-      {
-          allowUnfree = true;
-      }
-    '';
+    
+    "${config.xdg.configHome}/nixpkgs/config.nix".text = ''{ allowUnfree = true; }'';
   };
 }
