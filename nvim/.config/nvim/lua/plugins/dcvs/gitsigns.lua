@@ -8,11 +8,6 @@ return {'lewis6991/gitsigns.nvim', -- fast git decorations
         if (not status) then return end
         gitsigns.setup {
             signs={
-                -- add={hl='GitSignsAdd', text='▎', show_count=false, numhl='GitSignsAddNr', linehl='GitSignsAddLn'},
-                -- change={hl='GitSignsChange', text='▎', show_count=false, numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
-                -- delete={hl='GitSignsDelete', text='_', show_count=false, numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-                -- topdelete={hl='GitSignsDelete', text='‾', show_count=false, numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-                -- changedelete={hl='GitSignsChange', text='~', show_count=false, numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
                 add={text='▎', show_count=false},
                 change={text='▎', show_count=false},
                 delete={text='_', show_count=false},
