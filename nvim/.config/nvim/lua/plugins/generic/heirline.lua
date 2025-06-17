@@ -45,7 +45,7 @@ return {
             hl={ fg=colors.cyan, bg=colors.black }
           },
           { provider=function() return vim.fn.expand('%:t') end, hl={ fg=colors.white, bg=colors.black } },
-          { condition=function() return vim.bo.modified end, provider=' ', hl={ fg=colors.blue, bg=colors.black }
+          { condition=function() return vim.bo.modified end, provider=' ', hl={ fg=colors.blue, bg=colors.black }
           }
         },
         { condition=is_empty, provider='[N]', hl={ fg=colors.white, bg=colors.black } }
