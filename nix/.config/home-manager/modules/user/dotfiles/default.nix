@@ -64,6 +64,7 @@ in {
   };
 
   xdg.dataFile."hack-art" = mkSymlink "hack-art/.local/share/hack-art" true;
+  xdg.dataFile."fantasy-art" = mkSymlink "fantasy-art/.local/share/fantasy-art" true;
 
   home.file = {
     "bin" = mkSymlink "bin" false;
