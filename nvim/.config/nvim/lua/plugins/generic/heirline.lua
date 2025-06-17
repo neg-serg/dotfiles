@@ -13,42 +13,34 @@ return {
         cyan='#6587b3', base='#234758', blue_light='#517f8d'
       }
       -- Shared components
-      local Align={ provider='%=' }
-      local Space={ provider=' ' }
+      local Align={provider='%='}
+      local Space={provider=' '}
       local is_empty=function() return vim.fn.empty(vim.fn.expand('%:t')) == 1 end
       -- Current directory component
       local CurrentDir={
         provider=function() return vim.fn.fnamemodify(vim.fn.getcwd(), ':~') end,
         hl={ fg=colors.white, bg=colors.black },
-        update={ 'DirChanged', 'BufEnter' } -- Autoupdate on change
+        update={'DirChanged', 'BufEnter'} -- Autoupdate on change
       }
 
       -- Left side components
       local LeftComponents={
         {
           condition=function() return not is_empty() end,
-          {
-            provider=' ',
-            hl={ fg=colors.blue, bg=colors.black },
-            on_click={
-              callback=function() vim.cmd('NvimTreeToggle') end,
-              name='heirline_file_explorer'
-            }
-          },
-          CurrentDir, { provider=' ¦ ', hl={ fg=colors.blue, bg=colors.black }
-          },
+          {provider=' ', hl={ fg=colors.blue, bg=colors.black },},
+          CurrentDir, {provider=' ¦ ', hl={ fg=colors.blue, bg=colors.black}},
           {
             provider=function()
               local icon=require('nvim-web-devicons').get_icon(vim.fn.expand('%:t'))
               return (icon or '')..' '
             end,
-            hl={ fg=colors.cyan, bg=colors.black }
+            hl={fg=colors.cyan, bg=colors.black}
           },
-          { provider=function() return vim.fn.expand('%:t') end, hl={ fg=colors.white, bg=colors.black } },
-          { condition=function() return vim.bo.modified end, provider=' ', hl={ fg=colors.blue, bg=colors.black }
+          {provider=function() return vim.fn.expand('%:t') end, hl={ fg=colors.white, bg=colors.black}},
+          {condition=function() return vim.bo.modified end, provider=' ', hl={fg=colors.blue, bg=colors.black}
           }
         },
-        { condition=is_empty, provider='[N]', hl={ fg=colors.white, bg=colors.black } }
+        {condition=is_empty, provider='[N]', hl={fg=colors.white, bg=colors.black}}
       }
 
       -- Right side components
@@ -57,10 +49,9 @@ return {
         {
           condition=function() return vim.fn.reg_recording() ~= '' end,
           provider=function() return '  REC @'..vim.fn.reg_recording()..' ' end,
-          hl={ fg=colors.red, bg=colors.black }
+          hl={fg=colors.red, bg=colors.black}
         },
-        Align,
-        -- Diagnostics
+        Align, -- Diagnostics
         {
           condition=conditions.has_diagnostics,
           init=function(self)
@@ -69,36 +60,27 @@ return {
           end,
           {
             provider=function(self) return self.errors > 0 and (' '..self.errors..' ') end,
-            hl={ fg=colors.red, bg=colors.black },
-            on_click={
-              callback=function() vim.diagnostic.setqflist() end,
-              name='heirline_diagnostics'
-            }
+            hl={fg=colors.red, bg=colors.black},
+            on_click={callback=function() vim.diagnostic.setqflist() end, name='heirline_diagnostics'}
           },
           {
             provider=function(self) return self.warnings > 0 and (' '..self.warnings..' ') end,
-            hl={ fg=colors.yellow, bg=colors.black }
+            hl={fg=colors.yellow, bg=colors.black}
           }
         },
         -- LSP
         {
           condition=conditions.lsp_attached,
           provider='  ',
-          hl={ fg=colors.cyan, bg=colors.black },
-          on_click={
-            callback=function() vim.cmd('LspInfo') end,
-            name='heirline_lsp_info'
-          }
+          hl={fg=colors.cyan, bg=colors.black},
+          on_click={callback=function() vim.cmd('LspInfo') end, name='heirline_lsp_info'}
         },
         -- Git branch
         {
           condition=conditions.is_git_repo,
           provider=function() return '  '..(vim.b.gitsigns_head or '')..' ' end,
           hl={ fg=colors.blue, bg=colors.black },
-          on_click={
-            callback=function() vim.cmd('Lazygit') end,
-            name='heirline_git'
-          }
+          on_click={callback=function() vim.cmd('Lazygit') end, name='heirline_git'}
         }
       }
 
@@ -112,10 +94,7 @@ return {
         opts={
           flexible_components=true,
           disable_winbar_cb=function(args)
-            return conditions.buffer_matches({
-              buftype={ 'nofile', 'prompt', 'help', 'quickfix' },
-              filetype={ '^git.*', 'fugitive' },
-            }, args.buf)
+            return conditions.buffer_matches({buftype={'nofile', 'prompt', 'help', 'quickfix'}, filetype={ '^git.*', 'fugitive' },}, args.buf)
           end
         }
       })
