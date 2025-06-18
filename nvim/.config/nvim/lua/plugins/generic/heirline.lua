@@ -113,13 +113,13 @@ return {
           hl = { fg = colors.white, bg = colors.black }
       }
 
-      local FileFormat = {
+      local FileEncoding = {
           provider = function()
-              local ff = vim.bo.fileformat
-              local fe = vim.bo.fileencoding ~= '' and vim.bo.fileencoding or vim.o.encoding
-              return string.format(' %s | %s ', ff:upper(), fe:upper())
+              local icons = { unix = " ", dos = " ", mac = " "}
+              local enc_icon = vim.bo.fileencoding == "utf-8" and "" or ""
+              return string.format(" %s%s ", icons[vim.bo.fileformat] or "", enc_icon)
           end,
-          hl = { fg = colors.cyan, bg = colors.black }
+          hl={fg=colors.cyan, bg=colors.black}
       }
 
       local SearchIndicator = {
@@ -140,10 +140,9 @@ return {
           }
       }
 
-      table.insert(RightComponents, FilePosition)
       table.insert(RightComponents, FileSize)
-      table.insert(RightComponents, FileFormat)
       table.insert(LeftComponents, 3, SearchIndicator)
+      table.insert(RightComponents, FileEncoding)
 
       -- Final statusline
       require('heirline').setup({
