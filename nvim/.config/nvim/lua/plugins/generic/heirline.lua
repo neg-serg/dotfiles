@@ -122,21 +122,85 @@ return {
           hl={fg=colors.cyan, bg=colors.black}
       }
 
-      local SearchIndicator={
-          condition=function()
+      local SearchIndicator = {
+          condition = function()
+              -- Only show when search highlighting is active
               return vim.v.hlsearch == 1
           end,
-          provider=function()
-              local search=vim.fn.getreg('/')
-              if #search > 15 then
-                  search=search:sub(1, 12) .. '...'
-              end
-              return string.format('  %s ', search)
+          init = function(self)
+              -- Get current search pattern and flags
+              self.pattern = vim.fn.getreg('/')
+              self.flags = vim.fn.getregtype('/'):sub(2)  -- Extract search flags
+              -- Get search count information
+              local search_info = vim.fn.searchcount({ recompute = 1, maxcount = 1000 })
+              self.current = search_info.current
+              self.total = search_info.total
+              -- Determine search direction
+              self.is_backward = vim.v.searchforward == 0
           end,
-          hl={ fg=colors.yellow, bg=colors.black },
-          on_click={
-              callback=function() vim.cmd('nohlsearch') end,
-              name='heirline_search_clear'
+          {
+              -- Animated search icon (pulsing effect)
+              provider = function(self)
+                  local icons = {"", "", "", ""}
+                  local frame = math.floor(vim.loop.now() / 300) % #icons + 1
+                  return " " .. icons[frame] .. " "
+              end,
+              hl = { fg = colors.yellow, bg = colors.black }
+          },
+          {
+              -- Display truncated search pattern
+              provider = function(self)
+                  local pattern = self.pattern
+                  -- Truncate long patterns
+                  if #pattern > 15 then
+                      pattern = pattern:sub(1, 12) .. '...'
+                  end
+                  return pattern
+              end,
+              hl = { fg = colors.white, bg = colors.black }
+          },
+          {
+              -- Visual indicator for search flags
+              provider = function(self)
+                  local flags_display = ""
+                  -- Case-sensitive indicator
+                  if self.flags:find('c') then
+                      flags_display = flags_display .. ""  -- Font Awesome: nf-fa-font_case
+                  end
+                  -- Whole-word indicator
+                  if self.flags:find('w') then
+                      flags_display = flags_display .. ""  -- Font Awesome: nf-fa-wordpress
+                  end
+                  -- Backward search indicator
+                  if self.is_backward then
+                      flags_display = flags_display .. ""  -- Font Awesome: nf-fa-arrow_up
+                  end
+                  return flags_display ~= "" and " "..flags_display.." " or ""
+              end,
+              hl = { fg = colors.cyan, bg = colors.black }
+          },
+          {
+              -- Current position in search results
+              provider = function(self)
+                  if self.total > 0 then
+                      return string.format(" %d/%d ", self.current, self.total)
+                  end
+                  return " 0/0 "
+              end,
+              hl = function(self)
+                  return { fg = colors.green, bg = colors.black }
+              end
+          },
+          {
+              -- Replace mode indicator
+              provider = function()
+                  -- Show different icon if in substitute confirm mode
+                  if vim.fn.getcmdtype() == ':' and vim.fn.getcmdline():sub(1,4) == 's/.*' then
+                      return "  "  -- Pencil icon (replace mode)
+                  end
+                  return ""
+              end,
+              hl = { fg = colors.blue, bg = colors.black }
           }
       }
 
