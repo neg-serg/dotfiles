@@ -10,12 +10,11 @@ return {
     local colors = {
       black = 'NONE', white = '#54667a', red = '#970d4f',
       green = '#007a51', blue = '#005faf', yellow = '#c678dd',
-      cyan = '#6587b3', base = '#234758', blue_light = '#517f8d'
+      cyan = '#6587b3', blue_light = '#517f8d'
     }
 
     local function hl(fg, bg) return { fg = fg, bg = bg } end
-    local Align = { provider = '%=' }
-    local Space = { provider = ' ' }
+    local align = { provider = '%=' }
     local is_empty = function() return vim.fn.empty(vim.fn.expand('%:t')) == 1 end
 
     -- Common components
@@ -27,8 +26,7 @@ return {
 
     local FileIcon = {
       provider = function()
-        local icon = require('nvim-web-devicons').get_icon(vim.fn.expand('%:t'))
-        return (icon or '')..' '
+        return (require('nvim-web-devicons').get_icon(vim.fn.expand('%:t'))) or ''
       end,
       hl = hl(colors.cyan, colors.black)
     }
@@ -36,115 +34,85 @@ return {
     -- Left side components
     local LeftComponents = {
       condition = function() return not is_empty() end,
-      { provider = ' ', hl = hl(colors.blue, colors.black) },
-      CurrentDir,
-      { provider = ' ¦ ', hl = hl(colors.blue, colors.black) },
-      FileIcon,
-      { provider = function() return vim.fn.expand('%:t') end, hl = hl(colors.white, colors.black) },
-      {
-        condition = function() return vim.bo.modified end,
-        provider = ' ',
-        hl = hl(colors.blue, colors.black)
+      { provider = ' ', hl = hl(colors.blue, colors.black) }, CurrentDir,
+      { provider = ' ¦ ', hl = hl(colors.blue, colors.black) }, FileIcon,
+      { provider = function() return ' '..vim.fn.expand('%:t') end, hl = hl(colors.white, colors.black) },
+      { condition = function() return vim.bo.modified end, provider = ' ', hl = hl(colors.blue, colors.black) }
+    }
+
+    -- Diagnostic helper
+    local get_diag = function(severity)
+      return {
+        provider = function(self)
+          return self[severity] > 0 and (' '..self[severity]..' ')
+        end,
+        hl = hl(colors[severity == 'errors' and 'red' or 'yellow'], colors.black)
       }
-    }
+    end
 
-    -- Right side components
-    local MacroRec = {
-      condition = function() return vim.fn.reg_recording() ~= '' end,
-      provider = function() return '  REC @'..vim.fn.reg_recording()..' ' end,
-      hl = hl(colors.red, colors.black)
-    }
+    -- File size helper
+    local get_size = function()
+        local size = vim.fn.getfsize(vim.fn.expand('%:p'))
+        if size <= 0 then return '' end
 
-    local Diagnostics = {
-      condition = c.has_diagnostics,
-      init = function(self)
-        self.errors = #vim.diagnostic.get(0, {severity = vim.diagnostic.severity.ERROR})
-        self.warnings = #vim.diagnostic.get(0, {severity = vim.diagnostic.severity.WARN})
-      end,
-      {
-        provider = function(self) return self.errors > 0 and (' '..self.errors..' ') end,
-        hl = hl(colors.red, colors.black),
+        local i = 1
+        local suffixes = { '', 'K', 'M', 'G' }
+        while size >= 1024 and i < #suffixes do
+            size = size / 1024
+            i = i + 1
+        end
+        return string.format(i == 1 and '%d%s ' or '%.1f%s ', size, suffixes[i])
+    end
+
+    -- Component definitions
+    local components = {
+      macro = {
+        condition = function() return vim.fn.reg_recording() ~= '' end,
+        provider = function() return '  REC @'..vim.fn.reg_recording()..' ' end,
+        hl = hl(colors.red, colors.black)
+      },
+      diag = {
+        condition = c.has_diagnostics,
+        init = function(self)
+          self.errors = #vim.diagnostic.get(0, {severity = vim.diagnostic.severity.ERROR})
+          self.warnings = #vim.diagnostic.get(0, {severity = vim.diagnostic.severity.WARN})
+        end,
+        get_diag('errors'), get_diag('warnings'),
         on_click = { callback = function() vim.diagnostic.setqflist() end, name = 'heirline_diagnostics' }
       },
-      {
-        provider = function(self) return self.warnings > 0 and (' '..self.warnings..' ') end,
-        hl = hl(colors.yellow, colors.black)
-      }
-    }
-
-    local LSP = {
-      condition = c.lsp_attached,
-      provider = '  ',
-      hl = hl(colors.cyan, colors.black),
-      on_click = { callback = function() vim.cmd('LspInfo') end, name = 'heirline_lsp_info' }
-    }
-
-    local Git = {
-      condition = c.is_git_repo,
-      provider = function() return '  '..(vim.b.gitsigns_head or '')..' ' end,
-      hl = hl(colors.blue, colors.black),
-      on_click = { callback = function() vim.cmd('Lazygit') end, name = 'heirline_git' }
-    }
-
-    local FileSize = {
-      provider = function()
-        local file = vim.fn.expand('%:p')
-        if #file == 0 or vim.fn.empty(file) == 1 then return '' end
-        local size = vim.fn.getfsize(file)
-        if size <= 0 then return '' end
-        
-        local suffixes = { 'B', 'K', 'M', 'G' }
-        local i = 1
-        while size > 1024 and i < #suffixes do
-          size, i = size / 1024, i + 1
-        end
-        return string.format(' %.1f%s ', size, suffixes[i])
-      end,
-      hl = hl(colors.white, colors.black)
-    }
-
-    local FileEncoding = {
-      provider = function()
-        local icons = { unix = " ", dos = " ", mac = " " }
-        return string.format(" %s%s ", icons[vim.bo.fileformat] or "", 
-          vim.bo.fileencoding == "utf-8" and "" or "")
-      end,
-      hl = hl(colors.cyan, colors.black)
-    }
-
-    local SearchIndicator = {
-      condition = function() return vim.v.hlsearch == 1 end,
-      init = function(self)
-        self.pattern = vim.fn.getreg('/')
-        local search_info = vim.fn.searchcount({ recompute = 1, maxcount = 1000 })
-        self.current, self.total = search_info.current, search_info.total
-      end,
-      {
-        provider = function(self)
-          local icons = {"", "", "", ""}
-          return " "..icons[math.floor(vim.loop.now() / 300 % #icons + 1)].." "
-        end,
-        hl = hl(colors.yellow, colors.black)
+      lsp = {
+        condition = c.lsp_attached,
+        provider = '  ',
+        hl = hl(colors.cyan, colors.black),
+        on_click = { callback = function() vim.cmd('LspInfo') end, name = 'heirline_lsp_info' }
       },
-      {
-        provider = function(self)
-          return #self.pattern > 15 and self.pattern:sub(1, 12)..'...' or self.pattern
-        end,
-        hl = hl(colors.white, colors.black)
+      git = {
+        condition = c.is_git_repo,
+        provider = function() return '  '..(vim.b.gitsigns_head or '')..' ' end,
+        hl = hl(colors.blue, colors.black),
       },
-      {
-        provider = function(self)
-          local flags = vim.fn.getregtype('/'):sub(2)
-          return flags:find('[cw]') and " " or ""
+      encoding = {
+        provider = function()
+          local fmt = vim.bo.fileformat
+          local enc = vim.bo.fileencoding == "utf-8" and "" or ""
+          return ({ unix = "", dos = "", mac = "" })[fmt]..' '..enc..' '
         end,
         hl = hl(colors.cyan, colors.black)
       },
-      {
-        provider = function(self)
-          return self.total > 0 and string.format(" %d/%d ", self.current, self.total) or " 0/0 "
+      size = {
+        provider = function() return get_size() end,
+        hl = hl(colors.white, colors.black)
+      },
+      search = {
+        condition = function() return vim.v.hlsearch == 1 end,
+        provider = function()
+          local pattern = vim.fn.getreg('/')
+          if #pattern > 15 then pattern = pattern:sub(1,12)..'...' end
+          local s = vim.fn.searchcount({ recompute = 1, maxcount = 1000 })
+          return string.format('  %s %d/%d ', pattern, s.current, s.total)
         end,
-        hl = hl(colors.green, colors.black)
-      }
+        hl = hl(colors.yellow, colors.black)
+      },
     }
 
     -- Final composition
@@ -154,16 +122,17 @@ return {
         utils.surround({ '', '' }, colors.black, {
           { condition = is_empty, provider = '[N]', hl = hl(colors.white, colors.black) },
           LeftComponents,
-          Git,
-          SearchIndicator
+          components.search
         }),
         {
-          MacroRec,
-          Align,
-          Diagnostics,
-          LSP,
-          FileEncoding,
-          FileSize,
+          components.macro,
+          align,
+          components.diag,
+          components.lsp,
+          components.git,
+          components.encoding,
+          components.size,
+          components.position
         }
       },
       opts = {
