@@ -94,7 +94,56 @@ return {
           end,
           hl = { fg = colors.white, bg = colors.black }
       }
+
+      local FileSize = {
+          provider = function()
+              local file = vim.fn.expand('%:p')
+              if file == '' or vim.fn.empty(file) == 1 then return '' end
+              local size = vim.fn.getfsize(file)
+              if size <= 0 then return '' end
+
+              local suffixes = { 'B', 'K', 'M', 'G' }
+              local i = 1
+              while size > 1024 and i < #suffixes do
+                  size = size / 1024
+                  i = i + 1
+              end
+              return string.format(' %.1f%s ', size, suffixes[i])
+          end,
+          hl = { fg = colors.white, bg = colors.black }
+      }
+
+      local FileFormat = {
+          provider = function()
+              local ff = vim.bo.fileformat
+              local fe = vim.bo.fileencoding ~= '' and vim.bo.fileencoding or vim.o.encoding
+              return string.format(' %s | %s ', ff:upper(), fe:upper())
+          end,
+          hl = { fg = colors.cyan, bg = colors.black }
+      }
+
+      local SearchIndicator = {
+          condition = function()
+              return vim.v.hlsearch == 1
+          end,
+          provider = function()
+              local search = vim.fn.getreg('/')
+              if #search > 15 then
+                  search = search:sub(1, 12) .. '...'
+              end
+              return string.format('  %s ', search)
+          end,
+          hl = { fg = colors.yellow, bg = colors.black },
+          on_click = {
+              callback = function() vim.cmd('nohlsearch') end,
+              name = 'heirline_search_clear'
+          }
+      }
+
       table.insert(RightComponents, FilePosition)
+      table.insert(RightComponents, FileSize)
+      table.insert(RightComponents, FileFormat)
+      table.insert(LeftComponents, 3, SearchIndicator)
 
       -- Final statusline
       require('heirline').setup({
