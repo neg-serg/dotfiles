@@ -84,6 +84,18 @@ return {
         }
       }
 
+      local FilePosition = {
+          provider = function()
+              local line = vim.fn.line('.')
+              local col = vim.fn.virtcol('.')
+              local lines = vim.fn.line('$')
+              local percent = math.floor((line / lines) * 100)
+              return string.format(' %d:%d  %d%% ', line, col, percent)
+          end,
+          hl = { fg = colors.white, bg = colors.black }
+      }
+      table.insert(RightComponents, FilePosition)
+
       -- Final statusline
       require('heirline').setup({
         statusline={
