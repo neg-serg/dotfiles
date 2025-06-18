@@ -84,65 +84,65 @@ return {
         }
       }
 
-      local FilePosition = {
-          provider = function()
-              local line = vim.fn.line('.')
-              local col = vim.fn.virtcol('.')
-              local lines = vim.fn.line('$')
-              local percent = math.floor((line / lines) * 100)
+      local FilePosition={
+          provider=function()
+              local line=vim.fn.line('.')
+              local col=vim.fn.virtcol('.')
+              local lines=vim.fn.line('$')
+              local percent=math.floor((line / lines) * 100)
               return string.format(' %d:%d  %d%% ', line, col, percent)
           end,
-          hl = { fg = colors.white, bg = colors.black }
+          hl={ fg=colors.white, bg=colors.black }
       }
 
-      local FileSize = {
-          provider = function()
-              local file = vim.fn.expand('%:p')
+      local FileSize={
+          provider=function()
+              local file=vim.fn.expand('%:p')
               if file == '' or vim.fn.empty(file) == 1 then return '' end
-              local size = vim.fn.getfsize(file)
+              local size=vim.fn.getfsize(file)
               if size <= 0 then return '' end
 
-              local suffixes = { 'B', 'K', 'M', 'G' }
-              local i = 1
+              local suffixes={ 'B', 'K', 'M', 'G' }
+              local i=1
               while size > 1024 and i < #suffixes do
-                  size = size / 1024
-                  i = i + 1
+                  size=size / 1024
+                  i=i + 1
               end
               return string.format(' %.1f%s ', size, suffixes[i])
           end,
-          hl = { fg = colors.white, bg = colors.black }
+          hl={ fg=colors.white, bg=colors.black }
       }
 
-      local FileEncoding = {
-          provider = function()
-              local icons = { unix = " ", dos = " ", mac = " "}
-              local enc_icon = vim.bo.fileencoding == "utf-8" and "" or ""
+      local FileEncoding={
+          provider=function()
+              local icons={ unix=" ", dos=" ", mac=" "}
+              local enc_icon=vim.bo.fileencoding == "utf-8" and "" or ""
               return string.format(" %s%s ", icons[vim.bo.fileformat] or "", enc_icon)
           end,
           hl={fg=colors.cyan, bg=colors.black}
       }
 
-      local SearchIndicator = {
-          condition = function()
+      local SearchIndicator={
+          condition=function()
               return vim.v.hlsearch == 1
           end,
-          provider = function()
-              local search = vim.fn.getreg('/')
+          provider=function()
+              local search=vim.fn.getreg('/')
               if #search > 15 then
-                  search = search:sub(1, 12) .. '...'
+                  search=search:sub(1, 12) .. '...'
               end
               return string.format('  %s ', search)
           end,
-          hl = { fg = colors.yellow, bg = colors.black },
-          on_click = {
-              callback = function() vim.cmd('nohlsearch') end,
-              name = 'heirline_search_clear'
+          hl={ fg=colors.yellow, bg=colors.black },
+          on_click={
+              callback=function() vim.cmd('nohlsearch') end,
+              name='heirline_search_clear'
           }
       }
 
-      table.insert(RightComponents, FileSize)
       table.insert(LeftComponents, 3, SearchIndicator)
       table.insert(RightComponents, FileEncoding)
+      table.insert(RightComponents, FileSize)
 
       -- Final statusline
       require('heirline').setup({
