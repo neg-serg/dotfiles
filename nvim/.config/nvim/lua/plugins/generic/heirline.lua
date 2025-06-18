@@ -2,229 +2,182 @@
 -- │ █▓▒░ rebelot/heirline.nvim                                                        │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {
-    'rebelot/heirline.nvim',
-    dependencies={ 'nvim-tree/nvim-web-devicons' },
-    config=function()
-      local conditions=require('heirline.conditions')
-      local utils=require('heirline.utils')
-      local colors={
-        black='NONE', white='#54667a', red='#970d4f',
-        green='#007a51', blue='#005faf', yellow='#c678dd',
-        cyan='#6587b3', base='#234758', blue_light='#517f8d'
-      }
-      -- Shared components
-      local Align={provider='%='}
-      local Space={provider=' '}
-      local is_empty=function() return vim.fn.empty(vim.fn.expand('%:t')) == 1 end
-      -- Current directory component
-      local CurrentDir={
-        provider=function() return vim.fn.fnamemodify(vim.fn.getcwd(), ':~') end,
-        hl={ fg=colors.white, bg=colors.black },
-        update={'DirChanged', 'BufEnter'} -- Autoupdate on change
-      }
+  'rebelot/heirline.nvim',
+  dependencies = { 'nvim-tree/nvim-web-devicons' },
+  config = function()
+    local c = require('heirline.conditions')
+    local utils = require('heirline.utils')
+    local colors = {
+      black = 'NONE', white = '#54667a', red = '#970d4f',
+      green = '#007a51', blue = '#005faf', yellow = '#c678dd',
+      cyan = '#6587b3', base = '#234758', blue_light = '#517f8d'
+    }
 
-      -- Left side components
-      local LeftComponents={
-        {
-          condition=function() return not is_empty() end,
-          {provider=' ', hl={ fg=colors.blue, bg=colors.black },},
-          CurrentDir, {provider=' ¦ ', hl={ fg=colors.blue, bg=colors.black}},
-          {
-            provider=function()
-              local icon=require('nvim-web-devicons').get_icon(vim.fn.expand('%:t'))
-              return (icon or '')..' '
-            end,
-            hl={fg=colors.cyan, bg=colors.black}
-          },
-          {provider=function() return vim.fn.expand('%:t') end, hl={ fg=colors.white, bg=colors.black}},
-          {condition=function() return vim.bo.modified end, provider=' ', hl={fg=colors.blue, bg=colors.black}
-          }
-        },
-        {condition=is_empty, provider='[N]', hl={fg=colors.white, bg=colors.black}}
-      }
+    local function hl(fg, bg) return { fg = fg, bg = bg } end
+    local Align = { provider = '%=' }
+    local Space = { provider = ' ' }
+    local is_empty = function() return vim.fn.empty(vim.fn.expand('%:t')) == 1 end
 
-      -- Right side components
-      local RightComponents={
-        -- Macro recording indicator
+    -- Common components
+    local CurrentDir = {
+      provider = function() return vim.fn.fnamemodify(vim.fn.getcwd(), ':~') end,
+      hl = hl(colors.white, colors.black),
+      update = { 'DirChanged', 'BufEnter' }
+    }
+
+    local FileIcon = {
+      provider = function()
+        local icon = require('nvim-web-devicons').get_icon(vim.fn.expand('%:t'))
+        return (icon or '')..' '
+      end,
+      hl = hl(colors.cyan, colors.black)
+    }
+
+    -- Left side components
+    local LeftComponents = {
+      condition = function() return not is_empty() end,
+      { provider = ' ', hl = hl(colors.blue, colors.black) },
+      CurrentDir,
+      { provider = ' ¦ ', hl = hl(colors.blue, colors.black) },
+      FileIcon,
+      { provider = function() return vim.fn.expand('%:t') end, hl = hl(colors.white, colors.black) },
+      {
+        condition = function() return vim.bo.modified end,
+        provider = ' ',
+        hl = hl(colors.blue, colors.black)
+      }
+    }
+
+    -- Right side components
+    local MacroRec = {
+      condition = function() return vim.fn.reg_recording() ~= '' end,
+      provider = function() return '  REC @'..vim.fn.reg_recording()..' ' end,
+      hl = hl(colors.red, colors.black)
+    }
+
+    local Diagnostics = {
+      condition = c.has_diagnostics,
+      init = function(self)
+        self.errors = #vim.diagnostic.get(0, {severity = vim.diagnostic.severity.ERROR})
+        self.warnings = #vim.diagnostic.get(0, {severity = vim.diagnostic.severity.WARN})
+      end,
+      {
+        provider = function(self) return self.errors > 0 and (' '..self.errors..' ') end,
+        hl = hl(colors.red, colors.black),
+        on_click = { callback = function() vim.diagnostic.setqflist() end, name = 'heirline_diagnostics' }
+      },
+      {
+        provider = function(self) return self.warnings > 0 and (' '..self.warnings..' ') end,
+        hl = hl(colors.yellow, colors.black)
+      }
+    }
+
+    local LSP = {
+      condition = c.lsp_attached,
+      provider = '  ',
+      hl = hl(colors.cyan, colors.black),
+      on_click = { callback = function() vim.cmd('LspInfo') end, name = 'heirline_lsp_info' }
+    }
+
+    local Git = {
+      condition = c.is_git_repo,
+      provider = function() return '  '..(vim.b.gitsigns_head or '')..' ' end,
+      hl = hl(colors.blue, colors.black),
+      on_click = { callback = function() vim.cmd('Lazygit') end, name = 'heirline_git' }
+    }
+
+    local FileSize = {
+      provider = function()
+        local file = vim.fn.expand('%:p')
+        if #file == 0 or vim.fn.empty(file) == 1 then return '' end
+        local size = vim.fn.getfsize(file)
+        if size <= 0 then return '' end
+        
+        local suffixes = { 'B', 'K', 'M', 'G' }
+        local i = 1
+        while size > 1024 and i < #suffixes do
+          size, i = size / 1024, i + 1
+        end
+        return string.format(' %.1f%s ', size, suffixes[i])
+      end,
+      hl = hl(colors.white, colors.black)
+    }
+
+    local FileEncoding = {
+      provider = function()
+        local icons = { unix = " ", dos = " ", mac = " " }
+        return string.format(" %s%s ", icons[vim.bo.fileformat] or "", 
+          vim.bo.fileencoding == "utf-8" and "" or "")
+      end,
+      hl = hl(colors.cyan, colors.black)
+    }
+
+    local SearchIndicator = {
+      condition = function() return vim.v.hlsearch == 1 end,
+      init = function(self)
+        self.pattern = vim.fn.getreg('/')
+        local search_info = vim.fn.searchcount({ recompute = 1, maxcount = 1000 })
+        self.current, self.total = search_info.current, search_info.total
+      end,
+      {
+        provider = function(self)
+          local icons = {"", "", "", ""}
+          return " "..icons[math.floor(vim.loop.now() / 300 % #icons + 1)].." "
+        end,
+        hl = hl(colors.yellow, colors.black)
+      },
+      {
+        provider = function(self)
+          return #self.pattern > 15 and self.pattern:sub(1, 12)..'...' or self.pattern
+        end,
+        hl = hl(colors.white, colors.black)
+      },
+      {
+        provider = function(self)
+          local flags = vim.fn.getregtype('/'):sub(2)
+          return flags:find('[cw]') and " " or ""
+        end,
+        hl = hl(colors.cyan, colors.black)
+      },
+      {
+        provider = function(self)
+          return self.total > 0 and string.format(" %d/%d ", self.current, self.total) or " 0/0 "
+        end,
+        hl = hl(colors.green, colors.black)
+      }
+    }
+
+    -- Final composition
+    require('heirline').setup({
+      statusline = {
+        hl = hl(colors.white, colors.black),
+        utils.surround({ '', '' }, colors.black, {
+          { condition = is_empty, provider = '[N]', hl = hl(colors.white, colors.black) },
+          LeftComponents,
+          Git,
+          SearchIndicator
+        }),
         {
-          condition=function() return vim.fn.reg_recording() ~= '' end,
-          provider=function() return '  REC @'..vim.fn.reg_recording()..' ' end,
-          hl={fg=colors.red, bg=colors.black}
-        },
-        Align, -- Diagnostics
-        {
-          condition=conditions.has_diagnostics,
-          init=function(self)
-            self.errors=#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.ERROR})
-            self.warnings=#vim.diagnostic.get(0, {severity=vim.diagnostic.severity.WARN})
-          end,
-          {
-            provider=function(self) return self.errors > 0 and (' '..self.errors..' ') end,
-            hl={fg=colors.red, bg=colors.black},
-            on_click={callback=function() vim.diagnostic.setqflist() end, name='heirline_diagnostics'}
-          },
-          {
-            provider=function(self) return self.warnings > 0 and (' '..self.warnings..' ') end,
-            hl={fg=colors.yellow, bg=colors.black}
-          }
-        },
-        -- LSP
-        {
-          condition=conditions.lsp_attached,
-          provider='  ',
-          hl={fg=colors.cyan, bg=colors.black},
-          on_click={callback=function() vim.cmd('LspInfo') end, name='heirline_lsp_info'}
-        },
-        -- Git branch
-        {
-          condition=conditions.is_git_repo,
-          provider=function() return '  '..(vim.b.gitsigns_head or '')..' ' end,
-          hl={ fg=colors.blue, bg=colors.black },
-          on_click={callback=function() vim.cmd('Lazygit') end, name='heirline_git'}
+          MacroRec,
+          Align,
+          Diagnostics,
+          LSP,
+          FileEncoding,
+          FileSize,
         }
+      },
+      opts = {
+        flexible_components = true,
+        disable_winbar_cb = function(args)
+          return c.buffer_matches({
+            buftype = { 'nofile', 'prompt', 'help', 'quickfix' },
+            filetype = { '^git.*', 'fugitive' }
+          }, args.buf)
+        end
       }
+    })
 
-      local FilePosition={
-          provider=function()
-              local line=vim.fn.line('.')
-              local col=vim.fn.virtcol('.')
-              local lines=vim.fn.line('$')
-              local percent=math.floor((line / lines) * 100)
-              return string.format(' %d:%d  %d%% ', line, col, percent)
-          end,
-          hl={ fg=colors.white, bg=colors.black }
-      }
-
-      local FileSize={
-          provider=function()
-              local file=vim.fn.expand('%:p')
-              if file == '' or vim.fn.empty(file) == 1 then return '' end
-              local size=vim.fn.getfsize(file)
-              if size <= 0 then return '' end
-
-              local suffixes={ 'B', 'K', 'M', 'G' }
-              local i=1
-              while size > 1024 and i < #suffixes do
-                  size=size / 1024
-                  i=i + 1
-              end
-              return string.format(' %.1f%s ', size, suffixes[i])
-          end,
-          hl={ fg=colors.white, bg=colors.black }
-      }
-
-      local FileEncoding={
-          provider=function()
-              local icons={ unix=" ", dos=" ", mac=" "}
-              local enc_icon=vim.bo.fileencoding == "utf-8" and "" or ""
-              return string.format(" %s%s ", icons[vim.bo.fileformat] or "", enc_icon)
-          end,
-          hl={fg=colors.cyan, bg=colors.black}
-      }
-
-      local SearchIndicator = {
-          condition = function()
-              -- Only show when search highlighting is active
-              return vim.v.hlsearch == 1
-          end,
-          init = function(self)
-              -- Get current search pattern and flags
-              self.pattern = vim.fn.getreg('/')
-              self.flags = vim.fn.getregtype('/'):sub(2)  -- Extract search flags
-              -- Get search count information
-              local search_info = vim.fn.searchcount({ recompute = 1, maxcount = 1000 })
-              self.current = search_info.current
-              self.total = search_info.total
-              -- Determine search direction
-              self.is_backward = vim.v.searchforward == 0
-          end,
-          {
-              -- Animated search icon (pulsing effect)
-              provider = function(self)
-                  local icons = {"", "", "", ""}
-                  local frame = math.floor(vim.loop.now() / 300) % #icons + 1
-                  return " " .. icons[frame] .. " "
-              end,
-              hl = { fg = colors.yellow, bg = colors.black }
-          },
-          {
-              -- Display truncated search pattern
-              provider = function(self)
-                  local pattern = self.pattern
-                  -- Truncate long patterns
-                  if #pattern > 15 then
-                      pattern = pattern:sub(1, 12) .. '...'
-                  end
-                  return pattern
-              end,
-              hl = { fg = colors.white, bg = colors.black }
-          },
-          {
-              -- Visual indicator for search flags
-              provider = function(self)
-                  local flags_display = ""
-                  -- Case-sensitive indicator
-                  if self.flags:find('c') then
-                      flags_display = flags_display .. ""  -- Font Awesome: nf-fa-font_case
-                  end
-                  -- Whole-word indicator
-                  if self.flags:find('w') then
-                      flags_display = flags_display .. ""  -- Font Awesome: nf-fa-wordpress
-                  end
-                  -- Backward search indicator
-                  if self.is_backward then
-                      flags_display = flags_display .. ""  -- Font Awesome: nf-fa-arrow_up
-                  end
-                  return flags_display ~= "" and " "..flags_display.." " or ""
-              end,
-              hl = { fg = colors.cyan, bg = colors.black }
-          },
-          {
-              -- Current position in search results
-              provider = function(self)
-                  if self.total > 0 then
-                      return string.format(" %d/%d ", self.current, self.total)
-                  end
-                  return " 0/0 "
-              end,
-              hl = function(self)
-                  return { fg = colors.green, bg = colors.black }
-              end
-          },
-          {
-              -- Replace mode indicator
-              provider = function()
-                  -- Show different icon if in substitute confirm mode
-                  if vim.fn.getcmdtype() == ':' and vim.fn.getcmdline():sub(1,4) == 's/.*' then
-                      return "  "  -- Pencil icon (replace mode)
-                  end
-                  return ""
-              end,
-              hl = { fg = colors.blue, bg = colors.black }
-          }
-      }
-
-      table.insert(LeftComponents, 3, SearchIndicator)
-      table.insert(RightComponents, FileEncoding)
-      table.insert(RightComponents, FileSize)
-
-      -- Final statusline
-      require('heirline').setup({
-        statusline={
-          hl={ fg=colors.white, bg=colors.black },
-          utils.surround({ '', '' }, colors.black, LeftComponents),
-          RightComponents
-        },
-        opts={
-          flexible_components=true,
-          disable_winbar_cb=function(args)
-            return conditions.buffer_matches({buftype={'nofile', 'prompt', 'help', 'quickfix'}, filetype={ '^git.*', 'fugitive' },}, args.buf)
-          end
-        }
-      })
-
-      -- Initial highlight setup
-      vim.api.nvim_set_hl(0, 'StatusLine', { fg=colors.white, bg=colors.black })
-      vim.api.nvim_set_hl(0, 'StatusLineNC', { fg=colors.white, bg=colors.black })
-    end
-  }
+    vim.api.nvim_set_hl(0, 'StatusLine', hl(colors.white, colors.black))
+    vim.api.nvim_set_hl(0, 'StatusLineNC', hl(colors.white, colors.black))
+  end
+}
