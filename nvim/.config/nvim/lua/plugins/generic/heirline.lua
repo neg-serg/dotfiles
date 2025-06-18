@@ -88,7 +88,7 @@ return {
       },
       git = {
         condition = c.is_git_repo,
-        provider = function() return '  '..(vim.b.gitsigns_head or '')..' ' end,
+        provider = function() return '  '..(vim.b.gitsigns_head or '')..' ' end,
         hl = hl(colors.blue, colors.black),
       },
       encoding = {
