@@ -1,2 +1,0 @@
-#!/bin/sh
-curl -sv "$@" 2>&1 >/dev/null|rg -v "^\*"|rg -v "^}"|cut -c3-
