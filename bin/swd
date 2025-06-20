@@ -1,145 +1,61 @@
-#!/bin/bash
-
-# Set location where the wallpapers will be stored
+#!/usr/bin/env bash
 location="$(pwd)"
-
-# Set the resolution
-# All: Do not include for all
-# 5:4           = 1280x1024 1600x1280 1920x1536 2560x2048 3840x3072
-# 4:3           = 1280x960 1600x1200 1920x1440 2560x1920 3840x2880
-# 16:10         = 1280x800 1600x1000 1920x1200 2560x1600 3840x2400
-# 16:9          = 1280x720 1600x900 1920x1080 2560x1440 2840x2160
-# Ultrawide     = 2560x1080 3440x1440 3840x1600
-atleast="1920x1080"
-
-# Set the purity filter setting
-# SFW           = 100
-# Sketchy       = 010
-# Both          = 110
-# NOTE: Can combine them
-purity="100"
-
-# Set the category
-# General       = 100
-# Anime         = 010
-# People        = 001
-# NOTE: Can combine them
-categories="100"
-
-# Set the order
-order="desc"
+atleast="3840x2160"
+purity="0" # Set the purity filter setting, SFW = 100, Sketchy = 010, Both = 110, NOTE: Can combine them
+categories="100" # Set the category, General = 100, Anime = 010, People = 001, NOTE: Can combine them
+order="desc" # Set the order
 
 # Set the aspect ratio of the image
-# All           = Do not include for all
-# Square        = 1x1 3x2 4x3 5x4
-# Portrait      = 9x16 10x16 9x18
-# Wide          = 16x9 16x10
-# Ultrawide     = 21x9 32x9 48x9
-# NOTE: Can combine them by seperating with ,
+# All = Do not include for all, Square = 1x1 3x2 4x3 5x4, Portrait = 9x16 10x16 9x18
+# Wide = 16x9 16x10, Ultrawide = 21x9 32x9 48x9, NOTE: Can combine them by seperating with ,
 ratios="16x9"
 
 # Set the dominant colors of the image
 # All           = Do not include for all
-#
 # #660000 #990000 #cc0000 #cc3333 #ea4c88 #993399
 # #663399 #333399 #0066cc #0099cc #66cccc #77cc33
 # #669900 #336600 #666600 #999900 #cccc33 #cccc33
 # #cccc33 #ff9900 #ff6600 #cc6633 #996633 #663300
 # #000000 #999999 #cccccc #ffffff #424153
-
 # colors="424153"
-
 # Set the site address
 site="wallhaven.cc"
 
 while [[ $# -gt 0 ]]; do
     key="$1"
-
     case $key in
-    -C | --colors)
-        colors="$2"
-        shift
-        shift
-        ;;
-    -a | --atleast)
-        atleast="$2"
-        shift
-        shift
-        ;;
-    -p | --purity)
-        purity="$2"
-        shift
-        shift
-        ;;
-    -c | --categories)
-        categories="$2"
-        shift
-        shift
-        ;;
-    -r | --ratios)
-        ratios="$2"
-        shift
-        shift
-        ;;
-    -s | --sorting)
-        sorting="$2"
-        shift
-        shift
-        ;;
-    -o | --order)
-        order="$2"
-        shift
-        shift
-        ;;
-    -l | --location)
-        location="$2"
-        shift
-        shift
-        ;;
-    *)
-        shift
-        ;;
+      -C | --colors) colors="$2" shift shift ;;
+      -a | --atleast) atleast="$2" shift shift ;;
+      -p | --purity) purity="$2" shift shift ;;
+      -c | --categories) categories="$2" shift shift ;;
+      -r | --ratios) ratios="$2" shift shift ;;
+      -s | --sorting) sorting="$2" shift shift ;;
+      -o | --order) order="$2" shift shift ;;
+      -l | --location) location="$2" shift shift ;;
+    *) shift ;;
     esac
 done
 
-# Address for the wallpaper website
-wallpaper_url="https://$site/search?"
-
+wallpaper_url="https://$site/search?" # Address for the wallpaper website
 [[ -n "$categories" ]] && wallpaper_url+="categories=$categories"
-
 [[ -n "$purity" ]] && wallpaper_url+="&purity=$purity"
-
 [[ -n "$order" ]] && wallpaper_url+="&order=$order"
-
 [[ -n "$colors" ]] && wallpaper_url+="&colors=$colors"
-
 [[ -n "$ratios" ]] && wallpaper_url+="&ratios=$ratios"
-
 [[ -n "$atleast" ]] && wallpaper_url+="&atleast=$atleast"
-
 wallpaper_url+="&page=$(("$RANDOM" % 30 + 1))"
 
 case "$sorting" in
-"latest") wallpaper_url+="&sorting=date_added" ;;
-"views") wallpaper_url+="&sorting=views" ;;
-"toplist") wallpaper_url+="&sorting=toplist" ;;
-"favorites") wallpaper_url+="&sorting=favorites" ;;
-*) wallpaper_url+="&sorting=random" ;;
+  "latest") wallpaper_url+="&sorting=date_added" ;;
+  "views") wallpaper_url+="&sorting=views" ;;
+  "toplist") wallpaper_url+="&sorting=toplist" ;;
+  "favorites") wallpaper_url+="&sorting=favorites" ;;
+  *) wallpaper_url+="&sorting=random" ;;
 esac
 
-# Selected images
-mapfile -t img_urls < <(curl -s "$wallpaper_url" | grep -oE 'https://'$site'/w/[[:alnum:]]{6}')
-
-# Randomly selected image
-rand_img_url=${img_urls[$RANDOM % ${#img_urls[@]}]}
-
-# Parse out the image url
-rand_img=$(curl -s "$rand_img_url" | grep -oE 'https://w.'$site'/full/[[:alnum:]]{2}/wallhaven-[[:alnum:]]{6}\.(jpg|png)')
-
-# Combine the two above
-wallpaper="$location/${rand_img##*/}"
-
-# Download it
-curl --create-dirs -s "$rand_img" -o "$wallpaper" >/dev/null
-
+mapfile -t img_urls < <(curl -s "$wallpaper_url" | grep -oE 'https://'$site'/w/[[:alnum:]]{6}') # Selected images
+rand_img_url=${img_urls[$RANDOM % ${#img_urls[@]}]} # Randomly selected image
+rand_img=$(curl -s "$rand_img_url" | grep -oE 'https://w.'$site'/full/[[:alnum:]]{2}/wallhaven-[[:alnum:]]{6}\.(jpg|png)') # Parse out the image url
+wallpaper="$location/${rand_img##*/}" # Combine the two above
+curl --create-dirs -s "$rand_img" -o "$wallpaper" >/dev/null # Download it
 echo "$wallpaper"
