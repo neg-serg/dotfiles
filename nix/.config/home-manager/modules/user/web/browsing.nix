@@ -2,7 +2,7 @@
   imports = [
     # ./firefox.nix
     ./floorp.nix
-    ./qutebrowser.nix
+    # ./qutebrowser.nix
     ./nyxt.nix
   ];
   home.packages = with pkgs; [
