@@ -10,6 +10,7 @@
     opensoundmeter # sound measurement application for tuning audio systems in real-time
     picard # autotags
     roomeqwizard # room acoustics software
+    scdl # download music from soundcloud
     screenkey # screencast tool to display your keys inspired by Screenflick
     sonic-visualiser # audio analyzer
     sox # audio processing
