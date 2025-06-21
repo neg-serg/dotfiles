@@ -482,7 +482,7 @@ zshrc             03;38;5;103 # UNIX Shell
 .RData            00;38;5;29 # Data store # non-relational
 .rnc              00;38;5;29 # Data store # non-relational
 .rng              00;38;5;29 # Data store # non-relational
-.ron             00;38;5;29 # Data store # non-relational
+.ron              00;38;5;29 # Data store # non-relational
 .rss              00;38;5;29 # Data store # non-relational
 .sgml             00;38;5;29 # Data store # non-relational
 .tmTheme          00;38;5;29 # Data store # non-relational # Textmate settings
