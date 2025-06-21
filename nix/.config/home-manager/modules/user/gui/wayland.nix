@@ -21,6 +21,7 @@
   home.packages = with pkgs; [
     clipse # yet another clipboard manager
     fuzzel # wayland launcher
+    gowall # tool to convert a Wallpaper's color scheme / palette
     grim # to take screenshots
     inputs.astal.packages.${system}.default # astal library support
     inputs.iwmenu.packages.${pkgs.system}.default # wifi menu
