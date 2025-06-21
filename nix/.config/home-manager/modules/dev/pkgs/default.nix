@@ -5,6 +5,7 @@
     dprint # code formatting platform
     flawfinder # examine c, cpp code for security flaws
     mypy # optional static-typing for python
+    nodejs_24 # for npm support
     radicle-explorer # web frontend for radicle
     radicle-node # radicle server
     scc # parallel cloc
