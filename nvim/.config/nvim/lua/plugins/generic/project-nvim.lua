@@ -9,6 +9,6 @@ return {'ahmedkhalf/project.nvim', -- superior project management
             show_hidden=true,
             silent_chdir=false,
         }
-        map('n', '[Qleader]r', '<Cmd>ProjectRoot<CR>', {silent=true})
+        map('n', 'er', '<Cmd>ProjectRoot<CR>', {silent=true})
     end
 }

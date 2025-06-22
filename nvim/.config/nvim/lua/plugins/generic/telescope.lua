@@ -232,7 +232,7 @@ return {'nvim-telescope/telescope.nvim', -- modern fuzzy-finder over lists
             end
             pathogen.find_files{}
         end, opts)
-        Map('n', '[Qleader]e', function() pathogen.find_files{} end, opts)
+        Map('n', 'ee', function() pathogen.find_files{} end, opts)
         Map('n', '<leader>L', function() 
             if vim.bo.filetype then
                 require'oil.actions'.cd.callback()
