@@ -6,6 +6,7 @@ with {
     advancecomp # AdvanceCOMP PNG Compression Utility
     exiftool # extract media metadata
     exiv2 # metadata manipulation
+    gimp # image editor
     graphviz # graphics
     jpegoptim # jpeg optimization
     lutgen # fast lut generator
@@ -15,6 +16,7 @@ with {
     pastel # cli color analyze/convert/manipulation
     pngquant # convert png from RGBA to 8 bit with alpha-channel
     qrencode # qr encoding
+    rawtherapee # raw format support
     scour # svg optimizer
     viu # console image viewer
     zbar # bar code reader
