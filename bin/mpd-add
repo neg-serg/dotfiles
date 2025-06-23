@@ -30,9 +30,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Create cache directory if needed
-mkdir -p "$CACHE_DIR"
-
+mkdir -p "$CACHE_DIR" # Create cache directory if needed
 # Function to get MPD database path
 get_mpd_db_path() {
     # Try to get database path from MPD process
@@ -41,40 +39,22 @@ get_mpd_db_path() {
         return
     fi
 
-    # Try to get database path from common config locations
-    local conf_files=(
-        "$HOME/.config/mpd/mpd.conf"
-        "/etc/mpd.conf"
-        "/etc/mpd/mpd.conf"
-    )
-    
-    # Check environment variable
-    if [[ -n "$MPD_CONF" && -f "$MPD_CONF" ]]; then
-        conf_files=("$MPD_CONF" $conf_files)
-    fi
-
-    for conf in $conf_files; do
-        if [[ -f $conf ]]; then
-            # Look for database setting
-            db_path=$(grep -E '^[ \t]*(database|db_file)[ \t]+' "$conf" | head -n1 | awk '{print $2}' | tr -d '"')
-            if [[ -n "$db_path" ]]; then
-                # Expand tilde if present
-                if [[ "$db_path" == "~/"* ]]; then
-                    db_path="${HOME}/${db_path#"~/"}"
-                fi
-                echo "$db_path"
-                return
+    if [[ -f $conf ]]; then
+        # Look for database setting
+        db_path=$(grep -E '^[ \t]*(database|db_file)[ \t]+' "$conf" | head -n1 | awk '{print $2}' | tr -d '"')
+        if [[ -n "$db_path" ]]; then
+            # Expand tilde if present
+            if [[ "$db_path" == "~/"* ]]; then
+                db_path="${HOME}/${db_path#"~/"}"
             fi
+            echo "$db_path"
+            return
         fi
-    done
-
-    # Default database location
-    echo "${HOME}/.config/mpd/database"
+    fi
 }
 
 # Automatic cache update when MPD database changes
 mpd_db_file=$(get_mpd_db_path)
-echo MPD_DB_FILE=$mpd_db_file
 if [[ -z "$NO_CACHE" && -f "$mpd_db_file" ]]; then
     # Check if MPD database is newer than cache
     for cache_file in "$CACHE_DIR"/*.cache; do
@@ -140,7 +120,7 @@ get_data() {
                     # Handle multiple artists
                     while read -r artist; do
                         # Get release year (first 4-digit year found)
-                        year=$(mpc list date album "$album" artist "$artist" 2>/dev/null | 
+                        year=$(mpc list date album "$album" artist "$artist" 2>/dev/null |
                                grep -oE '\b[0-9]{4}\b' | head -n1)
                         [[ -n "$year" ]] && year_str=" [$year]" || year_str=""
                         print "$artist - $album$year_str"
@@ -171,28 +151,14 @@ selected=$(echo "$data" | fzf \
     --prompt="Select ($MODE): " \
     --header="$header
 [Enter] Add | [Esc] Cancel
-[Ctrl+B] Switch mode | [Ctrl+R] Refresh | [F5] Clear cache" \
-    --bind "ctrl-b:accept+execute(echo switch > /tmp/mpd_switch)+abort" \
+[Ctrl+e] Switch mode | [Ctrl+r] Refresh | [Ctrl+l] Clear cache" \
+    --bind "ctrl-e:execute(echo switch > /tmp/mpd_switch)+abort" \
     --bind "ctrl-r:reload($0 --$MODE)" \
-    --bind "f5:execute(rm -f $CACHE_DIR/*.cache)+reload($0 --$MODE)" \
+    --bind "ctrl-l:execute(rm -f $CACHE_DIR/*.cache)+reload($0 --$MODE)" \
     --ansi \
-    --height=40% \
+    --height=60% \
     --reverse \
-    --color='header:italic,fg:cyan' \
-    --preview-window='right:50%:wrap' \
-    --preview="echo -e '\033[1mPreview:\033[0m\n';
-               if [ '$MODE' = 'artist' ]; then
-                   mpc list artist \"{}\" | head -n 20;
-               elif [ '$MODE' = 'directory' ]; then
-                   mpc ls \"{}\" | head -n 20;
-               elif [ '$MODE' = 'artist-album' ]; then
-                   # Extract clean artist and album without year
-                   item=\"{}\"
-                   clean_item=\"\${item% [*}\"  # Remove year part if exists
-                   artist=\"\${clean_item%% - *}\"
-                   album=\"\${clean_item#* - }\"
-                   mpc find artist \"\$artist\" album \"\$album\" | head -n 20;
-               fi")
+    --color='header:italic,fg:cyan')
 
 # Handle mode switching
 if [[ -f /tmp/mpd_switch ]]; then
@@ -201,24 +167,19 @@ if [[ -f /tmp/mpd_switch ]]; then
         new_mode="directory"
     elif [[ $MODE == "directory" ]]; then
         new_mode="artist-album"
-    else
+    elif [[ $MODE == "artist-album" ]]; then
         new_mode="artist"
     fi
-
-    # Restart with new mode
-    exec "$0" "--$new_mode" "${CLEAR_PLAYLIST:+-c}" "$@"
+    exec "$0" "--$new_mode" "${CLEAR_PLAYLIST:+-c}" "$@" # Restart with new mode
 fi
 
-# Process selected items
-if [[ -n "$selected" ]]; then
-    # Clear playlist if requested
+if [[ -n "$selected" ]]; then # Process selected items
     if [[ $CLEAR_PLAYLIST -eq 1 ]]; then
-        mpc clear >/dev/null
+        mpc clear >/dev/null # Clear playlist if requested
     fi
 
     total_added=0
     start_time=$EPOCHSECONDS
-
     # Add selected items to playlist
     while IFS= read -r item; do
         if [[ -n "$item" ]]; then
@@ -234,7 +195,7 @@ if [[ -n "$selected" ]]; then
                     echo "🎤 Adding $item... $count tracks"
                     total_added=$((total_added + count))
                     ;;
-                    
+
                 directory)
                     mpc add "$item" >/dev/null
                     after_count=$(mpc playlist | wc -l)
@@ -242,23 +203,27 @@ if [[ -n "$selected" ]]; then
                     echo "📁 Adding $item... $count tracks"
                     total_added=$((total_added + count))
                     ;;
-                    
+
                 artist-album)
-                    # Extract clean artist and album without year
-                    clean_item="${item%[*]}"  # Remove year part if exists
-                    artist="${clean_item%%-*}"
-                    album="${clean_item#*-}"
-                    
-                    # Get release year for display
-                    year=$(echo "$item" | grep -oE '\[[0-9]{4}\]$' | tr -d '[]')
-                    
+                    # Reliable parsing of artist, album, and year
+                    if [[ "$item" =~ "(.*) - (.*) \\[([0-9]{4})\\]" ]]; then
+                        artist=$match[1]; album=$match[2]; year=$match[3] # Format: Artist - Album [Year]
+                    elif [[ "$item" =~ "(.*) - (.*)" ]]; then
+                        artist=$match[1]; album=$match[2]; year=""; # Format: Artist - Album (without year)
+                    else
+                        
+                        artist="${item%% - *}"; album="${item#* - }"; year=""; # Fallback: simple splitting
+                    fi
+
+                    # Clean up any extra spaces
+                    artist=$(echo "$artist" | sed 's/ *$//')
+                    album=$(echo "$album" | sed 's/ *$//')
                     # Add items
                     mpc findadd artist "$artist" album "$album" >/dev/null
-                    
                     # Calculate added tracks
                     after_count=$(mpc playlist | wc -l)
                     count=$((after_count - before_count))
-                    
+
                     # Print with year if available
                     if [[ -n "$year" ]]; then
                         echo "🎤💿 Adding $artist - $album [$year]... $count tracks"
