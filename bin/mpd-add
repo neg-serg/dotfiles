@@ -1,0 +1,183 @@
+#!/usr/bin/env zsh
+# MPD Playlist Manager with Perfect Formatting
+# Requirements: fzf, mpc, awk
+
+CLEAR_PLAYLIST=0
+MODE=""
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/mpd_manager"
+CACHE_TTL=86400 # 24 hours in seconds
+LAST_SELECTION=""
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -c|--clear) CLEAR_PLAYLIST=1; shift ;;
+        -a|--artist) MODE="artist"; shift ;;
+        -d|--directory) MODE="directory"; shift ;;
+        -v|--verbose) VERBOSE=1; shift ;;
+        --no-cache) NO_CACHE=1; shift ;;
+        *)
+            print "Usage: $(basename "$0") [-c] [-a|-d] [--no-cache]"
+            print "  -c, --clear      Clear playlist before adding"
+            print "  -a, --artist     Select by artists"
+            print "  -d, --directory  Select by directories"
+            print "  --no-cache       Disable caching"
+            exit 1
+            ;;
+    esac
+done
+
+# Create cache directory if needed
+mkdir -p "$CACHE_DIR"
+
+# Interactive mode selection if not specified
+if [[ -z "$MODE" ]]; then
+    MODE=$(print -l "artist" "directory" | fzf \
+        --prompt="Select mode: " \
+        --header="[Ctrl+Shift+M]: Switch mode | Enter: Confirm" \
+        --height=20% --reverse --exit-0)
+fi
+
+# Function to get data with caching
+get_data() {
+    local mode=$1
+    local cache_file="$CACHE_DIR/${mode}.cache"
+    # Use cache if valid
+    if [[ -z "$NO_CACHE" && -f "$cache_file" ]]; then
+        local now=$(date +%s)
+        local mtime=$(stat -c %Y "$cache_file")
+        if (( now - mtime < CACHE_TTL )); then
+            cat "$cache_file"
+            return 0
+        fi
+    fi
+
+    # Generate fresh data
+    case $mode in
+        # Case-insensitive sorting with special characters handling
+        artist) mpc list artist | LC_ALL=C sort -f | uniq | tee "$cache_file" ;;
+        directory)
+            # Natural sorting for directories
+            mpc listall | awk -F/ '{
+                path = ""
+                for (i=1; i<NF; i++) {
+                    path = (path ? path "/" : "") $i
+                    # Print only leaf directories
+                    if (i == NF-1) print path
+                }
+            }' | LC_ALL=C sort -f | uniq | tee "$cache_file"
+            ;;
+    esac
+}
+
+# Get data for selected mode
+data=$(get_data "$MODE")
+if [[ -z "$data" ]]; then
+    print "Error: No data available for mode: $MODE"
+    exit 1
+fi
+
+case $MODE in
+    artist) header="🎤 ARTIST SELECTION" ;;
+    directory) header="📁 DIRECTORY SELECTION" ;;
+    *) print "Error: Invalid mode '$MODE'"; exit 1 ;;
+esac
+
+# Interactive selection with fzf
+selected=$(echo "$data" | fzf \
+    --multi \
+    --prompt="Select ($MODE): " \
+    --header="$header
+[Enter] Add | [Esc] Cancel
+[Ctrl+Shift+M] Switch mode | [Ctrl+R] Refresh | [F5] Clear cache" \
+    --bind "ctrl-M:accept+execute(echo switch > /tmp/mpd_switch)+abort" \
+    --bind "ctrl-r:reload($0 --$MODE)" \
+    --bind "f5:execute(rm -f $CACHE_DIR/*.cache)+reload($0 --$MODE)" \
+    --ansi \
+    --height=40% \
+    --reverse \
+    --color='header:italic,fg:cyan' \
+    --preview-window='right:50%:wrap' \
+    --preview="echo -e '\033[1mPreview:\033[0m\n';
+               if [ '$MODE' = 'artist' ]; then
+                   mpc list artist \"{}\" | head -n 20;
+               else
+                   mpc ls \"{}\" | head -n 20;
+               fi")
+
+# Handle mode switching
+if [[ -f /tmp/mpd_switch ]]; then
+    rm -f /tmp/mpd_switch
+    if [[ $MODE == "artist" ]]; then
+        new_mode="directory"
+    else
+        new_mode="artist"
+    fi
+
+    # Restart with new mode
+    exec "$0" "--$new_mode" "${CLEAR_PLAYLIST:+-c}" "$@"
+fi
+
+# Process selected items
+if [[ -n "$selected" ]]; then
+    # Clear playlist if requested
+    if [[ $CLEAR_PLAYLIST -eq 1 ]]; then
+        mpc clear >/dev/null
+    fi
+
+    total_added=0
+    start_time=$EPOCHSECONDS
+
+    # Add selected items to playlist
+    while IFS= read -r item; do
+        if [[ -n "$item" ]]; then
+            # Get current playlist count
+            before_count=$(mpc playlist | wc -l)
+
+            # Add items
+            if [[ $MODE == "artist" ]]; then
+                mpc findadd artist "$item" >/dev/null
+            else
+                mpc add "$item" >/dev/null
+            fi
+
+            # Get new count and calculate difference
+            after_count=$(mpc playlist | wc -l)
+            count=$((after_count - before_count))
+            total_added=$((total_added + count))
+            printf "Adding: %-40s... %4d tracks\n" "$item" "$count" # Print status with padding
+        fi
+    done <<< "$selected"
+
+    mpc play >/dev/null # Start playback and show status
+    end_time=$EPOCHSECONDS
+    duration=$((end_time - start_time))
+    playlist_count=$(mpc playlist | wc -l)
+
+    # Calculate dynamic box width
+    max_label_len=$(( ${#total_added} > ${#playlist_count} ? ${#total_added} : ${#playlist_count} ))
+    max_label_len=$(( max_label_len > ${#duration} ? max_label_len : ${#duration} ))
+    box_width=$(( max_label_len + 40 ))
+    [[ $box_width -lt 50 ]] && box_width=50
+
+    # Format values with padding
+    duration_str=$(printf "%${max_label_len}d" $duration)
+    added_str=$(printf "%${max_label_len}d" $total_added)
+    total_str=$(printf "%${max_label_len}d" $playlist_count)
+
+    if [[ ! -z VERBOSE ]]; then
+        # Create summary
+        summary=(
+            "$box_top"
+            "$empty_line"
+            "🎵 Playlist updated in $duration_str seconds$(printf '%0.s ' $(seq 1 $((box_width - 28 - max_label_len))))"
+            "🚀 Tracks added: $added_str$(printf '%0.s ' $(seq 1 $((box_width - 22 - max_label_len))))"
+            "📋 Total in playlist: $total_str tracks$(printf '%0.s ' $(seq 1 $((box_width - 28 - max_label_len))))"
+            "$empty_line"
+            "$box_bot"
+        )
+
+        # Print summary
+        print -l "$summary[@]"
+    fi
+fi
