@@ -1,29 +1,29 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards, FlexibleContexts #-}
-
--- Import necessary modules
 import Control.Monad (forM_, when, unless, void, filterM)
 import Control.Monad.IO.Class (liftIO)
+import Control.Concurrent (forkIO)
 import Data.Char (isDigit, isSpace, toUpper)
-import Data.List (isPrefixOf, isSuffixOf, intercalate, sort, nub, find)
+import Data.List (isPrefixOf, isSuffixOf, intercalate, sort, nub, find, break)
 import Data.Maybe (fromMaybe, catMaybes, mapMaybe)
 import Data.Time.Clock (UTCTime, getCurrentTime, diffUTCTime, NominalDiffTime)
 import Data.Time.Format (defaultTimeLocale, formatTime)
-import System.Directory (getHomeDirectory, createDirectoryIfMissing, 
+import System.Directory (getHomeDirectory, createDirectoryIfMissing,
                          getModificationTime, doesFileExist, doesDirectoryExist,
-                         getXdgDirectory, XdgDirectory(..))
+                         getXdgDirectory, XdgDirectory(..), getTemporaryDirectory, removeFile)
 import System.Environment (getArgs, getEnv, lookupEnv)
 import System.FilePath (takeDirectory, (</>), takeFileName)
-import System.Process (readProcess, callCommand, readProcessWithExitCode, 
+import System.Process (readProcess, callCommand, readProcessWithExitCode,
                        createProcess, waitForProcess, proc, std_in, std_out, std_err,
                        StdStream(..), CreateProcess(..))
 import System.Exit (exitFailure, ExitCode(..))
-import System.IO (hPutStrLn, stderr, IOMode(..), stdin, stdout, stderr, 
+import System.IO (hPutStrLn, stderr, IOMode(..), stdin, stdout, stderr,
                  hSetBuffering, BufferMode(..), hGetContents, hClose, hPutStr)
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Options.Applicative
 import System.Posix.Terminal (queryTerminal)
 import System.Posix.IO (stdInput)
+import Control.Exception (catch, IOException)
 
 -- ================================================================
 -- Configuration Data Types
@@ -209,7 +209,7 @@ parseConfig confPath verboseMode = do
 -- Read songs from tag_cache file
 getSongs :: Bool -> FilePath -> IO [Song]
 getSongs verboseMode dbPath' = do
-    -- Determine actual tag_cache path (user might specify it directly)
+    -- Determine actual tag_cache path
     let tagCachePath = if "tag_cache" `isSuffixOf` dbPath'
                        then dbPath'
                        else takeDirectory dbPath' </> "tag_cache"
@@ -273,7 +273,7 @@ getSongs verboseMode dbPath' = do
     collectBlock stack current [] = (reverse current, [])
     collectBlock [] current rest = (reverse current, rest)
     collectBlock stack current (line:rest)
-        | "song_begin" `isPrefixOf` line =  -- Modified condition
+        | "song_begin" `isPrefixOf` line = 
             collectBlock ("song_begin":stack) (line:current) rest
         | line == "song_end" = 
             case stack of
@@ -462,77 +462,53 @@ parseArtistAlbum s =
 playMPD :: IO ()
 playMPD = callCommand "mpc play > /dev/null"
 
+
 -- ================================================================
 -- FZF Integration
 -- ================================================================
-
--- Run FZF for interactive selection
 runFZF :: Bool -> Mode -> [String] -> IO [String]
 runFZF verboseMode mode items = do
     when verboseMode $ do
         putStrLn $ "FZF: processing " ++ show (length items) ++ " items"
-    
-    -- Check if we're in a terminal
-    isTerminal <- queryTerminal stdInput
-    unless isTerminal $ do
-        hPutStrLn stderr "Error: Input is not a terminal. fzf requires interactive terminal."
-        exitFailure
-    
-    -- Verify fzf is available
-    (fzfExit, _, fzfErr) <- readProcessWithExitCode "fzf" ["--version"] ""
-    when (fzfExit /= ExitSuccess) $ do
-        hPutStrLn stderr $ "fzf not found or not working: " ++ fzfErr
-        exitFailure
-    
-    -- Prepare fzf arguments
+
+    -- Prepare FZF arguments
     let header = case mode of
             ArtistMode -> "🎤 ARTIST SELECTION"
             DirectoryMode -> "📁 DIRECTORY SELECTION"
             ArtistAlbumMode -> "🎤💿 ARTIST-ALBUM-YEAR SELECTION"
-        bindings = [ 
-            "--bind", "ctrl-e:execute(echo switch)+abort",
-            "--bind", "ctrl-r:reload()",
-            "--bind", "ctrl-l:execute(rm -f $HOME/.cache/mpd_manager/*)+reload"]
         args = [ "--multi"
                , "--prompt=Select (" ++ modeToStr mode ++ "): "
                , "--header=" ++ header ++ " [Enter] Add | [Esc] Cancel" ++
-                 " [Ctrl+e] Switch mode | [Ctrl+r] Refresh | [Ctrl+l] Clear cache"
+                 " [Ctrl+e] Switch mode"
                , "--ansi", "--height=60%", "--reverse"
-               ] ++ bindings
-    
-    when verboseMode $ do
-        putStrLn $ "FZF arguments: " ++ show args
-        putStrLn $ "FZF input count: " ++ show (length items)
-    
-    -- Configure process with pipes for I/O
-    let processSpec = (proc "fzf" args) { 
+               , "--bind", "ctrl-e:execute(echo switch)+abort"
+               ]
+
+    -- Launch FZF process with pipes
+    (Just inHandle, Just outHandle, Just errHandle, processHandle) <-
+        createProcess (proc "fzf" args) {
             std_in = CreatePipe,
             std_out = CreatePipe,
-            std_err = CreatePipe 
+            std_err = CreatePipe
         }
-    (Just inHandle, Just outHandle, Just errHandle, processHandle) <- 
-        createProcess processSpec
-    
-    -- Send items to fzf's stdin
-    hPutStr inHandle (unlines items)
-    hClose inHandle
-    
-    -- Capture fzf output
+
+    -- Write items to FZF in separate thread
+    _ <- forkIO $ do
+        hPutStr inHandle (unlines items)
+        hClose inHandle
+
+    -- Capture FZF output
     output <- hGetContents outHandle
     errors <- hGetContents errHandle
-    
-    -- Wait for fzf to finish
+
+    -- Wait for FZF completion
     exitCode <- waitForProcess processHandle
-    
-    when verboseMode $ do
-        putStrLn $ "FZF exit code: " ++ show exitCode
-        putStrLn $ "FZF stderr: " ++ errors
-    
-    -- Return selected items or empty list
+
+    -- Process results
     case exitCode of
         ExitSuccess -> return $ filter (not . null) $ lines output
         _ -> do
-            when (not (null errors)) $ hPutStrLn stderr $ "fzf error: " ++ errors
+            unless (null errors) $ hPutStrLn stderr $ "fzf error: " ++ errors
             return []
 
 -- ================================================================
@@ -547,7 +523,7 @@ main = do
     -- Parse command line arguments
     config <- execParser $ info (argsParser <**> helper) fullDesc
     
-    -- Get database path (either from flag or auto-detected)
+    -- Get database path
     dbPath' <- case dbPath config of
         Just path -> return path
         Nothing -> getMPDDatabasePath (verbose config)
@@ -582,7 +558,7 @@ main = do
         putStrLn $ "Processed " ++ show (length choices) ++ " choices"
         when (length choices < 20) $ mapM_ putStrLn choices
     
-    -- Run FZF only if we have items to show
+    -- Run FZF for user selection
     selected <- if null choices
         then do
             hPutStrLn stderr "No items available for selection."
