@@ -18,7 +18,7 @@ with {
   ];
   services.mpd = {
     enable = true;
-    dataDir = "${config.home.homeDirectory}/music";
+    dataDir = "${config.home.homeDirectory}/.config/mpd";
     musicDirectory = "${config.home.homeDirectory}/music";
     network.startWhenNeeded = true;
     extraConfig = ''
