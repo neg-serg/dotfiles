@@ -336,3 +336,6 @@ shell/.config/tmux/plugins/
 @girs
 node_modules
 grammars
+madd
+madd.hi
+madd.o
