@@ -15,7 +15,7 @@ while [[ $# -gt 0 ]]; do
         -c|--clear) CLEAR_PLAYLIST=1; shift ;;
         -a|--artist) MODE="artist"; shift ;;
         -d|--directory) MODE="directory"; shift ;;
-        -b|--album-artist) MODE="artist-album"; shift ;;
+        -b|--artist-album) MODE="artist-album"; shift ;;
         -v|--verbose) VERBOSE=1; shift ;;
         --no-cache) NO_CACHE=1; shift ;;
         *)
@@ -23,7 +23,7 @@ while [[ $# -gt 0 ]]; do
             print "  -c, --clear        Clear playlist before adding"
             print "  -a, --artist       Select by artists"
             print "  -d, --directory    Select by directories"
-            print "  -b, --album-artist Select by artist-album pairs"
+            print "  -b, --artist-album Select by artist-album pairs"
             print "  --no-cache         Disable caching"
             exit 1
             ;;
@@ -31,6 +31,29 @@ while [[ $# -gt 0 ]]; do
 done
 
 mkdir -p "$CACHE_DIR" # Create cache directory if needed
+get_mpd_conf_path() {
+    if command -v systemctl >/dev/null && systemctl --user is-active mpd.service &>/dev/null; then
+        local exec_start=$(systemctl --user show mpd.service --property=ExecStart --value --no-pager)
+        local args=(${(s: :)exec_start})
+        local conf_path=""
+        local skip_next=false
+        for arg in "${args[@]}"; do
+            if $skip_next; then
+                conf_path="$arg"
+                break
+            elif [[ ! "$arg" =~ "^-" && -z "$conf_path" ]]; then
+                conf_path="$arg"
+            fi
+        done
+        if [[ -n "$conf_path" && -f "$conf_path" ]]; then
+            echo "$conf_path"
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
 # Function to get MPD database path
 get_mpd_db_path() {
     # Try to get database path from MPD process
@@ -38,7 +61,7 @@ get_mpd_db_path() {
         systemctl --user show mpd.service -p ExecStart --value | grep -oP '(?<=--database )[^ ]+'
         return
     fi
-
+    conf=$(get_mpd_conf_path)
     if [[ -f $conf ]]; then
         # Look for database setting
         db_path=$(grep -E '^[ \t]*(database|db_file)[ \t]+' "$conf" | head -n1 | awk '{print $2}' | tr -d '"')
@@ -60,9 +83,7 @@ if [[ -z "$NO_CACHE" && -f "$mpd_db_file" ]]; then
     for cache_file in "$CACHE_DIR"/*.cache; do
         if [[ -f "$cache_file" && "$mpd_db_file" -nt "$cache_file" ]]; then
             rm -f "$cache_file"
-            if [[ -n $VERBOSE ]]; then
-                echo "♻️  Cache cleared due to updated MPD database"
-            fi
+            echo "♻️  Cache cleared due to updated MPD database"
         fi
     done
 fi
@@ -167,7 +188,7 @@ if [[ -f /tmp/mpd_switch ]]; then
         new_mode="directory"
     elif [[ $MODE == "directory" ]]; then
         new_mode="artist-album"
-    elif [[ $MODE == "artist-album" ]]; then
+    else 
         new_mode="artist"
     fi
     exec "$0" "--$new_mode" "${CLEAR_PLAYLIST:+-c}" "$@" # Restart with new mode
