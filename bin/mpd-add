@@ -37,12 +37,24 @@ get_mpd_conf_path() {
         local args=(${(s: :)exec_start})
         local conf_path=""
         local skip_next=false
-        for arg in "${args[@]}"; do
-            if $skip_next; then
-                conf_path="$arg"
-                break
-            elif [[ ! "$arg" =~ "^-" && -z "$conf_path" ]]; then
-                conf_path="$arg"
+        for line in "${args[@]}"; do
+            if [[ "$line" == "argv[]="* ]]; then
+                in_argv=1
+                argv_str="${line#argv[]=}"
+            elif [[ $in_argv -eq 1 ]]; then
+                if [[ "$line" == *";" ]]; then
+                    in_argv=0
+                    line="${line%%;}"
+                    [[ -n "$line" ]] && argv_str+=" $line"
+                    for arg in ${=argv_str}; do
+                        if [[ "$arg" == *mpd.conf ]]; then
+                            print -r -- "$arg"
+                        fi
+                    done
+                    argv_str=""
+                else
+                    argv_str+=" $line"
+                fi
             fi
         done
         if [[ -n "$conf_path" && -f "$conf_path" ]]; then
@@ -56,11 +68,6 @@ get_mpd_conf_path() {
 
 # Function to get MPD database path
 get_mpd_db_path() {
-    # Try to get database path from MPD process
-    if command -v systemctl >/dev/null && systemctl --user is-active mpd.service &>/dev/null; then
-        systemctl --user show mpd.service -p ExecStart --value | grep -oP '(?<=--database )[^ ]+'
-        return
-    fi
     conf=$(get_mpd_conf_path)
     if [[ -f $conf ]]; then
         # Look for database setting
