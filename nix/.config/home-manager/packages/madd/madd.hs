@@ -1,8 +1,9 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards, FlexibleContexts #-}
 
+-- Import necessary modules
 import Control.Monad (forM_, when, unless, void, filterM)
 import Control.Monad.IO.Class (liftIO)
-import Data.Char (isDigit, isSpace)
+import Data.Char (isDigit, isSpace, toUpper)
 import Data.List (isPrefixOf, isSuffixOf, intercalate, sort, nub, find)
 import Data.Maybe (fromMaybe, catMaybes, mapMaybe)
 import Data.Time.Clock (UTCTime, getCurrentTime, diffUTCTime, NominalDiffTime)
@@ -12,38 +13,47 @@ import System.Directory (getHomeDirectory, createDirectoryIfMissing,
                          getXdgDirectory, XdgDirectory(..))
 import System.Environment (getArgs, getEnv, lookupEnv)
 import System.FilePath (takeDirectory, (</>), takeFileName)
-import System.Exit (exitFailure, ExitCode(..))
-import System.IO (hPutStrLn, stderr, IOMode(..), stdin, stdout, stderr, hSetBuffering, BufferMode(..),
-             hSetBuffering, BufferMode(..), hGetContents, hClose, hPutStr)
 import System.Process (readProcess, callCommand, readProcessWithExitCode, 
-                   createProcess, waitForProcess, proc, std_in, std_out, std_err,
-                   StdStream(..), CreateProcess(..))
+                       createProcess, waitForProcess, proc, std_in, std_out, std_err,
+                       StdStream(..), CreateProcess(..))
+import System.Exit (exitFailure, ExitCode(..))
+import System.IO (hPutStrLn, stderr, IOMode(..), stdin, stdout, stderr, 
+                 hSetBuffering, BufferMode(..), hGetContents, hClose, hPutStr)
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Options.Applicative
 import System.Posix.Terminal (queryTerminal)
 import System.Posix.IO (stdInput)
 
--- Конфигурация
+-- ================================================================
+-- Configuration Data Types
+-- ================================================================
+
+-- Main configuration options for the program
 data Config = Config {
-    clearPlaylist :: Bool,
-    mode :: Mode,
-    verbose :: Bool,
-    noCache :: Bool,
-    dbPath :: Maybe FilePath
+    clearPlaylist :: Bool,   -- Whether to clear playlist before adding
+    mode :: Mode,            -- Selection mode (artist, directory, etc)
+    verbose :: Bool,         -- Verbose output flag
+    noCache :: Bool,         -- Disable caching flag
+    dbPath :: Maybe FilePath -- Optional explicit database path
 } deriving Show
 
+-- Different selection modes for organizing music
 data Mode = ArtistMode | DirectoryMode | ArtistAlbumMode deriving (Eq, Show)
 
--- Модель данных
+-- Data model representing a song with metadata
 data Song = Song {
-    artist :: Maybe String,
-    album :: Maybe String,
-    date :: Maybe String,
-    filePath :: String
+    artist :: Maybe String,  -- Artist name (if available)
+    album :: Maybe String,   -- Album name (if available)
+    date :: Maybe String,    -- Release date (if available)
+    filePath :: String       -- File system path to the song
 } deriving (Show, Read)
 
--- Парсер аргументов командной строки
+-- ================================================================
+-- Command Line Argument Parser
+-- ================================================================
+
+-- Define command line options parser
 argsParser :: Parser Config
 argsParser = Config
     <$> switch (
@@ -68,8 +78,9 @@ argsParser = Config
         long "db-path" 
         <> short 'd' 
         <> metavar "PATH" 
-        <> help "Specify MPD database path explicitly"))
+        <> help "Specify MPD database or tag_cache path explicitly"))
 
+-- Helper to parse mode string
 readMode :: ReadM Mode
 readMode = eitherReader $ \s -> case s of
     "artist" -> Right ArtistMode
@@ -77,18 +88,25 @@ readMode = eitherReader $ \s -> case s of
     "artist-album" -> Right ArtistAlbumMode
     _ -> Left $ "Unknown mode: " ++ s
 
+-- Convert mode to string for display
 modeToStr :: Mode -> String
 modeToStr ArtistMode = "artist"
 modeToStr DirectoryMode = "directory"
 modeToStr ArtistAlbumMode = "artist-album"
 
--- Поиск файла базы данных MPD
+-- ================================================================
+-- MPD Database Path Handling
+-- ================================================================
+
+-- Find MPD database path through various methods
 getMPDDatabasePath :: Bool -> IO FilePath
 getMPDDatabasePath verboseMode = do
+    -- Try finding config via process list
     mConfPath <- findConfigWithPS verboseMode
     case mConfPath of
         Just confPath -> parseConfig confPath verboseMode
         Nothing -> do
+            -- Check standard locations
             home <- getHomeDirectory
             let defaultConfs = [ 
                   home </> ".config/mpd/mpd.conf",
@@ -111,13 +129,14 @@ getMPDDatabasePath verboseMode = do
                     unlines (map ("- " ++) defaultConfs),
                     "Specify path with: --db-path /path/to/database"]
 
--- Поиск конфига через ps aux | awk
+-- Find MPD config path by examining running processes
 findConfigWithPS :: Bool -> IO (Maybe FilePath)
 findConfigWithPS verboseMode = do
     (exitCode, out, err) <- readProcessWithExitCode "sh" 
         ["-c", "ps aux | grep -v grep | grep -E 'mpd\\s+.*mpd\\.conf' | awk '{print $NF}' | head -1"] ""
     
-    when verboseMode $ putStrLn $ "PS AUX output: " ++ out
+    when verboseMode $ do
+        putStrLn $ "PS AUX output: " ++ out
     
     case exitCode of
         ExitSuccess -> case lines out of
@@ -131,14 +150,15 @@ findConfigWithPS verboseMode = do
                     else return Nothing
         _ -> return Nothing
 
--- Удаление кавычек и пробелов
+-- Clean up path string by removing quotes and extra spaces
 cleanPath :: String -> String
 cleanPath = unwords . words . filter (\c -> c `notElem` ("\"'" :: String))
 
--- Извлечение пути к БД из конфига
+-- Parse MPD config file to extract database path
 parseConfig :: FilePath -> Bool -> IO FilePath
 parseConfig confPath verboseMode = do
-    when verboseMode $ putStrLn $ "Parsing MPD config: " ++ confPath
+    when verboseMode $ do
+        putStrLn $ "Parsing MPD config: " ++ confPath
     
     content <- readFile confPath
     let dbLine = findDatabaseLine (lines content)
@@ -182,78 +202,142 @@ parseConfig confPath verboseMode = do
         when verboseMode $ putStrLn $ "Expanded db path: " ++ expandedPath
         return expandedPath
 
--- Чтение песен из tag_cache
-getSongs :: FilePath -> IO [Song]
-getSongs dbPath = do
-    let tagCachePath = takeDirectory dbPath </> "tag_cache"
-    when (verboseDebug) $ putStrLn $ "Reading tag_cache from: " ++ tagCachePath
-    content <- readFile tagCachePath
-    return $ parseTagCache content
-  where
-    verboseDebug = False
+-- ================================================================
+-- Tag Cache Parsing
+-- ================================================================
+
+-- Read songs from tag_cache file
+getSongs :: Bool -> FilePath -> IO [Song]
+getSongs verboseMode dbPath' = do
+    -- Determine actual tag_cache path (user might specify it directly)
+    let tagCachePath = if "tag_cache" `isSuffixOf` dbPath'
+                       then dbPath'
+                       else takeDirectory dbPath' </> "tag_cache"
     
+    when verboseMode $ do
+        putStrLn $ "Using tag_cache: " ++ tagCachePath
+    
+    -- Read and parse the file
+    content <- readFile tagCachePath
+    let linesCount = length (lines content)
+    when verboseMode $ do
+        putStrLn $ "Read " ++ show linesCount ++ " lines from tag_cache"
+        
+        -- Show file samples for debugging
+        putStrLn "First 3 lines of tag_cache:"
+        forM_ (take 3 $ lines content) $ \line -> 
+            putStrLn $ "  " ++ line
+        
+        when (linesCount > 3) $ do
+            putStrLn "Last 3 lines of tag_cache:"
+            forM_ (take 3 $ reverse $ lines content) $ \line -> 
+                putStrLn $ "  " ++ line
+    
+    let songs = parseTagCache content
+    when verboseMode $ do
+        putStrLn $ "Parsed " ++ show (length songs) ++ " songs"
+        when (length songs > 0) $ do
+            putStrLn "Sample songs:"
+            forM_ (take 3 songs) $ \song -> do
+                putStrLn $ "  File: " ++ filePath song
+                putStrLn $ "    Artist: " ++ show (artist song)
+                putStrLn $ "    Album: " ++ show (album song)
+                putStrLn $ "    Date: " ++ show (date song)
+    return songs
+  where
+    -- Parse entire tag_cache content into song list
     parseTagCache :: String -> [Song]
     parseTagCache content = 
-        let blocks = splitBlocks $ lines content
-        in mapMaybe parseBlock blocks
-    
-    -- Разделяем содержимое на блоки песен
-    splitBlocks :: [String] -> [[String]]
-    splitBlocks [] = []
-    splitBlocks lines' = 
-        case dropWhile (not . isBlockStart) lines' of
-            [] -> []
-            (start:rest) -> 
-                let (block, remaining) = break isBlockEnd rest
-                in (start : block) : splitBlocks (drop 1 remaining)  -- drop "end"
-    
-    isBlockStart :: String -> Bool
-    isBlockStart s = "begin: " `isPrefixOf` s
-    
-    isBlockEnd :: String -> Bool
-    isBlockEnd s = s == "end"
-    
-    -- Парсим блок песни
-    parseBlock :: [String] -> Maybe Song
-    parseBlock [] = Nothing
-    parseBlock (fileLine:tags) 
-        | "begin: " `isPrefixOf` fileLine = 
-            let beginPrefix = "begin: " :: String
-                filePath = drop (length beginPrefix) fileLine
-                tagMap = parseTags tags
+        let lines' = lines content
+            songBlocks = extractSongBlocks lines'
+        in mapMaybe parseSongBlock songBlocks
+
+    extractSongBlocks :: [String] -> [[String]]
+    extractSongBlocks [] = []
+    extractSongBlocks (line:rest)
+        | "song_begin" `isPrefixOf` line =  -- Modified condition
+            let (block, remaining) = collectBlock ["song_begin"] [] rest
+            in block : extractSongBlocks remaining
+        | otherwise = extractSongBlocks rest
+
+    -- Collect lines until matching "song_end" is found
+    collectBlock :: [String] -> [String] -> [String] -> ([String], [String])
+    collectBlock stack current [] = (reverse current, [])
+    collectBlock [] current rest = (reverse current, rest)
+    collectBlock stack current (line:rest)
+        | "song_begin" `isPrefixOf` line =  -- Modified condition
+            collectBlock ("song_begin":stack) (line:current) rest
+        | line == "song_end" = 
+            case stack of
+                ("song_begin":xs) -> 
+                    if null xs 
+                    then (reverse (line:current), rest)  -- Block closed
+                    else collectBlock xs (line:current) rest
+                _ -> collectBlock stack (line:current) rest
+        | otherwise = 
+            collectBlock stack (line:current) rest
+            
+    parseSongBlock :: [String] -> Maybe Song
+    parseSongBlock [] = Nothing
+    parseSongBlock (firstLine:rest)
+        | "song_begin" `isPrefixOf` firstLine =  -- Modified condition
+            let pathLine = dropWhile (== ' ') $ dropWhile (/= ' ') firstLine
+                filePath = case pathLine of
+                    ':':restPath -> restPath  -- Handle colon format
+                    _ -> pathLine             -- Handle space format
+                tags = parseTagsInBlock rest
             in Just $ Song {
-                artist = Map.lookup "Artist" tagMap,
-                album = Map.lookup "Album" tagMap,
-                date = Map.lookup "Date" tagMap,
-                filePath = filePath
+                artist = Map.lookup "ARTIST" tags,
+                album = Map.lookup "ALBUM" tags,
+                date = Map.lookup "DATE" tags,
+                filePath = trim filePath  -- Added trim
             }
         | otherwise = Nothing
+
+    -- Parse tags within a song block
+    parseTagsInBlock :: [String] -> Map.Map String String
+    parseTagsInBlock lines' = 
+        let tagLines = takeWhile (/= "song_end") lines'
+        in Map.fromList $ mapMaybe parseTagLine tagLines
     
-    -- Парсим теги в блоке
-    parseTags :: [String] -> Map.Map String String
-    parseTags tags = 
-        Map.fromList $ mapMaybe parseTag tags
-    
-    parseTag :: String -> Maybe (String, String)
-    parseTag line
+    -- Parse a single tag line
+    parseTagLine :: String -> Maybe (String, String)
+    parseTagLine line
         | "tag: " `isPrefixOf` line = 
-            let tagPrefix = "tag: " :: String
-                content = drop (length tagPrefix) line
-                (key, value) = break (== ':') content
-            in if not (null value) 
-                then Just (key, dropWhile isSpace $ drop 1 value)
-                else Nothing
+            let content = drop (length ("tag: " :: String)) line
+                parts = splitAtColon content
+            in case parts of
+                (key, value) | not (null key) -> 
+                    Just (map toUpper (trim key), trim value)
+                _ -> Nothing
         | otherwise = Nothing
 
--- Обработка данных
+    -- Split string at first colon
+    splitAtColon :: String -> (String, String)
+    splitAtColon s = 
+        case break (== ':') s of
+            (key, ':' : rest) -> (key, rest)
+            (key, _) -> (key, "")
+    
+    -- Remove leading/trailing whitespace
+    trim :: String -> String
+    trim = unwords . words
+
+-- ================================================================
+-- Data Processing
+-- ================================================================
+
+-- Process songs for artist mode
 processArtistMode :: [Song] -> [String]
 processArtistMode songs = 
     sort $ nub $ catMaybes [artist s | s <- songs]
 
+-- Process songs for directory mode
 processDirectoryMode :: [Song] -> [String]
 processDirectoryMode songs = 
     sort $ nub $ map (takeDirectory . filePath) songs
 
+-- Process songs for artist-album mode
 processArtistAlbumMode :: [Song] -> [String]
 processArtistAlbumMode songs = 
     map formatEntry $ Map.toList albumMap
@@ -269,6 +353,7 @@ processArtistAlbumMode songs =
     formatEntry ((a, b), year) = 
         a ++ " - " ++ b ++ maybe "" (\y -> " [" ++ y ++ "]") year
 
+-- Extract year from date string
 extractYear :: Song -> Maybe String
 extractYear song = 
     case date song of
@@ -279,18 +364,24 @@ extractYear song =
                 _ -> Nothing
         _ -> Nothing
 
--- Кэширование
+-- ================================================================
+-- Caching System
+-- ================================================================
+
+-- Get cache directory path
 getCacheDir :: IO FilePath
 getCacheDir = do
     dir <- getXdgDirectory XdgCache "mpd_manager"
     createDirectoryIfMissing True dir
     return dir
 
+-- Get cache file path for specific mode
 getCacheFile :: Mode -> IO FilePath
 getCacheFile m = do
     dir <- getCacheDir
     return $ dir </> modeToStr m ++ ".cache"
 
+-- Load cached data if available and fresh
 loadCache :: Mode -> FilePath -> UTCTime -> IO (Maybe [String])
 loadCache mode dbPath now = do
     cacheFile <- getCacheFile mode
@@ -300,28 +391,34 @@ loadCache mode dbPath now = do
         else do
             cacheModTime <- getModificationTime cacheFile
             dbModTime <- getModificationTime dbPath
-            let cacheFresh = diffUTCTime now cacheModTime < 86400 -- 24 часа
+            let cacheFresh = diffUTCTime now cacheModTime < 86400 -- 24 hours
                 cacheValid = cacheModTime > dbModTime
             if cacheFresh && cacheValid
                 then Just . lines <$> readFile cacheFile
                 else return Nothing
 
+-- Save data to cache
 saveCache :: Mode -> [String] -> IO ()
 saveCache mode cacheData = do
     cacheFile <- getCacheFile mode
     writeFile cacheFile (unlines cacheData)
 
--- Обработка песен в зависимости от режима
+-- Process songs based on selected mode
 processSongs :: Mode -> [Song] -> [String]
 processSongs mode songs = case mode of
     ArtistMode -> processArtistMode songs
     DirectoryMode -> processDirectoryMode songs
     ArtistAlbumMode -> processArtistAlbumMode songs
 
--- Взаимодействие с MPD
+-- ================================================================
+-- MPD Interaction
+-- ================================================================
+
+-- Clear current MPD playlist
 clearMPDPlaylist :: IO ()
 clearMPDPlaylist = callCommand "mpc clear > /dev/null"
 
+-- Add item to MPD playlist based on mode
 addToMPDPlaylist :: Mode -> String -> IO Int
 addToMPDPlaylist mode item = do
     let cmd = case mode of
@@ -339,6 +436,7 @@ addToMPDPlaylist mode item = do
     escape s = "'" ++ s ++ "'"
     getPlaylistCount = length . lines <$> readProcess "mpc" ["playlist"] ""
 
+-- Parse artist-album string from selection
 parseArtistAlbum :: String -> (String, String, Maybe String)
 parseArtistAlbum s = 
     case break (== '-') s of
@@ -353,27 +451,33 @@ parseArtistAlbum s =
   where
     trim = unwords . words
 
+-- Start playback in MPD
 playMPD :: IO ()
 playMPD = callCommand "mpc play > /dev/null"
 
--- Утилиты FZF с гарантированным отображением
+-- ================================================================
+-- FZF Integration
+-- ================================================================
+
+-- Run FZF for interactive selection
 runFZF :: Bool -> Mode -> [String] -> IO [String]
 runFZF verboseMode mode items = do
     when verboseMode $ do
         putStrLn $ "FZF: processing " ++ show (length items) ++ " items"
     
-    -- Проверка доступности терминала
+    -- Check if we're in a terminal
     isTerminal <- queryTerminal stdInput
     unless isTerminal $ do
         hPutStrLn stderr "Error: Input is not a terminal. fzf requires interactive terminal."
         exitFailure
     
-    -- Проверка наличия fzf
+    -- Verify fzf is available
     (fzfExit, _, fzfErr) <- readProcessWithExitCode "fzf" ["--version"] ""
     when (fzfExit /= ExitSuccess) $ do
         hPutStrLn stderr $ "fzf not found or not working: " ++ fzfErr
         exitFailure
     
+    -- Prepare fzf arguments
     let header = case mode of
             ArtistMode -> "🎤 ARTIST SELECTION"
             DirectoryMode -> "📁 DIRECTORY SELECTION"
@@ -393,38 +497,50 @@ runFZF verboseMode mode items = do
         putStrLn $ "FZF arguments: " ++ show args
         putStrLn $ "FZF input count: " ++ show (length items)
     
-    -- Используем createProcess для прямого подключения stdio
-    (Just inHandle, Just outHandle, Just errHandle, processHandle) <-
-        createProcess (proc "fzf" args) { std_in = CreatePipe, std_out = CreatePipe, std_err = CreatePipe }
+    -- Configure process with pipes for I/O
+    let processSpec = (proc "fzf" args) { 
+            std_in = CreatePipe,
+            std_out = CreatePipe,
+            std_err = CreatePipe 
+        }
+    (Just inHandle, Just outHandle, Just errHandle, processHandle) <- 
+        createProcess processSpec
     
-    -- Записываем данные в stdin fzf
+    -- Send items to fzf's stdin
     hPutStr inHandle (unlines items)
     hClose inHandle
     
-    -- Читаем вывод
+    -- Capture fzf output
     output <- hGetContents outHandle
     errors <- hGetContents errHandle
     
-    -- Ждем завершения
+    -- Wait for fzf to finish
     exitCode <- waitForProcess processHandle
     
     when verboseMode $ do
         putStrLn $ "FZF exit code: " ++ show exitCode
         putStrLn $ "FZF stderr: " ++ errors
     
+    -- Return selected items or empty list
     case exitCode of
         ExitSuccess -> return $ filter (not . null) $ lines output
         _ -> do
             when (not (null errors)) $ hPutStrLn stderr $ "fzf error: " ++ errors
             return []
 
--- Основной поток
+-- ================================================================
+-- Main Program Flow
+-- ================================================================
+
 main :: IO ()
 main = do
+    -- Ensure line buffering for proper output
     hSetBuffering stdout LineBuffering
+    
+    -- Parse command line arguments
     config <- execParser $ info (argsParser <**> helper) fullDesc
     
-    -- Получаем путь к базе данных
+    -- Get database path (either from flag or auto-detected)
     dbPath' <- case dbPath config of
         Just path -> return path
         Nothing -> getMPDDatabasePath (verbose config)
@@ -432,10 +548,11 @@ main = do
     when (verbose config) $ do
         putStrLn $ "Using database: " ++ dbPath'
     
-    -- Вычисляем путь к tag_cache
-    let tagCachePath = takeDirectory dbPath' </> "tag_cache"
+    -- Verify tag_cache exists
+    let tagCachePath = if "tag_cache" `isSuffixOf` dbPath'
+                       then dbPath'
+                       else takeDirectory dbPath' </> "tag_cache"
     
-    -- Проверяем, что файл tag_cache существует
     exists <- doesFileExist tagCachePath
     unless exists $ do
         hPutStrLn stderr $ "tag_cache file not found: " ++ tagCachePath
@@ -445,39 +562,37 @@ main = do
     
     let currentMode = mode config
     
-    -- Получение данных
-    choices <- if noCache config 
-        then do
-            songs <- getSongs dbPath'
-            return $ processSongs currentMode songs
-        else do
-            mcache <- loadCache currentMode tagCachePath now
-            case mcache of
-                Just cached -> return cached
-                Nothing -> do
-                    songs <- getSongs dbPath'
-                    let choices = processSongs currentMode songs
-                    saveCache currentMode choices
-                    return choices
+    -- Load songs from tag_cache
+    songs <- getSongs (verbose config) dbPath'
     
     when (verbose config) $ do
-        putStrLn $ "Loaded " ++ show (length choices) ++ " choices"
+        putStrLn $ "Found " ++ show (length songs) ++ " songs in database"
+    
+    -- Process songs based on current mode
+    let choices = processSongs currentMode songs
+    
+    when (verbose config) $ do
+        putStrLn $ "Processed " ++ show (length choices) ++ " choices"
         when (length choices < 20) $ mapM_ putStrLn choices
     
-    -- Запускаем fzf только если есть что выбирать
+    -- Run FZF only if we have items to show
     selected <- if null choices
         then do
             hPutStrLn stderr "No items available for selection."
             return []
         else runFZF (verbose config) currentMode choices
     
+    -- Clear playlist if requested
     when (clearPlaylist config) clearMPDPlaylist
     
+    -- Add selected items to playlist
     start <- getCurrentTime
     totalAdded <- sum <$> mapM (addToMPDPlaylist currentMode) selected
     
+    -- Start playback
     playMPD
     
+    -- Calculate and display statistics
     end <- getCurrentTime
     totalCount <- getPlaylistCount
     
@@ -486,8 +601,10 @@ main = do
     putStrLn $ "🚀 Tracks added: " ++ show totalAdded
     putStrLn $ "📋 Total in playlist: " ++ show totalCount ++ " tracks"
   where
+    -- Format time duration for display
     showDuration d
         | d < 1     = show (round (d * 1000)) ++ "ms"
         | otherwise = show (round d) ++ "s"
     
+    -- Get current playlist count from MPD
     getPlaylistCount = length . lines <$> readProcess "mpc" ["playlist"] ""
