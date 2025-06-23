@@ -255,10 +255,18 @@ getSongs verboseMode dbPath' = do
     extractSongBlocks :: [String] -> [[String]]
     extractSongBlocks [] = []
     extractSongBlocks (line:rest)
-        | "song_begin" `isPrefixOf` line =  -- Modified condition
-            let (block, remaining) = collectBlock ["song_begin"] [] rest
-            in block : extractSongBlocks remaining
+        | "song_begin" `isPrefixOf` line = 
+            let (block, remaining) = collectSongBlock rest
+            in (line : block) : extractSongBlocks remaining
         | otherwise = extractSongBlocks rest
+      where
+        collectSongBlock :: [String] -> ([String], [String])
+        collectSongBlock [] = ([], [])
+        collectSongBlock (l:ls)
+            | l == "song_end" = ([l], ls)
+            | otherwise = 
+                let (block, rest) = collectSongBlock ls
+                in (l:block, rest)
 
     -- Collect lines until matching "song_end" is found
     collectBlock :: [String] -> [String] -> [String] -> ([String], [String])
@@ -277,20 +285,18 @@ getSongs verboseMode dbPath' = do
         | otherwise = 
             collectBlock stack (line:current) rest
             
-    parseSongBlock :: [String] -> Maybe Song
-    parseSongBlock [] = Nothing
     parseSongBlock (firstLine:rest)
-        | "song_begin" `isPrefixOf` firstLine =  -- Modified condition
-            let pathLine = dropWhile (== ' ') $ dropWhile (/= ' ') firstLine
-                filePath = case pathLine of
-                    ':':restPath -> restPath  -- Handle colon format
-                    _ -> pathLine             -- Handle space format
+        | "song_begin" `isPrefixOf` firstLine = 
+            let pathPart = case dropWhile (/=':') firstLine of
+                    "" -> firstLine
+                    colonPart -> drop 1 colonPart
+                filePath = trim pathPart
                 tags = parseTagsInBlock rest
             in Just $ Song {
                 artist = Map.lookup "ARTIST" tags,
                 album = Map.lookup "ALBUM" tags,
                 date = Map.lookup "DATE" tags,
-                filePath = trim filePath  -- Added trim
+                filePath = filePath
             }
         | otherwise = Nothing
 
@@ -302,15 +308,16 @@ getSongs verboseMode dbPath' = do
     
     -- Parse a single tag line
     parseTagLine :: String -> Maybe (String, String)
-    parseTagLine line
-        | "tag: " `isPrefixOf` line = 
-            let content = drop (length ("tag: " :: String)) line
-                parts = splitAtColon content
-            in case parts of
-                (key, value) | not (null key) -> 
-                    Just (map toUpper (trim key), trim value)
-                _ -> Nothing
-        | otherwise = Nothing
+    parseTagLine line = case break (== ':') line of
+        (key, ':':value) | not (null key) -> 
+            let keyUpper = map toUpper (trim key)
+                valueTrimmed = trim value
+            in if keyUpper `elem` ["ARTIST", "ALBUM", "DATE", "ALBUMARTIST"]
+               then Just (keyUpper, valueTrimmed)
+               else Nothing
+        _ -> Nothing
+      where
+        trim = unwords . words
 
     -- Split string at first colon
     splitAtColon :: String -> (String, String)
