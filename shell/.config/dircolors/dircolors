@@ -738,6 +738,7 @@ zshrc             03;38;5;103 # UNIX Shell
 .pas              03;38;5;73 # Pascal
 .ctp              00;38;5;4 # Code (interpreted) (PHP CakePHP)
 .ctp              00;38;5;4 # Code (interpreted) (PHP Twig)
+.jl               03;38;5;30 # Code (interpreted) (Julia)
 .php              00;38;5;4 # Code (interpreted) (PHP)
 .pl               00;38;5;73 # Code (interpreted) (Perl)
 .PL               01;38;5;73 # Code (interpreted) (Perl)
