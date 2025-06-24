@@ -12,7 +12,7 @@
     settings = {
       global = {
         alignment = "left";
-        browser = "${pkgs.floorp}/bin/floorp -new-tab";
+        browser = "${pkgs.firefox}/bin/firefox -new-tab";
         corner_radius = 4;
         ellipsize = "end";
         follow = "mouse";
