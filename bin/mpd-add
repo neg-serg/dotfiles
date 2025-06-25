@@ -8,6 +8,7 @@ CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/mpd_manager"
 CACHE_TTL=86400 # 24 hours in seconds
 LAST_SELECTION=""
 DEFAULT_MODE="artist-album"
+NEW_DIR="new" # Base directory for new groups
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -16,14 +17,16 @@ while [[ $# -gt 0 ]]; do
         -a|--artist) MODE="artist"; shift ;;
         -d|--directory) MODE="directory"; shift ;;
         -b|--artist-album) MODE="artist-album"; shift ;;
+        -n|--new) MODE="new"; shift ;; # New option for 'new' directory
         -v|--verbose) VERBOSE=1; shift ;;
         --no-cache) NO_CACHE=1; shift ;;
         *)
-            print "Usage: $(basename "$0") [-c] [-a|-d|-b] [--no-cache]"
+            print "Usage: $(basename "$0") [-c] [-a|-d|-b|-n] [--no-cache]"
             print "  -c, --clear        Clear playlist before adding"
             print "  -a, --artist       Select by artists"
             print "  -d, --directory    Select by directories"
             print "  -b, --artist-album Select by artist-album pairs"
+            print "  -n, --new          Select from '$NEW_DIR' directory"
             print "  --no-cache         Disable caching"
             exit 1
             ;;
@@ -123,16 +126,29 @@ get_data() {
             # Case-insensitive sorting with special characters handling
             mpc list artist | LC_ALL=C sort -f | uniq | tee "$cache_file"
             ;;
-        directory)
+        directory|new)
             # Natural sorting for directories
-            mpc listall | awk -F/ '{
+            local base_dir=""
+            [[ $mode == "new" ]] && base_dir="$NEW_DIR/"
+
+            # Get directories with proper base path
+            mpc listall | awk -F/ -v base="$base_dir" '{
                 path = ""
                 for (i=1; i<NF; i++) {
                     path = (path ? path "/" : "") $i
-                    # Print only leaf directories
-                    if (i == NF-1) print path
+                    # Only include paths that start with base directory
+                    if (base == "" || index(path, base) == 1) {
+                        # For new mode, only include immediate subdirectories of 'new'
+                        if (mode == "new" && i == 2) {
+                            print path
+                        }
+                        # For regular directory mode, include all leaf directories
+                        else if (mode == "directory" && i == NF-1) {
+                            print path
+                        }
+                    }
                 }
-            }' | LC_ALL=C sort -f | uniq | tee "$cache_file"
+            }' mode="$mode" | LC_ALL=C sort -f | uniq | tee "$cache_file"
             ;;
         artist-album)
             # Generate unique artist-album pairs with year
@@ -169,6 +185,7 @@ fi
 case $MODE in
     artist) header="🎤 ARTIST SELECTION" ;;
     directory) header="📁 DIRECTORY SELECTION" ;;
+    new) header="🆕 NEW GROUP SELECTION ($NEW_DIR/)" ;; # Special header for new groups
     artist-album) header="🎤💿 ARTIST-ALBUM-YEAR SELECTION" ;;
     *) print "Error: Invalid mode '$MODE'"; exit 1 ;;
 esac
@@ -195,7 +212,9 @@ if [[ -f /tmp/mpd_switch ]]; then
         new_mode="directory"
     elif [[ $MODE == "directory" ]]; then
         new_mode="artist-album"
-    else 
+    elif [[ $MODE == "artist-album" ]]; then
+        new_mode="new"
+    else
         new_mode="artist"
     fi
     exec "$0" "--$new_mode" "${CLEAR_PLAYLIST:+-c}" "$@" # Restart with new mode
@@ -224,11 +243,16 @@ if [[ -n "$selected" ]]; then # Process selected items
                     total_added=$((total_added + count))
                     ;;
 
-                directory)
+                directory|new) # Both directory modes use the same adding method
                     mpc add "$item" >/dev/null
                     after_count=$(mpc playlist | wc -l)
                     count=$((after_count - before_count))
-                    echo "📁 Adding $item... $count tracks"
+                    # Special message for new groups
+                    if [[ $MODE == "new" ]]; then
+                        echo "🆕 Adding new group: ${item#$NEW_DIR/}... $count tracks"
+                    else
+                        echo "📁 Adding $item... $count tracks"
+                    fi
                     total_added=$((total_added + count))
                     ;;
 
@@ -239,7 +263,7 @@ if [[ -n "$selected" ]]; then # Process selected items
                     elif [[ "$item" =~ "(.*) - (.*)" ]]; then
                         artist=$match[1]; album=$match[2]; year=""; # Format: Artist - Album (without year)
                     else
-                        
+
                         artist="${item%% - *}"; album="${item#* - }"; year=""; # Fallback: simple splitting
                     fi
 
