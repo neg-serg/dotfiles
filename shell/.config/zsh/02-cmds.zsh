@@ -8,8 +8,8 @@ _exists eza && {
     alias ls="${aliases[eza]:-eza}"
     alias l="${aliases[eza]:-eza}"
     alias ll="${aliases[eza]:-eza} -l"
-    alias lcr="${aliases[eza]:-eza} -al --sort=created --color=always | tail -10"
-    alias lsd="${aliases[eza]:-eza} -alD --sort=created --color=always | tail -10"
+    alias lcr="${aliases[eza]:-eza} -al --sort=created --color=always | tail -14"
+    alias lsd="${aliases[eza]:-eza} -alD --sort=created --color=always | tail -14"
 }
 alias fc="fc -liE 100"
 alias cp='cp --reflink=auto'
