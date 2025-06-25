@@ -9,7 +9,7 @@
     # password manager via gpg
     (pass.withExtensions (ext:
       with ext; [
-        pass-audit # extension for auditing your password repository
+        # pass-audit # extension for auditing your password repository
         pass-import # tool to import data from existing password managers
         pass-otp # one time passwords integration
         pass-tomb # encrypt all password tree inside a tomb
