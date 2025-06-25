@@ -5,11 +5,11 @@ alias ls="${aliases[ls]:-ls} --time-style=+\"%d.%m.%Y %H:%M\" --color=auto --hyp
 alias l="${aliases[ls]:-ls}"
 _exists eza && {
     alias eza="eza --icons=auto --hyperlink"
-    alias ls="${aliases[eza]:-eza}"
     alias l="${aliases[eza]:-eza}"
     alias ll="${aliases[eza]:-eza} -l"
-    alias lcr="${aliases[eza]:-eza} -al --sort=created --color=always | tail -14"
-    alias lsd="${aliases[eza]:-eza} -alD --sort=created --color=always | tail -14"
+    alias ls="${aliases[eza]:-eza}"
+    lcr(){eval "${aliases[eza]:-eza} -al --sort=created --color=always --hyperlink" "$@" | tail -14 }
+    lsd(){eval "${aliases[eza]:-eza} -alD --sort=created --color=always --hyperlink" "$@" | tail -14 }
 }
 alias fc="fc -liE 100"
 alias cp='cp --reflink=auto'
