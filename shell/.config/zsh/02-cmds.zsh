@@ -16,13 +16,6 @@ alias ll='ls -lah'
 alias mv='mv -i'
 alias mk='mkdir -p'
 alias rd='rmdir'
-_exists procs && _exists gum && k() {
-    procs "$1" --no-header \
-        | awk -F '│' '{printf $1}{printf "│"}{print $3}' \
-        | gum choose --no-limit \
-        | awk '{print $1}' \
-        | xargs kill -9
-}
 if _exists ugrep; then
     # ------------------------------------------------------------------
     alias egrep='ug -E' # search with extended regular expressions (ERE)
@@ -180,7 +173,6 @@ _exists fzf && {
         log_file=$(eval "$cmd" | fzf --height 40% --min-height 25 --tac --tiebreak=length,begin,index --reverse --inline-info) && $PAGER "$log_file"
     }
 }
-_exists xev && alias xev="xev | grep -A2 --line-buffered '^KeyRelease' | sed -n '/keycode /s/^.*keycode \([0-9]*\).* (.*, \(.*\)).*$/\1 \2/p'"
 _exists systemctl && {
     alias ctl='systemctl'
     alias stl='s systemctl'
@@ -208,7 +200,6 @@ if [[ -e /etc/NIXOS ]]; then
             (o: {nativeBuildInputs=o.nativeBuildInputs ++ [ pkg-config ncurses ];})'
         # unpackPhase && cd linux-*; patchPhase; make nconfig
     }
-    xkcdpass(){echo "$(nix run nixpkgs#xkcdpass -- -d '-' -n 3 -C capitalize)$((RANDOM % 9))"}
     _exists nh && {
         alias seh="home-manager -b bck switch -j 32 --cores 32 --flake ~/.config/home-manager"
         alias ser="nh os switch /etc/nixos"
