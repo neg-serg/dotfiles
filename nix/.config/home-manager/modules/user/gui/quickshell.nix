@@ -17,5 +17,23 @@ let
   };
 in
 {
-  home.packages = [ quickshellWrapped ];
+  home.packages = with pkgs; [
+    # kdePackages.breeze-icons
+    kdePackages.kdialog
+    kdePackages.qt5compat # needed for Qt5Compat modules in Qt6
+    kdePackages.qtdeclarative # Qt6
+    kdePackages.qtimageformats
+    kdePackages.qtmultimedia
+    kdePackages.qtpositioning
+    kdePackages.qtquicktimeline
+    kdePackages.qtsensors
+    kdePackages.qtsvg
+    kdePackages.qttools
+    kdePackages.qttranslations
+    kdePackages.qtvirtualkeyboard
+    kdePackages.qtwayland
+    qt6.qtimageformats
+    qt6.qtsvg
+    quickshellWrapped
+  ];
 }

@@ -29,20 +29,7 @@
     hyprpolkitagent # better polkit agent
     hyprprop # xrop for hyprland
     hyprutils # small library for hyprland
-    kdePackages.kdialog
-    kdePackages.qt5compat # needed for Qt5Compat modules in Qt6
     kdePackages.qt6ct
-    kdePackages.qtdeclarative # Qt6
-    kdePackages.qtimageformats
-    kdePackages.qtmultimedia
-    kdePackages.qtpositioning
-    kdePackages.qtquicktimeline
-    kdePackages.qtsensors
-    kdePackages.qtsvg
-    kdePackages.qttools
-    kdePackages.qttranslations
-    kdePackages.qtvirtualkeyboard
-    kdePackages.qtwayland
     pyprland # hyperland plugin system
     upower
   ];
