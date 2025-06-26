@@ -137,22 +137,30 @@ while IFS= read -r item; do
     before_count=$(mpc playlist | wc -l)
 
     case $MODE in
-        artist) mpc findadd artist "$item" >/dev/null; msg="🎤 Adding $item" ;;
+        artist)
+            mpc findadd artist "$item" >/dev/null
+            msg="🎤 Adding $item"
+            ;;
+
         directory|new)
             mpc add "$item" >/dev/null
             if [[ $MODE == new ]]; then
                 msg="🆕 Adding new group: ${item#$NEW_DIR/}"
             else
                 msg="📁 Adding $item"
-            fi ;;
+            fi
+            ;;
+
         artist-album)
             if [[ $item =~ "(.*) - (.*)( \\[[0-9]{4}\\])?" ]]; then
                 artist=$match[1]
                 album=${match[2]% \[*\]}
                 mpc findadd artist "$artist" album "$album" >/dev/null
                 msg="🎤💿 Adding $artist - $album"
-            fi ;;
+            fi
+            ;;
     esac
+
     count=$(( $(mpc playlist | wc -l) - before_count ))
     (( total_added += count ))
     print "$msg... $count tracks"
