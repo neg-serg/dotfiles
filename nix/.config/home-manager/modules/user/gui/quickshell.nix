@@ -18,7 +18,6 @@ let
 in
 {
   home.packages = with pkgs; [
-    # kdePackages.breeze-icons
     kdePackages.kdialog
     kdePackages.qt5compat # needed for Qt5Compat modules in Qt6
     kdePackages.qtdeclarative # Qt6
