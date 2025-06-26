@@ -29,7 +29,6 @@
     hyprpolkitagent # better polkit agent
     hyprprop # xrop for hyprland
     hyprutils # small library for hyprland
-    inputs.quickshell.packages.${pkgs.system}.default
     kdePackages.kdialog
     kdePackages.qt5compat # needed for Qt5Compat modules in Qt6
     kdePackages.qt6ct
