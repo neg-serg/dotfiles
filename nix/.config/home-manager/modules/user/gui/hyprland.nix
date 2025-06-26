@@ -31,10 +31,9 @@
     hyprutils # small library for hyprland
     inputs.quickshell.packages.${pkgs.system}.default
     kdePackages.kdialog
-    kdePackages.qt5compat
-    kdePackages.qt5compat # quickshell compatibility
-    kdePackages.qt6ct # qt integration stuff
-    kdePackages.qtdeclarative
+    kdePackages.qt5compat # needed for Qt5Compat modules in Qt6
+    kdePackages.qt6ct
+    kdePackages.qtdeclarative # Qt6
     kdePackages.qtimageformats
     kdePackages.qtmultimedia
     kdePackages.qtpositioning
@@ -45,8 +44,6 @@
     kdePackages.qttranslations
     kdePackages.qtvirtualkeyboard
     kdePackages.qtwayland
-    libsForQt5.qt5ct # libraries for qt5ct support
-    libsForQt5.qt5.qtgraphicaleffects
     pyprland # hyperland plugin system
     upower
   ];
