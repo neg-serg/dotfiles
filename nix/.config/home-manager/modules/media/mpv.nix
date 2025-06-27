@@ -42,7 +42,7 @@
       # target-prim = "bt.2020"; # target Rec.2020 (wide color gamut) for HDR TVs
       # target-prim = "bt.709"; # target Rec.709 for SDR TVs
       target-trc = "auto";
-      vf = "format=colorlevels=full:colormatrix=auto";
+      # vf = "format=colorlevels=full:colormatrix=auto";
       video-output-levels = "full";
       #--[Scaling]-----------------------------------------------
       cscale = "ewa_lanczossharp";
