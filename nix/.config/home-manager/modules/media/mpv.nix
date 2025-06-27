@@ -37,10 +37,10 @@
       #--[Color]-------------------------------------------------
       # icc-profile-auto = true;
       # see https://github.com/mpv-player/mpv/wiki/Video-output---shader-stage-diagram
-      target-prim = "adobe";
-      # target-prim = "auto";
-      # target-prim=bt.2020 # target Rec.2020 (wide color gamut) for HDR TVs
-      # target-prim=bt.709 # target Rec.709 for SDR TVs
+      target-prim = "auto";
+      # target-prim = "adobe";
+      # target-prim = "bt.2020"; # target Rec.2020 (wide color gamut) for HDR TVs
+      # target-prim = "bt.709"; # target Rec.709 for SDR TVs
       target-trc = "auto";
       vf = "format=colorlevels=full:colormatrix=auto";
       video-output-levels = "full";
