@@ -2,7 +2,7 @@
   home.packages = with pkgs; [
     bespokesynth # nice modular synth
     noisetorch # virtual microphone to suppress the noise
-    ocenaudio # good audio editor
+    # ocenaudio # good audio editor
     reaper # А вот в рипере!
     rnnoise # neural network noise reduction
     stochas # nice free sequencer
