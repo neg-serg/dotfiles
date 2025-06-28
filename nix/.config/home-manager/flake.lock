@@ -887,11 +887,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1750618016,
-        "narHash": "sha256-wn6XV23Sz/nsDPI+1FGjtyMfAWJWcXRpNcryS47DJdY=",
+        "lastModified": 1751078933,
+        "narHash": "sha256-XZZVoQWUblmTorqZpYNgg3GIfSo8wtrOHJR7yfc61Tg=",
         "owner": "Jas-SinghFSU",
         "repo": "HyprPanel",
-        "rev": "2c0c66a8ddcdff69b2ff694fefbcd8df4387a9e7",
+        "rev": "a46929e4c54a95a4b7333e1a304d83862293a4ee",
         "type": "github"
       },
       "original": {
@@ -1182,11 +1182,11 @@
     },
     "nixpkgs_9": {
       "locked": {
-        "lastModified": 1751052091,
-        "narHash": "sha256-gPOWo9DyvSRHHqzPOlOXkrm4jFYqVWktV6s3TYbo9TM=",
+        "lastModified": 1751083014,
+        "narHash": "sha256-JXvmXZfENnpo6U6wR7/0Wd7v411E2ugCFXYRREii4Pw=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "5f4000841c45003d6b0b2add4f8e9e00c8e6b92a",
+        "rev": "499e024bffc54a2e180f7958ba1bb3771af58ce8",
         "type": "github"
       },
       "original": {
@@ -1662,11 +1662,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1749083366,
-        "narHash": "sha256-mR2cf0rUXl8RE0jcjrzQIy6ctfxzGP8quikTa4cix8w=",
+        "lastModified": 1751070530,
+        "narHash": "sha256-47tFlZD2pQPTvVfRbsE550VkmpNTBwCOKDcUnZXytns=",
         "owner": "miuirussia",
         "repo": "yandex-browser.nix",
-        "rev": "5cc0160a29f6435bdc95a18bec4a6f5d87c14da2",
+        "rev": "1b541bf3a5eb8e2fed4f3a045b43e5e805d757f1",
         "type": "github"
       },
       "original": {
