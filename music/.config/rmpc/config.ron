@@ -36,9 +36,9 @@
     ],
     keybinds: (
         global: {
+            "0": DirectoriesTab,
             "1": QueueTab,
             "2": ArtistsTab,
-            "3": DirectoriesTab,
             "b": SeekBack,
             ":": CommandMode,
             "f": SeekForward,
@@ -53,15 +53,16 @@
             "s": Stop,
             "<S-Tab>": PreviousTab,
             "<Tab>": NextTab,
+            "U": Rescan,
+            "u": Update,
+            "w": ShowHelp,
+            "z": ToggleRepeat,
+
             "": ToggleConsume,
             "": ToggleRandom,
             "": ToggleSingle,
-            "U": Rescan,
-            "u": Update,
             "":  VolumeDown,
             "": VolumeUp,
-            "w": ShowHelp,
-            "z": ToggleRepeat,
         },
         navigation: {
             "A": AddAll,
