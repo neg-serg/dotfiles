@@ -17,12 +17,12 @@
       cache = "no";
       correct-downscaling = true;
       gpu-shader-cache-dir = "/home/neg/tmp/";
-      hwdec-codecs = "all";
+      # hwdec-codecs = "all";
       # icc-cache-dir = "/home/neg/tmp/";
       vd-lavc-dr = true;
       vd-lavc-threads = "12";
       vo = "gpu-next";
-      vulkan-swap-mode = "fifo-relaxed";
+      gpu-context = "wayland";
       focus-on = "no";
       #--[ Debanding ]-------------------------------------------
       deband-grain = 48; # dynamic grain: set to "0" if using the static grain shader
