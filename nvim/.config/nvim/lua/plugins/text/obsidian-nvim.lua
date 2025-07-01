@@ -10,14 +10,9 @@ return {'epwalsh/obsidian.nvim', -- obsidian helpers for neovim
         'nvim-telescope/telescope.nvim'},
     config=function()
         require'obsidian'.setup({
-              workspaces = {
-                  { name = "personal", path = "~/1st_level/", },
-              },
+              workspaces = {{name = "personal", path = "~/1st_level/",},},
               new_notes_location="current_dir",
-              completion={
-                  nvim_cmp=false, -- If using nvim-cmp, otherwise set to false
-                  min_chars=2, -- Trigger completion at 2 chars
-              },
+              completion={nvim_cmp=false,}, -- If using nvim-cmp, otherwise set to false
               mappings={
                   ["gf"]={ -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
                       action=function()
