@@ -1,4 +1,7 @@
 -- ┌───────────────────────────────────────────────────────────────────────────────────┐
 -- │ █▓▒░ plasticboy/vim-markdown                                                      │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
-return {'plasticboy/vim-markdown', ft='md'} -- markdown vim mode
+return { -- markdown vim mode
+  'plasticboy/vim-markdown', ft='md',
+  enabled=false,
+}
