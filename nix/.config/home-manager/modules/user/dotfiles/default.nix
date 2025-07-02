@@ -51,7 +51,6 @@ in {
     # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
     "ags" = mkSymlink "wm/.config/ags" true;
     "handlr" = mkSymlink "wm/.config/handlr" true;
-    "swaync" = mkSymlink "wm/swaync/.config/swaync" true;
     "kitty" = mkSymlink "wm/.config/kitty" true;
     
     # Hyprland configuration files
