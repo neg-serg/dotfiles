@@ -32,7 +32,6 @@ return {'renerocksai/telekasten.nvim', ft='md', -- better md wiki stuff
                 show_tags_theme="ivy",
                 subdirs_in_links=true, -- when linking to a note in subdir/, create a [[subdir/title]] link instead of a [[title only]] link
                 template_handling="always_ask",
-                new_note_location="smart",
                 rename_update_links=true, -- should all links be updated when a file is renamed
                 media_previewer="telescope-media-files",
             })
@@ -48,13 +47,9 @@ return {'renerocksai/telekasten.nvim', ft='md', -- better md wiki stuff
                     vim.keymap.set('n', '<C-i>', '<Cmd>lua require"telekasten".paste_img_and_link()<CR>', opts)
                     vim.keymap.set('n', '<C-m>', '<Cmd>lua require"telekasten".follow_link()<CR>', opts)
                     vim.keymap.set('n', '<S-m>', '<Cmd>lua require"telekasten".browse_media()<CR>', opts)
-                    vim.keymap.set('n', '<C-n>', '<Cmd>lua require"telekasten".new_note()<CR>', opts)
-                    vim.keymap.set('n', '<C-p>', '<Cmd>lua require"telekasten".preview_img()<CR>', opts)
                     vim.keymap.set('n', '<C-t>', '<Cmd>lua require"telekasten".toggle_todo()<CR>', opts)
                     vim.keymap.set('n', '<C-y>', '<Cmd>lua require"telekasten".yank_notelink()<CR>', opts)
-                    vim.keymap.set('n', '<leader>F', '<Cmd>lua require"telekasten".find_friends()<CR>', opts)
                     vim.keymap.set('n', '<leader>b', '<Cmd>lua require"telekasten".show_backlinks()<CR>', opts)
-                    vim.keymap.set('n', '<leader>r', '<Cmd>lua require"telekasten".rename_note()<CR>', opts)
                 end,
             })
         end}
