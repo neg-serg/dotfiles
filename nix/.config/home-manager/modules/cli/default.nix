@@ -13,6 +13,9 @@
     ./shell.nix # shells which not in nixOs and their completions
     ./yazi.nix
   ];
+  programs.television = {
+    enable = true;
+  };
   programs.atuin = {
     enable = true;
     flags = [ "--disable-up-arrow" ];
