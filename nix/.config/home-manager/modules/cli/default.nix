@@ -13,8 +13,9 @@
     ./shell.nix # shells which not in nixOs and their completions
     ./yazi.nix
   ];
-  programs.television = { enable = true; }; # yet another fuzzy finder
+  programs.hwatch = { enable = true; }; # better watch with history
   programs.numbat = { enable = true; }; # fancy scientific calculator
+  programs.television = { enable = true; }; # yet another fuzzy finder
   programs.atuin = {
     enable = true;
     flags = [ "--disable-up-arrow" ];
