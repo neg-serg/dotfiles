@@ -1,9 +1,16 @@
 {pkgs, ...}: {
+  programs.lutris = {
+    enable = true;
+    winePackages = [
+      pkgs.wineWow64Packages.full
+    ];
+  };
   home.packages = with pkgs; [
-    lutris # It always struck me as wonky, but I'm including this game launcher for now. EDIT: Nope, still wonky AF. Bye.
     proton-caller # automates launching proton games
+    protonplus # simple Wine and Proton-based compatibility tools manager
+    protontricks # simple wrapper for running Winetricks commands for Proton-enabled games
     protonup # automates updating GloriousEggroll's Proton-GE
-    vkbasalt # Vulkan post processing layer to enhance the visual graphics of games
+    vkbasalt # vulkan post processing layer to enhance the visual graphics of games
     vkbasalt-cli # cli for it
   ];
 }
