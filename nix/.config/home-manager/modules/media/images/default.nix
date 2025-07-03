@@ -2,6 +2,7 @@
 with {
   nsxiv-neg = pkgs.callPackage ../../../packages/nsxiv {};
 }; {
+  programs.swayimg = { enable = true; };
   home.packages = with pkgs; [
     advancecomp # AdvanceCOMP PNG Compression Utility
     exiftool # extract media metadata

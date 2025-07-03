@@ -27,7 +27,6 @@
     inputs.iwmenu.packages.${pkgs.system}.default # wifi menu
     satty # screenshot helper tool
     slurp # select region in wayland compositor
-    swayimg # wayland-native image viewer
     swaynotificationcenter # try another notification center
     swww # wallpaper daemon for wayland
     tofi # an extremely fast and simple dmenu / rofi replacement for wlroots-based Wayland compositors
