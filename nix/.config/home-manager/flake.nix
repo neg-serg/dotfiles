@@ -9,7 +9,6 @@
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     hy3 = { url = "github:outfoxxed/hy3"; inputs.hyprland.follows = "hyprland"; };
     hyprland = { url = "github:hyprwm/Hyprland"; };
-    hyprpanel = { url = "github:Jas-SinghFSU/HyprPanel"; };
     iosevka-neg = { url = "git+ssh://git@github.com/neg-serg/iosevka-neg"; inputs.nixpkgs.follows = "nixpkgs"; };
     iwmenu = { url = "github:e-tho/iwmenu"; };
     nixpkgs = { url = "github:nixos/nixpkgs"; };
@@ -40,9 +39,7 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [
-          inputs.hyprpanel.overlay
-        ];
+        overlays = [];
       };
       iosevkaneg = iosevka-neg.packages.${system};
       yandex-browser = yandex-browser.packages.${system};
