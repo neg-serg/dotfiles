@@ -13,25 +13,27 @@
     ./shell.nix # shells which not in nixOs and their completions
     ./yazi.nix
   ];
-  programs.hwatch = { enable = true; }; # better watch with history
-  programs.kubecolor = { enable = true; }; # kubectl colorizer
-  programs.numbat = { enable = true; }; # fancy scientific calculator
-  programs.television = { enable = true; }; # yet another fuzzy finder
-  programs.visidata = { enable = true; }; # interactive multitool for tabular data
-  programs.atuin = {
-    enable = true;
-    flags = [ "--disable-up-arrow" ];
-    settings = {
-      update_check = false;
-      style = "compact";
-      invert = true;
-      inline_height = 15;
-      show_help = false;
-      show_tabs = false;
-      enter_accept = true;
-      prefers_reduced_motion = true;
-      keys.scroll_exits = false;
+  programs = {
+    atuin = {
+      enable = true;
+      flags = [ "--disable-up-arrow" ];
+      settings = {
+        update_check = false;
+        style = "compact";
+        invert = true;
+        inline_height = 15;
+        show_help = false;
+        show_tabs = false;
+        enter_accept = true;
+        prefers_reduced_motion = true;
+        keys.scroll_exits = false;
+      };
     };
+    hwatch = { enable = true; }; # better watch with history
+    kubecolor = { enable = true; }; # kubectl colorizer
+    numbat = { enable = true; }; # fancy scientific calculator
+    television = { enable = true; }; # yet another fuzzy finder
+    visidata = { enable = true; }; # interactive multitool for tabular data
   };
   home.packages = with pkgs; [
     babashka # native clojure for scripts
