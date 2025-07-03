@@ -1,5 +1,5 @@
 {pkgs, inputs, ...}: {
-  programs.walllust.enable = true;
+  programs.wallust.enable = true;
   home.packages = with pkgs; [
     cliphist # wayland stuff for clipboard
     espanso # systemwide expander for keyboard
