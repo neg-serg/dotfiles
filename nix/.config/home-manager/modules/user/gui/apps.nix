@@ -1,6 +1,5 @@
 {pkgs, inputs, ...}: {
   programs.wallust.enable = true;
-  programs.onagre.enable = true;
   home.packages = with pkgs; [
     cliphist # wayland stuff for clipboard
     espanso # systemwide expander for keyboard
