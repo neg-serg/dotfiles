@@ -14,6 +14,7 @@
     ./yazi.nix
   ];
   programs.hwatch = { enable = true; }; # better watch with history
+  programs.kubecolor = { enable = true; }; # kubectl colorizer
   programs.numbat = { enable = true; }; # fancy scientific calculator
   programs.television = { enable = true; }; # yet another fuzzy finder
   programs.visidata = { enable = true; }; # interactive multitool for tabular data
