@@ -8,6 +8,19 @@ with {
     '';
   };
 }; {
+  programs.wayprompt = {
+    enable = true;
+    settings = {
+      general = {
+        font-regular = "Iosevka:size=14";
+        pin-square-amount = 32;
+      };
+      colours = {
+        background = "000000aa";
+        foreground = "ffffffaa";
+      };
+    };
+  };
   programs.gpg = {
     enable = true;
     scdaemonSettings = {
