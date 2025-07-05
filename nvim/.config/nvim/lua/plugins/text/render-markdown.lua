@@ -1,36 +1,22 @@
 -- ┌───────────────────────────────────────────────────────────────────────────────────┐
 -- │ █▓▒░ MeanderingProgrammer/render-markdown.nvim                                    │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
-return {
-  enabled=true, 'MeanderingProgrammer/render-markdown.nvim',
-  dependencies={'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim'}, -- if you use the mini.nvim suite
-  ft={'markdown', 'quarto'}, opts={},
-  setup=function()
-    require'render-markdown'.setup{
-      enabled=true,
-      completions={blink={enabled=true}},
-      render_modes=true,
-      win_options={
-        conceallevel={default=vim.o.conceallevel, rendered=3},
-        concealcursor={default=vim.o.concealcursor, rendered=''},
+return {'MeanderingProgrammer/render-markdown.nvim',
+  -- enabled=false,
+  name='render-markdown',
+  dependencies={'nvim-treesitter/nvim-treesitter'}, -- if you use the mini.nvim suite
+  ft={'markdown', 'quarto', 'md'}, opts={},
+  opts = {
+      theme = "dark",
+      headings = {
+          ["h1"] = { fg = "#FFD700", bold = true },
+          ["h2"] = { fg = "#FFA500", bold = true },
+          ["h3"] = { fg = "#FF8C00", bold = true },
       },
-      checkbox={
-        enabled=true,
-        render_modes=true, -- Additional modes to render checkboxes.
-        bullet=false, -- Render the bullet point before the checkbox.
-        right_pad=1, -- Padding to add to the right of checkboxes.
-        unchecked={
-          icon='󰄱 ', -- Replaces '[ ]' of 'task_list_marker_unchecked'.
-          highlight='RenderMarkdownUnchecked', -- Highlight for the unchecked icon.
-        },
-        checked={
-          icon='󰱒 ', -- Replaces '[x]' of 'task_list_marker_checked'.
-          highlight='RenderMarkdownChecked', -- Highlight for the checked icon.
-        },
-        -- unchecked={ icon='✘ ' },
-        -- checked={ icon='✔ ' },
-        -- custom={ todo={ rendered='◯ ' } },
-    },
-  }
-  end
+      bullets = { "•", "◦", "▪" },    -- свои маркеры
+      code = { background = "#1e1e2e", border = "rounded", },
+  },
+  config = function(_, opts)
+      require("render-markdown").setup(opts)
+  end,
 }
