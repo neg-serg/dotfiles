@@ -77,7 +77,7 @@ with {
     settings = {
       "org/gnome/desktop/interface" = {
         color-scheme = "prefer-dark";
-        gtk-key-theme = "emacs";
+        gtk-key-theme = "Emacs";
         icon-theme = "kora";
         font-hinting = "hintsfull";
         font-antialiasing = "grayscale";
