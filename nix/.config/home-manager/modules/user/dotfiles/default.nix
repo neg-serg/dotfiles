@@ -49,7 +49,6 @@ in {
     "zsh" = mkSymlink "shell/.config/zsh" false;
     
     # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
-    "ags" = mkSymlink "wm/.config/ags" true;
     "handlr" = mkSymlink "wm/.config/handlr" true;
     "kitty" = mkSymlink "wm/.config/kitty" true;
     
