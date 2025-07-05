@@ -46,4 +46,7 @@ zsh-defer source "${ZDOTDIR}/04-bindings.zsh"
 [[ -x "$(command -v zoxide > /dev/null)" ]] && eval "$(zoxide init zsh)"
 [[ $NEOVIM_TERMINAL ]] && source "${ZDOTDIR}/08-neovim-cd.zsh"
 [[ ! -f "$XDG_CONFIG_HOME/zsh/.p10k.zsh" ]] || source "$XDG_CONFIG_HOME/zsh/.p10k.zsh"
+if command -v nix-your-shell > /dev/null; then
+  nix-your-shell zsh | source /dev/stdin
+fi
 # vim: ft=zsh:nowrap
