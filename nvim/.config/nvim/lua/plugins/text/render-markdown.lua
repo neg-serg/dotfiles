@@ -8,6 +8,11 @@ return {'MeanderingProgrammer/render-markdown.nvim',
     require'render-markdown'.setup{
       completions={blink={enabled=true}},
       render_modes=true,
+      heading={
+        icons={'  󰼏  ', '  󰼐  ', '  󰼑  ', '󰼒  ', '󰼓  ', '󰼔  ', },
+        position='overlay',
+      },
+      link={wiki={icon='󰌹 '},},
       win_options={
         conceallevel={default=vim.o.conceallevel, rendered=3},
         concealcursor={default=vim.o.concealcursor, rendered=''},
@@ -33,3 +38,32 @@ return {'MeanderingProgrammer/render-markdown.nvim',
   }
   end
 }
+
+-- local maputil = require 'user.util.map'
+-- local ft = maputil.ft
+--
+-- ft({ 'markdown', 'Avante', 'mdx' }, function(bufmap)
+--   vim.o.wrap = false
+--
+--   bufmap('n', '<localleader>C', function()
+--     ---@diagnostic disable-next-line: invisible
+--     local config = require('render-markdown.state').config
+--     pcall(
+--       require('render-markdown').setup,
+--       vim.tbl_deep_extend('force', config, config.anti_conceal.enabled and {
+--         anti_conceal = { enabled = false },
+--         win_options = {
+--           concealcursor = { rendered = 'n' },
+--         },
+--       } or {
+--         anti_conceal = { enabled = true },
+--         win_options = {
+--           concealcursor = { rendered = '' },
+--         },
+--       })
+--     )
+--   end, 'Markdown: Toggle concealcursor')
+--
+--   bufmap('n', '<localleader>M', '<cmd>RenderMarkdown toggle<Cr>', 'Markdown: Toggle')
+-- end)
+--
