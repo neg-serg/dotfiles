@@ -41,6 +41,7 @@
             pkgs.ffmpeg
             pkgs.llvmPackages.libclang
             pkgs.stdenv.cc.cc.lib
+            pkgs.sqlite
             pkgs.libcxx
           ];
 
@@ -88,6 +89,7 @@
             stdenv.cc.cc.lib
             stdenv.cc.libc.dev
             llvmPackages.libclang
+            sqlite  # Add SQLite to dev shell
             clang
             libcxx
           ];
