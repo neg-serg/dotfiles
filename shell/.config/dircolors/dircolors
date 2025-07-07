@@ -102,7 +102,7 @@ STICKY_OTHER_WRITABLE 38;5;86;48;5;234;1     # Dir that is sticky and other-writ
 .deb              00;38;5;74 # Packaged apps
 .ear              00;38;5;73 # Packaged apps
 .egg              00;38;5;74 # Packaged apps
-.flatpak          00;38;5;74 # Packaged apps
+.flatpak          01;38;5;74 # Packaged apps
 .gem              00;38;5;74 # Packaged apps
 .jad              00;38;5;74 # Packaged apps
 .jar              00;38;5;73 # Packaged apps
