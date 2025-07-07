@@ -51,6 +51,7 @@
     fasd # my favorite mru autocompletion
     frawk # small text processing language
     grex # tool to generate regexes
+    janet # programming language for scripting similar to lisp
     lnav # logfile navigator
     massren # massive rename
     mergiraf # ast-aware git merge driver
