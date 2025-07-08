@@ -23,7 +23,6 @@
       vd-lavc-threads = "12";
       vo = "gpu-next";
       gpu-context = "wayland";
-      focus-on = "no";
       #--[ Debanding ]-------------------------------------------
       deband-grain = 48; # dynamic grain: set to "0" if using the static grain shader
       deband-iterations = 4; # deband steps
