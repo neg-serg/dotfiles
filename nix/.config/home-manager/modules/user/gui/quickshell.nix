@@ -12,6 +12,8 @@ let
         --prefix QT_PLUGIN_PATH : "${pkgs.qt6.qt5compat}/${pkgs.qt6.qtbase.qtPluginPrefix}" \
         --prefix QML2_IMPORT_PATH : "${pkgs.qt6.qt5compat}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
         --prefix QML2_IMPORT_PATH : "${pkgs.qt6.qtdeclarative}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
+        --prefix QML2_IMPORT_PATH : "${pkgs.qt6.qtpositioning}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
+        --prefix QML2_IMPORT_PATH : "${pkgs.kdePackages.syntax-highlighting}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
         --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.fd pkgs.coreutils ]}
     '';
   };
@@ -31,6 +33,7 @@ in
     kdePackages.qttranslations
     kdePackages.qtvirtualkeyboard
     kdePackages.qtwayland
+    kdePackages.syntax-highlighting
     qt6.qtimageformats
     qt6.qtsvg
     quickshellWrapped
