@@ -1,2 +1,2 @@
 #!/usr/bin/env nu
-swww img (ls -f ~/pic/wl/**/* ~/pic/black/**/* | shuffle | first | get name)
+swww img (ls -f ...(glob ~/pic/{wl,black}/**/*) | shuffle | first | get name)
