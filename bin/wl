@@ -1,0 +1,2 @@
+#!/bin/sh
+swww img $(nu -c 'ls ~/pic/wl/**/* ~/pic/black/**/* | where type == 'file' | shuffle | first | get name | str trim')
