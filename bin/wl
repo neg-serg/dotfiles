@@ -1,2 +1,2 @@
 #!/bin/sh
-swww img $(nu -c 'ls ~/pic/wl/**/* ~/pic/black/**/* | where type == 'file' | shuffle | first | get name | str trim')
+swww img $(nu -c 'ls -f ~/pic/wl/**/* ~/pic/black/**/* | shuffle | first | get name')
