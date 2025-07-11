@@ -1,2 +1,2 @@
-#!/bin/sh
-swww img $(nu -c 'ls -f ~/pic/wl/**/* ~/pic/black/**/* | shuffle | first | get name')
+#!/usr/bin/env nu
+swww img (ls -f ~/pic/wl/**/* ~/pic/black/**/* | shuffle | first | get name)
