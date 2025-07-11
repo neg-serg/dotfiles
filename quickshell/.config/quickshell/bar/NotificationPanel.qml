@@ -9,12 +9,9 @@ PanelWindow {
     // required property font custom_font
     required property color text_color
     property list<QtObject> notification_objects
-
     width: 500
     height: 600
-
     color: "#171a18"
-
     WlrLayershell.layer: WlrLayer.Overlay
 
     Rectangle {

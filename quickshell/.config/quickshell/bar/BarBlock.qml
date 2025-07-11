@@ -6,17 +6,14 @@ Rectangle {
   id: root
   Layout.preferredWidth: contentContainer.implicitWidth + 10
   Layout.preferredHeight: 30
-
   property Item content
   property Item mouseArea: mouseArea
-
   property string text
   property bool dim: false
   property bool underline
   property var onClicked: function() {}
   property int leftPadding
   property int rightPadding
-
   property string hoveredBgColor: "#666666"
 
   // Background color

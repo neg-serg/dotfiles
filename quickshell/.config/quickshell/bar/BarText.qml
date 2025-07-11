@@ -7,8 +7,8 @@ import QtQuick.Effects
 import Qt5Compat.GraphicalEffects
 
 Text {
-  property string mainFont: "FiraCode"
-  property string symbolFont: "Symbols Nerd Font Mono"
+  property string mainFont: "Iosevka Medium"
+  property string symbolFont: "FiraCode Nerd Font Mono"
   property int pointSize: 12
   property int symbolSize: pointSize * 1.4
   property string symbolText

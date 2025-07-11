@@ -4,21 +4,15 @@ import "root:/" // for Globals
 
 LazyLoader {
   id: root
-
   // The item to display the tooltip at. If set to null the tooltip will be hidden.
   property Item relativeItem: null
-
   // Tracks the item after relativeItem is unset.
   property Item displayItem: null
-
   property PopupContext popupContext: Globals.popupContext
-
   property bool hoverable: false;
   readonly property bool hovered: item?.hovered ?? false
-
   // The content to show in the tooltip.
   required default property Component contentDelegate
-
   active: displayItem != null && popupContext.popup == this
 
   onRelativeItemChanged: {

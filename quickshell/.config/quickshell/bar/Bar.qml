@@ -9,9 +9,7 @@ import "root:/"
 Scope {
   IpcHandler {
     target: "bar"
-
     function toggleVis(): void {
-      // Toggle visibility of all bar instances
       for (let i = 0; i < Quickshell.screens.length; i++) {
         barInstances[i].visible = !barInstances[i].visible;
       }
@@ -19,7 +17,6 @@ Scope {
   }
 
   property var barInstances: []
-
   Variants {
     model: Quickshell.screens
   
@@ -41,9 +38,7 @@ Scope {
       }
 
       height: 30
-
       visible: true
-
       anchors {
         top: Theme.get.onTop
         bottom: !Theme.get.onTop
@@ -55,37 +50,11 @@ Scope {
         id: allBlocks
         spacing: 0
         anchors.fill: parent
-  
-        // Left side
         RowLayout {
           id: leftBlocks
           spacing: 10
           Layout.alignment: Qt.AlignLeft
           Layout.fillWidth: true
-
-          //Blocks.Icon {}
-          Blocks.Workspaces {}
-        }
-
-        Blocks.ActiveWorkspace {
-          id: activeWorkspace
-          Layout.leftMargin: 10
-          anchors.centerIn: undefined
-
-          chopLength: {
-            var space = Math.floor(bar.width - (rightBlocks.implicitWidth + leftBlocks.implicitWidth))
-            return space * 0.08;
-          }
-
-          text: {
-            var str = activeWindowTitle
-            return str.length > chopLength ? str.slice(0, chopLength) + '...' : str;
-          }
-
-          color: {
-            return Hyprland.focusedMonitor == Hyprland.monitorFor(screen)
-              ? "#FFFFFF" : "#CCCCCC"
-          }
         }
 
         // Without this filler item, the active window block will be centered
@@ -98,15 +67,15 @@ Scope {
         RowLayout {
           id: rightBlocks
           spacing: 0
-          Layout.alignment: Qt.AlignRight
+          Layout.alignment: Qt.AlignLeft
           Layout.fillWidth: true
-  
+
+          Blocks.Time {}
           Blocks.SystemTray {}
           Blocks.Memory {}
           Blocks.Sound {}
           Blocks.Battery {}
           Blocks.Date {}
-          Blocks.Time {}
         }
       }
     }
