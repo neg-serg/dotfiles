@@ -59,6 +59,9 @@ in {
     "hypr/autostart.conf" = mkSymlink "wm/.config/hypr/autostart.conf" false;
     "hypr/workspaces.conf" = mkSymlink "wm/.config/hypr/workspaces.conf" false;
     "hypr/pyprland.toml" = mkSymlink "wm/.config/hypr/pyprland.toml" false;
+
+    # █▓▒░ quickshell ───────────────────────────────────────────────────────────────────
+    "quickshell" = mkSymlink "quickshell/.config/quickshell" true;
   };
 
   xdg.dataFile."hack-art" = mkSymlink "hack-art/.local/share/hack-art" true;
