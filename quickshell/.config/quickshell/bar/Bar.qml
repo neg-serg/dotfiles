@@ -54,28 +54,19 @@ Scope {
           id: leftBlocks
           spacing: 10
           Layout.alignment: Qt.AlignLeft
+          Blocks.Time {}
           Layout.fillWidth: true
         }
 
-        // Without this filler item, the active window block will be centered
-        // despite setting left alignment
-        Item {
-          Layout.fillWidth: true
-        }
+        Item { Layout.fillWidth: true } // Without this filler item, the active window block will be centered despite setting left alignment
   
-        // Right side
         RowLayout {
           id: rightBlocks
           spacing: 0
-          Layout.alignment: Qt.AlignLeft
+          Layout.alignment: Qt.AlignRight
           Layout.fillWidth: true
-
-          Blocks.Time {}
           Blocks.SystemTray {}
           Blocks.Memory {}
-          Blocks.Sound {}
-          Blocks.Battery {}
-          Blocks.Date {}
         }
       }
     }
