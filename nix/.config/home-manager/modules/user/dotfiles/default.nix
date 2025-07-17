@@ -45,9 +45,10 @@ in {
     # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
     "dircolors" = mkSymlink "shell/.config/dircolors" true;
     "inputrc" = mkSymlink "shell/.config/inputrc" true;
+    "nushell" = mkSymlink "shell/.config/nushell" true;
     "tmux" = mkSymlink "shell/.config/tmux" true;
     "zsh" = mkSymlink "shell/.config/zsh" false;
-    
+
     # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
     "handlr" = mkSymlink "wm/.config/handlr" true;
     "kitty" = mkSymlink "wm/.config/kitty" true;
