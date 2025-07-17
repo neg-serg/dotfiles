@@ -10,13 +10,11 @@
         permission = [
           "${hy3.packages.x86_64-linux.hy3}/lib/libhy3.so, plugin, allow"
           "${pkgs.grim}/bin/grim, screencopy, allow"
-          "${pkgs.hyprlandPlugins.hyprbars}/lib/libhyprbars.so, plugin, allow"
           "${pkgs.hyprlock}/bin/hyprlock, screencopy, allow"
         ];
     };
     plugins = [ 
         hy3.packages.x86_64-linux.hy3 
-        pkgs.hyprlandPlugins.hyprbars
     ];
     systemd.variables = ["--all"];
   };
