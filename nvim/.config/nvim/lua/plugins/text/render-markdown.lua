@@ -9,7 +9,7 @@ return {'MeanderingProgrammer/render-markdown.nvim',
       completions={blink={enabled=true}},
       render_modes=true,
       heading={
-        icons={'  󰼏  ', '  󰼐  ', '  󰼑  ', '󰼒  ', '󰼓  ', '󰼔  ', },
+        icons={'󰼏  ', '󰼐  ', '󰼑  ', '󰼒  ', '󰼓  ', '󰼔  ', },
         position='overlay',
       },
       link={wiki={icon='󰌹 '},},
