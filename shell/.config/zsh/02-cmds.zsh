@@ -141,6 +141,11 @@ _exists git && {
     alias commit='git commit'
     alias gaa="git add --all"
     alias ga="git add"
+    alias gama='git am --abort'
+    alias gamc='git am --continue'
+    alias gam='git am'
+    alias gamscp='git am --show-current-patch'
+    alias gams='git am --skip'
     alias gapa="git add --patch"
     alias gap="git apply"
     alias gapt="git apply --3way"
@@ -204,6 +209,8 @@ _exists git && {
     alias gignored='git ls-files -v | grep "^[[:lower:]]"'
     alias gignore='git update-index --assume-unchanged'
     alias gl="git pull"
+    alias gluc="git pull upstream $(git_current_branch)"
+    alias glum="git pull upstream $(git_main_branch)"
     alias gma="git merge --abort"
     alias gm="git merge"
     alias gmtl="git mergetool --no-prompt"
@@ -236,7 +243,30 @@ _exists git && {
     alias gsh='git show'
     alias gsi='git submodule init'
     alias gsps='git show --pretty=short --show-signature'
+    alias gstaa='git stash apply'
+    alias gsta='git stash push'
+    alias gsta='git stash save'
+    alias gstall='git stash --all'
+    alias gstc='git stash clear'
+    alias gstd='git stash drop'
+    alias gstl='git stash list'
+    alias gstp='git stash pop'
+    alias gsts='git stash show --text'
+    alias gstu='git stash --include-untracked'
+    alias gsu='git submodule update'
+    alias gswc='git switch -c'
+    alias gswd="git switch $(git_develop_branch)"
+    alias gsw='git switch'
+    alias gswm="git switch $(git_main_branch)"
+    alias gts='git tag -s'
     alias gu="git reset @ --"
+    alias gupa='git pull --rebase --autostash'
+    alias gupav='git pull --rebase --autostash -v'
+    alias gup='git pull --rebase'
+    alias gupom="git pull --rebase origin $(git_main_branch)"
+    alias gupomi="git pull --rebase='interactive origin $(git_main_branch)"
+    alias gupv='git pull --rebase -v'
+    alias gwch='git whatchanged -p --abbrev-commit --pretty=medium'
     alias gx="git reset --hard @"
     alias pull="git pull"
     alias push='git push'
