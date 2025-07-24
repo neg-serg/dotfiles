@@ -138,12 +138,104 @@ _exists svn && alias svn="svn --config-dir $XDG_CONFIG_HOME/subversion"
 _exists git && {
     alias add="git add"
     alias checkout='git checkout'
+    alias commit='git commit'
+    alias gaa="git add --all"
+    alias ga="git add"
+    alias gapa="git add --patch"
+    alias gap="git apply"
+    alias gapt="git apply --3way"
+    alias gau="git add --update"
+    alias gav="git add --verbose"
+    alias gba="git branch -a"
+    alias gbd="git branch -d"
+    alias gbD="git branch -D"
+    alias gb="git branch"
+    alias gbl="git blame -b -w"
+    alias gbnm="git branch --no-merged"
+    alias gbr="git branch --remote"
+    alias gbsb="git bisect bad"
+    alias gbsg="git bisect good"
+    alias gbs="git bisect"
+    alias gbsr="git bisect reset"
+    alias gbss="git bisect start"
+    alias gca="git commit -v -a"
+    alias gca!="git commit -v -a --amend"
+    alias gcam="git commit -a -m"
+    alias gcan!="git commit -v -a --no-edit --amend"
+    alias gcans!="git commit -v -a -s --no-edit --amend"
+    alias gcas="git commit -a -s"
+    alias gcasm="git commit -a -s -m"
+    alias gcb="git checkout -b"
+    alias gcd="git checkout $(git_develop_branch)"
+    alias gc="git commit -v"
+    alias gc!="git commit -v --amend"
+    alias gclean="git clean -id"
+    alias gcl="git clone --recurse-submodules"
+    alias gcm="git checkout $(git_main_branch)"
+    alias gcmsg="git commit -m"
+    alias gcn!="git commit -v --no-edit --amend"
+    alias gco="git checkout"
+    alias gcor="git checkout --recurse-submodules"
+    alias gcount="git shortlog -sn"
+    alias gcpa="git cherry-pick --abort"
+    alias gcpc="git cherry-pick --continue"
+    alias gcp="git cherry-pick"
+    alias gcs="git commit -S"
+    alias gcsm="git commit -s -m"
+    alias gdca='git diff --cached'
+    alias gdct="git describe --tags $(git rev-list --tags --max-count=1)"
+    alias gdcw="git diff --cached --word-diff"
     alias gd='git diff -w -U0 --word-diff-regex=[^[:space:]]'
+    alias gds="git diff --staged"
+    alias gdup='git diff @{upstream}'
+    alias gdw='git diff --word-diff'
+    alias gfa='git fetch --all --prune'
+    alias gfg='git ls-files | grep'
+    alias gf='git fetch'
+    alias gfo='git fetch origin'
+    alias ggf="git push --force origin $(current_branch)"
+    alias ggfl="git push --force-with-lease origin $(current_branch)"
+    alias ggl="git pull origin $(current_branch)"
+    alias ggp="git push origin $(current_branch)"
+    alias ggpull="git pull origin "$(git_current_branch)""
+    alias ggpush="git push origin $(git_current_branch)"
+    alias ggsup="git branch --set-upstream-to=origin/$(git_current_branch)"
+    alias ggu="git pull --rebase origin $(current_branch)"
+    alias gignored='git ls-files -v | grep "^[[:lower:]]"'
+    alias gignore='git update-index --assume-unchanged'
+    alias gl="git pull"
+    alias gma="git merge --abort"
     alias gm="git merge"
+    alias gmtl="git mergetool --no-prompt"
+    alias gpd='git push --dry-run'
+    alias gpf!='git push --force'
+    alias gpf='git push --force-with-lease'
     alias gp='git push'
     alias gpr="gh pr create"
+    alias gpr='git pull --rebase'
+    alias gpristine="git reset --hard && git clean -dffx"
+    alias gpsup="git push --set-upstream origin $(git_current_branch)"
+    alias gpv='git push -v'
+    alias gra='git remote --add'
+    alias grba='git rebase --abort'
+    alias grbc='git rebase --continue'
+    alias grb='git rebase'
+    alias grbi='git rebase -i'
+    alias grbo='git rebase --onto'
+    alias grbs='git rebase --skip'
+    alias grev='git revert'
     alias gr="git rebase -i"
+    alias gr='git remote'
+    alias grh='git reset'
+    alias grhh='git reset --hard'
+    alias grmc='git rm --cached'
+    alias grm='git rm'
+    alias grs='git restore'
+    alias grup='git remote update'
     alias gs='git status --short -b'
+    alias gsh='git show'
+    alias gsi='git submodule init'
+    alias gsps='git show --pretty=short --show-signature'
     alias gu="git reset @ --"
     alias gx="git reset --hard @"
     alias pull="git pull"
@@ -152,11 +244,6 @@ _exists git && {
     alias stash="git stash"
     alias status="git status"
     alias uncommit="git reset --soft 'HEAD^'"
-    if _exists gum; then
-        autoload -Uz commit
-    else
-        alias commit='git commit'
-    fi
 }
 _exists curl && {
     alias cht='f(){ curl -s "cheat.sh/$(echo -n "$*"|jq -sRr @uri)";};f'
