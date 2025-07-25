@@ -4,7 +4,7 @@ import "../"
 BarBlock {
   id: text
   content: BarText {
-    symbolText: `[${Datetime.time}]`
+    symbolText: `${Datetime.time}`
   }
 }
 
