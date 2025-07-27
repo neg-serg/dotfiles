@@ -7,11 +7,15 @@
 use ~/.config/nushell/nupm/nupm/
 
 alias gs = git status
+alias cp = ^cp --reflink=auto
 alias l = eza --icons=auto --hyperlink
 alias lcr = eza --icons=auto --hyperlink -al --sort=created --color=always # | tail -14
-alias lsd = eza --icons=auto --hyperlink -alD --sort=created --color=always # | tail -14
 alias ll = eza --icons=auto --hyperlink -l
-alias cp = cp --reflink=auto
+alias ls = eza --icons=auto --hyperlink
+alias lsd = eza --icons=auto --hyperlink -alD --sort=created --color=always # | tail -14
+
+alias acp = cp
+alias als = ls
 
 $env.EDITOR = "nvim"
 $env.config.buffer_editor = "nvim"
