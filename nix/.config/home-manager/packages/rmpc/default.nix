@@ -16,7 +16,7 @@ rustPlatform.buildRustPackage rec {
     repo = "rmpc";
     rev = "master";
     # nix-prefetch-url --unpack https://github.com/mierak/rmpc/archive/master.tar.gz
-    sha256 = "0mccgasyjf4zygl9qfijzizb6fkr0f7dqggsmzksl9f2slnr4sf7";
+    sha256 = "1i6lsbi6giqdqpbinwa0bjd6pwjwl1kz3shb6nbv0yp0mi0qcqd3";
   };
 
   useFetchCargoVendor = true;
