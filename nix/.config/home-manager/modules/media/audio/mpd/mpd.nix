@@ -9,9 +9,6 @@ with {
   dots = "${config.home.homeDirectory}/.dotfiles";
   rmpc_git = pkgs.callPackage ../../../../packages/rmpc {};
 }; {
-  imports = [
-    ./ncmpcpp.nix
-  ];
   home.packages = with pkgs; [
     mpc-cli # mpd client
     rmpc_git # alternative tui client with album cover
