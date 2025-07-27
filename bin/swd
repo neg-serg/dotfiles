@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-location="$(pwd)"
+location="/home/neg/pic/wl"
 atleast="3840x2160"
 purity="0" # Set the purity filter setting, SFW = 100, Sketchy = 010, Both = 110, NOTE: Can combine them
 categories="100" # Set the category, General = 100, Anime = 010, People = 001, NOTE: Can combine them
