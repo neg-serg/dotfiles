@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# TODO: create swd for unsplash
 location="/home/neg/pic/wl"
 atleast="3840x2160"
 purity="0" # Set the purity filter setting, SFW = 100, Sketchy = 010, Both = 110, NOTE: Can combine them
