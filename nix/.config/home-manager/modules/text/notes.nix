@@ -3,7 +3,6 @@
     "ventoy-1.1.05"
   ];
   home.packages = with pkgs; [
-    obsidian # notes
     zk # notes database
   ];
 }
