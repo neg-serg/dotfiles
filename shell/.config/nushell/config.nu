@@ -93,10 +93,10 @@ if (_exists "bat") {
 alias sort = ^sort --parallel 8 -S 16M
 alias ':q' = exit
 
-# # Show only empty directories
-# alias emptydir = (
-#   ls ** | where type == dir | where {|it| (ls $it.name | is-empty) }
-# )
+# Show only empty directories
+def emptydir [] {
+  ls ** | where type == dir | where {|it| (ls $it.name | is-empty) }
+}
 
 if (_exists "sudo") {
   alias sudo = sudo
@@ -362,43 +362,71 @@ if (_exists "systemctl") {
   alias j   = journalctl
 }
 
-# if [[ -e /etc/NIXOS ]]; then
-#     # thx to @oni: https://discourse.nixos.org/t/nvd-simple-nix-nixos-version-diff-tool/12397/3
-#     hash -d nix-hm="/nix/var/nix/profiles/per-user/$USER/home-manager"
-#     hash -d nix-now="/run/current-system"
-#     hash -d nix-boot="/nix/var/nix/profiles/system"
-#     _exists nixos-rebuild && {
-#         alias nrb='sudo nixos-rebuild'
-#     }
-#     foobar(){nix run github:emmanuelrosa/erosanix#foobar2000}
-#     flake-checker(){nix run github:DeterminateSystems/flake-checker}
-#     linux-kernel(){
-#         nix-shell -E 'with import <nixpkgs> {};
-#             (builtins.getFlake "github:chaotic-cx/nyx/nyxpkgs-unstable").packages.x86_64-linux.linuxPackages_cachyos.kernel.overrideAttrs
-#             (o: {nativeBuildInputs=o.nativeBuildInputs ++ [ pkg-config ncurses ];})'
-#         # unpackPhase && cd linux-*; patchPhase; make nconfig
-#     }
-#     _exists nh && {
-#         alias seh="home-manager -b bck switch -j 32 --cores 32 --flake ~/.config/home-manager"
-#         alias ser="nh os switch /etc/nixos"
-#     }
-#     alias nixify='nix-shell -p nur.repos.kampka.nixify'
-#     alias S="nix shell"
-#     nbuild(){ nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'}
-#     nlocate(){ nix run github:nix-community/nix-index-database "$@" }
-#     qi(){ NIXPKGS_ALLOW_UNFREE=1 nix shell --impure 'nixpkgs#'$1 }
-#     q(){ nix shell 'nixpkgs#'$1 }
-#     flakify() {
-#         # thx to Mic92:
-#         if [ ! -e flake.nix ]; then
-#             nix flake new -t github:Mic92/flake-templates#nix-develop .
-#         elif [ ! -e .envrc ]; then
-#             echo "use flake" > .envrc
-#         fi
-#         direnv allow
-#         ${EDITOR:-vim} flake.nix
-#     }
-# fi
+# NixOS-specific setup
+if ("/etc/NIXOS" | path exists) {
+  # let-env NIX_HM $"(/nix/var/nix/profiles/per-user/($env.USER)/home-manager)"
+  # let-env NIX_NOW "/run/current-system"
+  # let-env NIX_BOOT "/nix/var/nix/profiles/system"
+
+  if (_exists "nixos-rebuild") {
+    alias nrb = sudo nixos-rebuild
+  }
+
+  def foobar [] {
+    nix run github:emmanuelrosa/erosanix#foobar2000
+  }
+
+  def flake-checker [] {
+    nix run github:DeterminateSystems/flake-checker
+  }
+
+  def linux-kernel [] {
+    nix-shell -E '
+      with import <nixpkgs> {};
+      (builtins.getFlake "github:chaotic-cx/nyx/nyxpkgs-unstable")
+        .packages.x86_64-linux.linuxPackages_cachyos.kernel.overrideAttrs
+        (o: { nativeBuildInputs = o.nativeBuildInputs ++ [ pkg-config ncurses ]; })
+    '
+  }
+
+  if (_exists "nh") {
+    alias seh = home-manager -b bck switch -j 32 --cores 32 --flake ~/.config/home-manager
+    alias ser = nh os switch /etc/nixos
+  }
+
+  alias nixify = nix-shell -p nur.repos.kampka.nixify
+  alias S = nix shell
+
+  def nbuild [] {
+    nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+  }
+
+  def nlocate [...args: string] {
+    nix run github:nix-community/nix-index-database ...$args
+  }
+
+  def qi [pkg: string] {
+    let name = $"nixpkgs#($pkg)"
+    NIXPKGS_ALLOW_UNFREE=1 nix shell --impure $name
+  }
+
+  def q [pkg: string] {
+    nix shell $"nixpkgs#($pkg)"
+  }
+
+  def flakify [] {
+    if not ("./flake.nix" | path exists) {
+      nix flake new -t github:Mic92/flake-templates#nix-develop .
+    }
+
+    if not ("./.envrc" | path exists) {
+      echo "use flake" | save -f .envrc
+    }
+
+    direnv allow
+    ^($env.EDITOR | default "vim") flake.nix
+  }
+}
 
 # docker-based functions
 if (_exists "docker") {
