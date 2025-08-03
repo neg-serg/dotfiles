@@ -24,7 +24,7 @@
     "Update/Change password" = [{name="what", command="gopass ls --flat"}, "kitty -- gopass generate -s --strict -t '[what]' && gopass show -c '[what]'"]
 
 [scratchpads.im]
-    animation = "fromRight"
+    animation = ""
     command = "Telegram"
     class = "org.telegram.desktop"
     size = "30% 95%"
