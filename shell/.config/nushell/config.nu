@@ -132,43 +132,148 @@ if (_exists "sudo") {
   }
 }
 
-# _exists btm && alias htop='btm -b -T --mem_as_value'
-# _exists dd && alias dd='dd status=progress'
-# _exists dig && alias dig='dig +noall +answer'
-# _exists dosbox && alias dosbox=dosbox -conf "$XDG_CONFIG_HOME"/dosbox/dosbox.conf
-# _exists duf && alias df="duf -theme ansi -hide 'special' -hide-mp $HOME/'*',/nix/store,/var/lib/'*'" || alias df='df -hT'
-# _exists dust && alias sp='dust -r' || alias sp='du -shc ./*|sort -h'
-# _exists fd && {alias fd='fd -H --ignore-vcs' && alias fda='fd -Hu'}
-# _exists gdb && alias gdb="gdb -nh -x ${XDG_CONFIG_HOME}/gdb/gdbinit"
-# _existsg readelf && alias readelf='readelf -W'
-# _existsg strace && alias strace="strace -yy"
-# _exists handlr && alias e='handlr open'
-# _exists hxd && alias hexdump='hxd'
-# _exists iostat && alias iostat='iostat --compact -p -h -s'
-# _exists ip && alias ip='ip -c'
-# _exists journalctl && journalctl() {command journalctl "${@:--b}";}
-# _exists khal && alias cal='khal calendar'
-# _exists mtr && alias mtrr='mtr -wzbe'
-# _exists nvidia-settings && alias nvidia-settings="nvidia-settings --config=$XDG_CONFIG_HOME/nvidia/settings"
-# _exists objdump && alias objdump='objdump -M intel -d'
-# _exists pbzip2 && alias bzip2='pbzip2'
-# _exists pigz && alias gzip='pigz'
-# _exists plocate && alias locate='plocate'
-# _exists prettyping && alias ping='prettyping'
-# _exists rsync && alias rsync='rsync -az --compress-choice=zstd --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS'
-# _exists ssh && alias ssh="TERM=xterm-256color ${aliases[ssh]:-ssh}"
-# _exists umimatrix && alias matrix='unimatrix -l Aang -s 95'
-# _exists xz && alias xz='xz --threads=0'
-# _exists zstd && alias zstd='zstd --threads=0'
+if (_exists "btm") {
+  alias htop = btm -b -T --mem_as_value
+}
 
-# _exists mpv && {
-#     alias mpv="mpv"
-#     alias mpa="${aliases[mpv]:-mpv} -mute "$@" > ${HOME}/tmp/mpv.log"
-#     alias mpi="${aliases[mpv]:-mpv} --interpolation=yes --tscale='oversample' \
-#         --video-sync='display-resample' "$@" > ${HOME}/tmp/mpv.log"
-# }
+if (_exists "dd") {
+  alias dd = dd status=progress
+}
 
-# _exists mpvc && {alias mpvc="mpvc -S ${XDG_CONFIG_HOME}/mpv/socket"}
+if (_exists "dig") {
+  alias dig = dig +noall +answer
+}
+
+if (_exists "dosbox") {
+  alias dosbox = dosbox -conf $"($env.XDG_CONFIG_HOME)/dosbox/dosbox.conf"
+}
+
+if (_exists "duf") {
+  alias df = duf -theme ansi -hide 'special' -hide-mp $"($env.HOME)/*" /nix/store /var/lib/*
+} else {
+  alias df = df -hT
+}
+
+if (_exists "dust") {
+  alias sp = dust -r
+} else {
+  def sp [] {
+    ^du -shc ./* | lines | sort
+  }
+}
+
+if (_exists "fd") {
+  alias fd = fd -H --ignore-vcs
+  alias fda = fd -Hu
+}
+
+if (_exists "gdb") {
+  alias gdb = gdb -nh -x $"($env.XDG_CONFIG_HOME)/gdb/gdbinit"
+}
+
+if (_exists "readelf") {
+  alias readelf = readelf -W
+}
+
+if (_exists "strace") {
+  alias strace = strace -yy
+}
+
+if (_exists "handlr") {
+  alias e = handlr open
+}
+
+if (_exists "hxd") {
+  alias hexdump = hxd
+}
+
+if (_exists "iostat") {
+  alias iostat = iostat --compact -p -h -s
+}
+
+if (_exists "ip") {
+  alias ip = ip -c
+}
+
+if (_exists "journalctl") {
+  def journalctl [...args: string] {
+    if ($args | is-empty) {
+      ^journalctl -b
+    } else {
+      ^journalctl ...$args
+    }
+  }
+}
+
+if (_exists "khal") {
+  alias cal = khal calendar
+}
+
+if (_exists "mtr") {
+  alias mtrr = mtr -wzbe
+}
+
+if (_exists "nvidia-settings") {
+  alias nvidia-settings = nvidia-settings --config=$"($env.XDG_CONFIG_HOME)/nvidia/settings"
+}
+
+if (_exists "objdump") {
+  alias objdump = objdump -M intel -d
+}
+
+if (_exists "pbzip2") {
+  alias bzip2 = pbzip2
+}
+
+if (_exists "pigz") {
+  alias gzip = pigz
+}
+
+if (_exists "plocate") {
+  alias locate = plocate
+}
+
+if (_exists "prettyping") {
+  alias ping = prettyping
+}
+
+if (_exists "rsync") {
+  alias rsync = rsync -az --compress-choice=zstd --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS
+}
+
+if (_exists "ssh") {
+  alias ssh = TERM=xterm-256color ssh
+}
+
+if (_exists "unimatrix") {
+  alias matrix = unimatrix -l Aang -s 95
+}
+
+if (_exists "xz") {
+  alias xz = xz --threads=0
+}
+
+if (_exists "zstd") {
+  alias zstd = zstd --threads=0
+}
+
+# mpv-based aliases/functions
+if (_exists "mpv") {
+  alias mpv = mpv
+
+  def mpa [...args: string] {
+    ^mpv -mute ...$args | save -f $"($env.HOME)/tmp/mpv.log"
+  }
+
+  def mpi [...args: string] {
+    ^mpv --interpolation=yes --tscale=oversample --video-sync=display-resample ...$args | save -f $"($env.HOME)/tmp/mpv.log"
+  }
+}
+
+# mpvc alias
+if (_exists "mpvc") {
+  alias mpvc = mpvc -S $"($env.XDG_CONFIG_HOME)/mpv/socket"
+}
 
 # mpc-related aliases and function
 if (_exists "mpc") {
@@ -211,15 +316,24 @@ if (_exists "wget2") {
 # for c in ${nocorrect_list[@]}; {_exists "$c" && alias "$c=nocorrect $c"}
 # for c in ${dev_null_list[@]}; {_exists "$c" && alias "$c=$c 2>/dev/null"}
 
-# _exists svn && alias svn="svn --config-dir $XDG_CONFIG_HOME/subversion"
+if (_exists "svn") {
+  alias svn = svn --config-dir $"($env.XDG_CONFIG_HOME)/subversion"
+}
 
-# _exists curl && {
-#     alias cht='f(){ curl -s "cheat.sh/$(echo -n "$*"|jq -sRr @uri)";};f'
-#     alias moon='curl wttr.in/Moon'
-#     alias we="curl 'wttr.in/?T'"
-#     alias wem="curl wttr.in/Moscow\?lang=ru"
-#     sprunge(){ curl -F "sprunge=<-" http://sprunge.us <"$1" ;}
-# }
+if (_exists "curl") {
+  def cht [...args: string] {
+    let query = ($args | str join " " | ^jq -sRr @uri | str trim)
+    curl -s $"cheat.sh/($query)"
+  }
+
+  alias moon = curl wttr.in/Moon
+  alias we = curl 'wttr.in/?T'
+  alias wem = curl 'wttr.in/Moscow?lang=ru'
+
+  def sprunge [file: path] {
+    open $file | ^curl -F 'sprunge=<-' http://sprunge.us
+  }
+}
 
 # if (_exists "fzf") {
 #   def logs [] {
