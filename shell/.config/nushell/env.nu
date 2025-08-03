@@ -16,3 +16,24 @@
 #
 # You can remove these comments if you want or leave
 # them for future reference.
+
+
+$env.config.hooks.pre_prompt = [
+  {|| echo "Ready to rock 🤘" }
+]
+
+$env.EDITOR = "nvim"
+$env.config.buffer_editor = "nvim"
+$env.config.show_banner = false
+$env.error_style = "plain"
+$env.config.table.mode = 'none'
+$env.config.color_config = {
+  header_fg: '#7c90a8'
+}
+
+$env.config.history = {
+  file_format: sqlite
+  max_size: 1_000_000
+  sync_on_enter: true
+  isolation: true
+}

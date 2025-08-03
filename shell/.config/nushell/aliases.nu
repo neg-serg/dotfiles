@@ -1,610 +1,338 @@
-alias cp = ^cp --reflink=auto
-alias l = eza --icons=auto --hyperlink
-alias lcr = eza --icons=auto --hyperlink -al --sort=created --color=always # | tail -14
-alias ll = eza --icons=auto --hyperlink -l
-alias ls = eza --icons=auto --hyperlink
-alias lsd = eza --icons=auto --hyperlink -alD --sort=created --color=always # | tail -14
-
-alias acp = builtin cp
-alias als = builtin ls
-
-alias qe = cd (als -a | where name =~ '^.git.*' | where type == dir | sort-by modified | last | get name)
-
 def _exists [name: string] {
   not (which $name | is-empty)
 }
 
-alias fc = do {
+def cp [] { ^cp --reflink=auto }
+def l [] { eza --icons=auto --hyperlink }
+def lcr [] { eza --icons=auto --hyperlink -al --sort=created --color=always }
+def ll [] { eza --icons=auto --hyperlink -l }
+def ls [] { eza --icons=auto --hyperlink }
+def lsd [] { eza --icons=auto --hyperlink -alD --sort=created --color=always }
+alias acp = builtin cp
+alias als = builtin ls
+def qe [] { cd (als -a | where name =~ '^.git.*' | where type == dir | sort-by modified | last | get name) }
+def fc [] {
   let path = $env.HISTORY_PATH
   ^$env.EDITOR $path
 }
-
-# alias cp='cp --reflink=auto'
-alias mv = mv -i
-# alias mk = ^mkdir -p
+alias mv = ^mv -i
 alias mk = mkdir
 alias rd = rmdir
 
-export-env {
-  if (_exists "ugrep") {
-    alias egrep = ug -E        # search with extended regular expressions (ERE)
-    alias epgrep = ug -P       # search with Perl regular expressions
-    alias fgrep = ug -F        # find string(s)
-    alias grep = ug -G         # search with basic regular expressions (BRE)
-    alias xgrep = ug -W        # search (ERE) and output text or hex for binary
-  
-    alias zegrep = ug -zE      # search compressed files and archives with ERE
-    alias zfgrep = ug -zF      # find string(s) in compressed files/archives
-    alias zgrep = ug -zG       # search compressed files and archives with BRE
-    alias zpgrep = ug -zP      # search compressed files and archives with Perl regex
-    alias zxgrep = ug -zW      # search (ERE) compressed files and output text or hex
-  
-    alias xdump = ug -X ""     # hexdump files without searching
-    alias ugit = ug -R --ignore-files
+# def emptydir [] {
+#   ls ** | where type == dir | where {|it| (ls $it.name | is-empty) }
+# }
+
+def sort [] { ^sort --parallel 8 -S 16M }
+def ":q" [] { exit }
+def x [] { xargs }
+def tree [] { erd }
+def cat [] { bat --paging=never }
+def grep [] { ug -G }
+def egrep [] { ug -E }
+def epgrep [] { ug -P }
+def fgrep [] { ug -F }
+def xgrep [] { ug -W }
+def zegrep [] { ug -zE }
+def zfgrep [] { ug -zF }
+def zgrep [] { ug -zG }
+def zpgrep [] { ug -zP }
+def zxgrep [] { ug -zW }
+def xdump [] { ug -X "" }
+def ugit [] { ug -R --ignore-files }
+
+# def rg [] {
+#   ^rg \
+#     --max-columns=0 \
+#     --max-columns-preview \
+#     --glob '!*.git*' \
+#     --glob '!*.obsidian' \
+#     --colors match:fg:25 \
+#     --colors match:style:underline \
+#     --colors line:fg:cyan \
+#     --colors line:style:bold \
+#     --colors path:fg:249 \
+#     --colors path:style:bold \
+#     --smart-case \
+#     --hidden
+# }
+def zrg [] { rg -z }
+
+def iotop [] { sudo iotop -oPa }
+def ports [] { sudo lsof -Pni }
+def kmon [] { sudo kmon -u --color 19683a }
+def mirrors [] { sudo /usr/bin/reflector --score 100 --fastest 10 --number 10 --verbose --save /etc/pacman.d/mirrorlist }
+def htop [] { btm -b -T --mem_as_value }
+def dd [] { ^dd status=progress }
+def dig [] { ^dig +noall +answer }
+# def dosbox [] { dosbox -conf $"($env.XDG_CONFIG_HOME)/dosbox/dosbox.conf" }
+def df [] { duf -theme ansi -hide 'special' -hide-mp $"($env.HOME)/*" /nix/store /var/lib/* }
+def sp [] { dust -r }
+def fd [] { ^fd -H --ignore-vcs }
+def fda [] { ^fd -Hu }
+def gdb [] { ^gdb -nh -x $"($env.XDG_CONFIG_HOME)/gdb/gdbinit" }
+def readelf [] { ^readelf -W }
+def strace [] { ^strace -yy }
+def e [] { ^handlr open }
+def hexdump [] { hxd }
+def iostat [] { ^iostat --compact -p -h -s }
+def ip [] { ^ip -c }
+def cal [] { khal calendar }
+def mtrr [] { mtr -wzbe }
+def objdump [] { ^objdump -M intel -d }
+def bzip2 [] { pbzip2 }
+def gzip [] { pigz }
+def locate [] { plocate }
+def ping [] { prettyping }
+def rsync [] { ^rsync -az --compress-choice=zstd --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS }
+def ssh [] { TERM=xterm-256color ssh }
+def matrix [] { unimatrix -l Aang -s 95 }
+def xz [] { ^xz --threads=0 }
+def zstd [] { ^zstd --threads=0 }
+alias mp = mpv
+def mpa [...args: string] {
+  ^mpv -mute ...$args | save -f $"($env.HOME)/tmp/mpv.log"
+}
+def mpi [...args: string] {
+  ^mpv --interpolation=yes --tscale=oversample --video-sync=display-resample ...$args | save -f $"($env.HOME)/tmp/mpv.log"
+}
+def mpvc [] { ^mpvc -S $"($env.XDG_CONFIG_HOME)/mpv/socket" }
+def love [] { mpc sendmessage mpdas love }
+def unlove [] { mpc sendmessage mpdas unlove }
+def cdm [] {
+  let rel_path = (mpc -f '%file%' | lines | first | path dirname)
+  let full_path = $"($env.XDG_MUSIC_DIR)/($rel_path)"
+  cd $full_path
+}
+# def yt [] {
+#   ^yt-dlp \
+#     --downloader aria2c \
+#     --embed-metadata \
+#     --embed-thumbnail \
+#     --embed-subs \
+#     --sub-langs=all
+# }
+def yta [] {
+  yt --write-info-json
+}
+def wget [] { wget2 --hsts-file $"($env.XDG_DATA_HOME)/wget-hsts" }
+
+# Git aliases
+def add [...args: string] { git add ...$args }
+def checkout [...args: string] { git checkout ...$args }
+def commit [...args: string] { git commit ...$args }
+def gaa [] { git add --all }
+def ga [] { git add }
+def gama [] { git am --abort }
+def gamc [] { git am --continue }
+def gam [] { git am }
+def gamscp [] { git am --show-current-patch }
+def gams [] { git am --skip }
+def gapa [] { git add --patch }
+def gap [...args: string] { git apply ...$args }
+def gapt [] { git apply --3way }
+def gau [] { git add --update }
+def gav [] { git add --verbose }
+def gba [] { git branch -a }
+def gbd [...args: string] { git branch -d ...$args }
+def gbD [...args: string] { git branch -D ...$args }
+def gb [] { git branch }
+def gbl [...args: string] { git blame -b -w ...$args }
+def gbnm [] { git branch --no-merged }
+def gbr [] { git branch --remote }
+def gbsb [] { git bisect bad }
+def gbsg [] { git bisect good }
+def gbs [] { git bisect }
+def gbsr [] { git bisect reset }
+def gbss [] { git bisect start }
+def gca [] { git commit -v -a }
+def 'gca!' [] { git commit -v -a --amend }
+def gcam [...args: string] { git commit -a -m ...$args }
+def 'gcan!' [] { git commit -v -a --no-edit --amend }
+def 'gcans!' [] { git commit -v -a -s --no-edit --amend }
+def gcas [] { git commit -a -s }
+def gcasm [...args: string] { git commit -a -s -m ...$args }
+def gcb [...args: string] { git checkout -b ...$args }
+def gc [] { git commit -v }
+def 'gc!' [] { git commit -v --amend }
+def gclean [] { git clean -id }
+def gcl [...args: string] { git clone --recurse-submodules ...$args }
+def gcmsg [...args: string] { git commit -m ...$args }
+def 'gcn!' [] { git commit -v --no-edit --amend }
+def gco [...args: string] { git checkout ...$args }
+def gcor [...args: string] { git checkout --recurse-submodules ...$args }
+def gcount [] { git shortlog -sn }
+def gcpa [] { git cherry-pick --abort }
+def gcpc [] { git cherry-pick --continue }
+def gcp [...args: string] { git cherry-pick ...$args }
+def gcs [...args: string] { git commit -S ...$args }
+def gcsm [...args: string] { git commit -s -m ...$args }
+def gdca [] { git diff --cached }
+def gdct [] { let tag = (git rev-list --tags --max-count=1 | str trim); git describe --tags $tag }
+def gdcw [] { git diff --cached --word-diff }
+def gd [] { git diff -w -U0 --word-diff-regex=[^[:space:]] }
+def gds [] { git diff --staged }
+def gdup [] { git diff @{upstream} }
+def gdw [] { git diff --word-diff }
+def gfa [] { git fetch --all --prune }
+def gf [] { git fetch }
+def gfo [] { git fetch origin }
+def ggf [] { git push --force origin (git rev-parse --abbrev-ref HEAD | str trim) }
+def ggfl [] { git push --force-with-lease origin (git rev-parse --abbrev-ref HEAD | str trim) }
+def ggl [] { git pull origin (git rev-parse --abbrev-ref HEAD | str trim) }
+def ggp [] { git push origin (git rev-parse --abbrev-ref HEAD | str trim) }
+def ggsup [] { git branch --set-upstream-to=origin/(git rev-parse --abbrev-ref HEAD | str trim) }
+def ggu [] { git pull --rebase origin (git rev-parse --abbrev-ref HEAD | str trim) }
+def gignored [] { git ls-files -v | lines | where {|l| $l | str starts-with 'h' } }
+def gignore [...args: string] { git update-index --assume-unchanged ...$args }
+def gl [] { git pull }
+def gma [] { git merge --abort }
+def gm [...args: string] { git merge ...$args }
+def gmtl [] { git mergetool --no-prompt }
+def gpd [] { git push --dry-run }
+def 'gpf!' [] { git push --force }
+def gpf [] { git push --force-with-lease }
+def gp [] { git push }
+def gpr [] { git pull --rebase }
+def gpristine [] { git reset --hard; git clean -dffx }
+def gpsup [] { git push --set-upstream origin (git rev-parse --abbrev-ref HEAD | str trim) }
+def gpv [] { git push -v }
+def gra [...args: string] { git remote --add ...$args }
+def grba [] { git rebase --abort }
+def grbc [] { git rebase --continue }
+def grb [] { git rebase }
+def grbi [] { git rebase -i }
+def grbo [...args: string] { git rebase --onto ...$args }
+def grbs [] { git rebase --skip }
+def grev [...args: string] { git revert ...$args }
+def gr [] { git remote }
+def grh [] { git reset }
+def grhh [] { git reset --hard }
+def grmc [...args: string] { git rm --cached ...$args }
+def grm [...args: string] { git rm ...$args }
+def grs [...args: string] { git restore ...$args }
+def grup [] { git remote update }
+def gs [] { git status --short -b }
+def gsh [...args: string] { git show ...$args }
+def gsi [] { git submodule init }
+def gsps [] { git show --pretty=short --show-signature }
+def gstaa [] { git stash apply }
+def gsta [] { git stash push }
+def gstall [] { git stash --all }
+def gstc [] { git stash clear }
+def gstd [] { git stash drop }
+def gstl [] { git stash list }
+def gstp [] { git stash pop }
+def gsts [] { git stash show --text }
+def gstu [] { git stash --include-untracked }
+def gsu [] { git submodule update }
+def gswc [...args: string] { git switch -c ...$args }
+def gsw [...args: string] { git switch ...$args }
+def gts [...args: string] { git tag -s ...$args }
+def gu [] { git reset @ -- }
+def gupa [] { git pull --rebase --autostash }
+def gupav [] { git pull --rebase --autostash -v }
+def gup [] { git pull --rebase }
+def gupv [] { git pull --rebase -v }
+def gwch [] { git whatchanged -p --abbrev-commit --pretty=medium }
+def gx [] { git reset --hard @ }
+def pull [] { git pull }
+def push [] { git push }
+def resolve [] { git mergetool --tool=nwim }
+def stash [] { git stash }
+def status [] { git status }
+def uncommit [] { git reset --soft HEAD^ }
+
+# NixOS-related
+
+def nrb [] { sudo nixos-rebuild }
+def foobar [] { nix run github:emmanuelrosa/erosanix#foobar2000 }
+def flake-checker [] { nix run github:DeterminateSystems/flake-checker }
+def linux-kernel [] {
+  nix-shell -E '
+    with import <nixpkgs> {};
+    (builtins.getFlake "github:chaotic-cx/nyx/nyxpkgs-unstable")
+      .packages.x86_64-linux.linuxPackages_cachyos.kernel.overrideAttrs
+      (o: { nativeBuildInputs = o.nativeBuildInputs ++ [ pkg-config ncurses ]; })
+  '
+}
+def seh [] { home-manager -b bck switch -j 32 --cores 32 --flake ~/.config/home-manager }
+def ser [] { nh os switch /etc/nixos }
+def nixify [] { nix-shell -p nur.repos.kampka.nixify }
+def S [...args: string] { nix shell ...$args }
+def nbuild [] { nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}' }
+def nlocate [...args: string] { nix run github:nix-community/nix-index-database ...$args }
+def qi [pkg: string] {
+  let name = $"nixpkgs#($pkg)"
+  NIXPKGS_ALLOW_UNFREE=1 nix shell --impure $name
+}
+def q [pkg: string] { nix shell $"nixpkgs#($pkg)" }
+def flakify [] {
+  if not ("./flake.nix" | path exists) {
+    nix flake new -t github:Mic92/flake-templates#nix-develop .
+  }
+  if not ("./.envrc" | path exists) {
+    echo "use flake" | save -f .envrc
+  }
+  direnv allow
+  ^($env.EDITOR | default "vim") flake.nix
+}
+
+# Docker-based
+
+def carbonyl [] { docker run --rm -ti fathyb/carbonyl https://youtube.com }
+def ipmi_one [] {
+  docker run -p 127.0.0.1:5900:5900 -p 127.0.0.1:8080:8080 gari123/ipmi-kvm-docker
+  echo "xdg-open http://127.0.0.1:8080" | xsel
+}
+def ipmi_two [] {
+  docker run -p 8080:8080 solarkennedy/ipmi-kvm-docker
+  echo "xdg-open localhost:8080" | xsel
+}
+
+# Cryptsetup-based
+
+def horny [] {
+  sudo cryptsetup luksOpen $"($env.XDG_VIDEOS_DIR)/1st_level/.nd/hiddenfs" cryptroot --key-file /one/hdd.key
+}
+def unhorny [] {
+  sudo umount /dev/mapper/cryptroot
+  sudo cryptsetup close cryptroot
+}
+
+# Flatpak-based
+
+def bottles [] { flatpak run com.usebottles.bottles }
+def obs [] { flatpak run com.obsproject.Studio }
+def onlyoffice [] { QT_QPA_PLATFORM=xcb flatpak run org.onlyoffice.desktopeditors }
+def zoom [] { flatpak run us.zoom.Zoom }
+
+# Curl-based
+
+def moon [] { curl wttr.in/Moon }
+def we [] { curl 'wttr.in/?T' }
+def wem [] { curl 'wttr.in/Moscow?lang=ru' }
+def sprunge [file: path] {
+  open $file | ^curl -F 'sprunge=<-' http://sprunge.us
+}
+def cht [...args: string] {
+  let query = ($args | str join " " | ^jq -sRr @uri | str trim)
+  curl -s $"cheat.sh/($query)"
+}
+
+# Systemd
+
+def ctl [...args: string] { systemctl ...$args }
+def stl [...args: string] { sudo systemctl ...$args }
+def utl [...args: string] { systemctl --user ...$args }
+def ut [unit: string] { systemctl --user start $unit }
+def un [unit: string] { systemctl --user stop $unit }
+def up [unit: string] { sudo systemctl start $unit }
+def dn [unit: string] { sudo systemctl stop $unit }
+def j [...args: string] {
+  if ($args | is-empty) {
+    ^journalctl -b
   } else {
-    alias grep = grep --color=auto
-  }
-  
-  if (_exists "rg") {
-    let rg_options = [
-      --max-columns=0
-      --max-columns-preview
-      --glob '!*.git*'
-      --glob '!*.obsidian'
-      --colors match:fg:25
-      --colors match:style:underline
-      --colors line:fg:cyan
-      --colors line:style:bold
-      --colors path:fg:249
-      --colors path:style:bold
-      --smart-case
-      --hidden
-    ]
-    let opts = ($rg_options | str join " ")
-    alias rg = ^rg $opts
-    alias zrg = ^rg $opts -z
-  }
-  
-  if (_exists "nmap") {
-    alias nmap-vulners = nmap -sV --script=vulners/vulners.nse
-    alias nmap-vulscan = nmap -sV --script=vulscan/vulscan.nse
-  }
-  
-  if (_exists "xargs") {
-    alias x = xargs
-  }
-  
-  if (_exists "erd") {
-    alias tree = erd
-  }
-  
-  if (_exists "bat") {
-    alias cat = bat --paging=never
-  }
-  
-  alias sort = ^sort --parallel 8 -S 16M
-  alias ':q' = exit
-  
-  # Show only empty directories
-  def emptydir [] {
-    ls ** | where type == dir | where {|it| (ls $it.name | is-empty) }
-  }
-  
-  if (_exists "sudo") {
-    alias sudo = sudo
-    alias s = sudo
-  
-    let sudo_list = [chmod chown modprobe umount]
-    let logind_sudo_list = [reboot halt poweroff]
-  
-    if (_exists "iotop") {
-      alias iotop = sudo iotop -oPa
-    }
-  
-    if (_exists "lsof") {
-      alias ports = sudo lsof -Pni
-    }
-  
-    if (_exists "kmon") {
-      alias kmon = sudo kmon -u --color 19683a
-    }
-  
-  # for c in $sudo_list {
-  #   if (_exists $c) {
-  #     alias $c = sudo $c
-  #   }
-  # }
-  
-  # for i in $logind_sudo_list {
-  #   alias $i = sudo $i
-  # }
-  
-    if (_exists "reflector") {
-      alias mirrors = sudo /usr/bin/reflector --score 100 --fastest 10 --number 10 --verbose --save /etc/pacman.d/mirrorlist
-    }
-  }
-  
-  if (_exists "btm") {
-    alias htop = btm -b -T --mem_as_value
-  }
-  
-  if (_exists "dd") {
-    alias dd = dd status=progress
-  }
-  
-  if (_exists "dig") {
-    alias dig = dig +noall +answer
-  }
-  
-  if (_exists "dosbox") {
-    alias dosbox = dosbox -conf $"($env.XDG_CONFIG_HOME)/dosbox/dosbox.conf"
-  }
-  
-  if (_exists "duf") {
-    alias df = duf -theme ansi -hide 'special' -hide-mp $"($env.HOME)/*" /nix/store /var/lib/*
-  } else {
-    alias df = df -hT
-  }
-  
-  if (_exists "dust") {
-    alias sp = dust -r
-  } else {
-    def sp [] {
-      ^du -shc ./* | lines | sort
-    }
-  }
-  
-  if (_exists "fd") {
-    alias fd = fd -H --ignore-vcs
-    alias fda = fd -Hu
-  }
-  
-  if (_exists "gdb") {
-    alias gdb = gdb -nh -x $"($env.XDG_CONFIG_HOME)/gdb/gdbinit"
-  }
-  
-  if (_exists "readelf") {
-    alias readelf = readelf -W
-  }
-  
-  if (_exists "strace") {
-    alias strace = strace -yy
-  }
-  
-  if (_exists "handlr") {
-    alias e = handlr open
-  }
-  
-  if (_exists "hxd") {
-    alias hexdump = hxd
-  }
-  
-  if (_exists "iostat") {
-    alias iostat = iostat --compact -p -h -s
-  }
-  
-  if (_exists "ip") {
-    alias ip = ip -c
-  }
-  
-  if (_exists "journalctl") {
-    def journalctl [...args: string] {
-      if ($args | is-empty) {
-        ^journalctl -b
-      } else {
-        ^journalctl ...$args
-      }
-    }
-  }
-  
-  if (_exists "khal") {
-    alias cal = khal calendar
-  }
-  
-  if (_exists "mtr") {
-    alias mtrr = mtr -wzbe
-  }
-  
-  if (_exists "nvidia-settings") {
-    alias nvidia-settings = nvidia-settings --config=$"($env.XDG_CONFIG_HOME)/nvidia/settings"
-  }
-  
-  if (_exists "objdump") {
-    alias objdump = objdump -M intel -d
-  }
-  
-  if (_exists "pbzip2") {
-    alias bzip2 = pbzip2
-  }
-  
-  if (_exists "pigz") {
-    alias gzip = pigz
-  }
-  
-  if (_exists "plocate") {
-    alias locate = plocate
-  }
-  
-  if (_exists "prettyping") {
-    alias ping = prettyping
-  }
-  
-  if (_exists "rsync") {
-    alias rsync = rsync -az --compress-choice=zstd --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS
-  }
-  
-  if (_exists "ssh") {
-    alias ssh = TERM=xterm-256color ssh
-  }
-  
-  if (_exists "unimatrix") {
-    alias matrix = unimatrix -l Aang -s 95
-  }
-  
-  if (_exists "xz") {
-    alias xz = xz --threads=0
-  }
-  
-  if (_exists "zstd") {
-    alias zstd = zstd --threads=0
-  }
-  
-  # mpv-based aliases/functions
-  if (_exists "mpv") {
-    alias mpv = mpv
-  
-    def mpa [...args: string] {
-      ^mpv -mute ...$args | save -f $"($env.HOME)/tmp/mpv.log"
-    }
-  
-    def mpi [...args: string] {
-      ^mpv --interpolation=yes --tscale=oversample --video-sync=display-resample ...$args | save -f $"($env.HOME)/tmp/mpv.log"
-    }
-  }
-  
-  # mpvc alias
-  if (_exists "mpvc") {
-    alias mpvc = mpvc -S $"($env.XDG_CONFIG_HOME)/mpv/socket"
-  }
-  
-  # mpc-related aliases and function
-  if (_exists "mpc") {
-    alias love = mpc sendmessage mpdas love
-    alias unlove = mpc sendmessage mpdas unlove
-  
-    def cdm [] {
-      let rel_path = (mpc -f '%file%' | lines | first | path dirname)
-      let full_path = $"($env.XDG_MUSIC_DIR)/($rel_path)"
-      cd $full_path
-    }
-  }
-  
-  # yt-dlp-related aliases
-  if (_exists "yt-dlp") {
-    let base_yt_opts = [
-      --downloader aria2c
-      --embed-metadata
-      --embed-thumbnail
-      --embed-subs
-      --sub-langs=all
-    ]
-  
-    alias yt = ^yt-dlp ...$base_yt_opts
-    alias yta = ^yt-dlp ...$base_yt_opts --write-info-json
-  }
-  
-  if (_exists "wget2") {
-    alias wget = wget2 --hsts-file $"($env.XDG_DATA_HOME)/wget-hsts"
-  } else {
-    alias wget = wget --continue --show-progress --progress=bar:force:noscroll
-  }
-  
-  # local rlwrap_list=(bb fennel guile irb)
-  # local noglob_list=(fc find ftp history lftp links2 locate lynx nix nixos-remote nixos-rebuild rake rsync sftp you-get yt wget wget2)
-  # _exists scp && alias scp="noglob scp -r"
-  
-  # for c in ${noglob_list[@]}; {_exists "$c" && alias "$c=noglob $c"}
-  # for c in ${rlwrap_list[@]}; {_exists "$c" && alias "$c=rlwrap $c"}
-  # for c in ${nocorrect_list[@]}; {_exists "$c" && alias "$c=nocorrect $c"}
-  # for c in ${dev_null_list[@]}; {_exists "$c" && alias "$c=$c 2>/dev/null"}
-  
-  if (_exists "svn") {
-    alias svn = svn --config-dir $"($env.XDG_CONFIG_HOME)/subversion"
-  }
-  
-  if (_exists "curl") {
-    def cht [...args: string] {
-      let query = ($args | str join " " | ^jq -sRr @uri | str trim)
-      curl -s $"cheat.sh/($query)"
-    }
-  
-    alias moon = curl wttr.in/Moon
-    alias we = curl 'wttr.in/?T'
-    alias wem = curl 'wttr.in/Moscow?lang=ru'
-  
-    def sprunge [file: path] {
-      open $file | ^curl -F 'sprunge=<-' http://sprunge.us
-    }
-  }
-  
-  # if (_exists "fzf") {
-  #   def logs [] {
-  #     let cmd = "find /var/log/ -type f -name '*log' 2>/dev/null"
-  #     let log_file = (do -i { ^bash -c $cmd } | from string | lines | 
-  #       ^fzf --height 40% --min-height 25 --tac --tiebreak=length,begin,index --reverse --inline-info | str trim)
-  # 
-  #     if $log_file != "" {
-  #       if ($env.PAGER | is-empty) {
-  #         ^less $log_file
-  #       } else {
-  #         ^($env.PAGER) $log_file
-  #       }
-  #     }
-  #   }
-  # }
-  
-  if (_exists "systemctl") {
-    alias ctl = systemctl
-    alias stl = s systemctl
-    alias utl = systemctl --user
-    alias ut  = systemctl --user start
-    alias un  = systemctl --user stop
-    alias up  = s systemctl start
-    alias dn  = s systemctl stop
-    alias j   = journalctl
-  }
-  
-  # NixOS-specific setup
-  if ("/etc/NIXOS" | path exists) {
-    # let-env NIX_HM $"(/nix/var/nix/profiles/per-user/($env.USER)/home-manager)"
-    # let-env NIX_NOW "/run/current-system"
-    # let-env NIX_BOOT "/nix/var/nix/profiles/system"
-  
-    if (_exists "nixos-rebuild") {
-      alias nrb = sudo nixos-rebuild
-    }
-  
-    def foobar [] {
-      nix run github:emmanuelrosa/erosanix#foobar2000
-    }
-  
-    def flake-checker [] {
-      nix run github:DeterminateSystems/flake-checker
-    }
-  
-    def linux-kernel [] {
-      nix-shell -E '
-        with import <nixpkgs> {};
-        (builtins.getFlake "github:chaotic-cx/nyx/nyxpkgs-unstable")
-          .packages.x86_64-linux.linuxPackages_cachyos.kernel.overrideAttrs
-          (o: { nativeBuildInputs = o.nativeBuildInputs ++ [ pkg-config ncurses ]; })
-      '
-    }
-  
-    if (_exists "nh") {
-      alias seh = home-manager -b bck switch -j 32 --cores 32 --flake ~/.config/home-manager
-      alias ser = nh os switch /etc/nixos
-    }
-  
-    alias nixify = nix-shell -p nur.repos.kampka.nixify
-    alias S = nix shell
-  
-    def nbuild [] {
-      nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
-    }
-  
-    def nlocate [...args: string] {
-      nix run github:nix-community/nix-index-database ...$args
-    }
-  
-    def qi [pkg: string] {
-      let name = $"nixpkgs#($pkg)"
-      NIXPKGS_ALLOW_UNFREE=1 nix shell --impure $name
-    }
-  
-    def q [pkg: string] {
-      nix shell $"nixpkgs#($pkg)"
-    }
-  
-    def flakify [] {
-      if not ("./flake.nix" | path exists) {
-        nix flake new -t github:Mic92/flake-templates#nix-develop .
-      }
-  
-      if not ("./.envrc" | path exists) {
-        echo "use flake" | save -f .envrc
-      }
-  
-      direnv allow
-      ^($env.EDITOR | default "vim") flake.nix
-    }
-  }
-  
-  # docker-based functions
-  if (_exists "docker") {
-    def carbonyl [] {
-      docker run --rm -ti fathyb/carbonyl https://youtube.com
-    }
-  
-    def ipmi_one [] {
-      docker run -p 127.0.0.1:5900:5900 -p 127.0.0.1:8080:8080 gari123/ipmi-kvm-docker
-      echo "xdg-open http://127.0.0.1:8080" | xsel
-    }
-  
-    def ipmi_two [] {
-      docker run -p 8080:8080 solarkennedy/ipmi-kvm-docker
-      echo "xdg-open localhost:8080" | xsel
-    }
-  }
-  
-  # cryptsetup-based functions
-  if (_exists "cryptsetup") {
-    def horny [] {
-      sudo cryptsetup luksOpen $"($env.XDG_VIDEOS_DIR)/1st_level/.nd/hiddenfs" cryptroot --key-file /one/hdd.key
-    }
-  
-    def unhorny [] {
-      sudo umount /dev/mapper/cryptroot
-      sudo cryptsetup close cryptroot
-    }
-  }
-  
-  if (_exists "flatpak") {
-    alias bottles = flatpak run com.usebottles.bottles
-    alias obs = flatpak run com.obsproject.Studio
-    alias onlyoffice = QT_QPA_PLATFORM=xcb flatpak run org.onlyoffice.desktopeditors
-    alias zoom = flatpak run us.zoom.Zoom
-  }
-  
-  $env.EDITOR = "nvim"
-  $env.config.buffer_editor = "nvim"
-  $env.config.show_banner = false
-  $env.error_style = "plain"
-  $env.config.table.mode = 'none'
-  $env.config.color_config = {
-    header_fg: '#7c90a8'
-  }
-  
-  $env.config.history = {
-    file_format: sqlite
-    max_size: 1_000_000
-    sync_on_enter: true
-    isolation: true
-  }
-  
-  def greet [name:string] {
-    echo $"Hello, ($name)!"
-  }
-  
-  $env.config.hooks.pre_prompt = [
-    {|| echo "Ready to rock 🤘" }
-  ]
-  
-  if (_exists "git") {
-    alias add = git add
-    alias checkout = git checkout
-    alias commit = git commit
-    alias gaa = git add --all
-    alias ga = git add
-    alias gama = git am --abort
-    alias gamc = git am --continue
-    alias gam = git am
-    alias gamscp = git am --show-current-patch
-    alias gams = git am --skip
-    alias gapa = git add --patch
-    alias gap = git apply
-    alias gapt = git apply --3way
-    alias gau = git add --update
-    alias gav = git add --verbose
-    alias gba = git branch -a
-    alias gbd = git branch -d
-    alias gbD = git branch -D
-    alias gb = git branch
-    alias gbl = git blame -b -w
-    alias gbnm = git branch --no-merged
-    alias gbr = git branch --remote
-    alias gbsb = git bisect bad
-    alias gbsg = git bisect good
-    alias gbs = git bisect
-    alias gbsr = git bisect reset
-    alias gbss = git bisect start
-    alias gca = git commit -v -a
-    alias 'gca!' = git commit -v -a --amend
-    alias gcam = git commit -a -m
-    alias 'gcan!' = git commit -v -a --no-edit --amend
-    alias 'gcans!' = git commit -v -a -s --no-edit --amend
-    alias gcas = git commit -a -s
-    alias gcasm = git commit -a -s -m
-    alias gcb = git checkout -b
-    alias gc = git commit -v
-    alias 'gc!' = git commit -v --amend
-    alias gclean = git clean -id
-    alias gcl = git clone --recurse-submodules
-    alias gcmsg = git commit -m
-    alias 'gcn!' = git commit -v --no-edit --amend
-    alias gco = git checkout
-    alias gcor = git checkout --recurse-submodules
-    alias gcount = git shortlog -sn
-    alias gcpa = git cherry-pick --abort
-    alias gcpc = git cherry-pick --continue
-    alias gcp = git cherry-pick
-    alias gcs = git commit -S
-    alias gcsm = git commit -s -m
-    alias gdca = git diff --cached
-    alias gdct = do { let tag = (git rev-list --tags --max-count=1 | str trim); git describe --tags $tag }
-    alias gdcw = git diff --cached --word-diff
-    alias gd = git diff -w -U0 --word-diff-regex=[^[:space:]]
-    alias gds = git diff --staged
-    alias gdup = git diff @{upstream}
-    alias gdw = git diff --word-diff
-    alias gfa = git fetch --all --prune
-    alias gfg = do { git ls-files | lines | where { |l| $l =~ $env.FILTER } }
-    alias gf = git fetch
-    alias gfo = git fetch origin
-    alias ggf = git push --force origin (git rev-parse --abbrev-ref HEAD | str trim)
-    alias ggfl = git push --force-with-lease origin (git rev-parse --abbrev-ref HEAD | str trim)
-    alias ggl = git pull origin (git rev-parse --abbrev-ref HEAD | str trim)
-    alias ggp = git push origin (git rev-parse --abbrev-ref HEAD | str trim)
-    alias ggsup = git branch --set-upstream-to=origin/(git rev-parse --abbrev-ref HEAD | str trim)
-    alias ggu = git pull --rebase origin (git rev-parse --abbrev-ref HEAD | str trim)
-    alias gignored = do { git ls-files -v | lines | where {|l| $l | str starts-with 'h' } }
-    alias gignore = git update-index --assume-unchanged
-    alias gl = git pull
-    alias gma = git merge --abort
-    alias gm = git merge
-    alias gmtl = git mergetool --no-prompt
-    alias gpd = git push --dry-run
-    alias 'gpf!' = git push --force
-    alias gpf = git push --force-with-lease
-    alias gp = git push
-    alias gpr = git pull --rebase
-    alias gpristine = do { git reset --hard; git clean -dffx }
-    alias gpsup = git push --set-upstream origin (git rev-parse --abbrev-ref HEAD | str trim)
-    alias gpv = git push -v
-    alias gra = git remote --add
-    alias grba = git rebase --abort
-    alias grbc = git rebase --continue
-    alias grb = git rebase
-    alias grbi = git rebase -i
-    alias grbo = git rebase --onto
-    alias grbs = git rebase --skip
-    alias grev = git revert
-    alias gr = git remote
-    alias grh = git reset
-    alias grhh = git reset --hard
-    alias grmc = git rm --cached
-    alias grm = git rm
-    alias grs = git restore
-    alias grup = git remote update
-    alias gs = git status --short -b
-    alias gsh = git show
-    alias gsi = git submodule init
-    alias gsps = git show --pretty=short --show-signature
-    alias gstaa = git stash apply
-    alias gsta = git stash push
-    alias gstall = git stash --all
-    alias gstc = git stash clear
-    alias gstd = git stash drop
-    alias gstl = git stash list
-    alias gstp = git stash pop
-    alias gsts = git stash show --text
-    alias gstu = git stash --include-untracked
-    alias gsu = git submodule update
-    alias gswc = git switch -c
-    alias gsw = git switch
-    alias gts = git tag -s
-    alias gu = git reset @ --
-    alias gupa = git pull --rebase --autostash
-    alias gupav = git pull --rebase --autostash -v
-    alias gup = git pull --rebase
-    alias gupv = git pull --rebase -v
-    alias gwch = git whatchanged -p --abbrev-commit --pretty=medium
-    alias gx = git reset --hard @
-    alias pull = git pull
-    alias push = git push
-    alias resolve = git mergetool --tool=nwim
-    alias stash = git stash
-    alias status = git status
-    alias uncommit = git reset --soft HEAD^
+    ^journalctl ...$args
   }
 }

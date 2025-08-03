@@ -5,5 +5,5 @@
 # See `help config nu` for more options
 
 use ~/.config/nushell/nupm/nupm/
-use ~/.config/nushell/aliases.nu
-use ~/.config/nushell/colors.nu
+source ~/.config/nushell/aliases.nu
+source ~/.config/nushell/colors.nu
