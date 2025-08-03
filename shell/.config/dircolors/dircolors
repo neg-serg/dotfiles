@@ -328,25 +328,26 @@ STICKY_OTHER_WRITABLE 38;5;86;48;5;234;1     # Dir that is sticky and other-writ
 .bash_login       03;38;5;103 # UNIX Shell
 .bash_logout      03;38;5;103 # UNIX Shell
 .bash_profile     03;38;5;103 # UNIX Shell
+bashrc            03;38;5;103 # UNIX Shell
+.bat              00;38;5;31 # MS Shell
+.cmd              00;38;5;31 # MS Shell
 .csh              01;38;5;103 # UNIX Shell
 .dash             01;38;5;103 # UNIX Shell
 .fish             01;38;5;103 # UNIX Shell
 .ksh              01;38;5;103 # UNIX Shell
+.nu               01;38;5;103 # UNIX Shell
 .profile          03;38;5;103 # UNIX Shell
 .sed              03;38;5;103 # UNIX Shell
-.zlogin           03;38;5;103 # UNIX Shell
-.zlogout          03;38;5;103 # UNIX Shell
-.zprofile         03;38;5;103 # UNIX Shell
-.zshenv           03;38;5;103 # UNIX Shell
-bashrc            03;38;5;103 # UNIX Shell
 .sh               01;38;5;103 # UNIX Shell
 .sh*              01;38;5;103 # UNIX Shell
 .tcsh             01;38;5;103 # UNIX Shell
+.zlogin           03;38;5;103 # UNIX Shell
+.zlogout          03;38;5;103 # UNIX Shell
+.zprofile         03;38;5;103 # UNIX Shell
 .zsh              01;38;5;103 # UNIX Shell
+.zshenv           03;38;5;103 # UNIX Shell
 zshrc             03;38;5;103 # UNIX Shell
 .zwc              00;38;5;244 # UNIX Shell
-.bat              00;38;5;31 # MS Shell
-.cmd              00;38;5;31 # MS Shell
 # ┌───────────────────────────────────────────────────────────┐
 # │ Web stuff                                                 │
 # └───────────────────────────────────────────────────────────┘
