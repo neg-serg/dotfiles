@@ -41,22 +41,27 @@ def zxgrep [] { ug -zW }
 def xdump [] { ug -X "" }
 def ugit [] { ug -R --ignore-files }
 
-# def rg [] {
-#   ^rg \
-#     --max-columns=0 \
-#     --max-columns-preview \
-#     --glob '!*.git*' \
-#     --glob '!*.obsidian' \
-#     --colors match:fg:25 \
-#     --colors match:style:underline \
-#     --colors line:fg:cyan \
-#     --colors line:style:bold \
-#     --colors path:fg:249 \
-#     --colors path:style:bold \
-#     --smart-case \
-#     --hidden
-# }
-def zrg [] { rg -z }
+def rg [...args] {
+  let base_opts = [
+    --max-columns=0
+    --max-columns-preview
+    --glob '!*.git*'
+    --glob '!*.obsidian'
+    --colors match:fg:25
+    --colors match:style:underline
+    --colors line:fg:cyan
+    --colors line:style:bold
+    --colors path:fg:249
+    --colors path:style:bold
+    --smart-case
+    --hidden
+  ]
+  ^rg ...$base_opts ...$args
+}
+
+def zrg [...args] {
+  ^rg -z ...$args
+}
 
 def iotop [] { sudo iotop -oPa }
 def ports [] { sudo lsof -Pni }
@@ -104,17 +109,18 @@ def cdm [] {
   let full_path = $"($env.XDG_MUSIC_DIR)/($rel_path)"
   cd $full_path
 }
-# def yt [] {
-#   ^yt-dlp \
-#     --downloader aria2c \
-#     --embed-metadata \
-#     --embed-thumbnail \
-#     --embed-subs \
-#     --sub-langs=all
-# }
-def yta [] {
-  yt --write-info-json
+
+def yt [...args] {
+  let base_opts = [
+      --downloader aria2c
+      --embed-metadata
+      --embed-thumbnail
+      --embed-subs
+      --sub-langs=all
+  ]
+  yt-dlp ...$base_opts ...$args
 }
+
 def wget [] { wget2 --hsts-file $"($env.XDG_DATA_HOME)/wget-hsts" }
 
 # Git aliases
@@ -279,7 +285,6 @@ def flakify [] {
 }
 
 # Docker-based
-
 def carbonyl [] { docker run --rm -ti fathyb/carbonyl https://youtube.com }
 def ipmi_one [] {
   docker run -p 127.0.0.1:5900:5900 -p 127.0.0.1:8080:8080 gari123/ipmi-kvm-docker
@@ -291,7 +296,6 @@ def ipmi_two [] {
 }
 
 # Cryptsetup-based
-
 def horny [] {
   sudo cryptsetup luksOpen $"($env.XDG_VIDEOS_DIR)/1st_level/.nd/hiddenfs" cryptroot --key-file /one/hdd.key
 }
@@ -301,14 +305,12 @@ def unhorny [] {
 }
 
 # Flatpak-based
-
 def bottles [] { flatpak run com.usebottles.bottles }
 def obs [] { flatpak run com.obsproject.Studio }
 def onlyoffice [] { QT_QPA_PLATFORM=xcb flatpak run org.onlyoffice.desktopeditors }
 def zoom [] { flatpak run us.zoom.Zoom }
 
 # Curl-based
-
 def moon [] { curl wttr.in/Moon }
 def we [] { curl 'wttr.in/?T' }
 def wem [] { curl 'wttr.in/Moscow?lang=ru' }
@@ -321,7 +323,6 @@ def cht [...args: string] {
 }
 
 # Systemd
-
 def ctl [...args: string] { systemctl ...$args }
 def stl [...args: string] { sudo systemctl ...$args }
 def utl [...args: string] { systemctl --user ...$args }
