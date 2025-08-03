@@ -3,6 +3,9 @@
 set -e
 typeset -A conv_table
 
+lhs='-⟨'
+rhs='⟩-'
+
 trim() {
     local var="$@"
     var="${var#"${var%%[![:space:]]*}"}" # remove leading whitespace characters
@@ -10,29 +13,14 @@ trim() {
 }
 
 generate_convert_table() {
-    for i in {800..889}; do
-        q=${i:1:5}
-        conv_table[1$i]="18$q"
-    done
-
-    for i in {890..899}; do
-        q=${i:2:5}
-        conv_table[1$i]="18$q"
-    done
-
-    for i in {900..989}; do
-        q=${i:1:5}
-        conv_table[1$i]="1x$q"
-    done
-
-    for i in {990..999}; do
-        q=${i:2:5}
-        conv_table[1$i]="1x$q"
-    done
+    for i in {800..889}; do q=${i:1:5}; conv_table[1$i]="18$q"; done
+    for i in {890..899}; do q=${i:2:5}; conv_table[1$i]="18$q"; done
+    for i in {900..989}; do q=${i:1:5}; conv_table[1$i]="1x$q"; done
+    for i in {990..999}; do q=${i:2:5}; conv_table[1$i]="1x$q"; done
 
     i="000"
     num=$(sed "s/^000/0/" <<< "$i")
-    conv_table[2$i]="2x$num"
+    conv_table[2$i]="2x${num}"
     for i in {001..035}; do
         num=$(sed "s/^0*//" <<< "$i")
         if [[ ${num} -lt 10 ]]; then
@@ -68,14 +56,12 @@ extract_field() {
 rename() {
     artist="$(extract_field 'Artist')"
     year="$(extract_field 'Year')"
-
     generate_convert_table
-
-    # take only first word from year
-    year=$(awk '{print $1}' <<< "$year")
+    year=$(awk '{print $1}' <<< "$year") # take only first word from year
     year=${year//$year/$conv_table[$year]}
-
     album="$(extract_field 'Album')"
+    album="${album//\//-}"
+    artist="${artist//\//-}"
 
     if [[ -d "$1" ]]; then
         src="$1"
@@ -86,8 +72,6 @@ rename() {
     artist=$(trim "$artist")
     album=$(trim "$album")
     year=$(trim "$year")
-    lhs='-⟨'
-    rhs='⟩-'
 
     if [[ $artist != "" && $year != "" && $album != "" ]]; then
         music_dirname="$XDG_MUSIC_DIR"
