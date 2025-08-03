@@ -27,7 +27,8 @@
     animation = "fromRight"
     command = "Telegram"
     class = "org.telegram.desktop"
-    size = "30% 90%"
+    size = "30% 95%"
+    position = "69% 2%"
     lazy = true
 
 [scratchpads.discord]
