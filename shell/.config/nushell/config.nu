@@ -6,4 +6,3 @@
 
 use ~/.config/nushell/nupm/nupm/
 source ~/.config/nushell/aliases.nu
-source ~/.config/nushell/colors.nu
