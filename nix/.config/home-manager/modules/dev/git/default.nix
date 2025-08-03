@@ -58,7 +58,7 @@
         # line-numbers-right-format = "";
         line-numbers-left-format = "";
         line-numbers-right-format = "│ ";
-        navigate = true;
+        navigate = false;
         side-by-side = false;
         syntax-theme = "base16-256";
         minus-emph-style = "\"#781f34\" bold \"#000000\"";
