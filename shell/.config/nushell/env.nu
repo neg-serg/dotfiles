@@ -9,10 +9,10 @@ $env.config.table.mode = 'none'
 
 $env.config = {
   completions: {
-    case_sensitive: false   # Нечувствительность к регистру
-    partial: true           # Частичное дополнение
-    quick: true             # Показывать меню сразу
-    algorithm: "fuzzy"      # Использовать нечёткий поиск
+    case_sensitive: false
+    partial: true
+    quick: true
+    # algorithm: "fuzzy"
   }
 }
 
