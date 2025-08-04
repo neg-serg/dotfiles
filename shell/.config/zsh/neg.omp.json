@@ -141,6 +141,17 @@
             "alignment": "left",
             "segments": [
                 {
+                    "foreground": "#005faf",
+                    "properties": {
+                        "linux": "<#005faf>\ue27f</>",
+                        "macos": "<#005faf>\ue27f</>",
+                        "windows": "<#005faf>\ue27f</>"
+                    },
+                    "style": "plain",
+                    "template": "{{ if false }}{{ if .WSL }}WSL at {{ end }} {{.Icon}} {{ end }}",
+                    "type": "os"
+                },
+                {
                     "type": "text",
                     "style": "plain",
                     "foreground": "#005faf",
