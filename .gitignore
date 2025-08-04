@@ -344,3 +344,6 @@ history.sqlite3
 history.sqlite3-shm
 history.sqlite3-wal
 history.txt
+../../../shell/.config/nushell/nupm/cache/
+../../../shell/.config/nushell/nupm/cache/registry
+shell/.config/nushell/nupm/cache
