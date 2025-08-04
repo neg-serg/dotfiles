@@ -13,8 +13,26 @@ $env.config = {
     partial: true
     quick: true
     # algorithm: "fuzzy"
+#   menu: {
+#     columns: 4
+#     col_width: 20
+#     col_padding: 2
+#     selection_rows: 4
+#     description_rows: 10
+#   }
   }
 }
+
+let carapace_completer = {|spans: list<string>|
+  carapace $spans.0 nushell $spans | from json
+}
+
+$env.config = ($env.config | upsert completions {
+  external: {
+    enable: true
+    completer: $carapace_completer
+  }
+})
 
 $env.config = {
   color_config: {
