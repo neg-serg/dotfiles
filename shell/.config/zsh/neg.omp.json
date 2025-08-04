@@ -5,6 +5,12 @@
             "alignment": "left",
             "segments": [
                 {
+                    "type": "text",
+                    "style": "plain",
+                    "foreground": "#005faf",
+                    "template": "\ue5ff "
+                },
+                {
                     "foreground": "red",
                     "powerline_symbol": "\ue0b0",
                     "style": "plain",
@@ -29,10 +35,16 @@
                             "#899CA1"
                         ]
                     },
-                    "template": "\ue5ff {{ .Path }} ❯>",
+                    "template": "{{ .Path }}",
                     "enable_hyperlink": true,
                     "show_git_root": true,
                     "type": "path"
+                },
+                {
+                    "type": "text",
+                    "style": "plain",
+                    "foreground": "#005faf",
+                    "template": " ❯>"
                 }
             ],
             "type": "prompt"
