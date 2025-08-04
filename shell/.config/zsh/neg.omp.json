@@ -72,6 +72,36 @@
                     "type": "node"
                 },
                 {
+                    "foreground": "#925837",
+                    "style": "plain",
+                    "template": "<#ffffff>(</>{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}<#ffffff>)</>",
+                    "type": "rust"
+                },
+                {
+                    "foreground": "#316ce4",
+                    "style": "plain",
+                    "template": "<#ffffff>(</>{{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}}<#ffffff>)</>",
+                    "type": "kubectl"
+                },
+                {
+                    "foreground": "#de1f84",
+                    "style": "plain",
+                    "template": "<#ffffff>(</>{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}<#ffffff>)</>",
+                    "type": "aurelia"
+                },
+                {
+                    "foreground": "#ffffff",
+                    "style": "plain",
+                    "template": "<#1e293b>(</>{{ if .Error }}{{ .Error }}{{ else }}Nx {{ .Full }}{{ end }}<#1e293b>)</>",
+                    "type": "nx"
+                },
+                {
+                    "foreground": "#359a25",
+                    "style": "plain",
+                    "template": "<#ffffff>(</>{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}<#ffffff>)</>",
+                    "type": "julia"
+                },
+                {
                     "foreground": "#ce162b",
                     "leading_diamond": " \ue0b6",
                     "properties": {
