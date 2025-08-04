@@ -1,35 +1,33 @@
 {
-  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
-  "blocks": [
-    {
-      "alignment": "left",
-      "segments": [
-          {
-          "foreground": "red",
-          "powerline_symbol": "\ue0b0",
-          "style": "plain",
-          "template": "\uf0e7 ",
-          "type": "root"
-        },
+    "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+    "blocks": [
         {
-          "foreground": "#005faf",
-          "style": "plain",
-          "template": "\u279c",
-          "type": "text"
-        },
-        {
-          "foreground": "#899CA1",
-          "properties": {
-            "style": "folder"
-          },
-          "style": "plain",
-          "template": " {{ .Path }}",
-          "type": "path"
+            "alignment": "left",
+            "segments": [
+                {
+                    "foreground": "red",
+                    "powerline_symbol": "\ue0b0",
+                    "style": "plain",
+                    "template": "\uf0e7 ",
+                    "type": "root"
+                },
+                {
+                    "foreground": "#899CA1",
+                    "properties": {
+                        "folder_icon": "\ue5ff",
+                        "folder_separator_icon": "/",
+                        "home_icon": "\ueb06",
+                        "style": "agnoster"
+                    },
+                    "template": "\ue5ff {{ .Path }}",
+                    "style": "plain",
+                    "template": "{{ .Path }}",
+                    "type": "path"
+                }
+            ],
+            "type": "prompt"
         }
-      ],
-      "type": "prompt"
-    }
-  ],
-  "final_space": true,
-  "version": 3
+    ],
+    "final_space": true,
+    "version": 3
 }
