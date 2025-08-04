@@ -1,0 +1,10 @@
+{
+  name: powerline,
+  version: "1.0.0",
+  description: "",
+  maintainers: [
+    "@fj0r"
+  ],
+  type: module,
+  license: "MIT License"
+}

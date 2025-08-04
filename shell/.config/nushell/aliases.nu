@@ -2,12 +2,12 @@ def _exists [name: string] {
   not (which $name | is-empty)
 }
 
-def cp [] { ^cp --reflink=auto }
-def l [] { eza --icons=auto --hyperlink }
-def lcr [] { eza --icons=auto --hyperlink -al --sort=created --color=always }
-def ll [] { eza --icons=auto --hyperlink -l }
-def ls [] { eza --icons=auto --hyperlink }
-def lsd [] { eza --icons=auto --hyperlink -alD --sort=created --color=always }
+# def cp [] { ^cp --reflink=auto }
+# def ls [] { eza --icons=auto --hyperlink }
+alias l = eza --icons=auto --hyperlink
+alias lcr = eza --icons=auto --hyperlink -al --sort=created --color=always
+alias ll = eza --icons=auto --hyperlink -l
+alias lsd = eza --icons=auto --hyperlink -alD --sort=created --color=always
 alias acp = builtin cp
 alias als = builtin ls
 def qe [] { cd (als -a | where name =~ '^.git.*' | where type == dir | sort-by modified | last | get name) }
