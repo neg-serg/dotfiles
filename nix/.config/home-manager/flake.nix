@@ -1,7 +1,6 @@
 {
   description = "Home Manager configuration of neg";
   inputs = {
-    astal = { url = "github:aylur/astal"; inputs.nixpkgs.follows = "nixpkgs"; };
     bzmenu = { url = "github:e-tho/bzmenu"; };
     chaotic = { url = "github:chaotic-cx/nyx/nyxpkgs-unstable"; };
     crane = { url = "github:ipetkov/crane"; };
