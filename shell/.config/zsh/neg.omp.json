@@ -4,35 +4,27 @@
     {
       "alignment": "left",
       "segments": [
+          {
+          "foreground": "red",
+          "powerline_symbol": "\ue0b0",
+          "style": "plain",
+          "template": "\uf0e7 ",
+          "type": "root"
+        },
         {
-          "foreground": "#98C379",
+          "foreground": "#005faf",
           "style": "plain",
           "template": "\u279c",
           "type": "text"
         },
         {
-          "foreground": "#56B6C2",
+          "foreground": "#899CA1",
           "properties": {
             "style": "folder"
           },
           "style": "plain",
-          "template": "  {{ .Path }}",
+          "template": " {{ .Path }}",
           "type": "path"
-        },
-        {
-          "foreground": "#D0666F",
-          "properties": {
-            "branch_icon": ""
-          },
-          "style": "plain",
-          "template": " <#5FAAE8>git:(</>{{ .HEAD }}<#5FAAE8>)</>",
-          "type": "git"
-        },
-        {
-          "foreground": "#BF616A",
-          "style": "plain",
-          "template": " \u2717",
-          "type": "status"
         }
       ],
       "type": "prompt"
