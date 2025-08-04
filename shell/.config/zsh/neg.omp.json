@@ -12,16 +12,26 @@
                     "type": "root"
                 },
                 {
-                    "foreground": "#899CA1",
+                    "foreground": "#395573",
                     "properties": {
                         "folder_icon": "\ue5ff",
                         "folder_separator_icon": "/",
-                        "home_icon": "\ueb06",
-                        "style": "agnoster"
+                        "max_width": 40,
+                        "truncation_symbol": "…" ,
+                        "cycle": [
+                            "#287373",
+                            "#899CA1",
+                            "#899CA1",
+                            "#899CA1",
+                            "#899CA1",
+                            "#899CA1",
+                            "#899CA1",
+                            "#899CA1"
+                        ]
                     },
-                    "template": "\ue5ff {{ .Path }}",
-                    "style": "plain",
-                    "template": "{{ .Path }}",
+                    "template": "\ue5ff {{ .Path }} ❯>",
+                    "enable_hyperlink": true,
+                    "show_git_root": true,
                     "type": "path"
                 }
             ],
