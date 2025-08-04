@@ -7,13 +7,10 @@
             "segments": [
                 {
                     "foreground": "#899CA1",
-                    "leading_diamond": " (",
                     "properties": {
                         "branch_icon": ""
                     },
-                    "style": "diamond",
                     "template": "{{ .HEAD }}",
-                    "trailing_diamond": ")",
                     "type": "git"
                 },
                 {
