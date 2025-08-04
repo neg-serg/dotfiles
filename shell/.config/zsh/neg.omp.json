@@ -133,6 +133,16 @@
                     "template": "\ue624{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}",
                     "trailing_diamond": "\ue0b4",
                     "type": "julia"
+                },
+                {
+                    "foreground": "#ecf7fa",
+                    "foreground_templates": ["{{ if gt .Code 0 }}#ef5350{{ end }}"],
+                    "properties": {
+                        "always_enabled": false
+                    },
+                    "style": "plain",
+                    "template": "\ue285",
+                    "type": "status"
                 }
             ],
             "type": "rprompt"
