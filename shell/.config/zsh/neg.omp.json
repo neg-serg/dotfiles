@@ -3,6 +3,7 @@
     "blocks": [
         {
             "alignment": "right",
+            "overflow": "hide",
             "segments": [
                 {
                     "foreground": "#899CA1",
@@ -14,6 +15,28 @@
                     "template": "{{ .HEAD }}",
                     "trailing_diamond": ")",
                     "type": "git"
+                },
+                {
+                    "type": "executiontime",
+                    "style": "powerline",
+                    "foreground": "#a9ffb4",
+                    "template": " {{ .FormattedMs }}s <#ffffff>\ue601</>",
+                    "properties": {
+                        "threshold": 10,
+                        "style": "dallas"
+                    }
+                },
+                {
+                    "type": "node",
+                    "style": "powerline",
+                    "foreground": "#45bf17",
+                    "template": " \ue718 {{ .Full }} "
+                },
+                {
+                    "type": "npm",
+                    "style": "powerline",
+                    "foreground": "#FE4A49",
+                    "template": "<#F3EFF5>and</> \ue71e {{ .Full }} "
                 },
                 {
                     "foreground": "#E4F34A",
