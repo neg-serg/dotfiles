@@ -180,6 +180,7 @@
                         "folder_icon": "\ue5ff",
                         "folder_separator_icon": "/",
                         "max_width": 40,
+                        "home_icon": "<#005faf>~</>",
                         "truncation_symbol": "…" ,
                         "cycle": [
                             "#899CA1",
