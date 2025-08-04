@@ -49,5 +49,5 @@ zsh-defer source "${ZDOTDIR}/04-bindings.zsh"
 if command -v nix-your-shell > /dev/null; then
   nix-your-shell zsh | source /dev/stdin
 fi
-eval "$(oh-my-posh init zsh)"
+eval "$(oh-my-posh init zsh --config ${ZDOTDIR}/neg.omp.json)"
 # vim: ft=zsh:nowrap
