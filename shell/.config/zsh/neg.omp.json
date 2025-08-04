@@ -35,7 +35,7 @@
                 {
                     "type": "npm",
                     "style": "powerline",
-                    "foreground": "#FE4A49",
+                    "foreground": "#ce162b",
                     "template": "<#F3EFF5>and</> \ue71e {{ .Full }} "
                 },
                 {
@@ -72,7 +72,7 @@
                     "type": "node"
                 },
                 {
-                    "foreground": "#E64747",
+                    "foreground": "#ce162b",
                     "leading_diamond": " \ue0b6",
                     "properties": {
                         "fetch_version": false
@@ -83,7 +83,7 @@
                     "type": "ruby"
                 },
                 {
-                    "foreground": "#E64747",
+                    "foreground": "#ce162b",
                     "leading_diamond": " \ue0b6",
                     "properties": {
                         "fetch_version": false
@@ -117,7 +117,7 @@
                     "template": "\ue5ff "
                 },
                 {
-                    "foreground": "red",
+                    "foreground": "#ce162b",
                     "powerline_symbol": "\ue0b0",
                     "style": "plain",
                     "template": "\uf0e7 ",
@@ -131,7 +131,6 @@
                         "max_width": 40,
                         "truncation_symbol": "…" ,
                         "cycle": [
-                            "#287373",
                             "#899CA1",
                             "#899CA1",
                             "#899CA1",
