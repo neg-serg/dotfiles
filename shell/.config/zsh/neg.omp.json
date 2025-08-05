@@ -53,13 +53,10 @@
                 },
                 {
                     "foreground": "#42E66C",
-                    "leading_diamond": " \ue0b6",
                     "properties": {
                         "fetch_version": false
                     },
-                    "style": "diamond",
                     "template": "\ue718{{ if .PackageManagerIcon }}{{ .PackageManagerIcon }} {{ end }}{{ .Full }}",
-                    "trailing_diamond": "\ue0b4",
                     "type": "node"
                 },
                 {
@@ -88,35 +85,26 @@
                 },
                 {
                     "foreground": "#ce162b",
-                    "leading_diamond": " \ue0b6",
                     "properties": {
                         "fetch_version": false
                     },
-                    "style": "diamond",
                     "template": "\ue791{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}",
-                    "trailing_diamond": "\ue0b4",
                     "type": "ruby"
                 },
                 {
                     "foreground": "#ce162b",
-                    "leading_diamond": " \ue0b6",
                     "properties": {
                         "fetch_version": false
                     },
-                    "style": "diamond",
                     "template": "\ue738{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}",
-                    "trailing_diamond": "\ue0b4",
                     "type": "java"
                 },
                 {
                     "foreground": "#359a25",
-                    "leading_diamond": " \ue0b6",
                     "properties": {
                         "fetch_version": false
                     },
-                    "style": "diamond",
                     "template": "\ue624{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}",
-                    "trailing_diamond": "\ue0b4",
                     "type": "julia"
                 },
                 {
