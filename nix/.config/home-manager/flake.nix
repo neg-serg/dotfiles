@@ -11,7 +11,7 @@
     iwmenu = { url = "github:e-tho/iwmenu"; };
     nixpkgs = { url = "github:nixos/nixpkgs"; };
     nvfetcher = { url = "github:berberman/nvfetcher"; inputs.nixpkgs.follows = "nixpkgs"; };
-    quickshell = { url = "git+https://git.outfoxxed.me/outfoxxed/quickshell?ref=v0.1.0"; inputs.nixpkgs.follows = "nixpkgs"; };
+    quickshell = { url = "git+https://git.outfoxxed.me/outfoxxed/quickshell"; inputs.nixpkgs.follows = "nixpkgs"; };
     sops-nix = { url = "github:Mic92/sops-nix"; };
     stylix = { url = "github:danth/stylix"; inputs.nixpkgs.follows = "nixpkgs"; };
     yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
