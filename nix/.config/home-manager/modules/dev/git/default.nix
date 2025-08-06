@@ -137,7 +137,7 @@
         prompt = true;
       };
       credential = {
-        helper = "cache --timeout=28800";
+        helper = "!${pkgs.pass-git-helper}/bin/pass-git-helper --file ~/.config/git/pass.yml";
       };
       difftool.nwim = {
         cmd = "~/bin/v -d $LOCAL $REMOTE";
