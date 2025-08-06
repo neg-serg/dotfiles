@@ -12,6 +12,8 @@
     extraConfig = {
       commit = {verbose = true;};
       log = {decorate = "short";};
+      fetch = { shallow = true; };
+      clone = { filter = "blob:none"; };
       core = {
         pager = "delta";
         whitespace = "trailing-space,cr-at-eol";
