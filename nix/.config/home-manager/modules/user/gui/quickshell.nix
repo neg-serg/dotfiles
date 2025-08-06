@@ -14,12 +14,15 @@ let
         --prefix QML2_IMPORT_PATH : "${pkgs.qt6.qtdeclarative}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
         --prefix QML2_IMPORT_PATH : "${pkgs.qt6.qtpositioning}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
         --prefix QML2_IMPORT_PATH : "${pkgs.kdePackages.syntax-highlighting}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
+        --prefix QT_PLUGIN_PATH : "${pkgs.qt6.qtmultimedia}/${pkgs.qt6.qtbase.qtPluginPrefix}" \
+        --prefix QML2_IMPORT_PATH : "${pkgs.qt6.qtmultimedia}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
         --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.fd pkgs.coreutils ]}
     '';
   };
 in
 {
   home.packages = with pkgs; [
+    cantarell-fonts
     kdePackages.kdialog
     kdePackages.qt5compat # needed for Qt5Compat modules in Qt6
     kdePackages.qtdeclarative # Qt6
