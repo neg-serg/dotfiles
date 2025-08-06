@@ -113,6 +113,54 @@
                     "type": "julia"
                 },
                 {
+                    "type": "bun",
+                    "style": "plain",
+                    "foreground": "#007C00",
+                    "template": " {{ .Full }}"
+                },
+                {
+                    "type": "deno",
+                    "style": "plain",
+                    "foreground": "#31658C",
+                    "template": " {{ .Full }}"
+                },
+                {
+                    "type": "zig",
+                    "style": "plain",
+                    "foreground": "#53A6A6",
+                    "template": " {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}"
+                },
+                {
+                    "type": "lua",
+                    "style": "plain",
+                    "foreground": "#914E89",
+                    "template": " {{ .Full }}"
+                },
+                {
+                    "type": "terraform",
+                    "style": "plain",
+                    "foreground": "#0090FF",
+                    "template": " {{ .Full }}"
+                },
+                {
+                    "type": "docker",
+                    "style": "plain",
+                    "foreground": "#395573",
+                    "template": " Docker:{{ .Full }}"
+                },
+                {
+                    "type": "helm",
+                    "style": "plain",
+                    "foreground": "#005faf",
+                    "template": " Helm:{{ .Full }}"
+                },
+                {
+                    "type": "pnpm",
+                    "style": "plain",
+                    "foreground": "#005fd7",
+                    "template": " pnpm:{{ .Full }}"
+                },
+                {
                     "foreground": "#899CA1",
                     "foreground_templates": ["{{ if gt .Code 0 }}#ce162b{{ end }}"],
                     "properties": {
