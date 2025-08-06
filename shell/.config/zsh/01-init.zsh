@@ -58,7 +58,7 @@ setopt rc_quotes # quotes with ''
 _exists() { (( $+commands[$1] )) }
 watch=(notme root) # watch for everyone but me and root
 typeset -U path cdpath fpath manpath # automatically remove duplicates from these arrays
-typeset -gx PATH=$HOME/bin:/bin:$HOME/.local/bin:$PATH
+typeset -gx PATH=$HOME/bin:/bin:$HOME/.local/bin:~/.local/share/cargo/bin:$PATH
 _exists nvim && {
     typeset -gx EDITOR="nvim"
     typeset -gx VISUAL="${EDITOR}"
