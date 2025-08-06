@@ -10,6 +10,8 @@
     text = ''
       #!/bin/sh
       nix flake check && git diff --check
+      git ls-files '*.nix' | xargs alejandra --quiet
+      git add -u
     '';
     executable = true;
   };
