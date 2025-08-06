@@ -1,8 +1,9 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    gist # manage github gists
     act # local github actions
     difftastic # syntax-aware diff
+    gh # github cli client
+    gist # manage github gists
   ];
 
   home.file.".config/git/hooks/pre-commit" = {
@@ -98,6 +99,7 @@
       alias = {
         ap = "add --patch"; # thx to https://nuclearsquid.com/writings/git-add/
         dts = "!delta --side-by-side --color-only";
+        hub = "!gh";
         patch = "!git --no-pager diff --no-color";
         subpull = "submodule foreach git pull";
         undo = "reset --soft @~";
