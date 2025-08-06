@@ -16,7 +16,7 @@
                 {
                     "type": "executiontime",
                     "style": "powerline",
-                    "foreground": "#a9ffb4",
+                    "foreground": "#45bf17",
                     "template": " {{ .FormattedMs }}s <#899CA1>\ue601</>",
                     "properties": {
                         "threshold": 50,
@@ -33,7 +33,7 @@
                     "type": "npm",
                     "style": "powerline",
                     "foreground": "#ce162b",
-                    "template": "<#F3EFF5>and</> \ue71e {{ .Full }} "
+                    "template": "<#899CA1>and</> \ue71e {{ .Full }} "
                 },
                 {
                     "foreground": "#E4F34A",
@@ -108,13 +108,13 @@
                     "type": "julia"
                 },
                 {
-                    "foreground": "#ecf7fa",
-                    "foreground_templates": ["{{ if gt .Code 0 }}#ef5350{{ end }}"],
+                    "foreground": "#899CA1",
+                    "foreground_templates": ["{{ if gt .Code 0 }}#ce162b{{ end }}"],
                     "properties": {
                         "always_enabled": false
                     },
                     "style": "plain",
-                    "template": "\ue285",
+                    "template": " ×{{.Code}}",
                     "type": "status"
                 }
             ],
