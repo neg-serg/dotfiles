@@ -13,7 +13,7 @@
       commit = {verbose = true;};
       log = {decorate = "short";};
       core = {
-        pager = "PAGER= delta --keep-plus-minus-markers --dark";
+        pager = "delta";
         whitespace = "trailing-space,cr-at-eol";
         excludesfile = "/etc/gitignore";
         editor = "nvr --remote-wait-silent";
