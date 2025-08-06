@@ -29,12 +29,6 @@
                     }
                 },
                 {
-                    "type": "node",
-                    "style": "powerline",
-                    "foreground": "#45bf17",
-                    "template": " \ue718 {{ .Full }} "
-                },
-                {
                     "type": "npm",
                     "style": "powerline",
                     "foreground": "#ce162b",
@@ -59,9 +53,11 @@
                 {
                     "foreground": "#42E66C",
                     "properties": {
-                        "fetch_version": false
+                        "detect_extensions": ["js", "ts"],
+                        "fetch_version": true,
+                        "cache_duration": "3m"
                     },
-                    "template": "\ue718{{ if .PackageManagerIcon }}{{ .PackageManagerIcon }} {{ end }}{{ .Full }}",
+                    "template": " \ue718{{ if .PackageManagerIcon }}{{ .PackageManagerIcon }} {{ end }}{{ .Full }} ",
                     "type": "node"
                 },
                 {
