@@ -98,7 +98,6 @@
       alias = {
         ap = "add --patch"; # thx to https://nuclearsquid.com/writings/git-add/
         dts = "!delta --side-by-side --color-only";
-        hub = "!hub";
         patch = "!git --no-pager diff --no-color";
         subpull = "submodule foreach git pull";
         undo = "reset --soft @~";
