@@ -122,7 +122,7 @@
                     "type": "deno",
                     "style": "plain",
                     "foreground": "#31658C",
-                    "template": " {{ .Full }}"
+                    "template": "⏣ {{ .Full }}"
                 },
                 {
                     "type": "zig",
