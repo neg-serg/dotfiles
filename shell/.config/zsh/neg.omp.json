@@ -6,12 +6,17 @@
             "overflow": "hide",
             "segments": [
                 {
+                    "type": "git",
+                    "style": "plain",
                     "foreground": "#899CA1",
                     "properties": {
-                        "branch_icon": ""
+                        "branch_icon": "",
+                        "fetch_status": true,
+                        "display_status": true,
+                        "display_stash_count": true,
+                        "display_upstream_icon": true
                     },
-                    "template": "{{ .HEAD }}",
-                    "type": "git"
+                    "template": "<#005faf>⟮</><#6C7E96>{{ if .Data.HEAD }}{{ .Data.HEAD }}{{ end }}{{ if gt .Data.Ahead 0 }}<#367CB0>↑{{ .Data.Ahead }}</>{{ end }}{{ if gt .Data.Behind 0 }}<#367CB0>↓{{ .Data.Behind }}</>{{ end }}{{ if and .Data.Working (gt .Data.Working.Changed 0) }} <#914E89>●W{{ .Data.Working.String }}</>{{ end }}{{ if and .Data.Staging (gt .Data.Staging.Changed 0) }} <#5E468C>●S{{ .Data.Staging.String }}</>{{ end }}<#005faf>⟯</>"
                 },
                 {
                     "type": "executiontime",
