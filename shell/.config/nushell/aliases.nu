@@ -3,7 +3,7 @@ def _exists [name: string] {
 }
 
 # def cp [] { ^cp --reflink=auto }
-alias ls = eza --icons=auto --hyperlink
+# alias ls = eza --icons=auto --hyperlink
 alias l = eza --icons=auto --hyperlink
 alias lcr = eza --icons=auto --hyperlink -al --sort=created --color=always
 alias ll = eza --icons=auto --hyperlink -l
