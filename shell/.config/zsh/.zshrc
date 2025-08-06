@@ -1,3 +1,9 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 ### Added by Zinit's installer
 if [[ ! -f ${ZDOTDIR}/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
@@ -23,6 +29,7 @@ if [[ ! -f /etc/NIXOS ]]; then
 else
     fpath=(${ZDOTDIR}/lazyfuncs ${XDG_CONFIG_HOME}/zsh-nix $fpath)
 fi
+zinit atload"!source ${ZDOTDIR}/.p10k.zsh" lucid nocd for romkatv/powerlevel10k # best prompt
 zinit load romkatv/zsh-defer
 zinit load QuarticCat/zsh-smartcache
 zinit load Tarrasch/zsh-functional
@@ -39,5 +46,9 @@ zsh-defer source "${ZDOTDIR}/04-bindings.zsh"
 if command -v nix-your-shell > /dev/null; then
   nix-your-shell zsh | source /dev/stdin
 fi
-eval "$(oh-my-posh init zsh --config ${ZDOTDIR}/neg.omp.json)"
+# eval "$(oh-my-posh init zsh --config ${ZDOTDIR}/neg.omp.json)"
+[[ ! -f "$XDG_CONFIG_HOME/zsh/.p10k.zsh" ]] || source "$XDG_CONFIG_HOME/zsh/.p10k.zsh"
+if command -v nix-your-shell > /dev/null; then
+  nix-your-shell zsh | source /dev/stdin
+fi
 # vim: ft=zsh:nowrap
