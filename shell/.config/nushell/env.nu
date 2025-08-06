@@ -12,14 +12,7 @@ $env.config = {
     case_sensitive: false
     partial: true
     quick: true
-    # algorithm: "fuzzy"
-#   menu: {
-#     columns: 4
-#     col_width: 20
-#     col_padding: 2
-#     selection_rows: 4
-#     description_rows: 10
-#   }
+    algorithm: "fuzzy"
   }
 }
 
