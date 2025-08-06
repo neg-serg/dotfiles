@@ -133,6 +133,10 @@
       mergetool.nwim = {
         cmd = "~/bin/v -d $LOCAL $BASE $REMOTE $MERGED -c 'wincmd J | wincmd ='";
       };
+      mergetool.delta = {
+        cmd = "delta --merge-base \"$BASE\" \"$LOCAL\" \"$REMOTE\" > \"$MERGED\"";
+        trustExitCode = false;
+      };
       mergetool.nvimdiff = {
         keepBackup = true;
         cmd = "nvim -d \"$LOCAL\" \"$MERGED\" \"$REMOTE\"";
