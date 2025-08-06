@@ -70,6 +70,7 @@
         navigate = false;
         side-by-side = false;
         syntax-theme = "base16-256";
+        true-color = "auto";
         minus-emph-style = "#781f34 bold #000000";
         minus-style = "#781f34 #000000";
         whitespace-error-style = "22 reverse";
