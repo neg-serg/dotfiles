@@ -17,7 +17,7 @@
                     "type": "executiontime",
                     "style": "powerline",
                     "foreground": "#a9ffb4",
-                    "template": " {{ .FormattedMs }}s <#ffffff>\ue601</>",
+                    "template": " {{ .FormattedMs }}s <#899CA1>\ue601</>",
                     "properties": {
                         "threshold": 50,
                         "style": "dallas"
@@ -60,27 +60,27 @@
                     "type": "node"
                 },
                 {
-                    "foreground": "#925837",
+                    "foreground": "#48a574",
                     "style": "plain",
-                    "template": "<#ffffff>(</>{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}<#ffffff>)</>",
+                    "template": " <#1e293b>⟮</>{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}<#1e293b>⟯</><#899CA1></>",
                     "type": "rust"
                 },
                 {
                     "foreground": "#316ce4",
                     "style": "plain",
-                    "template": "<#ffffff>(</>{{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}}<#ffffff>)</>",
+                    "template": "<#1e293b>⟮</>{{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}}<#1e293b>⟯</><#899CA1></>",
                     "type": "kubectl"
                 },
                 {
                     "foreground": "#de1f84",
                     "style": "plain",
-                    "template": "<#ffffff>(</>{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}<#ffffff>)</>",
+                    "template": "<#1e293b>⟮</>{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}<#1e293b>⟯</><#899CA1></>",
                     "type": "aurelia"
                 },
                 {
-                    "foreground": "#ffffff",
+                    "foreground": "#899CA1",
                     "style": "plain",
-                    "template": "<#1e293b>(</>{{ if .Error }}{{ .Error }}{{ else }}Nx {{ .Full }}{{ end }}<#1e293b>)</>",
+                    "template": "<#1e293b>⟮</>{{ if .Error }}{{ .Error }}{{ else }}Nx {{ .Full }}{{ end }}<#1e293b>⟯</>",
                     "type": "nx"
                 },
                 {
