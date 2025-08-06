@@ -3,6 +3,7 @@
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {'3rd/image.nvim',
   build=false,
+  enabled=false,
   config=function()
     require"image".setup({
     backend = "kitty",
