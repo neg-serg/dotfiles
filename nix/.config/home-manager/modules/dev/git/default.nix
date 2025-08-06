@@ -20,7 +20,6 @@
         untrackedCache = true;
       };
       color = {
-        pager = 0;
         grep = "auto";
         showbranch = "auto";
         ui = "auto";
