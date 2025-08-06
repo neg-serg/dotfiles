@@ -187,7 +187,7 @@
                     "type": "text",
                     "style": "plain",
                     "foreground": "#005faf",
-                    "template": "\ue5ff "
+                    "template": " "
                 },
                 {
                     "foreground": "#ce162b",
