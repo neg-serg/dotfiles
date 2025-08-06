@@ -1,4 +1,7 @@
 {pkgs, config, ...}: {
+  home.sessionPath = [
+    "$HOME/.local/share/cargo/bin"
+  ];
   home.sessionVariables = {
     XDG_CACHE_HOME = "${config.home.homeDirectory}/.cache";
     XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
