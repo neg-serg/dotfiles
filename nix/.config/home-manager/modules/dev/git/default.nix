@@ -18,6 +18,7 @@
         excludesfile = "/etc/gitignore";
         editor = "nvr --remote-wait-silent";
         untrackedCache = true;
+        sshCommand = "ssh -i ~/.ssh/id_neg";
       };
       color = {
         grep = "auto";
@@ -108,7 +109,7 @@
         autosquash = true;
       };
       url = {
-        "git@github.com:".pushInsteadOf = ["https://github.com/" "git://github.com/"];
+        "git@github.com:".insteadOf = "https://github.com/";
         "https://aur.archlinux.org/".insteadOf = "aur:";
         "ssh://aur@aur.archlinux.org/".pushInsteadOf = "aur:";
         "https://codeberg.org/".insteadOf = "codeberg:";
