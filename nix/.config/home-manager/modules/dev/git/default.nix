@@ -5,6 +5,14 @@
     difftastic # syntax-aware diff
   ];
 
+  home.file.".config/git/hooks/pre-commit" = {
+    text = ''
+      #!/bin/sh
+      nix flake check && git diff --check
+    '';
+    executable = true;
+  };
+
   programs.git = {
     enable = true;
     userName = "Sergey Miroshnichenko";
