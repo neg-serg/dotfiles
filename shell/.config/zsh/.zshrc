@@ -20,5 +20,5 @@ done
 command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
 [[ $NEOVIM_TERMINAL ]] && source "${ZDOTDIR}/08-neovim-cd.zsh"
 nix-your-shell zsh | source /dev/stdin 2>/dev/null || true
-eval "$(oh-my-posh init zsh --config ${ZDOTDIR}/neg.omp.json)"
+# eval "$(oh-my-posh init zsh --config ${ZDOTDIR}/neg.omp.json)"
 # vim: ft=zsh:nowrap
