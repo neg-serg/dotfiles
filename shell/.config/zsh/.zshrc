@@ -7,12 +7,12 @@ if [[ ! -f $zinit_bin ]]; then
 fi
 source "${ZDOTDIR}/.zinit/bin/zinit.zsh"; autoload -Uz _zinit; (( ${+_comps} )) && _comps[zinit]=_zinit
 [[ -f /etc/NIXOS ]] && fpath=(${ZDOTDIR}/lazyfuncs ${XDG_CONFIG_HOME}/zsh-nix $fpath)
+zinit light z-shell/F-Sy-H
 zinit atload"!source ${ZDOTDIR}/.p10k.zsh" lucid nocd for romkatv/powerlevel10k
 zinit load romkatv/zsh-defer
 zinit load QuarticCat/zsh-smartcache
 zinit load Tarrasch/zsh-functional
 zinit ice wait'!0'
-# zinit wait lucid silent atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay" for neg-serg/fast-syntax-highlighting blockf zsh-users/zsh-completions
 source "${ZDOTDIR}/01-init.zsh"
 for file in {02-cmds,03-completion,04-bindings}; do
   zsh-defer source "${ZDOTDIR}/$file.zsh"
