@@ -12,7 +12,7 @@ zinit load romkatv/zsh-defer
 zinit load QuarticCat/zsh-smartcache
 zinit load Tarrasch/zsh-functional
 zinit ice wait'!0'
-zinit wait lucid silent atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay" for neg-serg/fast-syntax-highlighting blockf zsh-users/zsh-completions
+# zinit wait lucid silent atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay" for neg-serg/fast-syntax-highlighting blockf zsh-users/zsh-completions
 source "${ZDOTDIR}/01-init.zsh"
 for file in {02-cmds,03-completion,04-bindings}; do
   zsh-defer source "${ZDOTDIR}/$file.zsh"
