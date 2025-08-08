@@ -7,4 +7,4 @@ while read line; do
   elif [[ "$section" == "file-extensions" && "$line" =~ '^([^ =]+)[ \t]*=[ \t]*(.+)$' ]]; then
     FILE_EXTENSION_STYLES[${match[1]}]=${match[2]}
   fi
-done < neg.ini
+done < ${ZDOTDIR}/neg.ini
