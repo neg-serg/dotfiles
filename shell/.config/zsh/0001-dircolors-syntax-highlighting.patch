@@ -1,0 +1,37 @@
+From c021372afb5e4188c5efb2b695a5448f7fcfb07e Mon Sep 17 00:00:00 2001
+From: Sergey Miroshnichenko <serg.zorg@gmail.com>
+Date: Sat, 9 Aug 2025 00:42:16 +0300
+Subject: [PATCH] dircolors syntax highlighting
+
+---
+ functions/fast-highlight | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/functions/fast-highlight b/functions/fast-highlight
+index ddfb29f..4f5090a 100755
+--- a/functions/fast-highlight
++++ b/functions/fast-highlight
+@@ -991,7 +991,19 @@ typeset -ga ZLAST_COMMANDS
+                  [[ ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-tri]} != "none" ]] && (( __start=_start_pos-__PBUFLEN, __end=_end_pos-__PBUFLEN, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-tri]}")
+                  already_added=1
+                  ;;
+-        *)       # F - (( after for
++        *)
++                 if [[ $__arg == */* || $__arg == *.* ]]; then
++                   local ext="${__arg##*.}"
++                   if [[ -n ${FAST_THEME_NAME}file-extensions-${ext} ]]; then
++                     (( __start=_start_pos-__PBUFLEN, __end=_end_pos-__PBUFLEN ))
++                     if (( __start >= 0 )); then
++                       __style="${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}file-extensions-${ext}]}"
++                       reply+=("$__start $__end $__style")
++                       already_added=1
++                     fi
++                   fi
++                 fi
++                 # F - (( after for
+                  if [[ $braces_stack = F* ]]; then
+                    -fast-highlight-string
+                    _mybuf=$__arg
+-- 
+2.50.1
+
