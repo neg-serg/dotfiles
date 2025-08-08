@@ -1,6 +1,6 @@
 module_path+=( "/home/neg/.zi/zmodules/zpmod/Src" )
 zmodload zi/zpmod 2> /dev/null
-FAST_WORK_DIR=CONFIG
+FAST_WORK_DIR=~/.config/f-sy-h
 source ~/.config/zsh/00-fsyh-parser.zsh
 source ${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh 2>/dev/null || true
 typeset -gx P9K_SSH=0
