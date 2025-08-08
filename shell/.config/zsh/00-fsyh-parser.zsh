@@ -51,7 +51,7 @@ while IFS= read -r line; do
 done < ${ZDOTDIR}/neg.ini
 
 # Apply styles to fast-syntax-highlighting
-FAST_THEME_NAME="neg"
+FAST_THEME_NAME="zdharma"
 typeset -gA FAST_HIGHLIGHT_STYLES
 for ext style in "${(@kv)FILE_EXTENSION_STYLES}"; do
   [[ -n $ext && -n $style ]] || continue
