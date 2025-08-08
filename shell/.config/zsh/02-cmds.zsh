@@ -171,12 +171,10 @@ _exists git && {
     alias gcas="git commit -a -s"
     alias gcasm="git commit -a -s -m"
     alias gcb="git checkout -b"
-    alias gcd="git checkout $(git_develop_branch)"
     alias gc="git commit -v"
     alias gc!="git commit -v --amend"
     alias gclean="git clean -id"
     alias gcl="git clone --recurse-submodules"
-    alias gcm="git checkout $(git_main_branch)"
     alias gcmsg="git commit -m"
     alias gcn!="git commit -v --no-edit --amend"
     alias gco="git checkout"
@@ -188,7 +186,6 @@ _exists git && {
     alias gcs="git commit -S"
     alias gcsm="git commit -s -m"
     alias gdca='git diff --cached'
-    alias gdct="git describe --tags $(git rev-list --tags --max-count=1)"
     alias gdcw="git diff --cached --word-diff"
     alias gd='git diff -w -U0 --word-diff-regex=[^[:space:]]'
     alias gds="git diff --staged"
@@ -198,19 +195,9 @@ _exists git && {
     alias gfg='git ls-files | grep'
     alias gf='git fetch'
     alias gfo='git fetch origin'
-    alias ggf="git push --force origin $(current_branch)"
-    alias ggfl="git push --force-with-lease origin $(current_branch)"
-    alias ggl="git pull origin $(current_branch)"
-    alias ggp="git push origin $(current_branch)"
-    alias ggpull="git pull origin "$(git_current_branch)""
-    alias ggpush="git push origin $(git_current_branch)"
-    alias ggsup="git branch --set-upstream-to=origin/$(git_current_branch)"
-    alias ggu="git pull --rebase origin $(current_branch)"
     alias gignored='git ls-files -v | grep "^[[:lower:]]"'
     alias gignore='git update-index --assume-unchanged'
     alias gl="git pull"
-    alias gluc="git pull upstream $(git_current_branch)"
-    alias glum="git pull upstream $(git_main_branch)"
     alias gma="git merge --abort"
     alias gm="git merge"
     alias gmtl="git mergetool --no-prompt"
@@ -221,7 +208,6 @@ _exists git && {
     alias gpr="gh pr create"
     alias gpr='git pull --rebase'
     alias gpristine="git reset --hard && git clean -dffx"
-    alias gpsup="git push --set-upstream origin $(git_current_branch)"
     alias gpv='git push -v'
     alias gra='git remote --add'
     alias grba='git rebase --abort'
@@ -255,16 +241,12 @@ _exists git && {
     alias gstu='git stash --include-untracked'
     alias gsu='git submodule update'
     alias gswc='git switch -c'
-    alias gswd="git switch $(git_develop_branch)"
     alias gsw='git switch'
-    alias gswm="git switch $(git_main_branch)"
     alias gts='git tag -s'
     alias gu="git reset @ --"
     alias gupa='git pull --rebase --autostash'
     alias gupav='git pull --rebase --autostash -v'
     alias gup='git pull --rebase'
-    alias gupom="git pull --rebase origin $(git_main_branch)"
-    alias gupomi="git pull --rebase='interactive origin $(git_main_branch)"
     alias gupv='git pull --rebase -v'
     alias gwch='git whatchanged -p --abbrev-commit --pretty=medium'
     alias gx="git reset --hard @"
