@@ -44,6 +44,7 @@ in {
     
     # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
     "dircolors" = mkSymlink "shell/.config/dircolors" true;
+    "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
     "inputrc" = mkSymlink "shell/.config/inputrc" true;
     "nushell" = mkSymlink "shell/.config/nushell" true;
     "tmux" = mkSymlink "shell/.config/tmux" true;
