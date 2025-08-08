@@ -11,8 +11,8 @@ typeset -g FAST_THEME_NAME="neg"
 : ${FAST_HIGHLIGHT_STYLES[negprecommand]:=fg=63}
 : ${FAST_HIGHLIGHT_STYLES[negcommandseparator]:=none}
 : ${FAST_HIGHLIGHT_STYLES[neghashed-command]:=fg=63}
-: ${FAST_HIGHLIGHT_STYLES[negpath]:=}
-: ${FAST_HIGHLIGHT_STYLES[negpath_pathseparator]:=}
+: ${FAST_HIGHLIGHT_STYLES[negpath]:=none}
+: ${FAST_HIGHLIGHT_STYLES[negpath_pathseparator]:=fg=4}
 : ${FAST_HIGHLIGHT_STYLES[negglobbing]:=fg=114}
 : ${FAST_HIGHLIGHT_STYLES[negglobbing-ext]:=fg=244}
 : ${FAST_HIGHLIGHT_STYLES[neghistory-expansion]:=fg=blue,bold}
@@ -48,7 +48,7 @@ typeset -g FAST_THEME_NAME="neg"
 : ${FAST_HIGHLIGHT_STYLES[negincorrect-subtle]:=bg=52}
 : ${FAST_HIGHLIGHT_STYLES[negsubtle-separator]:=none}
 : ${FAST_HIGHLIGHT_STYLES[negsubtle-bg]:=bg=17}
-: ${FAST_HIGHLIGHT_STYLES[negpath-to-dir]:=fg=154,underline}
+: ${FAST_HIGHLIGHT_STYLES[negpath-to-dir]:=fg=248,underline}
 : ${FAST_HIGHLIGHT_STYLES[negpaired-bracket]:=bg=blue}
 : ${FAST_HIGHLIGHT_STYLES[negbracket-level-1]:=fg=117}
 : ${FAST_HIGHLIGHT_STYLES[negbracket-level-2]:=fg=141}
