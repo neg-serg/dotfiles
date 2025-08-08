@@ -1,3 +1,9 @@
+MAGIC="# 🥟 pie"
+THEME_FILE="${XDG_CONFIG_HOME}/f-sy-h/current_theme.zsh"
+if [ -f "$THEME_FILE" ] && tail -n1 "$THEME_FILE" | grep -Fxq "$MAGIC"; then
+    return 0 2>/dev/null || exit 0
+fi
+
 setopt rematchpcre  # Enable PCRE regex matching for =~ operator
 typeset -gA FILE_EXTENSION_STYLES  # Global associative array for file extension styles
 section=""
@@ -14,7 +20,7 @@ while IFS= read -r line; do
   # Check for section headers [section-name]
   if [[ "$line" =~ '^\[(.*)\]$' ]]; then
     section="${match[1]}"
-  
+
   # Process file-extension styles
   elif [[ "$section" == "file-extensions" && "$line" =~ '^([a-zA-Z0-9_+-]+)[[:space:]]*=[[:space:]]*(.*)$' ]]; then
     key="${match[1]}"
@@ -28,19 +34,19 @@ while IFS= read -r line; do
       parts=(${(s:,:)rest})  # Split by commas
       bg_color=${parts[1]}  # First part is background color
       shift parts  # Remove bg color from parts array
-      
+
       new_value="bg=$bg_color"  # Start with background
-      
+
       # Check if next part is foreground color (numeric)
       if [[ -n "$parts[1]" && "$parts[1]" =~ '^[0-9]+$' ]]; then
         new_value+=",fg=$parts[1]"  # Add foreground
         shift parts  # Remove fg color
       fi
-      
+
       # Add any remaining attributes (bold, underline, etc)
       [[ ${#parts} -gt 0 ]] && new_value+=",${(j:,:)parts}"
       value=$new_value
-      
+
     else
       # Handle regular styles (fg=color,attributes)
       value="fg=$value"  # Add fg= prefix
@@ -56,4 +62,10 @@ typeset -gA FAST_HIGHLIGHT_STYLES
 for ext style in "${(@kv)FILE_EXTENSION_STYLES}"; do
   [[ -n $ext && -n $style ]] || continue
   FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}file-extensions-${ext}]="$style"
+  key_str="${FAST_THEME_NAME}file-extensions-${ext}"
+  line=": \${FAST_HIGHLIGHT_STYLES[${key_str}]:=\"$style\"}"
+  # drop old lines for this key (if any), then append the fresh one
+  sed -i "/^: \${FAST_HIGHLIGHT_STYLES\\[${key_str//\//\\/}\\]:=/d}" "$THEME_FILE" 2>/dev/null
+  print -r -- "$line" >> "$THEME_FILE"
 done
+echo "# 🥟 pie" >> $THEME_FILE
