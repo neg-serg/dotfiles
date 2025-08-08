@@ -1,6 +1,6 @@
 module_path+=( "/home/neg/.zi/zmodules/zpmod/Src" )
 zmodload zi/zpmod
-FAST_HIGHLIGHT_THEME="$HOME/.config/zsh/neg.ini"
+FAST_WORK_DIR=CONFIG
 source ~/.config/zsh/00-fsyh-parser.zsh
 source ${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh 2>/dev/null || true
 typeset -gx P9K_SSH=0
