@@ -1,3 +1,5 @@
+module_path+=( "/home/neg/.zi/zmodules/zpmod/Src" )
+zmodload zi/zpmod
 source ${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh 2>/dev/null || true
 typeset -gx P9K_SSH=0
 if [[ -r "${XDG_CONFIG_HOME:-${HOME}/.config}/zi/init.zsh" ]]; then
