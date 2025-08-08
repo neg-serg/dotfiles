@@ -1,5 +1,5 @@
 module_path+=( "/home/neg/.zi/zmodules/zpmod/Src" )
-zmodload zi/zpmod
+zmodload zi/zpmod 2> /dev/null
 FAST_WORK_DIR=CONFIG
 source ~/.config/zsh/00-fsyh-parser.zsh
 source ${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh 2>/dev/null || true
@@ -8,7 +8,7 @@ if [[ -r "${XDG_CONFIG_HOME:-${HOME}/.config}/zi/init.zsh" ]]; then
   source "${XDG_CONFIG_HOME:-${HOME}/.config}/zi/init.zsh" && zzinit
 fi
 [[ -f /etc/NIXOS ]] && fpath=(${ZDOTDIR}/lazyfuncs ${XDG_CONFIG_HOME}/zsh-nix $fpath)
-zi light z-shell/F-Sy-H
+zi light neg-serg/F-Sy-H
 zi ice atload"!source ${ZDOTDIR}/.p10k.zsh" lucid nocd
 zi light romkatv/powerlevel10k
 zi light romkatv/zsh-defer
