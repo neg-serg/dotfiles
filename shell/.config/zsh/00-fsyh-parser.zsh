@@ -48,10 +48,10 @@ while IFS= read -r line; do
 
     FILE_EXTENSION_STYLES[$key]="$value"
   fi
-done < ${ZDOTDIR}/neg.ini
+done < ${XDG_CONFIG_HOME}/f-sy-h/neg.ini
 
 # Apply styles to fast-syntax-highlighting
-FAST_THEME_NAME="zdharma"
+FAST_THEME_NAME="neg"
 typeset -gA FAST_HIGHLIGHT_STYLES
 for ext style in "${(@kv)FILE_EXTENSION_STYLES}"; do
   [[ -n $ext && -n $style ]] || continue
