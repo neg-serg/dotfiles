@@ -1,6 +1,10 @@
 MAGIC="# 🥟 pie"
 THEME_FILE="${XDG_CONFIG_HOME}/f-sy-h/current_theme.zsh"
+typeset -gA FAST_HIGHLIGHT_STYLES
+FAST_THEME_NAME="neg"
+
 if [ -f "$THEME_FILE" ] && tail -n1 "$THEME_FILE" | grep -Fxq "$MAGIC"; then
+    source "$THEME_FILE"
     return 0 2>/dev/null || exit 0
 fi
 
@@ -57,13 +61,11 @@ while IFS= read -r line; do
 done < ${XDG_CONFIG_HOME}/f-sy-h/neg.ini
 
 # Apply styles to fast-syntax-highlighting
-FAST_THEME_NAME="neg"
-typeset -gA FAST_HIGHLIGHT_STYLES
 for ext style in "${(@kv)FILE_EXTENSION_STYLES}"; do
   [[ -n $ext && -n $style ]] || continue
   FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}file-extensions-${ext}]="$style"
   key_str="${FAST_THEME_NAME}file-extensions-${ext}"
-  line=": \${FAST_HIGHLIGHT_STYLES[${key_str}]:=\"$style\"}"
+  line=": \${FAST_HIGHLIGHT_STYLES[${key_str}]:=$style}"
   # drop old lines for this key (if any), then append the fresh one
   sed -i "/^: \${FAST_HIGHLIGHT_STYLES\\[${key_str//\//\\/}\\]:=/d}" "$THEME_FILE" 2>/dev/null
   print -r -- "$line" >> "$THEME_FILE"
