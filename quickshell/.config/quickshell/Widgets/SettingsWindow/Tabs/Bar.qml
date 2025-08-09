@@ -62,15 +62,6 @@ ColumnLayout {
             }
 
             ToggleOption {
-                label: "Show Taskbar"
-                description: "Display a taskbar showing currently open windows"
-                value: Settings.settings.showTaskbar
-                onToggled: function() {
-                    Settings.settings.showTaskbar = !Settings.settings.showTaskbar;
-                }
-            }
-
-            ToggleOption {
                 label: "Show Media"
                 description: "Display media controls and information"
                 value: Settings.settings.showMediaInBar

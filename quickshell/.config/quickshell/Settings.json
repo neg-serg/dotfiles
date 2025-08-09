@@ -27,7 +27,6 @@
     "showDock": false,
     "showMediaInBar": true,
     "showSystemInfoInBar": true,
-    "showTaskbar": false,
     "taskbarIconSize": 24,
     "transitionDuration": 1.1,
     "transitionFps": 60,
