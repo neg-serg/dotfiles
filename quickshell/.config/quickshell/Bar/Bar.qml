@@ -58,11 +58,14 @@ Scope {
                             screen: modelData
                             anchors.verticalCenter: parent.verticalCenter
                         }
-
-                        SystemInfo {
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
                     }
+
+                    SystemInfo {
+                        id: workspace
+                        anchors.horizontalCenter: barBackground.horizontalCenter
+                        anchors.verticalCenter: barBackground.verticalCenter
+                    }
+                    
 
                     Row {
                         id: rightWidgetsRow
