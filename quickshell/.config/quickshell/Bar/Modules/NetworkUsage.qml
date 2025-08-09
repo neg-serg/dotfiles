@@ -1,29 +1,31 @@
-// Bar/Modules/NetworkUsage.qml
 import QtQuick
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
+import qs.Settings
 
 Item {
     id: root
-
+    // Public props
     property var    screen: null
     property int    desiredHeight: 24
     property int    fontPixelSize: 0
-    property bool   useTheme: true
-    property color  textColor: useTheme ? Theme.textPrimary : "#ffffff"
+    property color  textColor: Theme.textPrimary
     property color  bgColor:   "transparent"
     property int    iconSpacing: 4
     property string deviceMatch: ""
-    property var    cmd: deviceMatch ? ["rsmetrx", "--continuous", deviceMatch] 
-                                     : ["rsmetrx", "--continuous"]
-    property string displayText: "—"
-    
+    // NOTE: Process.command expects a string list [exe, arg1, ...]
+    property var    cmd: ["rsmetrx"]
+    property string displayText: "0/0"
+    property bool   useTheme: true
+
+    // Sizing
     implicitHeight: desiredHeight
     implicitWidth: lineBox.implicitWidth
     width: implicitWidth
     height: desiredHeight
 
+    // Optional background
     Rectangle {
         anchors.fill: parent
         color: bgColor
@@ -41,101 +43,74 @@ Item {
             color: textColor
             font.family: Theme.fontFamily
             font.pixelSize: fontPixelSize > 0
-                             ? fontPixelSize
-                             : Theme.fontSizeSmall * Theme.scale(screen)
+                           ? fontPixelSize
+                           : Theme.fontSizeSmall * Theme.scale(screen)
             padding: 6
         }
     }
 
+    // External process runner
     Process {
         id: runner
-        running: true
+        running: true              // launch immediately
         command: cmd
-        
-        // onErrorOccurred: {
-        //     console.error("NetworkUsage error:", errorString)
-        //     displayText = "err"
-        //     restartTimer.start()
-        // }
-        
-        stdout: StdioCollector {
-            id: collector
-            waitForEnd: false
-            
-            onTextChanged: {
-                // Ручная обработка потока данных
-                const rawText = text;
-                const lines = rawText.split('\n');
-                
-                // Обрабатываем все полные строки
-                for (let i = 0; i < lines.length - 1; i++) {
-                    const line = lines[i].trim();
-                    if (line) parseJsonLine(line);
-                }
-                
-                // Сохраняем неполную строку для следующего обновления
-                collector.text = lines[lines.length - 1];
+
+        // Stream stdout line-by-line
+        stdout: SplitParser {
+            // Emitted once per line (separator \n by default)
+            onRead: (data) => {
+                const line = (data || "").trim()
+                if (line.length) parseJsonLine(line)
+            }
+        }
+
+        // If process stops (exits or fails), schedule a restart
+        onRunningChanged: {
+            if (!running) {
+                console.log("Process stopped; scheduling restart…")
+                restartTimer.restart()
             }
         }
     }
 
-    Timer {
-        id: healthTimer
-        interval: 2000
-        running: true
-        repeat: true
-        onTriggered: {
-            // Проверяем, не завершился ли процесс
-            if (runner.status === Process.Finished) {
-                console.log("Process finished, restarting...")
-                runner.start()
-            }
-        }
-    }
-
+    // Backoff timer before relaunch (prevents tight loops on failure)
     Timer {
         id: restartTimer
-        interval: 5000
+        interval: 1500
+        repeat: false
         onTriggered: {
-            console.log("Restarting network monitor...")
-            runner.start()
+            // Toggle running to relaunch
+            runner.running = true
         }
     }
 
+    // Parse one JSON line from rsmetrx
     function parseJsonLine(line) {
         try {
-            const data = JSON.parse(line);
-            
-            // Проверяем структуру данных
-            if (typeof data.rx_kib_s === "number" && 
-                typeof data.tx_kib_s === "number") {
-                
-                // Обновляем отображение
-                root.displayText = formatData(data);
+            const data = JSON.parse(line)
+            if (typeof data.rx_kib_s === "number" && typeof data.tx_kib_s === "number") {
+                root.displayText = formatData(data)
             } else {
-                throw "Invalid data format";
+                console.warn("Invalid payload:", line)
             }
         } catch (e) {
-            console.error("JSON parse error:", e, "Line:", line);
-            displayText = "err";
+            console.warn("JSON parse error:", e, "Line:", line)
         }
     }
 
+    // Build compact text like "12.3K/4.5K" or "0"
     function formatData(data) {
-        if (data.rx_kib_s === 0 && data.tx_kib_s === 0) {
-            return "0";
-        }
-        
-        return `${fmtKiBps(data.rx_kib_s)}/${fmtKiBps(data.tx_kib_s)}`;
+        if (data.rx_kib_s === 0 && data.tx_kib_s === 0) return "0"
+        return `${fmtKiBps(data.rx_kib_s)}/${fmtKiBps(data.tx_kib_s)}`
     }
 
+    // KiB/s formatter (keep it minimal; extend to MiB/GiB if needed)
     function fmtKiBps(kib) {
-        if (kib >= 1024 * 1024) return (kib / (1024 * 1024)).toFixed(1) + "G";
-        if (kib >= 1024) return (kib / 1024).toFixed(1) + "M";
-        return kib.toFixed(1) + "K";
+        return kib.toFixed(1) + "K"
     }
 
     Component.onCompleted: {
-        console.log("Starting network monitor:", cmd.join(" "));
+        // Safe join: cmd is a string list
+        console.log("Starting network monitor:", Array.isArray(cmd) ? cmd.join(" ") : String(cmd))
     }
 }
