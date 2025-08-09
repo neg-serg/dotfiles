@@ -1,11 +1,10 @@
 -- ┌───────────────────────────────────────────────────────────────────────────────────┐
--- │ █▓▒░ rebelot/heirline.nvim  — compat + fallbacks + hidden debug                   │
+-- │ █▓▒░ rebelot/heirline.nvim                                                        │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {
   'rebelot/heirline.nvim',
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   config = function()
-    -- Defer EVERYTHING to VimEnter + schedule to avoid init races
     vim.api.nvim_create_autocmd('VimEnter', {
       once = true,
       callback = function()
@@ -18,7 +17,7 @@ return {
           local api, fn = vim.api, vim.fn
           local ok_devicons, devicons = pcall(require, 'nvim-web-devicons')
 
-          -- ── Hidden debug mode ──────────────────────────────────────────────────────
+          -- ── Hidden debug ──────────────────────────────────────────────────────────
           local DEBUG = (vim.env.HEIRLINE_DEBUG == '1') or (vim.g.heirline_debug == true)
           local DBG_TITLE, DBG_MAX = 'HeirlineDBG', 600
           local dbg_log = {}
@@ -45,18 +44,18 @@ return {
               return res
             end
           end
-          vim.api.nvim_create_user_command('HeirlineDebugToggle', function()
+          api.nvim_create_user_command('HeirlineDebugToggle', function()
             DEBUG = not DEBUG; vim.g.heirline_debug = DEBUG
             dbg_notify('debug mode: ' .. (DEBUG and 'ON' or 'OFF'))
           end, {})
-          vim.api.nvim_create_user_command('HeirlineDebugDump', function()
+          api.nvim_create_user_command('HeirlineDebugDump', function()
             local b = api.nvim_create_buf(false, true)
             api.nvim_buf_set_lines(b, 0, -1, false, dbg_log)
             api.nvim_buf_set_option(b, 'bufhidden', 'wipe')
             api.nvim_buf_set_option(b, 'filetype', 'log')
             api.nvim_set_current_buf(b)
           end, {})
-          vim.api.nvim_create_user_command('HeirlineDebugClear', function()
+          api.nvim_create_user_command('HeirlineDebugClear', function()
             dbg_log = {}; dbg_notify('log cleared')
           end, {})
           if DEBUG then
@@ -64,17 +63,15 @@ return {
               callback = function(ev) dbg_push('event: ' .. ev.event) end,
             })
           end
-          -- ───────────────────────────────────────────────────────────────────────────
-          -- ── Compatibility toggles & symbols ────────────────────────────────────────
-          -- User can set before loading: vim.g.heirline_use_icons = false
+
+          -- ── Compat toggles & symbols ──────────────────────────────────────────────
           local USE_ICONS = vim.g.heirline_use_icons
           if USE_ICONS == nil then
-            -- heuristics: env var or have_nerd_font / default true
             USE_ICONS = not (vim.env.NERD_FONT == '0') and (vim.g.have_nerd_font == true or true)
           end
-
-          -- Global env indicator (off by default): vim.g.heirline_env_indicator = true
           local SHOW_ENV = vim.g.heirline_env_indicator == true
+          local USE_THEME = vim.g.heirline_use_theme_colors
+          if USE_THEME == nil then USE_THEME = true end
 
           local function I(icons, ascii) return USE_ICONS and icons or ascii end
           local S = {
@@ -83,7 +80,7 @@ return {
             modified = I(' ',' *'),
             lock     = I(' 🔒',' RO'),
             search   = I('  ',' / '),
-            rec      = I('  REC ',' REC '),
+            rec      = I(' ','REC'),
             gear     = I('  ',' [LSP] '),
             branch   = I('  ',' [git] '),
             close    = I('  ',' [x] '),
@@ -101,31 +98,81 @@ return {
             tilde    = I('󰜥','~'),
             minus    = I('','-'),
           }
-          -- ───────────────────────────────────────────────────────────────────────────
 
-          -- Palette
-          local colors = {
+          -- ── Theme colors (0.9/0.8 compat) ─────────────────────────────────────────
+          local _hl_cache = {}
+          local function hl_get(name)
+            if _hl_cache[name] then return _hl_cache[name] end
+            local ok, h
+            if vim.api.nvim_get_hl then
+              ok, h = pcall(vim.api.nvim_get_hl, 0, { name = name, link = false })
+              if ok and h then _hl_cache[name] = h; return h end
+            end
+            ok, h = pcall(vim.api.nvim_get_hl_by_name, name, true)
+            if ok and h then
+              local r = { fg = h.foreground, bg = h.background }
+              _hl_cache[name] = r; return r
+            end
+            return {}
+          end
+          local function tohex(n) if not n then return nil end; return string.format("#%06x", n) end
+          local function themed_colors(fallback)
+            if not USE_THEME then return vim.deepcopy(fallback) end
+            local sl   = hl_get('StatusLine')
+            local slnc = hl_get('StatusLineNC')
+            local dfe  = hl_get('DiagnosticError')
+            local dfw  = hl_get('DiagnosticWarn')
+            local dir  = hl_get('Directory')
+            local id   = hl_get('Identifier')
+            local str  = hl_get('String')
+            local dadd = hl_get('DiffAdd')
+            local dchg = hl_get('DiffChange')
+            local ddel = hl_get('DiffDelete')
+            return {
+              black       = fallback.black,
+              white       = tohex(sl.fg)    or fallback.white,
+              white_dim   = tohex(slnc.fg)  or fallback.white_dim,
+              red         = tohex(dfe.fg)   or fallback.red,
+              yellow      = tohex(dfw.fg)   or fallback.yellow,
+              blue        = tohex(dir.fg)   or fallback.blue,
+              cyan        = tohex(id.fg)    or fallback.cyan,
+              green       = tohex(str.fg)   or fallback.green,
+              diff_add    = tohex(dadd.fg)  or fallback.green,
+              diff_change = tohex(dchg.fg)  or fallback.yellow,
+              diff_del    = tohex(ddel.fg)  or fallback.red,
+              blue_light  = fallback.blue_light,
+              mode_ins_bg = tohex(hl_get('DiffAdd').bg)    or 'NONE',
+              mode_vis_bg = tohex(hl_get('Visual').bg)     or 'NONE',
+              mode_rep_bg = tohex(hl_get('DiffDelete').bg) or 'NONE',
+              base_bg     = tohex(sl.bg)   or fallback.black,
+              nc_bg       = tohex(slnc.bg) or fallback.black,
+            }
+          end
+
+          local colors_fallback = {
             black = 'NONE', white = '#54667a', red = '#970d4f',
             green = '#007a51', blue = '#005faf', yellow = '#c678dd',
             cyan = '#6587b3', blue_light = '#517f8d', white_dim = '#3f5063',
           }
+          local colors = themed_colors(colors_fallback)
           local function hl(fg, bg) return { fg = fg, bg = bg } end
           local align = { provider = '%=' }
 
-          -- Helpers (race-safe)
+          -- ── Helpers ────────────────────────────────────────────────────────────────
           local function buf_valid(b) return type(b)=='number' and b>0 and api.nvim_buf_is_valid(b) end
           local function safe_buffer_matches(spec, bufnr)
             if bufnr ~= nil and not buf_valid(bufnr) then return false end
             return c.buffer_matches(spec, bufnr)
           end
-          local function is_narrow() return api.nvim_win_get_width(0) < 80 end
+          local function win_w() return api.nvim_win_get_width(0) end
+          local function is_narrow() return win_w() < 80 end
+          local function is_tiny() return win_w() < 60 end
           local function is_empty()  return fn.empty(fn.expand('%:t')) == 1 end
           local function has_mod(name) local ok = pcall(require, name); return ok end
           local function notify(msg, lvl)
             if vim.notify then vim.notify(msg, lvl or vim.log.levels.INFO, { title = 'Heirline' }) end
           end
 
-          -- Env mini-indicator (SSH / WSL / GUI)
           local function env_label()
             local parts = {}
             if vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT then table.insert(parts, 'SSH') end
@@ -136,7 +183,7 @@ return {
             return table.concat(parts, '|')
           end
 
-          -- Openers (scheduled)
+          -- Openers
           local function open_file_browser_cwd()
             local cwd = fn.getcwd()
             if has_mod('oil') then
@@ -167,30 +214,21 @@ return {
             end
           end
 
-          -- ── Special types (expanded icons) ─────────────────────────────────────────
+          -- ── Special types (icons) ─────────────────────────────────────────────────
           local FT_ICON = {
-            -- Core buftypes
             help={'','Help'}, quickfix={'','Quickfix'}, terminal={'','Terminal'}, prompt={'','Prompt'}, nofile={'','Scratch'},
-
-            -- Telescope/fzf/grep
             TelescopePrompt={'','Telescope'}, TelescopeResults={'','Telescope'},
             fzf={'','FZF'}, ['fzf-lua']={'','FZF'}, ['fzf-checkmarks']={'','FZF'},
             ['grug-far']={'󰈞','GrugFar'}, Spectre={'','Spectre'}, spectre_panel={'','Spectre'}, ['spectre-replace']={'','Spectre'},
-
-            -- File explorers/navigators
             NvimTree={'','Explorer'}, ['neo-tree']={'','Neo-tree'}, Neotree={'','Neo-tree'}, ['neo-tree-popup']={'','Neo-tree'},
             oil={'','Oil'}, dirbuf={'','Dirbuf'}, lir={'','Lir'}, fern={'','Fern'}, chadtree={'','CHADTree'},
             defx={'','Defx'}, ranger={'','Ranger'}, vifm={'','Vifm'}, minifiles={'','MiniFiles'}, mf={'','MiniFiles'},
             vaffle={'','Vaffle'}, netrw={'','Netrw'}, explore={'','Explore'}, dirvish={'','Dirvish'}, yazi={'','Yazi'},
-
-            -- Git/diff/rebase
             fugitive={'','Fugitive'}, fugitiveblame={'','Git Blame'},
             DiffviewFiles={'','Diffview'}, DiffviewFileHistory={'','Diffview'},
             gitcommit={'','Commit'}, gitrebase={'','Rebase'}, gitconfig={'','Git Config'},
             NeogitCommitMessage={'','Neogit'}, NeogitStatus={'','Neogit'}, gitgraph={'','GitGraph'},
             gitstatus={'','GitStatus'}, lazygit={'','LazyGit'}, gitui={'','GitUI'},
-
-            -- UI/meta & snacks
             lazy={'󰒲','Lazy'}, mason={'󰏖','Mason'}, notify={'','Notify'}, noice={'','Noice'},
             ['noice-log']={'','Noice'}, ['noice-history']={'','Noice'},
             toggleterm={'','Terminal'}, Floaterm={'','Terminal'}, FTerm={'','FTerm'}, termwrapper={'','TermWrap'},
@@ -205,22 +243,14 @@ return {
             octo={'','Octo'}, harpoon={'󰛢','Harpoon'}, which_key={'','WhichKey'},
             snacks_dashboard={'','Dashboard'}, snacks_notifier={'','Notify'}, snacks_indent={'','Indent'},
             zen_mode={'','Zen'}, goyo={'','Goyo'}, twilight={'','Twilight'},
-
-            -- LSP/saga/tools
             SagaOutline={'','Lspsaga'}, saga_codeaction={'','Code Action'}, SagaRename={'','Rename'},
             ['lspsaga-code-action']={'','Code Action'}, ['lspsaga-outline']={'','Lspsaga'},
             conform_info={'','Conform'}, ['null-ls-info']={'','Null-LS'}, ['diagnostic-navigator']={'','Diagnostics'},
-
-            -- DAP
             dapui_scopes={'','DAP Scopes'}, dapui_breakpoints={'','DAP Breakpoints'},
             dapui_stacks={'','DAP Stacks'}, dapui_watches={'','DAP Watches'},
             ['dap-repl']={'','DAP REPL'}, dapui_console={'','DAP Console'}, dapui_hover={'','DAP Hover'},
             dap_floating={'','DAP Float'},
-
-            -- Tests
             ['neotest-summary']={'','Neotest'}, ['neotest-output']={'','Neotest'}, ['neotest-output-panel']={'','Neotest'},
-
-            -- AI / misc
             copilot={'','Copilot'}, ['copilot-chat']={'','Copilot Chat'},
             ['vim-plug']={'','vim-plug'},
           }
@@ -228,34 +258,23 @@ return {
           local function build_special_list()
             local base = {
               'qf','help','man','lspinfo','checkhealth','undotree','tagbar','vista','which_key',
-              -- Telescope/fzf/grep
               'TelescopePrompt','TelescopeResults','fzf','fzf%-lua','fzf%-checkmarks','grug%-far','Spectre','spectre_panel','spectre%-replace',
-              -- Explorers
               'NvimTree','neo%-tree','Neotree','neo%-tree%-popup','oil','dirbuf','lir','fern','chadtree','defx','ranger','vifm','minifiles','mf','vaffle','netrw','explore','dirvish','yazi',
-              -- Git
               '^git.*','fugitive','fugitiveblame','DiffviewFiles','DiffviewFileHistory','gitcommit','gitrebase','gitconfig',
               'NeogitCommitMessage','NeogitStatus','gitgraph','gitstatus','lazygit','gitui',
-              -- UI/meta
               'lazy','mason','notify','noice','noice%-log','noice%-history','toggleterm','Floaterm','FTerm','termwrapper',
               'Outline','aerial','symbols%-outline','OutlinePanel','OverseerList','Overseer','Trouble','trouble',
               'alpha','dashboard','startify','start%-screen','helpview','todo%-comments','comment%-box',
               'markdown_preview','glow','peek',
               'httpResult','rest%-nvim','neoformat','snacks_dashboard','snacks_notifier','snacks_indent','zen_mode','goyo','twilight',
-              -- LSP/saga/tools
               'SagaOutline','saga_codeaction','SagaRename','lspsaga%-code%-action','lspsaga%-outline','conform_info','null%-ls%-info','diagnostic%-navigator',
-              -- DAP
               'dapui_scopes','dapui_breakpoints','dapui_stacks','dapui_watches','dap%-repl','dapui_console','dapui_hover','dap_floating',
-              -- Tests
               'neotest%-summary','neotest%-output','neotest%-output%-panel',
-              -- AI/misc viewers
               'copilot','copilot%-chat','vim%-plug',
-              -- fallback
               'terminal',
             }
             local extra = vim.g.heirline_special_ft_extra
-            if type(extra) == 'table' then
-              for _, pat in ipairs(extra) do table.insert(base, pat) end
-            end
+            if type(extra) == 'table' then for _, pat in ipairs(extra) do table.insert(base, pat) end end
             return base
           end
           local SPECIAL_FT = build_special_list()
@@ -274,10 +293,26 @@ return {
             return 'Special','[special]'
           end
 
-          -- Left (file info)
+          -- ── Smart truncation helpers ───────────────────────────────────────────────
+          local function truncate_filename(name, max)
+            if #name <= max then return name end
+            local base, ext = name:match('^(.*)%.([^.]+)$')
+            if not base then return name:sub(1, math.max(3, max-1)) .. '…' end
+            local keep = math.max(3, max - (#ext + 2))
+            return base:sub(1, keep) .. '….' .. ext
+          end
+          local function adapt_fname(max_hint)
+            local w = api.nvim_win_get_width(0)
+            local max = max_hint or math.max(10, math.floor(w * 0.25))
+            local n = fn.expand('%:t')
+            return ' ' .. truncate_filename(n, max)
+          end
+
+          -- ── Left (file info) ──────────────────────────────────────────────────────
+          local _icon_color_cache = {}
           local CurrentDir = {
             provider = prof('CurrentDir', function() return fn.fnamemodify(fn.getcwd(), ':~') end),
-            hl = hl(colors.white, colors.black),
+            hl = function() return { fg = colors.white, bg = colors.base_bg } end,
             update = { 'DirChanged', 'BufEnter' },
             on_click = { callback = vim.schedule_wrap(function() dbg_push('click: cwd'); open_file_browser_cwd() end), name = 'heirline_cwd_open' },
           }
@@ -291,24 +326,27 @@ return {
               return S.doc
             end),
             hl = function()
-              if not ok_devicons or not USE_ICONS then return hl(colors.cyan, colors.black) end
+              if not ok_devicons or not USE_ICONS then return { fg = colors.cyan, bg = colors.base_bg } end
               local name = fn.expand('%:t')
+              if _icon_color_cache[name] then
+                return { fg = _icon_color_cache[name], bg = colors.base_bg }
+              end
               local _, color = devicons.get_icon_color(name, nil, { default = false })
-              if color then return { fg = color, bg = colors.black } end
-              return hl(colors.cyan, colors.black)
+              if color then _icon_color_cache[name] = color; return { fg = color, bg = colors.base_bg } end
+              return { fg = colors.cyan, bg = colors.base_bg }
             end,
             update = { 'BufEnter', 'BufFilePost' },
           }
           local Readonly = {
             condition = function() return vim.bo.readonly or not vim.bo.modifiable end,
             provider = S.lock,
-            hl = hl(colors.blue, colors.black),
+            hl = function() return { fg = colors.blue, bg = colors.base_bg } end,
             update = { 'OptionSet', 'BufEnter' },
           }
           local FileNameClickable = {
-            provider = prof('FileName', function() return ' ' .. fn.expand('%:t') end),
-            hl = hl(colors.white, colors.black),
-            update = { 'BufEnter', 'BufFilePost' },
+            provider = prof('FileName', function() return adapt_fname() end),
+            hl = function() return { fg = colors.white, bg = colors.base_bg } end,
+            update = { 'BufEnter', 'BufFilePost', 'WinResized' },
             on_click = { callback = vim.schedule_wrap(function()
               local path = fn.expand('%:p'); if path == '' then return end
               pcall(fn.setreg, '+', path); notify('Copied path: ' .. path); dbg_push('click: filename -> copied path')
@@ -316,35 +354,76 @@ return {
           }
           local LeftComponents = {
             condition = function() return not is_empty() end,
-            { provider = S.folder .. ' ', hl = hl(colors.blue, colors.black) },
+            { provider = S.folder .. ' ', hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
             CurrentDir,
-            { provider = S.sep, hl = hl(colors.blue, colors.black) },
+            { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
             FileIcon,
             FileNameClickable,
             Readonly,
             {
               condition = function() return vim.bo.modified end,
               provider = S.modified,
-              hl = hl(colors.blue, colors.black),
+              hl = function() return { fg = colors.blue, bg = colors.base_bg } end,
               update = { 'BufWritePost', 'TextChanged', 'TextChangedI', 'BufModifiedSet' },
             },
           }
 
-          -- Small toggles
+          -- ── Small toggles ─────────────────────────────────────────────────────────
           local ListToggle = {
             provider = function() return S.pilcrow end,
-            hl = function() return hl(vim.wo.list and colors.yellow or colors.white, colors.black) end,
+            hl = function() return { fg = (vim.wo.list and colors.yellow or colors.white), bg = colors.base_bg } end,
             update = { 'OptionSet', 'BufWinEnter' },
             on_click = { callback = vim.schedule_wrap(function() vim.o.list = not vim.o.list; dbg_push('toggle: list -> '..tostring(vim.o.list)) end), name = 'heirline_toggle_list' },
           }
           local WrapToggle = {
             provider = function() return S.wrap end,
-            hl = function() return hl(vim.wo.wrap and colors.yellow or colors.white, colors.black) end,
+            hl = function() return { fg = (vim.wo.wrap and colors.yellow or colors.white), bg = colors.base_bg } end,
             update = { 'OptionSet', 'BufWinEnter' },
             on_click = { callback = vim.schedule_wrap(function() vim.wo.wrap = not vim.wo.wrap; dbg_push('toggle: wrap -> '..tostring(vim.wo.wrap)) end), name = 'heirline_toggle_wrap' },
           }
 
-          -- Right-side components helpers
+          -- ── Format panel (tabs/spaces, ts, sw) ────────────────────────────────────
+          local function fmt_icon()
+            return vim.bo.expandtab and 'Spaces' or 'Tabs'
+          end
+          local FormatPanel = {
+            {
+              provider = function() return ' ' .. fmt_icon() .. ' ' end,
+              hl = function() return { fg = colors.cyan, bg = colors.base_bg } end,
+              on_click = { callback = vim.schedule_wrap(function()
+                vim.bo.expandtab = not vim.bo.expandtab
+                dbg_push('toggle: expandtab -> '..tostring(vim.bo.expandtab))
+              end), name = 'heirline_fmt_toggle_et' },
+            },
+            {
+              provider = function() return 'ts=' .. vim.bo.tabstop .. ' ' end,
+              hl = function() return { fg = colors.white, bg = colors.base_bg } end,
+              on_click = { callback = vim.schedule_wrap(function()
+                local ts = vim.bo.tabstop
+                local cycle = {2, 4, 8}
+                local idx = 1
+                for i,v in ipairs(cycle) do if v == ts then idx = i end end
+                idx = (idx % #cycle) + 1
+                vim.bo.tabstop = cycle[idx]
+                dbg_push('cycle: tabstop -> '..vim.bo.tabstop)
+              end), name = 'heirline_fmt_cycle_ts' },
+            },
+            {
+              provider = function() return 'sw=' .. vim.bo.shiftwidth .. ' ' end,
+              hl = function() return { fg = colors.white, bg = colors.base_bg } end,
+              on_click = { callback = vim.schedule_wrap(function()
+                local sw = vim.bo.shiftwidth
+                local cycle = {2, 4, 8}
+                local idx = 1
+                for i,v in ipairs(cycle) do if v == sw then idx = i end end
+                idx = (idx % #cycle) + 1
+                vim.bo.shiftwidth = cycle[idx]
+                dbg_push('cycle: shiftwidth -> '..vim.bo.shiftwidth)
+              end), name = 'heirline_fmt_cycle_sw' },
+            },
+          }
+
+          -- ── Right-side helpers ────────────────────────────────────────────────────
           local function human_size()
             local size = fn.getfsize(fn.expand('%:p')); if size <= 0 then return '' end
             local i, suffix = 1, { 'B','K','M','G','T','P' }
@@ -364,17 +443,56 @@ return {
             return (enc == 'utf-8') and (S.utf8 .. ' ') or (S.latin .. ' ')
           end
 
-          -- ── Debounce state for search component ────────────────────────────────────
+          -- Search debounce
           local SEARCH_DEBOUNCE_MS = 90
           local last_sc = { t = 0, out = '', pat = '', cur = 0, tot = 0 }
           local function now_ms() return math.floor(vim.loop.hrtime() / 1e6) end
 
+          -- ── Mode pill ─────────────────────────────────────────────────────────────
+          local function mode_info()
+            local m = vim.fn.mode(1)
+            if m:match('^i') then return 'INSERT', colors.mode_ins_bg, 'I'
+            elseif m:match('^v') or m == 'V' or m == '\22' then return 'VISUAL', colors.mode_vis_bg, 'V'
+            elseif m:match('^R') then return 'REPLACE', colors.mode_rep_bg, 'R'
+            else return 'NORMAL', colors.base_bg, 'N' end
+          end
+          local ModePill = {
+            init = function(self)
+              self.label, self.bg, self.short = mode_info()
+            end,
+            provider = function(self)
+              if is_tiny() then return ' ' .. self.short .. ' ' end
+              return ' ' .. self.label .. ' '
+            end,
+            hl = function(self) return { fg = colors.white, bg = self.bg } end,
+            update = { 'ModeChanged', 'WinEnter' },
+          }
+
+          -- ── Macro timer state ─────────────────────────────────────────────────────
+          local macro_start = nil
+          api.nvim_create_autocmd('RecordingEnter', {
+            callback = function() macro_start = vim.loop.hrtime() end,
+          })
+          api.nvim_create_autocmd('RecordingLeave', {
+            callback = function() macro_start = nil end,
+          })
+          local function macro_elapsed()
+            if not macro_start then return '00:00' end
+            local s = (vim.loop.hrtime() - macro_start) / 1e9
+            local mm = math.floor(s / 60)
+            local ss = math.floor(s % 60)
+            return string.format('%02d:%02d', mm, ss)
+          end
+
+          -- ── Components ────────────────────────────────────────────────────────────
           local components = {
             macro = {
               condition = function() return fn.reg_recording() ~= '' end,
-              provider = prof('macro', function() return S.rec .. '@' .. fn.reg_recording() .. ' ' end),
-              hl = hl(colors.red, colors.black),
-              update = { 'RecordingEnter', 'RecordingLeave' },
+              provider = prof('macro', function()
+                return ' ' .. S.rec .. ' @' .. fn.reg_recording() .. ' ' .. macro_elapsed() .. ' '
+              end),
+              hl = function() return { fg = colors.red, bg = colors.base_bg } end,
+              update = { 'RecordingEnter', 'RecordingLeave', 'CursorHold', 'CursorHoldI' },
             },
 
             diag = {
@@ -386,11 +504,11 @@ return {
               update = { 'DiagnosticChanged', 'BufEnter', 'BufNew', 'WinResized' },
               {
                 provider = prof('diag.errors', function(self) return (self.errors or 0) > 0 and (S.err .. self.errors .. ' ') or '' end),
-                hl = hl(colors.red, colors.black),
+                hl = function() return { fg = colors.red, bg = colors.base_bg } end,
               },
               {
                 provider = prof('diag.warns', function(self) return (self.warnings or 0) > 0 and (S.warn .. self.warnings .. ' ') or '' end),
-                hl = hl(colors.yellow, colors.black),
+                hl = function() return { fg = colors.yellow, bg = colors.base_bg } end,
               },
               on_click = { callback = vim.schedule_wrap(function(_,_,_,button)
                 dbg_push('click: diagnostics ('..tostring(button)..')')
@@ -404,12 +522,11 @@ return {
             lsp = {
               condition = c.lsp_attached,
               provider = S.gear,
-              hl = hl(colors.cyan, colors.black),
+              hl = function() return { fg = colors.cyan, bg = colors.base_bg } end,
               on_click = { callback = vim.schedule_wrap(function() dbg_push('click: lsp'); vim.cmd('LspInfo') end), name = 'heirline_lsp_info' },
               update = { 'LspAttach', 'LspDetach' },
             },
 
-            -- LSP progress (spinner + message)
             lsp_progress = {
               condition = function() return c.lsp_attached end,
               init = function(self)
@@ -430,7 +547,7 @@ return {
                 if self.text == nil or self.text == '' then return '' end
                 return string.format(' %s %s ', self.frames[self.idx], self.text)
               end,
-              hl = hl(colors.blue_light, colors.black),
+              hl = function() return { fg = colors.blue_light, bg = colors.base_bg } end,
               update = { 'LspAttach', 'LspDetach', 'CursorHold', 'CursorHoldI' },
             },
 
@@ -442,12 +559,11 @@ return {
                 if head == '' then return '' end
                 return S.branch .. head .. ' '
               end),
-              hl = hl(colors.blue, colors.black),
+              hl = function() return { fg = colors.blue, bg = colors.base_bg } end,
               update = { 'BufEnter', 'BufWritePost', 'WinResized' },
               on_click = { callback = vim.schedule_wrap(function() dbg_push('click: git'); open_git_ui() end), name = 'heirline_git_ui' },
             },
 
-            -- Git diff stats (+/~/-) via gitsigns
             gitdiff = {
               condition = function() return c.is_git_repo() and not is_narrow() end,
               init = function(self)
@@ -457,15 +573,21 @@ return {
                 self.removed = d.removed or 0
               end,
               update = { 'BufEnter', 'BufWritePost', 'User', 'WinResized' },
-              provider = function(self)
-                local segs = {}
-                if self.added > 0   then table.insert(segs, S.plus  .. ' ' .. self.added) end
-                if self.changed > 0 then table.insert(segs, S.tilde .. ' ' .. self.changed) end
-                if self.removed > 0 then table.insert(segs, S.minus .. ' ' .. self.removed) end
-                if #segs == 0 then return '' end
-                return ' ' .. table.concat(segs, ' ') .. ' '
-              end,
-              hl = hl(colors.white, colors.black),
+              {
+                condition = function(self) return (self.added or 0) > 0 end,
+                provider  = function(self) return ' ' .. S.plus .. ' ' .. self.added .. ' ' end,
+                hl        = function() return { fg = colors.diff_add, bg = colors.base_bg } end,
+              },
+              {
+                condition = function(self) return (self.changed or 0) > 0 end,
+                provider  = function(self) return S.tilde .. ' ' .. self.changed .. ' ' end,
+                hl        = function() return { fg = colors.diff_change, bg = colors.base_bg } end,
+              },
+              {
+                condition = function(self) return (self.removed or 0) > 0 end,
+                provider  = function(self) return S.minus .. ' ' .. self.removed .. ' ' end,
+                hl        = function() return { fg = colors.diff_del, bg = colors.base_bg } end,
+              },
               on_click = { callback = vim.schedule_wrap(function(_,_,_,button)
                 dbg_push('click: gitdiff ('..tostring(button)..')')
                 local ok, gs = pcall(require,'gitsigns'); if not ok then return end
@@ -478,14 +600,14 @@ return {
 
             encoding = {
               provider = prof('encoding', function() return ' ' .. os_icon() .. enc_icon() end),
-              hl = hl(colors.cyan, colors.black),
+              hl = function() return { fg = colors.cyan, bg = colors.base_bg } end,
               update = { 'OptionSet', 'BufEnter' },
             },
 
             size = {
               condition = function() return not is_empty() and not is_narrow() end,
               provider = prof('size', function() return human_size() end),
-              hl = hl(colors.white, colors.black),
+              hl = function() return { fg = colors.white, bg = colors.base_bg } end,
               update = { 'BufEnter', 'BufWritePost', 'WinResized' },
               on_click = {
                 callback = vim.schedule_wrap(function()
@@ -516,7 +638,7 @@ return {
                 last_sc.t, last_sc.out, last_sc.pat, last_sc.cur, last_sc.tot = t, out, pattern, cur, tot
                 return out
               end),
-              hl = hl(colors.yellow, colors.black),
+              hl = function() return { fg = colors.yellow, bg = colors.base_bg } end,
               update = { 'CmdlineLeave', 'CursorMoved', 'CursorMovedI' },
               on_click = { callback = vim.schedule_wrap(function() dbg_push('click: search -> nohlsearch'); pcall(vim.cmd,'nohlsearch') end), name = 'heirline_search_clear' },
             },
@@ -524,11 +646,14 @@ return {
             position = {
               provider = prof('position', function()
                 local lnum = fn.line('.'); local col = fn.virtcol('.')
+                if is_tiny() then
+                  return string.format(' %d:%d ', lnum, col)
+                end
                 local last = math.max(1, fn.line('$')); local pct = math.floor(lnum * 100 / last)
                 return string.format(' %3d:%-2d %3d%% ', lnum, col, pct)
               end),
-              hl = hl(colors.white, colors.black),
-              update = { 'CursorMoved', 'CursorMovedI' },
+              hl = function() return { fg = colors.white, bg = colors.base_bg } end,
+              update = { 'CursorMoved', 'CursorMovedI', 'WinResized' },
             },
 
             env = {
@@ -537,14 +662,15 @@ return {
                 local lbl = env_label()
                 return (lbl ~= '' and (' ['..lbl..'] ')) or ''
               end),
-              hl = hl(colors.blue_light, colors.black),
+              hl = function() return { fg = colors.blue_light, bg = colors.base_bg } end,
               update = { 'VimResized' },
             },
 
             toggles = { ListToggle, WrapToggle },
+            format_panel = FormatPanel,
           }
 
-          -- Special buffer statusline
+          -- ── Special buffer statusline ─────────────────────────────────────────────
           local SpecialBuffer = {
             condition = function()
               return safe_buffer_matches({
@@ -552,20 +678,20 @@ return {
                 filetype = SPECIAL_FT,
               })
             end,
-            hl = hl(colors.white, colors.black),
+            hl = function() return { fg = colors.white, bg = colors.base_bg } end,
 
             {
               provider = prof('special.label', function()
                 local label, icon = ft_label_and_icon()
                 return string.format(' %s %s', icon or '[*]', label or 'Special')
               end),
-              hl = hl(colors.cyan, colors.black),
+              hl = function() return { fg = colors.cyan, bg = colors.base_bg } end,
             },
             { provider = '%=' },
             {
               condition = function() return not is_empty() end,
-              provider = prof('special.filename', function() return ' ' .. fn.fnamemodify(fn.expand('%:t'), ':t') .. ' ' end),
-              hl = hl(colors.white, colors.black),
+              provider = prof('special.filename', function() return ' ' .. adapt_fname(30) .. ' ' end),
+              hl = function() return { fg = colors.white, bg = colors.base_bg } end,
               on_click = { callback = vim.schedule_wrap(function()
                 local path = fn.expand('%:p'); if path == '' then return end
                 pcall(fn.setreg, '+', path); notify('Copied path: ' .. path); dbg_push('click: special filename -> copied path')
@@ -573,15 +699,16 @@ return {
             },
             {
               provider = ' ' .. S.close .. ' ',
-              hl = hl(colors.red, colors.black),
+              hl = function() return { fg = colors.red, bg = colors.base_bg } end,
               on_click = { callback = vim.schedule_wrap(function() dbg_push('click: close buffer'); vim.cmd('bd!') end), name = 'heirline_close_buf' },
             },
           }
 
-          -- Default statusline
+          -- ── Default statusline ────────────────────────────────────────────────────
           local DefaultStatusline = {
-            utils.surround({ '', '' }, colors.black, {
-              { condition = is_empty, provider = '[N]', hl = hl(colors.white, colors.black) },
+            utils.surround({ '', '' }, colors.base_bg, {
+              ModePill,
+              { condition = is_empty, provider = '[N]', hl = function() return { fg = colors.white, bg = colors.base_bg } end },
               LeftComponents,
               components.search,
             }),
@@ -597,16 +724,33 @@ return {
               components.size,
               components.position,
               components.env,
+              components.format_panel,
               components.toggles,
             },
           }
 
-          -- Winbar
+          -- ── Ultra-compact statusline (tiny windows) ───────────────────────────────
+          local TinyStatusline = {
+            condition = is_tiny,
+            utils.surround({ '', '' }, colors.base_bg, {
+              ModePill,
+              FileIcon,
+              {
+                provider = function() return adapt_fname(math.max(8, math.floor(win_w() * 0.35))) end,
+                hl = function() return { fg = colors.white, bg = colors.base_bg } end,
+                update = { 'BufEnter', 'BufFilePost', 'WinResized' },
+              },
+              align,
+              components.position,
+            }),
+          }
+
+          -- ── Winbar ────────────────────────────────────────────────────────────────
           local Winbar = {
             fallthrough = false,
             {
               condition = function() return vim.bo.buftype == '' end,
-              utils.surround({ ' ', ' ' }, colors.black, {
+              utils.surround({ ' ', ' ' }, colors.base_bg, {
                 provider = prof('winbar.path', function()
                   local p = fn.expand('%:~:.')
                   local parts = vim.split(p, '/', { plain = true })
@@ -618,7 +762,7 @@ return {
                   end
                   return p
                 end),
-                hl = hl(colors.white, colors.black),
+                hl = function() return { fg = colors.white, bg = colors.base_bg } end,
               }),
             },
             {
@@ -626,13 +770,13 @@ return {
                 local label, icon = ft_label_and_icon()
                 return string.format(' %s %s ', icon or '[*]', label or 'Special')
               end),
-              hl = hl(colors.yellow, colors.black),
+              hl = function() return { fg = colors.yellow, bg = colors.base_bg } end,
             },
           }
 
-          -- Setup
+          -- ── Setup ─────────────────────────────────────────────────────────────────
           heir.setup({
-            statusline = { fallthrough = false, SpecialBuffer, DefaultStatusline },
+            statusline = { fallthrough = false, TinyStatusline, SpecialBuffer, DefaultStatusline },
             winbar = Winbar,
             opts = {
               disable_winbar_cb = function(args)
@@ -645,9 +789,19 @@ return {
             },
           })
 
-          -- Dim NC a bit
-          api.nvim_set_hl(0, 'StatusLine',   hl(colors.white, colors.black))
-          api.nvim_set_hl(0, 'StatusLineNC', hl(colors.white_dim, colors.black))
+          -- Sync with theme + autos
+          api.nvim_set_hl(0, 'StatusLine',   { fg = colors.white, bg = colors.base_bg })
+          api.nvim_set_hl(0, 'StatusLineNC', { fg = colors.white_dim, bg = colors.nc_bg })
+
+          api.nvim_create_autocmd('ColorScheme', {
+            callback = function()
+              _hl_cache = {}
+              colors = themed_colors(colors_fallback)
+              api.nvim_set_hl(0, 'StatusLine',   { fg = colors.white, bg = colors.base_bg })
+              api.nvim_set_hl(0, 'StatusLineNC', { fg = colors.white_dim, bg = colors.nc_bg })
+              if DEBUG then dbg_notify('colors refreshed from theme') end
+            end,
+          })
 
           if DEBUG then dbg_notify('initialized (debug ON)') end
         end)
