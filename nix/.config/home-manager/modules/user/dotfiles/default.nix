@@ -39,7 +39,6 @@ in {
     
     # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
     "rofi" = mkSymlink "rofi/.config/rofi" true;
-    "tofi" = mkSymlink "tofi/.config/tofi" true;
     "fuzzel" = mkSymlink "fuzzel/.config/fuzzel" true;
     
     # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
