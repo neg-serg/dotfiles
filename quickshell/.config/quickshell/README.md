@@ -17,7 +17,7 @@
   </a>
 </p>
 
-A sleek, minimal, and thoughtfully crafted setup for Wayland using **Quickshell**. This setup includes a status bar, notification system, control panel, wifi & bluetooth support, power profiles, lockscreen, tray, workspaces, and more — all styled with a warm lavender palette.
+A sleek, minimal, and thoughtfully crafted setup for Wayland using **Quickshell**. This setup includes a status bar, notification system, control panel, wifi & bluetooth support, lockscreen, tray, workspaces, and more — all styled with a warm lavender palette.
 
 ## Features
 
@@ -25,7 +25,6 @@ A sleek, minimal, and thoughtfully crafted setup for Wayland using **Quickshell*
 - **Notifications:** Non-intrusive alerts styled to blend naturally.
 - **Control Panel:** Centralized system controls for quick adjustments.
 - **Connectivity:** Easy management of WiFi and Bluetooth devices.
-- **Power Profiles:** Quick toggles for CPU performance.
 - **Lockscreen:** Secure and visually consistent lock experience.
 - **Tray & Workspaces:** Efficient workspace switching and tray icons.
 - **Applauncher:** Stylized Applauncher to fit into the setup.

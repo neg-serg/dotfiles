@@ -103,11 +103,6 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        Battery {
-                            id: widgetsBattery
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
                         Volume {
                             id: widgetsVolume
                             shell: rootScope.shell

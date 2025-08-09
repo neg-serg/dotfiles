@@ -118,7 +118,6 @@ Rectangle {
  
                 Rectangle {
                     id: settingsButton
- 
                     width: 32 * Theme.scale(Screen)
                     height: 32 * Theme.scale(Screen)
                     radius: width * 0.5
@@ -138,7 +137,6 @@ Rectangle {
  
                     MouseArea {
                         id: settingsButtonArea
- 
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
                         hoverEnabled: true
@@ -151,7 +149,6 @@ Rectangle {
  
                     StyledTooltip {
                         id: settingsTooltip
- 
                         text: "Settings"
                         targetItem: settingsButton
                         tooltipVisible: settingsButtonArea.containsMouse
@@ -161,7 +158,6 @@ Rectangle {
  
                 Rectangle {
                     id: systemButton
- 
                     width: 32 * Theme.scale(Screen)
                     height: 32 * Theme.scale(Screen)
                     radius: width * 0.5
@@ -169,19 +165,8 @@ Rectangle {
                     border.color: Theme.accentPrimary
                     border.width: 1 * Theme.scale(Screen)
  
-                    Text {
-                        anchors.fill: parent
-                        text: "power_settings_new"
-                        font.family: "Material Symbols Outlined"
-                        font.pixelSize: 16 * Theme.scale(Screen)
-                        color: systemButtonArea.containsMouse || systemButtonArea.pressed ? Theme.backgroundPrimary : Theme.accentPrimary
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
- 
                     MouseArea {
                         id: systemButtonArea
- 
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
                         hoverEnabled: true
@@ -189,15 +174,6 @@ Rectangle {
                             systemMenu.visible = !systemMenu.visible;
                         }
                     }
- 
-                    StyledTooltip {
-                        id: systemTooltip
- 
-                        text: "Power Menu"
-                        targetItem: systemButton
-                        tooltipVisible: systemButtonArea.containsMouse
-                    }
- 
                 }
  
             }
@@ -477,16 +453,6 @@ Rectangle {
                             anchors.left: parent.left
                             anchors.right: parent.right
                             anchors.verticalCenter: parent.verticalCenter
- 
-                            Text {
-                                text: "power_settings_new"
-                                font.family: "Material Symbols Outlined"
-                                font.pixelSize: 16 * Theme.scale(Screen)
-                                color: shutdownButtonArea.containsMouse ? Theme.onAccent : Theme.textPrimary
-                                verticalAlignment: Text.AlignVCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.verticalCenterOffset: 1 * Theme.scale(Screen)
-                            }
  
                             Text {
                                 text: "Shutdown"

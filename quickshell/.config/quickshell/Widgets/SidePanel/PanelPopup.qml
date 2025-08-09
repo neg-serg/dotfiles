@@ -251,12 +251,6 @@ PanelWithOverlay {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignHCenter
 
-                    PowerProfile {
-                        width: 206 * Theme.scale(screen)
-                        height: 70 * Theme.scale(screen)
-                        Layout.alignment: Qt.AlignVCenter
-                    }
-
                     Shortcuts {
                         width: 206 * Theme.scale(screen)
                         height: 70 * Theme.scale(screen)

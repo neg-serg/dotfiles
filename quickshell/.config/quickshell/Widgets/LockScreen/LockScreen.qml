@@ -386,15 +386,6 @@ WlSessionLock {
         }
 
         ColumnLayout {
-            anchors.left: parent.left
-            anchors.bottom: parent.bottom
-            anchors.margins: 32
-            spacing: 12
-
-            BatteryCharge {}
-        }
-
-        ColumnLayout {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             anchors.margins: 32
@@ -415,14 +406,6 @@ WlSessionLock {
                     onClicked: {
                         Qt.createQmlObject('import Quickshell.Io; Process { command: ["shutdown", "-h", "now"]; running: true }', lock);
                     }
-                }
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "power_settings_new"
-                    font.family: "Material Symbols Outlined"
-                    font.pixelSize: 24 * Theme.scale(Screen)
-                    color: shutdownArea.containsMouse ? Theme.onAccent : Theme.error
                 }
             }
 
