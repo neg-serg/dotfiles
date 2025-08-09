@@ -1,7 +1,8 @@
-#!/usr/bin/env sh
-find "$@" -type f -printf '%C@ %p\n' \
-  | sort -rn --parallel=8 -S 16M \
+#!/usr/bin/env zsh
+swayimg -g -f -s optimal -F <(
+  find "$@" -type f -printf '%C@ %p\n' \
+  | sort -rn \
   | cut -d ' ' -f 2- \
   | cut -d ':' -f 1 \
-  | ug -G -iE '\.(jpe?g|png|gif|svg|webp|tiff|heif|avif|ico|bmp)$' \
-  | swayimg -g -f -s optimal -F -
+  | ug -G -iE '\.(jpe?g|png|gif|svg|webp|tiff|heif|avif|ico|bmp)$'
+)
