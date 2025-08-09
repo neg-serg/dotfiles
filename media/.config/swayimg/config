@@ -1,91 +1,120 @@
-# Global settings
 [general]
-mode = viewer
-# Use overlay if supported by your version; otherwise delete next line.
-overlay = yes
-position = auto
-size = image
-decoration = no
-app_id = swayimg-preview
+mode = viewer # Startup mode: viewer | slideshow | gallery
+decoration = no # Show window decorations (borders, titlebar)
+# Actions for SIGUSR1/SIGUSR2
 sigusr1 = reload
 sigusr2 = next_file
+# Wayland app_id
+app_id = swayimg
+size = 1200,800
+position = auto # Window position: auto | X,Y
 
-# Split config into separate files (no equals sign!)
-include keys-viewer.conf
-include keys-gallery.conf
-include keys-slideshow.conf
-
-# Single-image viewer tuning
 [viewer]
-window = extend
-transparency = grid
-scale = optimal
-position = center
-antialiasing = mks13
+window = extend # Background fill: auto | extend | mirror | #RGBA
+transparency = #080A14F7 # Background for transparent images
+scale = optimal # Initial zoom: optimal | width | height | fit | fill | real | keep
+position = center # Image alignment
+antialiasing = mks13 # Anti-aliasing: none | box | bilinear | bicubic | mks13
+# Image loop and preloading
 loop = yes
-history = 16
-preload = 8
+history = 4
+preload = 2
 
-# Slideshow
 [slideshow]
-time = 5
-window = mirror
-transparency = #00000080
-scale = fit
-position = center
-antialiasing = mks13
+# Time in seconds between images
+time = 3
+# (other options same as in [viewer] if needed)
 
-# Gallery (thumbnail grid)
 [gallery]
-size = 256
-cache = 400
-preload = yes
-pstore = yes
-fill = yes
-antialiasing = mks13
+size = 200 # Thumbnail size in pixels
+cache = 8000 # Cache size for thumbnails
+preload = yes # Preload thumbnails
+pstore = yes # Persistent storage for thumbnails
+fill = yes # Fill thumbnails to cell size
+antialiasing = mks13 # Anti-aliasing for thumbnails
+# Colors
 window = #00000000
-background = #1f2937ff
-select = #334155ff
+background = #202020ff
+select = #404040ff
 border = #000000ff
 shadow = #000000ff
 
-# Image list discovery/sorting
 [list]
+# File order: none | alpha | numeric | mtime | size | random
 order = alpha
 reverse = no
-recursive = yes
-all = no
-fsmon = yes
+recursive = no # Search subdirectories
+all = no # Include hidden files
+fsmon = yes # Monitor FS changes and update list automatically
 
-# Text and font
 [font]
-name = JetBrainsMono Nerd Font
-size = 14
-color = #e5e7ebff
-shadow = #000000d0
-background = #00000000
+name = Iosevka # Font name
+size = 14 # Font size in px
+color = #ccccccff # Font color
+shadow = #000000d0 # Text shadow
+background = #00000000 # Font background
 
-# Info overlay defaults
 [info]
-show = yes
-info_timeout = 0
+show = yes # Show info overlay
+info_timeout = 5 # Timeouts for info/status (seconds)
 status_timeout = 3
 
-# Per-mode info layouts (titles with '+')
 [info.viewer]
-top_left = +name,+format,+filesize,+imagesize,+exif
-top_right = +index,frame
-bottom_left = +scale
+top_left     = +name,+format,+filesize,+imagesize,+exif
+top_right    = index
+bottom_left  = scale,frame
 bottom_right = status
 
 [info.gallery]
-top_left = +name
-top_right = +imagesize
-bottom_left = +index
+top_left     = +dir,+name
+top_right    = index
+bottom_left  = none
 bottom_right = status
 
-[info.slideshow]
-top_left = +name,+format
-top_right = +index,frame
-bottom_left = +scale
-bottom_right = status
+# ── Key bindings ───────────────────────────────────────────────────────────────
+# Format: [keys.viewer] / [keys.gallery] / [keys.slideshow]
+# Left side = key, right side = action(s), separated by “;”
+
+[keys.viewer]
+# File navigation
+n        = next_file
+p        = prev_file
+g        = first_file
+G        = last_file
+# Zoom and panning
+=        = zoom +10
+-        = zoom -10
+0        = zoom real
+h        = step_left
+l        = step_right
+k        = step_up
+j        = step_down
+# Misc
+f        = fullscreen
+r        = reload
+a        = antialiasing
+i        = info
+q        = exit
+
+[keys.gallery]
+# Instead of unsupported 'open_selected', use mode switch
+Enter    = mode viewer
+BackSpace= exit
+# Grid navigation and paging
+h        = step_left
+l        = step_right
+k        = step_up
+j        = step_down
+PageUp   = page_up
+PageDown = page_down
+# Change thumbnail size
+=        = thumb +16
+-        = thumb -16
+# Misc
+r        = reload
+i        = info
+
+[keys.slideshow]
+Space    = pause
+f        = fullscreen
+q        = exit
