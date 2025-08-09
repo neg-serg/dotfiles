@@ -5,19 +5,19 @@ return function()
       vim.schedule(function()
         local api, fn = vim.api, vim.fn
 
-        -- Augroup for hygiene, and double-setup guard
+        -- Hygiene + double init guard
         local AUG = api.nvim_create_augroup('HeirlineConfig', { clear = true })
         if vim.g._heirline_config_loaded then return end
         vim.g._heirline_config_loaded = true
 
-        -- Load deps (defensive)
+        -- Deps (defensive)
         local ok_heir, heir = pcall(require, 'heirline'); if not ok_heir then return end
         local ok_cond, c     = pcall(require, 'heirline.conditions')
         local ok_utils, utils= pcall(require, 'heirline.utils')
         if not ok_cond or not ok_utils then return end
         local ok_devicons, devicons = pcall(require, 'nvim-web-devicons')
 
-        -- ── Hidden debug ──────────────────────────────────────────────────────────
+        -- Debug helpers
         local uv = vim.uv or vim.loop
         local DEBUG = (vim.env.HEIRLINE_DEBUG == '1') or (vim.g.heirline_debug == true)
         local DBG_TITLE, DBG_MAX = 'HeirlineDBG', 600
@@ -46,14 +46,13 @@ return function()
           end
         end
 
-        -- User commands (redef-safe)
+        -- User commands (debug)
         pcall(api.nvim_del_user_command, 'HeirlineDebugToggle')
-        pcall(api.nvim_del_user_command, 'HeirlineDebugDump')
-        pcall(api.nvim_del_user_command, 'HeirlineDebugClear')
         api.nvim_create_user_command('HeirlineDebugToggle', function()
           DEBUG = not DEBUG; vim.g.heirline_debug = DEBUG
           dbg_notify('debug mode: ' .. (DEBUG and 'ON' or 'OFF'))
         end, {})
+        pcall(api.nvim_del_user_command, 'HeirlineDebugDump')
         api.nvim_create_user_command('HeirlineDebugDump', function()
           local b = api.nvim_create_buf(false, true)
           api.nvim_buf_set_lines(b, 0, -1, false, dbg_log)
@@ -61,10 +60,10 @@ return function()
           api.nvim_buf_set_option(b, 'filetype', 'log')
           api.nvim_set_current_buf(b)
         end, {})
+        pcall(api.nvim_del_user_command, 'HeirlineDebugClear')
         api.nvim_create_user_command('HeirlineDebugClear', function()
           dbg_log = {}; dbg_notify('log cleared')
         end, {})
-
         if DEBUG then
           api.nvim_create_autocmd({ 'LspAttach','LspDetach','DiagnosticChanged','WinResized' }, {
             group = AUG,
@@ -72,10 +71,13 @@ return function()
           })
         end
 
-        -- ── Flags & symbols ───────────────────────────────────────────────────────
-        -- Persisted flags (allow runtime toggles)
+        -- Flags (persisted globals) + notify helper
         vim.g.heirline_use_icons = vim.g.heirline_use_icons
         vim.g.heirline_use_theme_colors = vim.g.heirline_use_theme_colors
+        vim.g.heirline_lock_theme = vim.g.heirline_lock_theme or false
+        local function notify(msg, lvl)
+          if vim.notify then vim.notify(msg, lvl or vim.log.levels.INFO, { title = 'Heirline' }) end
+        end
 
         local USE_ICONS = vim.g.heirline_use_icons
         if USE_ICONS == nil then
@@ -84,7 +86,28 @@ return function()
         local SHOW_ENV = vim.g.heirline_env_indicator == true
         local USE_THEME = vim.g.heirline_use_theme_colors
         if USE_THEME == nil then USE_THEME = true end
+        local LOCK_THEME = vim.g.heirline_lock_theme
 
+        -- Persistence (remember toggles across sessions)
+        local STATE_FILE = fn.stdpath('state') .. '/heirline_state.json'
+        local function save_state()
+          local obj = { use_theme = USE_THEME, lock_theme = LOCK_THEME, use_icons = USE_ICONS }
+          pcall(fn.mkdir, fn.stdpath('state'), 'p')
+          pcall(fn.writefile, { vim.json.encode(obj) }, STATE_FILE)
+        end
+        local function load_state()
+          local ok, data = pcall(fn.readfile, STATE_FILE)
+          if not ok or not data or #data == 0 then return end
+          local ok2, obj = pcall(vim.json.decode, table.concat(data, '\n'))
+          if not ok2 or type(obj) ~= 'table' then return end
+          if obj.use_theme  ~= nil then USE_THEME  = obj.use_theme;  vim.g.heirline_use_theme_colors = USE_THEME end
+          if obj.lock_theme ~= nil then LOCK_THEME = obj.lock_theme; vim.g.heirline_lock_theme       = LOCK_THEME end
+          if obj.use_icons  ~= nil then USE_ICONS  = obj.use_icons;  vim.g.heirline_use_icons        = USE_ICONS end
+        end
+        load_state()
+        api.nvim_create_autocmd('VimLeavePre', { group = AUG, callback = function() pcall(save_state) end })
+
+        -- Symbols
         local function I(icons, ascii) return USE_ICONS and icons or ascii end
         local S = setmetatable({
           folder='', sep=' ¦ ', modified=I(' ',' *'), lock=I(' 🔒',' RO'),
@@ -94,11 +117,9 @@ return function()
           latin=I('','enc'), linux=I('','unix'), mac=I('','mac'), win=I('','dos'),
           pilcrow=I(' ¶',' ¶'), wrap=I(' ⤶',' ↩'), doc=I('','[buf]'),
           plus=I('','+'), tilde=I('󰜥','~'), minus=I('','-'),
-        }, {
-          __index = function(_, k) return '[' .. tostring(k) .. ']' end,
-        })
+        }, { __index = function(_, k) return '[' .. tostring(k) .. ']' end })
 
-        -- ── Theme colors (0.9/0.8 compat) ─────────────────────────────────────────
+        -- Theme helpers
         local _hl_cache = {}
         local function hl_get(name)
           if _hl_cache[name] then return _hl_cache[name] end
@@ -116,6 +137,7 @@ return function()
         end
         local function tohex(n) if not n then return nil end; return string.format('#%06x', n) end
         local function themed_colors(fallback)
+          if LOCK_THEME and type(initial_colors) == 'table' then return vim.deepcopy(initial_colors) end
           if not USE_THEME then return vim.deepcopy(fallback) end
           local sl   = hl_get('StatusLine')
           local slnc = hl_get('StatusLineNC')
@@ -147,9 +169,7 @@ return function()
             nc_bg       = tohex(slnc.bg) or fallback.black,
           }
         end
-        local function colors_assign(dst, src)
-          for k, v in pairs(src) do dst[k] = v end
-        end
+        local function colors_assign(dst, src) for k, v in pairs(src) do dst[k] = v end end
 
         local colors_fallback = {
           black = 'NONE', white = '#54667a', red = '#970d4f',
@@ -157,57 +177,30 @@ return function()
           cyan = '#6587b3', blue_light = '#517f8d', white_dim = '#3f5063',
         }
         local colors = themed_colors(colors_fallback)
+        local initial_colors = vim.deepcopy(colors)
         local function hl(fg, bg) return { fg = fg, bg = bg } end
         local align = { provider = '%=' }
 
-        -- ── Helpers ────────────────────────────────────────────────────────────────
+        -- Helpers
         local function buf_valid(b) return type(b)=='number' and b>0 and api.nvim_buf_is_valid(b) end
         local function safe_buffer_matches(spec, bufnr)
           if bufnr ~= nil and not buf_valid(bufnr) then return false end
           return c.buffer_matches(spec, bufnr)
         end
-        -- Fast width: prefer option when not in evaluation
-        local function win_w()
-          return (vim.v.evaluating == 1) and api.nvim_win_get_width(0) or vim.o.columns
-        end
+        local function win_w() return (vim.v.evaluating == 1) and api.nvim_win_get_width(0) or vim.o.columns end
         local function is_narrow() return win_w() < 80 end
         local function is_tiny() return win_w() < 60 end
         local function is_empty()  return fn.empty(fn.expand('%:t')) == 1 end
 
-        -- Memoized require check
         local _has = {}
         local function has_mod(name)
-          local v = _has[name]
-          if v ~= nil then return v end
-          local ok = pcall(require, name)
-          _has[name] = ok
-          return ok
-        end
-        local function notify(msg, lvl)
-          if vim.notify then vim.notify(msg, lvl or vim.log.levels.INFO, { title = 'Heirline' }) end
+          local v = _has[name]; if v ~= nil then return v end
+          local ok = pcall(require, name); _has[name] = ok; return ok
         end
 
-        -- Lazy environment label (can be extended to invalidate on events)
-        local _env_cache
-        local function env_label()
-          if _env_cache then return _env_cache end
-          local parts = {}
-          if vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT then table.insert(parts, 'SSH') end
-          if (fn.has('wsl') == 1) or vim.env.WSLENV then table.insert(parts, 'WSL') end
-          if fn.has('gui_running') == 1 then table.insert(parts, 'GUI') end
-          local term = vim.env.TERM_PROGRAM or vim.env.TERM or ''
-          if term ~= '' then table.insert(parts, term) end
-          _env_cache = table.concat(parts, '|')
-          return _env_cache
-        end
-
-        -- Openers (defensive)
         local function open_file_browser_cwd()
           local cwd = fn.getcwd()
-          if has_mod('oil') then
-            vim.cmd('Oil ' .. fn.fnameescape(cwd))
-            return
-          end
+          if has_mod('oil') then vim.cmd('Oil ' .. fn.fnameescape(cwd)); return end
           if has_mod('telescope') then
             local ok_ext = pcall(function()
               require('telescope').extensions.file_browser.file_browser({ cwd = cwd, respect_gitignore = true })
@@ -239,11 +232,12 @@ return function()
           end
         end
 
-        -- Runtime toggles
+        -- Toggles (remember state)
         pcall(api.nvim_del_user_command, 'HeirlineIconsToggle')
         api.nvim_create_user_command('HeirlineIconsToggle', function()
           USE_ICONS = not USE_ICONS
           vim.g.heirline_use_icons = USE_ICONS
+          save_state()
           notify('Heirline: icons ' .. (USE_ICONS and 'ON' or 'OFF'))
           vim.cmd('redrawstatus')
         end, {})
@@ -256,38 +250,53 @@ return function()
           colors_assign(colors, fresh)
           api.nvim_set_hl(0, 'StatusLine',   { fg = colors.white,     bg = colors.base_bg })
           api.nvim_set_hl(0, 'StatusLineNC', { fg = colors.white_dim, bg = colors.nc_bg })
+          save_state()
           notify('Heirline: theme-colors ' .. (USE_THEME and 'ON' or 'OFF'))
           vim.cmd('redrawstatus')
         end, {})
 
-        -- Parts import (defensive)
+        pcall(api.nvim_del_user_command, 'HeirlineThemeLockToggle')
+        api.nvim_create_user_command('HeirlineThemeLockToggle', function()
+          LOCK_THEME = not LOCK_THEME
+          vim.g.heirline_lock_theme = LOCK_THEME
+          local src = LOCK_THEME and initial_colors or themed_colors(colors_fallback)
+          colors_assign(colors, src)
+          api.nvim_set_hl(0, 'StatusLine',   { fg = colors.white,     bg = colors.base_bg })
+          api.nvim_set_hl(0, 'StatusLineNC', { fg = colors.white_dim, bg = colors.nc_bg })
+          save_state()
+          notify('Heirline: theme lock ' .. (LOCK_THEME and 'ENABLED' or 'DISABLED'))
+          vim.cmd('redrawstatus')
+        end, {})
+
+        pcall(api.nvim_del_user_command, 'HeirlineThemeUseOriginal')
+        api.nvim_create_user_command('HeirlineThemeUseOriginal', function()
+          USE_THEME = true; vim.g.heirline_use_theme_colors = true
+          LOCK_THEME = true; vim.g.heirline_lock_theme = true
+          colors_assign(colors, initial_colors)
+          api.nvim_set_hl(0, 'StatusLine',   { fg = colors.white,     bg = colors.base_bg })
+          api.nvim_set_hl(0, 'StatusLineNC', { fg = colors.white_dim, bg = colors.nc_bg })
+          save_state()
+          notify('Heirline: using ORIGINAL theme (locked)')
+          vim.cmd('redrawstatus')
+        end, {})
+
+        -- Components
         local ok_parts, parts_ctor = pcall(require, 'plugins.generic.heirline.components')
         if not ok_parts or type(parts_ctor) ~= 'function' then
           dbg_notify('components module missing or invalid', vim.log.levels.ERROR)
           return
         end
         local parts = parts_ctor({
-          api = api,
-          fn = fn,
-          c = c,
-          utils = utils,
-          colors = colors,
-          S = S,
-          prof = prof,
-          dbg_push = dbg_push,
-          ok_devicons = ok_devicons,
-          devicons = devicons,
-          USE_ICONS = USE_ICONS,
-          SHOW_ENV = SHOW_ENV,
-          is_empty = is_empty,
-          is_narrow = is_narrow,
-          is_tiny = is_tiny,
+          api = api, fn = fn, c = c, utils = utils,
+          colors = colors, S = S, prof = prof,
+          dbg_push = dbg_push, ok_devicons = ok_devicons, devicons = devicons,
+          USE_ICONS = USE_ICONS, SHOW_ENV = SHOW_ENV,
+          is_empty = is_empty, is_narrow = is_narrow, is_tiny = is_tiny,
           open_file_browser_cwd = open_file_browser_cwd,
           open_git_ui = open_git_ui,
           open_diagnostics_list = open_diagnostics_list,
           safe_buffer_matches = safe_buffer_matches,
           notify = notify,
-          env_label = env_label,
           hl = hl,
           align = align,
         })
@@ -299,7 +308,7 @@ return function()
         local winbar = parts.winbar
         local SPECIAL_FT = parts.SPECIAL_FT
 
-        -- ── Setup ─────────────────────────────────────────────────────────────────
+        -- Setup
         heir.setup({
           statusline = statusline,
           winbar = winbar,
@@ -315,7 +324,7 @@ return function()
           },
         })
 
-        -- Sync with theme + autos (use in-place color refresh)
+        -- Sync HL + autos
         api.nvim_set_hl(0, 'StatusLine',   { fg = colors.white,     bg = colors.base_bg })
         api.nvim_set_hl(0, 'StatusLineNC', { fg = colors.white_dim, bg = colors.nc_bg })
 
@@ -323,30 +332,17 @@ return function()
           group = AUG,
           callback = function()
             _hl_cache = {}
-            local fresh = themed_colors(colors_fallback)
-            colors_assign(colors, fresh)
+            if LOCK_THEME then
+              colors_assign(colors, initial_colors)
+            else
+              local fresh = themed_colors(colors_fallback)
+              colors_assign(colors, fresh)
+            end
             api.nvim_set_hl(0, 'StatusLine',   { fg = colors.white,     bg = colors.base_bg })
             api.nvim_set_hl(0, 'StatusLineNC', { fg = colors.white_dim, bg = colors.nc_bg })
-            if DEBUG then dbg_notify('colors refreshed from theme') end
+            if DEBUG then dbg_notify(LOCK_THEME and 'colors reapplied (locked to original)' or 'colors refreshed from theme') end
           end,
         })
-
-        -- Optional: simple health report (best-effort across nvim versions)
-        do
-          local health = rawget(vim, 'health') or rawget(vim, 'health')
-          local report_ok = health and health.report_ok
-          local report_info = health and health.report_info
-          if report_ok or report_info then
-            pcall(function()
-              if report_ok then report_ok('Heirline loaded') end
-              if report_info then
-                report_info('Icons: ' .. (USE_ICONS and 'enabled' or 'disabled'))
-                report_info('Devicons: ' .. (ok_devicons and 'present' or 'missing'))
-                report_info('Theme-colors: ' .. tostring(USE_THEME))
-              end
-            end)
-          end
-        end
 
         if DEBUG then dbg_notify('initialized (debug ON)') end
       end)
