@@ -173,12 +173,7 @@ Scope {
         function onScreensChanged() {
             if (lockScreen.locked) {
                 pendingReload = true;
-            } /*else {
-                reloadTimer.restart();
-            } */
-            // ^commented out for now to fix QS crash on monitor wake.
-            // if it reintroduces the notification bug (https://github.com/Ly-sec/Noctalia/issues/32)...
-            // we need to find a different fix
+            }
         }
     }
 
