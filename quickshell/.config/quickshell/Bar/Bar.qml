@@ -38,7 +38,7 @@ Scope {
                     screen: modelData
                     color: "transparent"
                     implicitHeight: barBackground.height
-                    anchors.top: true
+                    anchors.bottom: true
                     anchors.left: true
                     anchors.right: true
                     visible: Settings.settings.barMonitors.includes(modelData.name) || (Settings.settings.barMonitors.length === 0)
