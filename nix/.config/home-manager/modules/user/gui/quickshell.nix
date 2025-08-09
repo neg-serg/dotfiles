@@ -24,6 +24,7 @@ in
   home.packages = with pkgs; [
     cantarell-fonts
     cava
+    inputs.rsmetrx.packages.${pkgs.system}.default
     kdePackages.kdialog
     kdePackages.qt5compat # needed for Qt5Compat modules in Qt6
     kdePackages.qtdeclarative # Qt6

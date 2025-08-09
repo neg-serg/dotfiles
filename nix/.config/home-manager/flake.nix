@@ -12,6 +12,7 @@
     nixpkgs = { url = "github:nixos/nixpkgs"; };
     nvfetcher = { url = "github:berberman/nvfetcher"; inputs.nixpkgs.follows = "nixpkgs"; };
     quickshell = { url = "git+https://git.outfoxxed.me/outfoxxed/quickshell"; inputs.nixpkgs.follows = "nixpkgs"; };
+    rsmetrx = { url = "github:neg-serg/rsmetrx"; inputs.nixpkgs.follows = "nixpkgs"; };
     sops-nix = { url = "github:Mic92/sops-nix"; };
     stylix = { url = "github:danth/stylix"; inputs.nixpkgs.follows = "nixpkgs"; };
     yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
@@ -27,6 +28,7 @@
     nixpkgs,
     nvfetcher,
     quickshell,
+    rsmetrx,
     sops-nix,
     stylix,
     yandex-browser,
