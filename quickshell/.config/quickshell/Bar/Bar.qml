@@ -64,10 +64,6 @@ Scope {
                         }
                     }
 
-                    ActiveWindow {
-                        screen: modelData
-                    }
-
                     Workspace {
                         id: workspace
                         screen: modelData
@@ -139,7 +135,7 @@ Scope {
                 }
 
                 Loader {
-                    active: (Settings.settings.barMonitors.length === 0))
+                    active: (Settings.settings.barMonitors.length === 0)
                     sourceComponent: Item {
                         PanelWindow {
                             id: topLeftPanel
