@@ -4,7 +4,6 @@ typeset -gA FAST_HIGHLIGHT_STYLES
 FAST_THEME_NAME="neg"
 
 if [ -f "$THEME_FILE" ] && tail -n1 "$THEME_FILE" | grep -Fxq "$MAGIC"; then
-    source "$THEME_FILE"
     return 0 2>/dev/null || exit 0
 fi
 
