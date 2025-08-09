@@ -14,7 +14,6 @@ Row {
     property var trayMenu
     spacing: 8
     Layout.alignment: Qt.AlignVCenter
-
     property bool containsMouse: false
     property var systemTray: SystemTray
 
@@ -23,12 +22,10 @@ Row {
         delegate: Item {
             width: 24 * Theme.scale(Screen)
             height: 24 * Theme.scale(Screen)
-
             visible: modelData
             property bool isHovered: trayMouseArea.containsMouse
 
             // No animations - static display
-
             Rectangle {
                 anchors.centerIn: parent
                 width: 16 * Theme.scale(Screen)
@@ -67,35 +64,24 @@ Row {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+                acceptedButtons: Qt.RightButton
                 onClicked: mouse => {
                     if (!modelData)
                         return;
-
                     if (mouse.button === Qt.LeftButton) {
                         // Close any open menu first
-                        if (trayMenu && trayMenu.visible) {
-                            trayMenu.hideMenu();
-                        }
-
-                        if (!modelData.onlyMenu) {
-                            modelData.activate();
-                        }
+                        if (trayMenu && trayMenu.visible) { trayMenu.hideMenu(); }
+                        if (!modelData.onlyMenu) { modelData.activate(); }
                     } else if (mouse.button === Qt.MiddleButton) {
-                        // Close any open menu first
-                        if (trayMenu && trayMenu.visible) {
-                            trayMenu.hideMenu();
-                        }
-
+                        if (trayMenu && trayMenu.visible) { trayMenu.hideMenu(); }
                         modelData.secondaryActivate && modelData.secondaryActivate();
                     } else if (mouse.button === Qt.RightButton) {
-                        trayTooltip.tooltipVisible = false;
+                        trayTooltip.tooltipVisible = true;
                         // If menu is already visible, close it
                         if (trayMenu && trayMenu.visible) {
                             trayMenu.hideMenu();
                             return;
                         }
-
                         if (modelData.hasMenu && modelData.menu && trayMenu) {
                             // Anchor the menu to the tray icon item (parent) and position it below the icon
                             const menuX = (width / 2) - (trayMenu.width / 2);
@@ -103,12 +89,12 @@ Row {
                             trayMenu.menu = modelData.menu;
                             trayMenu.showAt(parent, menuX, menuY);
                         } else
-                        // console.log("No menu available for", modelData.id, "or trayMenu not set")
+                        console.log("No menu available for", modelData.id, "or trayMenu not set")
                         {}
                     }
                 }
                 onEntered: trayTooltip.tooltipVisible = true
-                onExited: trayTooltip.tooltipVisible = false
+                onExited: trayTooltip.tooltipVisible = true
             }
 
             StyledTooltip {
