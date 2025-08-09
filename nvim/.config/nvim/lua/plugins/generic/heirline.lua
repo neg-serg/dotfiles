@@ -8,7 +8,7 @@ return {
     local c     = require('heirline.conditions')
     local utils = require('heirline.utils')
 
-    -- Color palette (kept minimal; can be derived from colorscheme later)
+    -- Color palette (minimal; can be derived from colorscheme later)
     local colors = {
       black = 'NONE', white = '#54667a', red = '#970d4f',
       green = '#007a51', blue = '#005faf', yellow = '#c678dd',
@@ -18,17 +18,60 @@ return {
     local function hl(fg, bg) return { fg = fg, bg = bg } end
     local align = { provider = '%=' }
 
-    -- Window width heuristic to hide heavy parts on narrow windows
+    -- Helpers
     local function is_narrow() return vim.api.nvim_win_get_width(0) < 80 end
-
-    -- Helper: unnamed/empty buffer guard
     local function is_empty() return vim.fn.empty(vim.fn.expand('%:t')) == 1 end
+    local function has_mod(name) local ok = pcall(require, name); return ok end
 
-    -- Current working directory
+    -- Smart openers with graceful fallbacks
+    local function open_file_browser_cwd()
+      local cwd = vim.fn.getcwd()
+      if has_mod('oil') then
+        vim.cmd('Oil ' .. vim.fn.fnameescape(cwd))
+      elseif has_mod('telescope') and has_mod('telescope._extensions.file_browser') then
+        require('telescope').extensions.file_browser.file_browser({ cwd = cwd, respect_gitignore = true })
+      elseif has_mod('telescope') then
+        require('telescope.builtin').find_files({ cwd = cwd, hidden = true })
+      else
+        vim.cmd('Ex ' .. vim.fn.fnameescape(cwd))
+      end
+    end
+
+    local function open_git_ui()
+      if has_mod('telescope') then
+        local tb = require('telescope.builtin')
+        if tb.git_branches then return tb.git_branches() end
+      end
+      if has_mod('neogit') then
+        return require('neogit').open()
+      end
+      -- Fugitive if present
+      if vim.fn.exists(':Git') == 2 then
+        return vim.cmd('Git')
+      end
+      -- Otherwise silently ignore
+    end
+
+    local function open_diagnostics_list()
+      if has_mod('trouble') then
+        -- Toggle Trouble document diagnostics; fallback to workspace if not supported
+        local ok = pcall(require('trouble').toggle, { mode = 'document_diagnostics' })
+        if not ok then pcall(require('trouble').toggle, { mode = 'workspace_diagnostics' }) end
+      else
+        pcall(vim.diagnostic.setqflist)
+        vim.cmd('copen')
+      end
+    end
+
+    -- Current working directory (click → file browser)
     local CurrentDir = {
       provider = function() return vim.fn.fnamemodify(vim.fn.getcwd(), ':~') end,
       hl = hl(colors.white, colors.black),
       update = { 'DirChanged', 'BufEnter' },
+      on_click = {
+        callback = function() open_file_browser_cwd() end,
+        name = 'heirline_cwd_open',
+      },
     }
 
     -- File icon (with color from devicons; guard unnamed)
@@ -39,7 +82,6 @@ return {
         local icon = require('nvim-web-devicons').get_icon(name)
         return icon or ''
       end,
-      -- Dynamically colorize icon if devicons provides a color
       hl = function()
         local name = vim.fn.expand('%:t')
         local icon, color = require('nvim-web-devicons').get_icon_color(name, nil, { default = false })
@@ -59,18 +101,30 @@ return {
       update = { 'OptionSet', 'BufEnter' },
     }
 
-    -- Left side: only when a file/buffer is present
+    -- Filename with click-to-copy
+    local FileNameClickable = {
+      provider = function() return ' ' .. vim.fn.expand('%:t') end,
+      hl = hl(colors.white, colors.black),
+      update = { 'BufEnter', 'BufFilePost' },
+      on_click = {
+        callback = function()
+          local path = vim.fn.expand('%:p')
+          if path == '' then return end
+          pcall(vim.fn.setreg, '+', path)
+          if vim.notify then vim.notify('Copied path: ' .. path, vim.log.levels.INFO, { title = 'Heirline' }) end
+        end,
+        name = 'heirline_copy_abs_path',
+      },
+    }
+
+    -- Left side (only when a real buffer/file)
     local LeftComponents = {
       condition = function() return not is_empty() end,
       { provider = ' ', hl = hl(colors.blue, colors.black) },
       CurrentDir,
       { provider = ' ¦ ', hl = hl(colors.blue, colors.black) },
       FileIcon,
-      {
-        provider = function() return ' ' .. vim.fn.expand('%:t') end,
-        hl = hl(colors.white, colors.black),
-        update = { 'BufEnter', 'BufFilePost' },
-      },
+      FileNameClickable,
       Readonly,
       {
         condition = function() return vim.bo.modified end,
@@ -109,6 +163,27 @@ return {
       end
     end
 
+    -- Small toggles (always compact)
+    local ListToggle = {
+      provider = function() return ' ¶' end,
+      hl = function() return hl(vim.wo.list and colors.yellow or colors.white, colors.black) end,
+      update = { 'OptionSet', 'BufWinEnter' },
+      on_click = {
+        callback = function() vim.o.list = not vim.o.list end,
+        name = 'heirline_toggle_list',
+      },
+    }
+
+    local WrapToggle = {
+      provider = function() return ' ⤶' end,
+      hl = function() return hl(vim.wo.wrap and colors.yellow or colors.white, colors.black) end,
+      update = { 'OptionSet', 'BufWinEnter' },
+      on_click = {
+        callback = function() vim.wo.wrap = not vim.wo.wrap end,
+        name = 'heirline_toggle_wrap',
+      },
+    }
+
     -- Right/aux components
     local components = {
       -- Macro recorder
@@ -119,7 +194,7 @@ return {
         update = { 'RecordingEnter', 'RecordingLeave' },
       },
 
-      -- Diagnostics (hide on narrow)
+      -- Diagnostics (clicks & navigation)
       diag = {
         condition = function() return c.has_diagnostics() and not is_narrow() end,
         init = function(self)
@@ -130,12 +205,20 @@ return {
         get_diag('errors'),
         get_diag('warnings'),
         on_click = {
-          callback = function() pcall(vim.diagnostic.setqflist) end,
-          name = 'heirline_diagnostics',
+          callback = function(self, minwid, nclicks, button, mods)
+            if button == 'l' then
+              open_diagnostics_list()
+            elseif button == 'm' then
+              pcall(vim.diagnostic.goto_next)
+            elseif button == 'r' then
+              pcall(vim.diagnostic.goto_prev)
+            end
+          end,
+          name = 'heirline_diagnostics_click',
         },
       },
 
-      -- LSP attached
+      -- LSP attached (already clickable)
       lsp = {
         condition = c.lsp_attached,
         provider = '  ',
@@ -144,7 +227,7 @@ return {
         update = { 'LspAttach', 'LspDetach' },
       },
 
-      -- Git (branch from gitsigns; hide on narrow)
+      -- Git (click → git UI; hide on narrow)
       git = {
         condition = function() return c.is_git_repo() and not is_narrow() end,
         provider = function()
@@ -154,6 +237,7 @@ return {
         end,
         hl = hl(colors.blue, colors.black),
         update = { 'BufEnter', 'BufWritePost' },
+        on_click = { callback = function() open_git_ui() end, name = 'heirline_git_ui' },
       },
 
       -- Encoding + EOL flavor
@@ -177,9 +261,18 @@ return {
         provider = function() return get_size() end,
         hl = hl(colors.white, colors.black),
         update = { 'BufEnter', 'BufWritePost' },
+        on_click = {
+          -- Simple: open fuzzy finder in current buffer on click if Telescope exists
+          callback = function()
+            if has_mod('telescope.builtin') then
+              require('telescope.builtin').current_buffer_fuzzy_find()
+            end
+          end,
+          name = 'heirline_size_click',
+        },
       },
 
-      -- Search status: hides when 0/0 or empty pattern; click to clear highlight
+      -- Search status: hides when 0/0 or empty pattern; click to clear highlights
       search = {
         condition = function() return vim.v.hlsearch == 1 end,
         provider = function()
@@ -194,23 +287,26 @@ return {
         end,
         hl = hl(colors.yellow, colors.black),
         update = { 'CmdlineLeave', 'CursorMoved', 'CursorMovedI' },
-        on_click = {
-          callback = function() pcall(vim.cmd, 'nohlsearch') end,
-          name = 'heirline_search_clear',
-        },
+        on_click = { callback = function() pcall(vim.cmd, 'nohlsearch') end, name = 'heirline_search_clear' },
       },
 
-      -- Cursor position + percent through file (Lua formatting, virtcol-aware)
+      -- Cursor position + percent through file (virtcol-aware)
       position = {
         provider = function()
           local lnum = vim.fn.line('.')
-          local col  = vim.fn.virtcol('.')                     -- better for tabs/wide chars
+          local col  = vim.fn.virtcol('.')
           local last = math.max(1, vim.fn.line('$'))
           local pct  = math.floor(lnum * 100 / last)
           return string.format(' %3d:%-2d %3d%% ', lnum, col, pct)
         end,
         hl = hl(colors.white, colors.black),
         update = { 'CursorMoved', 'CursorMovedI' },
+      },
+
+      -- Tiny toggles (list + wrap)
+      toggles = {
+        ListToggle,
+        WrapToggle,
       },
     } -- closes `components`
 
@@ -232,6 +328,7 @@ return {
           components.encoding,
           components.size,
           components.position,
+          components.toggles, -- compact toggles at the right end
         },
       },
       opts = {
