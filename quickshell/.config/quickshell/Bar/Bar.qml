@@ -98,6 +98,17 @@ Scope {
                             iconSpacing: Math.round(4 * Theme.scale(panel.screen))
                         }
 
+                        NetworkUsage {
+                            id: net
+                            anchors.verticalCenter: parent.verticalCenter
+                            desiredHeight: barBackground.height
+                            fontPixelSize: Theme.fontSizeSmall * Theme.scale(panel.screen)
+                            height: barBackground.height
+                            iconSpacing: 6
+                            screen: panel.screen
+                            useTheme: false
+                        }
+
                         DiagonalSeparatorRect {
                             width: Math.round(15 * Theme.scale(panel.screen))
                             height: barBackground.height + 60
