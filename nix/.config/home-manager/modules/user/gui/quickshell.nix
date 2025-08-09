@@ -40,5 +40,6 @@ in
     qt6.qtimageformats
     qt6.qtsvg
     quickshellWrapped
+    material-symbols
   ];
 }
