@@ -9,39 +9,34 @@ import qs.Settings
 
 Item {
     id: root
-    // Public state exposed by the widget
+    // Public widget state
     property string wsName: "?"
     property int wsId: -1
 
-    // Sizing follows the label content
-    implicitWidth: label.implicitWidth
-    implicitHeight: label.implicitHeight
+    // Accent palette (override if needed)
+    property color iconColor: "#3b7bb3"
+    property color gothicColor: "#D6DFE6"
+    property color separatorColor: "#8d9eb2"
+
+    // Icon layout tuning
+    property real iconScale: 1.45            // icon size relative to label font
+    property int  iconBaselineOffset: 4      // fine baseline tweak for icon (−2..+6 typical)
+    property int  iconSpacing: 2             // gap between icon and text
+
+    // Size follows the composed row
+    implicitWidth: lineBox.implicitWidth
+    implicitHeight: lineBox.implicitHeight
 
     // Environment helpers
-    function hyprSig() {
-        // Hyprland instance signature; empty if not present
-        return Quickshell.env("HYPRLAND_INSTANCE_SIGNATURE") || "";
-    }
-    function runtimeDir() {
-        // Fallback to /run/user/$UID if XDG_RUNTIME_DIR is missing
-        return Quickshell.env("XDG_RUNTIME_DIR") || ("/run/user/" + Quickshell.env("UID"));
-    }
-    function socketPath() {
-        // $XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock
-        return runtimeDir() + "/hypr/" + hyprSig() + "/.socket2.sock";
-    }
+    function hyprSig() { return Quickshell.env("HYPRLAND_INSTANCE_SIGNATURE") || ""; }
+    function runtimeDir() { return Quickshell.env("XDG_RUNTIME_DIR") || ("/run/user/" + Quickshell.env("UID")); }
+    function socketPath() { return runtimeDir() + "/hypr/" + hyprSig() + "/.socket2.sock"; }
     function hyprEnvOrNull() {
-        // Pass signature to hyprctl only when it exists
         const sig = hyprSig();
         return sig ? ["HYPRLAND_INSTANCE_SIGNATURE=" + sig] : null;
     }
 
-    // Accent palette (safe defaults; override if needed)
-    property color iconColor: "#3b7bb3"       // very light cool grey-blue
-    property color gothicColor: "#D6DFE6"     // almost airy grey-blue
-    property color separatorColor: "#8d9eb2"
-
-    // htmlEscape fixed for older Qt/QML (no replaceAll)
+    // HTML escape (compatible with older Qt without replaceAll)
     function htmlEscape(s) {
         s = (s === undefined || s === null) ? "" : String(s);
         return s
@@ -52,11 +47,12 @@ Item {
         .replace(/'/g, "&#39;");
     }
 
-    function isPUA(cp) { return cp >= 0xE000 && cp <= 0xF8FF; }          // icons / symbols in PUA
-    function isOldItalic(cp){ return cp >= 0x10300 && cp <= 0x1034F; }   // Old Italic block (sample: 𐌰)
+    // Character classifiers
+    function isPUA(cp) { return cp >= 0xE000 && cp <= 0xF8FF; }          // Private Use Area (icon fonts)
+    function isOldItalic(cp){ return cp >= 0x10300 && cp <= 0x1034F; }   // Old Italic block (e.g., 𐌰)
     function isSeparatorChar(ch){ return [":","·","|","/","-"].indexOf(ch) !== -1; }
 
-    // Wraps a single character into a colored span based on its category
+    // Wrap one char into colored span by category
     function spanForChar(ch) {
         const cp = ch.codePointAt(0);
         if (isPUA(cp)) {
@@ -71,7 +67,7 @@ Item {
         return htmlEscape(ch);
     }
 
-    // Converts a whole string to softly decorated HTML; preserves all other text
+    // Decorate whole string while preserving other text
     function decorateName(name) {
         if (!name || typeof name !== "string") return htmlEscape(name || "");
         let out = "";
@@ -84,33 +80,81 @@ Item {
         return out;
     }
 
-    // Final display text (HTML if wsName is present, plain fallback to id)
-    property string displayText: (wsName && wsName.length > 0)
-        ? decorateName(wsName)
-        : (wsId >= 0 ? String(wsId) : "?")
-
-    // UI
-    Label {
-        id: label
-        textFormat: Text.RichText
-        renderType: Text.NativeRendering
-        text: displayText
-        font.family: Theme.fontFamily
-        font.weight: Font.Medium
-        font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
-        color: Theme.textPrimary // base color for non-decorated text
-        padding: 6
+    // Split leading PUA icon from the rest (so we can baseline-align it)
+    function leadingIcon(name) {
+        if (!name || typeof name !== "string" || name.length === 0) return "";
+        const cp = name.codePointAt(0);
+        return isPUA(cp) ? String.fromCodePoint(cp) : "";
     }
 
-    // Live events via socket2
-    // Uses `socat` to stream events; replace with `ncat -U` if you prefer.
+    function restAfterLeadingIcon(name) {
+        if (!name || typeof name !== "string" || name.length === 0) return "";
+        const cp = name.codePointAt(0);
+        if (!isPUA(cp)) return name;
+        const skip = (cp > 0xFFFF) ? 2 : 1; // skip surrogate pair if needed
+        return name.substring(skip);
+    }
+
+    // Final values for display
+    property string iconGlyph: leadingIcon(wsName)
+    property string restName: restAfterLeadingIcon(wsName)
+
+    // Fallback to workspace id if name is empty
+    property string fallbackText: (wsId >= 0 ? String(wsId) : "?")
+
+    // RichText decoration for the rest of the name (or fallback)
+    property string decoratedText: (restName && restName.length > 0)
+                                   ? decorateName(restName)
+                                   : decorateName(fallbackText)
+
+    // ---------------- UI ----------------
+    Row {
+        id: lineBox
+        spacing: iconGlyph.length ? iconSpacing : 0
+        anchors.fill: parent
+        // implicit sizes come from children
+
+        // Icon as separate Text with baseline alignment to the label
+        Text {
+            id: icon
+            visible: iconGlyph.length > 0
+            text: iconGlyph
+            color: iconColor
+            renderType: Text.NativeRendering
+
+            // Icon size scales from the label's font size
+            font.family: Theme.fontFamily   // replace with your icon font family if needed
+            font.pixelSize: Math.round(label.font.pixelSize * iconScale)
+
+            // Baseline alignment (tweak offset for pixel-perfect visual centering)
+            anchors.baseline: label.baseline
+            anchors.baselineOffset: iconBaselineOffset
+        }
+
+        // Main text remains RichText with soft decoration
+        Label {
+            id: label
+            textFormat: Text.RichText
+            renderType: Text.NativeRendering
+            text: decoratedText
+            font.family: Theme.fontFamily
+            font.weight: Font.Medium
+            font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
+            color: Theme.textPrimary
+            padding: 6
+
+            // Optional: lock line box so icon never affects line height
+            // lineHeightMode: Text.FixedHeight
+            // lineHeight: Math.round(font.pixelSize * 1.1)
+        }
+    }
+
+    // Live events via Hyprland socket2 (using socat). Replace with ncat -U if desired.
     Process {
         id: eventMonitor
         command: ["socat", "-u", "UNIX-CONNECT:" + socketPath(), "-"]
         running: true
-
-        // Cursor into cumulative stdout buffer to avoid re-processing
-        property int consumed: 0
+        property int consumed: 0  // cursor into cumulative stdout buffer
 
         stdout: StdioCollector {
             waitForEnd: false
@@ -147,7 +191,7 @@ Item {
                         if (name.startsWith("name:")) name = name.substring(5);
                         root.wsName = name;
                     } else if (line.startsWith("focusedmon>>") || line.startsWith("focusedmonv2>>")) {
-                        // Monitor focus changed: refresh current workspace via hyprctl
+                        // Monitor focus changed — refresh current workspace via hyprctl
                         refreshOnce.start();
                     }
                 }
@@ -194,7 +238,7 @@ Item {
         environment: hyprEnvOrNull()
     }
 
-    // Small debounce before asking hyprctl again (used on monitor focus change)
+    // Debounce before asking hyprctl again (used on monitor focus change)
     Timer {
         id: refreshOnce
         interval: 120
