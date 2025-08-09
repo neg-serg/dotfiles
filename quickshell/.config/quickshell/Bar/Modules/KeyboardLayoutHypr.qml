@@ -1,7 +1,3 @@
-// - Listens to raw Hyprland events and updates on "deviceName,Layout" strings.
-// - On click, switches the keyboard layout via `hyprctl switchxkblayout`.
-// - Supports theme colors via Theme.*, or custom colors if useTheme = false.
-// - Optional `screen` property for proper scaling with Theme.scale(screen).
 import QtQuick
 import QtQuick.Controls
 import Quickshell
@@ -17,26 +13,30 @@ Item {
     property int    desiredHeight: 24 // outer capsule height
     property var    screen: null      // pass panel.screen for Theme scaling
     property bool   useTheme: true    // use Theme.* colors if true
-    // === Color properties (can be overridden externally) ===
+
+    // Icon tuning (similar to workspace indicator)
+    property real   iconScale: 1.0    // scale of the icon relative to text
+    property int    iconSpacing: 4    // spacing between icon and text
+    property color  iconColor: useTheme ? Theme.accentPrimary : "#3b7bb3"
+
+    // === Color properties ===
     property color  bgColor:      useTheme ? Theme.backgroundPrimary : "#1e293b"
     property color  textColor:    useTheme ? Theme.textPrimary : "white"
     property color  hoverBgColor: useTheme ? Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.06) : "#223043"
+
     // === Internal state ===
     property string layoutText: "??"
     property string deviceName: ""
     property var    knownKeyboards: []
 
-    // Theme scaling helper
     function sc() {
         const s = kb.screen || (Quickshell.screens && Quickshell.screens.length ? Quickshell.screens[0] : null)
         return s ? Theme.scale(s) : 1
     }
 
-    // Size hints
-    implicitWidth:  Math.ceil(label.implicitWidth  + 10 * sc())
-    implicitHeight: Math.ceil(label.implicitHeight + 6  * sc())
+    implicitWidth:  Math.ceil(row.implicitWidth  + 10 * sc())
+    implicitHeight: Math.ceil(row.implicitHeight + 6  * sc())
 
-    // === Capsule UI ===
     Rectangle {
         id: capsule
         readonly property bool hovered: ma.containsMouse
@@ -44,19 +44,33 @@ Item {
         height: Math.max(20 * sc(), kb.desiredHeight)
         radius: Math.round(height / 2)
         color:  hovered ? hoverBgColor : bgColor
-        border.color: borderColor
         border.width: 1
         antialiasing: true
         anchors.verticalCenter: parent.verticalCenter
 
-        Label {
-            id: label
+        Row {
+            id: row
             anchors.centerIn: parent
-            text: kb.layoutText
-            color: textColor
-            font.family: Theme.fontFamily
-            font.weight: Font.Medium
-            padding: 1.5 * sc()
+            spacing: kb.iconSpacing * sc()
+
+            Label {
+                id: iconLabel
+                text: "\uf11c" // Font Awesome keyboard icon
+                font.family: "Font Awesome 6 Free"
+                font.weight: Font.Normal
+                font.pixelSize: kb.fontPixelSize * kb.iconScale
+                color: kb.iconColor
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Label {
+                id: label
+                text: kb.layoutText
+                color: kb.textColor
+                font.family: Theme.fontFamily
+                font.weight: Font.Medium
+                verticalAlignment: Text.AlignVCenter
+            }
         }
 
         MouseArea {
@@ -73,7 +87,7 @@ Item {
         }
     }
 
-    // === Hyprland raw event listener ===
+    // === Hyprland events ===
     Connections {
         target: Hyprland
         function onRawEvent(a, b) {
@@ -100,7 +114,6 @@ Item {
         }
     }
 
-    // === Initial snapshot before first event ===
     Process {
         id: initProc
         command: ["bash", "-lc", "hyprctl -j devices"]
@@ -115,15 +128,13 @@ Item {
                     if (pick && deviceAllowed(pick.name || "")) {
                         kb.layoutText = shortenLayout(pick.active_keymap || pick.layout || kb.layoutText)
                     }
-                } catch (_) { /* ignore parse errors */ }
+                } catch (_) { }
             }
         }
     }
 
-    // Process for switching layouts
     Process { id: switchProc }
 
-    // === Helpers ===
     function deviceAllowed(name) {
         const needle = (kb.deviceMatch || "").toLowerCase().trim()
         if (!needle) return true
