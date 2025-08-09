@@ -34,7 +34,6 @@ Scope {
 
                 PanelWindow {
                     id: panel
-
                     screen: modelData
                     color: "transparent"
                     implicitHeight: barBackground.height
@@ -45,7 +44,6 @@ Scope {
 
                     Rectangle {
                         id: barBackground
-
                         width: parent.width
                         height: 36 * Theme.scale(panel.screen)
                         color: Theme.backgroundPrimary
@@ -56,7 +54,6 @@ Scope {
 
                     Row {
                         id: leftWidgetsRow
-
                         anchors.verticalCenter: barBackground.verticalCenter
                         anchors.left: barBackground.left
                         anchors.leftMargin: 18 * Theme.scale(panel.screen)
@@ -70,11 +67,6 @@ Scope {
                         SystemInfo {
                             anchors.verticalCenter: parent.verticalCenter
                         }
-
-                        Taskbar {
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
                     }
 
                     ActiveWindow {
@@ -156,7 +148,7 @@ Scope {
                 }
 
                 Loader {
-                    active: Settings.settings.showCorners && (Settings.settings.barMonitors.includes(modelData.name) || (Settings.settings.barMonitors.length === 0))
+                    active: (Settings.settings.barMonitors.length === 0))
 
                     sourceComponent: Item {
                         PanelWindow {

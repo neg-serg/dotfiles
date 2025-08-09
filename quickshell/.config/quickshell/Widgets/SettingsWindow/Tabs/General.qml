@@ -133,15 +133,6 @@ ColumnLayout {
             }
 
             ToggleOption {
-                label: "Show Corners"
-                description: "Display rounded corners on the edge of the screen"
-                value: Settings.settings.showCorners
-                onToggled: function() {
-                    Settings.settings.showCorners = !Settings.settings.showCorners;
-                }
-            }
-
-            ToggleOption {
                 label: "Show Dock"
                 description: "Display a dock at the bottom of the screen for quick access to applications"
                 value: Settings.settings.showDock
