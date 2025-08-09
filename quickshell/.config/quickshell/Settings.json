@@ -6,7 +6,6 @@
     "colorRange": "limited",
     "currentWallpaper": "",
     "dimPanels": false,
-    "dockExclusive": false,
     "dockMonitors": [
     ],
     "fontSizeMultiplier": 1.2,
@@ -20,12 +19,9 @@
     "recordingCodec": "h264",
     "recordingFrameRate": 60,
     "recordingQuality": "very_high",
-    "reverseDayMonth": false,
     "showCursor": true,
-    "showDock": false,
     "showMediaInBar": true,
     "showSystemInfoInBar": true,
-    "taskbarIconSize": 24,
     "transitionDuration": 1.1,
     "transitionFps": 60,
     "transitionType": "random",
@@ -35,9 +31,9 @@
     "useWallpaperTheme": false,
     "videoPath": "~/vid/",
     "visualizerType": "radial",
-    "wallpaperFolder": "/usr/share/wallpapers",
+    "wallpaperFolder": "~/pic/wl",
     "wallpaperInterval": 300,
     "wallpaperResize": "crop",
-    "weatherCity": "Dinslaken",
+    "weatherCity": "Moscow",
     "wifiEnabled": false
 }
