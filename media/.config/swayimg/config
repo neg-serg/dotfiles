@@ -1,22 +1,121 @@
+########################################
+# [general] — global behavior
+########################################
 [general]
+# Start in viewer; overlay creates terminal-like preview over focused window (Sway/Hyprland)
 mode = viewer
-position = parent
-size = image
+overlay = yes            # default is yes, but set explicitly
+position = auto          # ignored when overlay=yes
+size = image             # use first image/frame size
+decoration = no          # no server-side decorations
 
+# App identity and signal-controlled actions
+app_id = swayimg-preview
+sigusr1 = reload         # kill -USR1 $(pidof swayimg) -> reload current image
+sigusr2 = next_file      # kill -USR2 $(pidof swayimg) -> next image
+
+# You can override any option from CLI:
+#   swayimg --config="viewer.scale=fill"
+
+# Split config: keep keys in dedicated files
+include = keys-viewer.conf
+include = keys-gallery.conf
+include = keys-slideshow.conf
+
+########################################
+# [viewer] — single image behavior
+########################################
 [viewer]
+# Smart background and transparency handling
+window = extend          # extend/mirror/#RRGGBBAA; "extend" blurs current img
+transparency = grid      # grid or solid color like #10101080
+
+# Initial scale/position and quality
+scale = optimal          # optimal|width|height|fit|fill|real|keep
+position = center        # or free/top_left/...
+antialiasing = mks13     # none|box|bilinear|bicubic|mks13 (best default)
+loop = yes
+history = 16             # back/forward cache
+preload = 8              # prefetch images in a separate thread
+
+########################################
+# [slideshow]
+########################################
+[slideshow]
+time = 5                 # seconds
+window = mirror
+transparency = #00000080
 scale = fit
-antialiasing = yes
-slideshow = no
+position = center
+antialiasing = mks13
 
+########################################
+# [gallery] — thumbnail grid
+########################################
+[gallery]
+size = 256               # tile size
+cache = 400              # number of cached off-screen thumbs
+preload = yes            # prefetch adjacent thumbs
+pstore = yes             # persist thumbs to XDG_CACHE_HOME/swayimg
+fill = yes
+antialiasing = mks13
+window = #00000000
+background = #1f2937ff   # non-selected tile
+select = #334155ff       # selected tile bg
+border = #000000ff
+shadow = #000000ff
+
+########################################
+# [list] — how images are discovered/ordered
+########################################
+[list]
+order = alpha            # none|alpha|numeric|mtime|size|random
+reverse = no
+recursive = yes          # recurse directories
+all = no                 # add neighbors from the same dir when one file given
+fsmon = yes              # watch FS and update list automatically
+
+########################################
+# [font] — info/status text drawing
+########################################
+[font]
+name = JetBrainsMono Nerd Font
+size = 14
+color = #e5e7ebff
+shadow = #000000d0
+background = #00000000
+
+########################################
+# [info] — global text info behavior
+########################################
+[info]
+show = yes
+info_timeout = 0         # 0 = always
+status_timeout = 3
+
+########################################
+# [info.viewer] — per-corner layouts (titles with '+')
+########################################
 [info.viewer]
-top_left = +name,+format
-bottom_left = scale
-bottom_right = status
+top_left    = +name,+format,+filesize,+imagesize,+exif
+top_right   = +index,frame
+bottom_left = +scale
+bottom_right= status
 
-[keys.viewer]
-q = quit
-h = step_left
-l = step_right
-+ = zoom_in
-- = zoom_out
-r = reload
+########################################
+# [info.gallery] — what to show in grid mode
+########################################
+[info.gallery]
+top_left    = +name
+top_right   = +imagesize
+bottom_left = +index
+bottom_right= status
+
+########################################
+# [info.slideshow]
+########################################
+[info.slideshow]
+top_left    = +name,+format
+top_right   = +index,frame
+bottom_left = +scale
+bottom_right= status
