@@ -14,17 +14,21 @@ fi
 zi ice depth'1' lucid
 zi light romkatv/zsh-defer
 typeset -f zsh-defer >/dev/null || zsh-defer() { "$@"; }
+
 # F-Sy-H (deferred to next prompt is fine)
-# zi ice depth'1' lucid atinit'typeset -gA FAST_HIGHLIGHT; FAST_HIGHLIGHT[use_async]=1' wait'0'
+# zi ice depth'1' lucid atinit'typeset -gA FAST_HIGHLIGHT; FAST_HIGHLIGHT[use_async]=1 FAST_HIGHLIGHT[BIND_VI_WIDGETS]=0 FAST_HIGHLIGHT[WIDGETS_MODE]=minimal' wait'0'
 # zi load neg-serg/F-Sy-H
+
 typeset -gA FAST_HIGHLIGHT
 FAST_HIGHLIGHT[use_async]=1
 FAST_HIGHLIGHT[BIND_VI_WIDGETS]=0
 FAST_HIGHLIGHT[WIDGETS_MODE]=minimal
 source ~/.zi/plugins/neg-serg---F-Sy-H/F-Sy-H.plugin.zsh
+
 # P10k — NO wait here -> shows on first prompt
 zi ice lucid atload'[[ -r ${ZDOTDIR}/.p10k.zsh ]] && source ${ZDOTDIR}/.p10k.zsh'
 zi light romkatv/powerlevel10k
+
 # Utilities (deferred)
 zi ice depth'1' lucid wait'0'
 zi light QuarticCat/zsh-smartcache
