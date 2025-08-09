@@ -8,6 +8,7 @@ return {'mikavilpas/yazi.nvim',
   keys={
     {'<leader>-', mode={'n','v'}, "<cmd>Yazi<cr>", desc="Open yazi at the current file",},
   },
+  event = "VimEnter",
   opts={
     open_for_directories=true, -- if you want to open yazi instead of netrw, see below for more info
     keymaps={
