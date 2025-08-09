@@ -1,5 +1,7 @@
 module_path+=( "/home/neg/.zi/zmodules/zpmod/Src" )
 zmodload zi/zpmod 2> /dev/null
+local __had_pcre=${options[REMATCHPCRE]}
+unsetopt rematchpcre
 FAST_WORK_DIR=~/.config/f-sy-h
 source ~/.config/zsh/00-fsyh-parser.zsh
 source ${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh 2>/dev/null || true
@@ -31,5 +33,6 @@ done
 command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
 [[ $NEOVIM_TERMINAL ]] && source "${ZDOTDIR}/08-neovim-cd.zsh"
 nix-your-shell zsh | source /dev/stdin 2>/dev/null || true
+(( __had_pcre )) && setopt rematchpcre
 # eval "$(oh-my-posh init zsh --config ${ZDOTDIR}/neg.omp.json)"
 # vim: ft=zsh:nowrap
