@@ -67,16 +67,11 @@ return {
           -- ───────────────────────────────────────────────────────────────────────────
 
           -- ── Compatibility toggles & symbols ────────────────────────────────────────
-          -- User can set before loading: vim.g.heirline_use_icons = false
           local USE_ICONS = vim.g.heirline_use_icons
           if USE_ICONS == nil then
-            -- heuristics: env var or have_nerd_font / default true
             USE_ICONS = not (vim.env.NERD_FONT == '0') and (vim.g.have_nerd_font == true or true)
           end
-
-          -- Global env indicator (off by default): vim.g.heirline_env_indicator = true
           local SHOW_ENV = vim.g.heirline_env_indicator == true
-
           local function I(icons, ascii) return USE_ICONS and icons or ascii end
           local S = {
             folder   = I('','[dir]'),
@@ -123,7 +118,7 @@ return {
             if vim.notify then vim.notify(msg, lvl or vim.log.levels.INFO, { title = 'Heirline' }) end
           end
 
-          -- Env mini-indicator (SSH / WSL / GUI)
+          -- Env mini-indicator
           local function env_label()
             local parts = {}
             if vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT then table.insert(parts, 'SSH') end
@@ -165,31 +160,112 @@ return {
             end
           end
 
-          -- Special types (icons kept; labels важнее при ASCII)
+          -- ── Special types (expanded) ───────────────────────────────────────────────
           local FT_ICON = {
+            -- Core buftypes
             help={'','Help'}, quickfix={'','Quickfix'}, terminal={'','Terminal'}, prompt={'','Prompt'}, nofile={'','Scratch'},
+
+            -- Telescope/fzf/grep
             TelescopePrompt={'','Telescope'}, TelescopeResults={'','Telescope'},
-            fzf={'','FZF'}, ['fzf-lua']={'','FZF'},
-            NvimTree={'','Explorer'}, ['neo-tree']={'','Neo-tree'}, Neotree={'','Neo-tree'},
-            oil={'','Oil'}, dirbuf={'','Dirbuf'}, lir={'','Lir'},
+            fzf={'','FZF'}, ['fzf-lua']={'','FZF'}, ['fzf-checkmarks']={'','FZF'},
+            ['grug-far']={'󰈞','GrugFar'}, Spectre={'','Spectre'}, spectre_panel={'','Spectre'}, ['spectre-replace']={'','Spectre'},
+
+            -- File explorers/navigators
+            NvimTree={'','Explorer'}, ['neo-tree']={'','Neo-tree'}, Neotree={'','Neo-tree'}, ['neo-tree-popup']={'','Neo-tree'},
+            oil={'','Oil'}, dirbuf={'','Dirbuf'}, lir={'','Lir'}, fern={'','Fern'}, chadtree={'','CHADTree'},
+            defx={'','Defx'}, ranger={'','Ranger'}, vifm={'','Vifm'}, minifiles={'','MiniFiles'}, mf={'','MiniFiles'},
+            vaffle={'','Vaffle'}, netrw={'','Netrw'}, explore={'','Explore'}, dirvish={'','Dirvish'}, yazi={'','Yazi'},
+
+            -- Git/diff/rebase
             fugitive={'','Fugitive'}, fugitiveblame={'','Git Blame'},
             DiffviewFiles={'','Diffview'}, DiffviewFileHistory={'','Diffview'},
             gitcommit={'','Commit'}, gitrebase={'','Rebase'}, gitconfig={'','Git Config'},
+            NeogitCommitMessage={'','Neogit'}, NeogitStatus={'','Neogit'}, gitgraph={'','GitGraph'},
+            gitstatus={'','GitStatus'}, lazygit={'','LazyGit'}, gitui={'','GitUI'},
+
+            -- UI/meta & snacks
             lazy={'󰒲','Lazy'}, mason={'󰏖','Mason'}, notify={'','Notify'}, noice={'','Noice'},
-            toggleterm={'','Terminal'}, Outline={'','Outline'}, aerial={'','Aerial'},
-            ['symbols-outline']={'','Symbols'}, lspinfo={'','LSP Info'}, checkhealth={'','Health'},
-            spectre_panel={'','Spectre'}, OverseerList={'','Overseer'}, Trouble={'','Trouble'},
-            qf={'','Quickfix'}, man={'','Man'}, alpha={'','Alpha'}, dashboard={'','Dashboard'},
-            Floaterm={'','Terminal'}, startify={'','Startify'}, helpview={'','Help'},
-            markdown_preview={'','Preview'}, httpResult={'','HTTP'}, OutlinePanel={'','Outline'},
+            ['noice-log']={'','Noice'}, ['noice-history']={'','Noice'},
+            toggleterm={'','Terminal'}, Floaterm={'','Terminal'}, FTerm={'','FTerm'}, termwrapper={'','TermWrap'},
+            Outline={'','Outline'}, aerial={'','Aerial'}, ['symbols-outline']={'','Symbols'}, OutlinePanel={'','Outline'},
+            lspinfo={'','LSP Info'}, checkhealth={'','Health'}, OverseerList={'','Overseer'}, Overseer={'','Overseer'},
+            Trouble={'','Trouble'}, ['trouble']={'','Trouble'},
+            alpha={'','Alpha'}, dashboard={'','Dashboard'}, startify={'','Startify'}, ['start-screen']={'','Start'},
+            helpview={'','Help'}, todo_comments={'','TODO'}, comment_box={'','CommentBox'},
+            markdown_preview={'','Preview'}, glow={'','Glow'}, peek={'','Peek'},
+            httpResult={'','HTTP'}, ['rest-nvim']={'','REST'},
             neoformat={'','Neoformat'}, undotree={'','Undotree'}, tagbar={'','Tagbar'}, vista={'','Vista'},
             octo={'','Octo'}, harpoon={'󰛢','Harpoon'}, which_key={'','WhichKey'},
+            snacks_dashboard={'','Dashboard'}, snacks_notifier={'','Notify'}, snacks_indent={'','Indent'},
+            zen_mode={'','Zen'}, goyo={'','Goyo'}, twilight={'','Twilight'},
+
+            -- LSP/saga/tools
+            SagaOutline={'','Lspsaga'}, saga_codeaction={'','Code Action'}, SagaRename={'','Rename'},
+            ['lspsaga-code-action']={'','Code Action'}, ['lspsaga-outline']={'','Lspsaga'},
+            conform_info={'','Conform'}, ['null-ls-info']={'','Null-LS'}, ['diagnostic-navigator']={'','Diagnostics'},
+
+            -- DAP
             dapui_scopes={'','DAP Scopes'}, dapui_breakpoints={'','DAP Breakpoints'},
             dapui_stacks={'','DAP Stacks'}, dapui_watches={'','DAP Watches'},
-            ['dap-repl']={'','DAP REPL'}, dapui_console={'','DAP Console'},
+            ['dap-repl']={'','DAP REPL'}, dapui_console={'','DAP Console'}, dapui_hover={'','DAP Hover'},
+            dap_floating={'','DAP Float'},
+
+            -- Tests
             ['neotest-summary']={'','Neotest'}, ['neotest-output']={'','Neotest'}, ['neotest-output-panel']={'','Neotest'},
-            Overseer={'','Overseer'}, FTerm={'','FTerm'}, termwrapper={'','TermWrap'},
+
+            -- AI / assistants
+            copilot={'','Copilot'}, ['copilot-chat']={'','Copilot Chat'},
+
+            -- Term/REPL/Tools (ft для терминалов/обёрток)
+            ipython={'','IPython'}, python={'','Python'}, node={'','Node'}, lua={'','Lua'},
+            r={'󰟔','R'}, R={'󰟔','R'}, deno={'','Deno'}, bash={'','Bash'},
+
+            -- misc TUI apps (часто как ft)
+            nmtui={'','nmtui'}, htop={'','htop'}, btop={'','btop'}, gpick={'','gpick'},
+            calc={'','calc'}, calendar={'','Calendar'}, orgagenda={'','OrgAgenda'},
+            ['vim-plug']={'','vim-plug'},
           }
+
+          -- Собираем ЕДИНЫЙ список паттернов спец-файлов (расширяемый через vim.g.heirline_special_ft_extra)
+          local function build_special_list()
+            local base = {
+              -- Core/meta
+              'qf','help','man','lspinfo','checkhealth','undotree','tagbar','vista','which_key',
+              -- Telescope/fzf/grep
+              'TelescopePrompt','TelescopeResults','fzf','fzf%-lua','fzf%-checkmarks','grug%-far','Spectre','spectre_panel','spectre%-replace',
+              -- Explorers
+              'NvimTree','neo%-tree','Neotree','neo%-tree%-popup','oil','dirbuf','lir','fern','chadtree','defx','ranger','vifm','minifiles','mf','vaffle','netrw','explore','dirvish','yazi',
+              -- Git/diff
+              '^git.*','fugitive','fugitiveblame','DiffviewFiles','DiffviewFileHistory','gitcommit','gitrebase','gitconfig',
+              'NeogitCommitMessage','NeogitStatus','gitgraph','gitstatus','lazygit','gitui',
+              -- UI/meta & snacks
+              'lazy','mason','notify','noice','noice%-log','noice%-history','toggleterm','Floaterm','FTerm','termwrapper',
+              'Outline','aerial','symbols%-outline','OutlinePanel','OverseerList','Overseer','Trouble','trouble',
+              'alpha','dashboard','startify','start%-screen','helpview','todo%-comments','comment%-box',
+              'markdown_preview','glow','peek',
+              'httpResult','rest%-nvim','neoformat','snacks_dashboard','snacks_notifier','snacks_indent','zen_mode','goyo','twilight',
+              -- LSP/saga/tools
+              'SagaOutline','saga_codeaction','SagaRename','lspsaga%-code%-action','lspsaga%-outline','conform_info','null%-ls%-info','diagnostic%-navigator',
+              -- DAP
+              'dapui_scopes','dapui_breakpoints','dapui_stacks','dapui_watches','dap%-repl','dapui_console','dapui_hover','dap_floating',
+              -- Tests
+              'neotest%-summary','neotest%-output','neotest%-output%-panel',
+              -- AI
+              'copilot','copilot%-chat',
+              -- TUI apps / terms with fts
+              'ipython','python','node','lua','r','R','deno','bash','nmtui','htop','btop','gpick','calc','calendar','orgagenda','vim%-plug',
+              -- Term wrappers
+              'terminal',
+            }
+            local extra = vim.g.heirline_special_ft_extra
+            if type(extra) == 'table' then
+              for _, pat in ipairs(extra) do table.insert(base, pat) end
+            end
+            return base
+          end
+          local SPECIAL_FT = build_special_list()
+          -- ───────────────────────────────────────────────────────────────────────────
+
           local function ft_label_and_icon()
             local bt, ft = vim.bo.buftype, vim.bo.filetype
             if bt ~= '' then
@@ -412,18 +488,7 @@ return {
             condition = function()
               return safe_buffer_matches({
                 buftype = { 'help','quickfix','terminal','prompt','nofile' },
-                filetype = {
-                  'qf','help','man','lspinfo','checkhealth','undotree','tagbar','vista','which_key',
-                  'TelescopePrompt','TelescopeResults','fzf','fzf%-lua',
-                  'NvimTree','neo%-tree','Neotree','oil','dirbuf','lir',
-                  '^git.*','fugitive','fugitiveblame','DiffviewFiles','DiffviewFileHistory','gitcommit','gitrebase','gitconfig',
-                  'lazy','mason','notify','noice','toggleterm','Outline','aerial','symbols%-outline',
-                  'spectre_panel','OverseerList','Trouble','alpha','dashboard','startify','helpview',
-                  'markdown_preview','httpResult','OutlinePanel','octo','harpoon','neoformat',
-                  'dapui_scopes','dapui_breakpoints','dapui_stacks','dapui_watches','dap%-repl','dapui_console',
-                  'neotest%-summary','neotest%-output','neotest%-output%-panel','Overseer',
-                  'Floaterm','FTerm','termwrapper','terminal',
-                },
+                filetype = SPECIAL_FT,
               })
             end,
             hl = hl(colors.white, colors.black),
@@ -511,7 +576,7 @@ return {
                 if not (args and buf_valid(args.buf)) then return false end
                 return safe_buffer_matches({
                   buftype = { 'nofile','prompt','help','quickfix','terminal' },
-                  filetype = { '^git.*','fugitive','TelescopePrompt','TelescopeResults','lazy','mason','alpha','dashboard','fzf','fzf%-lua' },
+                  filetype = SPECIAL_FT,
                 }, args.buf)
               end,
             },
