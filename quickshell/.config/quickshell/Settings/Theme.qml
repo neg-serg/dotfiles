@@ -7,10 +7,7 @@ import qs.Settings
 
 Singleton {
     id: root
-
-    // Design screen width
-    readonly property int designScreenWidth: 2560
-    
+    readonly property int designScreenWidth: 3840 // Design screen width
     // Automatic scaling based on screen width
     function scale(currentScreen) {
         return 1.0
