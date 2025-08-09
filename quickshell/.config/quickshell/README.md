@@ -116,8 +116,8 @@ You will need to install a few things to get everything working:
 - `swww` to add fancy wallpaper animations (optional)
 - `wallust` to theme the setup based on wallpaper (optional)
 
-## zigstat and zigbrightness
-The zigstat and zigbrightness utilities are automatically built from source during release creation. Source code can be found [here](https://git.pika-os.com/wm-packages/pikabar/src/branch/main/src).
+## zigstat
+The zigstat utilitiy is automatically built from source during release creation. Source code can be found [here](https://git.pika-os.com/wm-packages/pikabar/src/branch/main/src).
 
 ## Known issues
 It is perfect now
