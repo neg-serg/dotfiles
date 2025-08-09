@@ -72,6 +72,14 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
+                        KeyboardLayoutHypr {
+                            id: kbIndicator
+                            deviceMatch: "dygma-defy-keyboard"
+                            fontPixelSize: Theme.fontSizeSmall * Theme.scale(panel.screen)
+                            anchors.verticalCenter: parent.verticalCenter
+                            desiredHeight: Math.max(20, barBackground.height - 4)
+                        }
+
                         DiagonalSeparatorRect {
                             width: Math.round(15 * Theme.scale(panel.screen))
                             height: barBackground.height + 60
@@ -81,7 +89,6 @@ Scope {
                             thickness: 7.0
                             angleDeg: 30
                         }
-
                     }
 
                     SystemInfo {
