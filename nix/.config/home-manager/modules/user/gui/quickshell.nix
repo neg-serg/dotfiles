@@ -37,9 +37,9 @@ in
     kdePackages.qtvirtualkeyboard
     kdePackages.qtwayland
     kdePackages.syntax-highlighting
+    material-symbols
     qt6.qtimageformats
     qt6.qtsvg
     quickshellWrapped
-    material-symbols
   ];
 }
