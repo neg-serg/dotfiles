@@ -15,6 +15,7 @@
     wev # xev for wayland
     wf-recorder # tool to make screencasts
     wl-clipboard # copy-paste for wayland
+    wl-clip-persist # clipboard persistence tool
     wtype # typing for wayland
     ydotool # xdotool systemwide
   ];
