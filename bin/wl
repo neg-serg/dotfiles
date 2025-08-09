@@ -1,2 +1,2 @@
 #!/usr/bin/env nu
-swww img (ls -f ...(glob ~/pic/{wl,black}/**/*) | shuffle | first | get name)
+swww img --transition-fps 240 (ls -f ...(glob ~/pic/{wl,black}/**/*) | shuffle | first | get name)
