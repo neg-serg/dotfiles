@@ -129,23 +129,14 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        Brightness {
-                            id: widgetsBrightness
-
-                            screen: modelData
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
                         Volume {
                             id: widgetsVolume
-
                             shell: rootScope.shell
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
                         PanelPopup {
                             id: sidebarPopup
-
                             shell: rootScope.shell
                         }
 
