@@ -40,7 +40,7 @@ Scope {
                     Rectangle {
                         id: barBackground
                         width: parent.width
-                        height: 36 * Theme.scale(panel.screen)
+                        height: 28 * Theme.scale(panel.screen)
                         color: Theme.backgroundPrimary
                         anchors.top: parent.top
                         anchors.left: parent.left
@@ -59,8 +59,8 @@ Scope {
                         }
 
                         DiagonalSeparatorRect {
-                            width: Math.round(40 * Theme.scale(panel.screen))
-                            height: barBackground.height
+                            width: Math.round(15 * Theme.scale(panel.screen))
+                            height: barBackground.height + 60
                             anchors.verticalCenter: parent.verticalCenter
                             color: "#BFC8D0"
                             alpha: 0.05
@@ -73,8 +73,8 @@ Scope {
                         }
 
                         DiagonalSeparatorRect {
-                            width: Math.round(40 * Theme.scale(panel.screen))
-                            height: barBackground.height
+                            width: Math.round(15 * Theme.scale(panel.screen))
+                            height: barBackground.height + 60
                             anchors.verticalCenter: parent.verticalCenter
                             color: "#BFC8D0"
                             alpha: 0.05

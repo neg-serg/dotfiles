@@ -15,7 +15,7 @@ Item {
         id: line
         width: thickness
         height: Math.hypot(root.width, root.height) - inset*2
-        radius: width/2
+        radius: 0
         color: root.color
         opacity: root.alpha
         anchors.centerIn: parent
