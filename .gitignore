@@ -349,3 +349,4 @@ history.txt
 shell/.config/nushell/nupm/cache
 shell/.config/nushell/plugin.msgpackz
 shell/.config/zsh/secondary_theme.zsh
+fzf
