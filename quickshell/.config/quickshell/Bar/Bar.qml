@@ -55,13 +55,33 @@ Scope {
                         spacing: 12 * Theme.scale(panel.screen)
 
                         ClockWidget {
-                            screen: modelData
                             anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        DiagonalSeparatorRect {
+                            width: Math.round(40 * Theme.scale(panel.screen))
+                            height: barBackground.height
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: "#BFC8D0"
+                            alpha: 0.05
+                            thickness: 7.0
+                            angleDeg: 30
                         }
 
                         WsIndicator {
                             anchors.verticalCenter: parent.verticalCenter
                         }
+
+                        DiagonalSeparatorRect {
+                            width: Math.round(40 * Theme.scale(panel.screen))
+                            height: barBackground.height
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: "#BFC8D0"
+                            alpha: 0.05
+                            thickness: 7.0
+                            angleDeg: 30
+                        }
+
                     }
 
                     SystemInfo {
