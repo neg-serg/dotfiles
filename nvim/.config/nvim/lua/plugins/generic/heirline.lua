@@ -1,5 +1,5 @@
 -- ┌───────────────────────────────────────────────────────────────────────────────────┐
--- │ █▓▒░ rebelot/heirline.nvim  — compat + fallbacks + hidden debug                  │
+-- │ █▓▒░ rebelot/heirline.nvim  — compat + fallbacks + hidden debug                   │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {
   'rebelot/heirline.nvim',
@@ -45,18 +45,18 @@ return {
               return res
             end
           end
-          api.nvim_create_user_command('HeirlineDebugToggle', function()
+          vim.api.nvim_create_user_command('HeirlineDebugToggle', function()
             DEBUG = not DEBUG; vim.g.heirline_debug = DEBUG
             dbg_notify('debug mode: ' .. (DEBUG and 'ON' or 'OFF'))
           end, {})
-          api.nvim_create_user_command('HeirlineDebugDump', function()
+          vim.api.nvim_create_user_command('HeirlineDebugDump', function()
             local b = api.nvim_create_buf(false, true)
             api.nvim_buf_set_lines(b, 0, -1, false, dbg_log)
             api.nvim_buf_set_option(b, 'bufhidden', 'wipe')
             api.nvim_buf_set_option(b, 'filetype', 'log')
             api.nvim_set_current_buf(b)
           end, {})
-          api.nvim_create_user_command('HeirlineDebugClear', function()
+          vim.api.nvim_create_user_command('HeirlineDebugClear', function()
             dbg_log = {}; dbg_notify('log cleared')
           end, {})
           if DEBUG then
@@ -65,13 +65,17 @@ return {
             })
           end
           -- ───────────────────────────────────────────────────────────────────────────
-
           -- ── Compatibility toggles & symbols ────────────────────────────────────────
+          -- User can set before loading: vim.g.heirline_use_icons = false
           local USE_ICONS = vim.g.heirline_use_icons
           if USE_ICONS == nil then
+            -- heuristics: env var or have_nerd_font / default true
             USE_ICONS = not (vim.env.NERD_FONT == '0') and (vim.g.have_nerd_font == true or true)
           end
+
+          -- Global env indicator (off by default): vim.g.heirline_env_indicator = true
           local SHOW_ENV = vim.g.heirline_env_indicator == true
+
           local function I(icons, ascii) return USE_ICONS and icons or ascii end
           local S = {
             folder   = I('','[dir]'),
@@ -108,7 +112,7 @@ return {
           local function hl(fg, bg) return { fg = fg, bg = bg } end
           local align = { provider = '%=' }
 
-          -- Helpers
+          -- Helpers (race-safe)
           local function buf_valid(b) return type(b)=='number' and b>0 and api.nvim_buf_is_valid(b) end
           local function safe_buffer_matches(spec, bufnr)
             if bufnr ~= nil and not buf_valid(bufnr) then return false end
@@ -121,7 +125,7 @@ return {
             if vim.notify then vim.notify(msg, lvl or vim.log.levels.INFO, { title = 'Heirline' }) end
           end
 
-          -- Env mini-indicator
+          -- Env mini-indicator (SSH / WSL / GUI)
           local function env_label()
             local parts = {}
             if vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT then table.insert(parts, 'SSH') end
@@ -132,7 +136,7 @@ return {
             return table.concat(parts, '|')
           end
 
-          -- Openers
+          -- Openers (scheduled)
           local function open_file_browser_cwd()
             local cwd = fn.getcwd()
             if has_mod('oil') then
@@ -163,21 +167,30 @@ return {
             end
           end
 
-          -- ── Special types (expanded) + SPECIAL_FT builder (оставлено как было ранее) ─
+          -- ── Special types (expanded icons) ─────────────────────────────────────────
           local FT_ICON = {
+            -- Core buftypes
             help={'','Help'}, quickfix={'','Quickfix'}, terminal={'','Terminal'}, prompt={'','Prompt'}, nofile={'','Scratch'},
+
+            -- Telescope/fzf/grep
             TelescopePrompt={'','Telescope'}, TelescopeResults={'','Telescope'},
             fzf={'','FZF'}, ['fzf-lua']={'','FZF'}, ['fzf-checkmarks']={'','FZF'},
             ['grug-far']={'󰈞','GrugFar'}, Spectre={'','Spectre'}, spectre_panel={'','Spectre'}, ['spectre-replace']={'','Spectre'},
+
+            -- File explorers/navigators
             NvimTree={'','Explorer'}, ['neo-tree']={'','Neo-tree'}, Neotree={'','Neo-tree'}, ['neo-tree-popup']={'','Neo-tree'},
             oil={'','Oil'}, dirbuf={'','Dirbuf'}, lir={'','Lir'}, fern={'','Fern'}, chadtree={'','CHADTree'},
             defx={'','Defx'}, ranger={'','Ranger'}, vifm={'','Vifm'}, minifiles={'','MiniFiles'}, mf={'','MiniFiles'},
             vaffle={'','Vaffle'}, netrw={'','Netrw'}, explore={'','Explore'}, dirvish={'','Dirvish'}, yazi={'','Yazi'},
+
+            -- Git/diff/rebase
             fugitive={'','Fugitive'}, fugitiveblame={'','Git Blame'},
             DiffviewFiles={'','Diffview'}, DiffviewFileHistory={'','Diffview'},
             gitcommit={'','Commit'}, gitrebase={'','Rebase'}, gitconfig={'','Git Config'},
             NeogitCommitMessage={'','Neogit'}, NeogitStatus={'','Neogit'}, gitgraph={'','GitGraph'},
             gitstatus={'','GitStatus'}, lazygit={'','LazyGit'}, gitui={'','GitUI'},
+
+            -- UI/meta & snacks
             lazy={'󰒲','Lazy'}, mason={'󰏖','Mason'}, notify={'','Notify'}, noice={'','Noice'},
             ['noice-log']={'','Noice'}, ['noice-history']={'','Noice'},
             toggleterm={'','Terminal'}, Floaterm={'','Terminal'}, FTerm={'','FTerm'}, termwrapper={'','TermWrap'},
@@ -192,38 +205,51 @@ return {
             octo={'','Octo'}, harpoon={'󰛢','Harpoon'}, which_key={'','WhichKey'},
             snacks_dashboard={'','Dashboard'}, snacks_notifier={'','Notify'}, snacks_indent={'','Indent'},
             zen_mode={'','Zen'}, goyo={'','Goyo'}, twilight={'','Twilight'},
+
+            -- LSP/saga/tools
             SagaOutline={'','Lspsaga'}, saga_codeaction={'','Code Action'}, SagaRename={'','Rename'},
             ['lspsaga-code-action']={'','Code Action'}, ['lspsaga-outline']={'','Lspsaga'},
             conform_info={'','Conform'}, ['null-ls-info']={'','Null-LS'}, ['diagnostic-navigator']={'','Diagnostics'},
+
+            -- DAP
             dapui_scopes={'','DAP Scopes'}, dapui_breakpoints={'','DAP Breakpoints'},
             dapui_stacks={'','DAP Stacks'}, dapui_watches={'','DAP Watches'},
             ['dap-repl']={'','DAP REPL'}, dapui_console={'','DAP Console'}, dapui_hover={'','DAP Hover'},
             dap_floating={'','DAP Float'},
+
+            -- Tests
             ['neotest-summary']={'','Neotest'}, ['neotest-output']={'','Neotest'}, ['neotest-output-panel']={'','Neotest'},
+
+            -- AI / misc
             copilot={'','Copilot'}, ['copilot-chat']={'','Copilot Chat'},
-            ipython={'','IPython'}, python={'','Python'}, node={'','Node'}, lua={'','Lua'},
-            r={'󰟔','R'}, R={'󰟔','R'}, deno={'','Deno'}, bash={'','Bash'},
-            nmtui={'','nmtui'}, htop={'','htop'}, btop={'','btop'}, gpick={'','gpick'},
-            calc={'','calc'}, calendar={'','Calendar'}, orgagenda={'','OrgAgenda'},
             ['vim-plug']={'','vim-plug'},
           }
+
           local function build_special_list()
             local base = {
               'qf','help','man','lspinfo','checkhealth','undotree','tagbar','vista','which_key',
+              -- Telescope/fzf/grep
               'TelescopePrompt','TelescopeResults','fzf','fzf%-lua','fzf%-checkmarks','grug%-far','Spectre','spectre_panel','spectre%-replace',
+              -- Explorers
               'NvimTree','neo%-tree','Neotree','neo%-tree%-popup','oil','dirbuf','lir','fern','chadtree','defx','ranger','vifm','minifiles','mf','vaffle','netrw','explore','dirvish','yazi',
+              -- Git
               '^git.*','fugitive','fugitiveblame','DiffviewFiles','DiffviewFileHistory','gitcommit','gitrebase','gitconfig',
               'NeogitCommitMessage','NeogitStatus','gitgraph','gitstatus','lazygit','gitui',
+              -- UI/meta
               'lazy','mason','notify','noice','noice%-log','noice%-history','toggleterm','Floaterm','FTerm','termwrapper',
               'Outline','aerial','symbols%-outline','OutlinePanel','OverseerList','Overseer','Trouble','trouble',
               'alpha','dashboard','startify','start%-screen','helpview','todo%-comments','comment%-box',
               'markdown_preview','glow','peek',
               'httpResult','rest%-nvim','neoformat','snacks_dashboard','snacks_notifier','snacks_indent','zen_mode','goyo','twilight',
+              -- LSP/saga/tools
               'SagaOutline','saga_codeaction','SagaRename','lspsaga%-code%-action','lspsaga%-outline','conform_info','null%-ls%-info','diagnostic%-navigator',
+              -- DAP
               'dapui_scopes','dapui_breakpoints','dapui_stacks','dapui_watches','dap%-repl','dapui_console','dapui_hover','dap_floating',
+              -- Tests
               'neotest%-summary','neotest%-output','neotest%-output%-panel',
-              'copilot','copilot%-chat',
-              'ipython','python','node','lua','r','R','deno','bash','nmtui','htop','btop','gpick','calc','calendar','orgagenda','vim%-plug',
+              -- AI/misc viewers
+              'copilot','copilot%-chat','vim%-plug',
+              -- fallback
               'terminal',
             }
             local extra = vim.g.heirline_special_ft_extra
@@ -233,7 +259,6 @@ return {
             return base
           end
           local SPECIAL_FT = build_special_list()
-          -- ───────────────────────────────────────────────────────────────────────────
 
           local function ft_label_and_icon()
             local bt, ft = vim.bo.buftype, vim.bo.filetype
@@ -342,9 +367,7 @@ return {
           -- ── Debounce state for search component ────────────────────────────────────
           local SEARCH_DEBOUNCE_MS = 90
           local last_sc = { t = 0, out = '', pat = '', cur = 0, tot = 0 }
-          local function now_ms()
-            return math.floor(vim.loop.hrtime() / 1e6)
-          end
+          local function now_ms() return math.floor(vim.loop.hrtime() / 1e6) end
 
           local components = {
             macro = {
@@ -408,7 +431,7 @@ return {
                 return string.format(' %s %s ', self.frames[self.idx], self.text)
               end,
               hl = hl(colors.blue_light, colors.black),
-              update = { 'LspProgress', 'CursorHold', 'CursorHoldI' },
+              update = { 'LspAttach', 'LspDetach', 'CursorHold', 'CursorHoldI' },
             },
 
             git = {
@@ -424,7 +447,7 @@ return {
               on_click = { callback = vim.schedule_wrap(function() dbg_push('click: git'); open_git_ui() end), name = 'heirline_git_ui' },
             },
 
-            -- Git diff stats (+/~/−) via gitsigns
+            -- Git diff stats (+/~/-) via gitsigns
             gitdiff = {
               condition = function() return c.is_git_repo() and not is_narrow() end,
               init = function(self)
@@ -433,7 +456,7 @@ return {
                 self.changed = d.changed or 0
                 self.removed = d.removed or 0
               end,
-              update = { 'BufEnter', 'BufWritePost', 'User', 'WinResized' }, -- Gitsigns fires User events; generic enough
+              update = { 'BufEnter', 'BufWritePost', 'User', 'WinResized' },
               provider = function(self)
                 local segs = {}
                 if self.added > 0   then table.insert(segs, S.plus  .. ' ' .. self.added) end
@@ -473,7 +496,6 @@ return {
               },
             },
 
-            -- Search (debounced)
             search = {
               condition = function() return vim.v.hlsearch == 1 end,
               provider = prof('search', function()
@@ -568,9 +590,9 @@ return {
               align,
               components.diag,
               components.lsp,
-              components.lsp_progress,  -- NEW
+              components.lsp_progress,
               components.git,
-              components.gitdiff,       -- NEW
+              components.gitdiff,
               components.encoding,
               components.size,
               components.position,
