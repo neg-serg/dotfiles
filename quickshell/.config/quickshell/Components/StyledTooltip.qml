@@ -8,7 +8,6 @@ Window {
     property bool tooltipVisible: false
     property Item targetItem: null
     property int delay: 300
-
     property bool positionAbove: true
 
     flags: Qt.ToolTip | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
@@ -33,8 +32,8 @@ Window {
     }
 
     function _showNow() {
-        width = Math.max(50 * Theme.scale(screen), tooltipText.implicitWidth + 24 * Theme.scale(screen))
-        height = Math.max(50 * Theme.scale(screen), tooltipText.implicitHeight + 16 * Theme.scale(screen))
+        width = Math.max(20 * Theme.scale(screen), tooltipText.implicitWidth * Theme.scale(screen))
+        height = Math.max(20 * Theme.scale(screen), tooltipText.implicitHeight * Theme.scale(screen))
 
         if (!targetItem) return;
 
@@ -75,7 +74,7 @@ Window {
 
     Rectangle {
         anchors.fill: parent
-        radius: 18
+        radius: 2
         color: Theme.backgroundTertiary || "#222"
         border.color: Theme.outline || "#444"
         border.width: 1 * Theme.scale(screen)
@@ -88,7 +87,7 @@ Window {
         text: tooltipWindow.text
         color: Theme.textPrimary
         font.family: Theme.fontFamily
-        font.pixelSize: Theme.fontSizeSmall * Theme.scale(screen)
+        font.pixelSize: 14 * Theme.scale(screen)
         anchors.centerIn: parent
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
