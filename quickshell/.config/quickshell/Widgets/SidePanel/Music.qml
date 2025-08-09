@@ -184,7 +184,7 @@ Rectangle {
                             source: MusicManager.trackArtUrl
                             visible: source.toString() !== ""
 
-                        // Apply circular mask for rounded corners
+                            // Apply circular mask for rounded corners
                             layer.enabled: true
                             layer.effect: MultiEffect {
                                 maskEnabled: true

@@ -111,8 +111,7 @@ Rectangle {
                                     sourceSize.width: Math.min(width, 480 * Theme.scale(screen))
                                     sourceSize.height: Math.min(height, 270 * Theme.scale(screen))
                                     opacity: (wallpaperImage.status == Image.Ready) ? 1 : 0
-                                    // Apply circular mask for rounded corners
-                                    layer.enabled: true
+                                    layer.enabled: true // Apply circular mask for rounded corners
 
                                     Behavior on opacity {
                                         NumberAnimation {
