@@ -50,7 +50,7 @@
 
 [scratchpads.torrment]
     animation = ""
-    command = "kitty --class torrment -e rustmission"
+    command = "kitty --class torrment -e stig"
     class = "torrment"
     position = "1% 0%"
     size = "98% 40%"
