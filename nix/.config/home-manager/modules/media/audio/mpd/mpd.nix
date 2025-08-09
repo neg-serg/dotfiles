@@ -10,6 +10,7 @@ with {
   rmpc_git = pkgs.callPackage ../../../../packages/rmpc {};
 }; {
   home.packages = with pkgs; [
+    inory # alternative cli mpd client
     mpc-cli # mpd client
     rmpc_git # alternative tui client with album cover
   ];
