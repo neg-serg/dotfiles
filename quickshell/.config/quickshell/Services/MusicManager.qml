@@ -7,16 +7,14 @@ import qs.Components
 
 Singleton {
     id: manager
-
-
     property var currentPlayer: null
     property real currentPosition: 0
     property int selectedPlayerIndex: 0
     property bool isPlaying: currentPlayer ? currentPlayer.isPlaying : false
-    property string trackTitle: currentPlayer ? (currentPlayer.trackTitle || "Unknown Track") : ""
-    property string trackArtist: currentPlayer ? (currentPlayer.trackArtist || "Unknown Artist") : ""
-    property string trackAlbum: currentPlayer ? (currentPlayer.trackAlbum || "Unknown Album") : ""
-    property string trackArtUrl: currentPlayer ? (currentPlayer.trackArtUrl || "") : ""
+    property string trackTitle: currentPlayer ? (currentPlayer.trackTitle || "") : ""
+    property string trackArtist: currentPlayer ? (currentPlayer.trackArtist || "") : ""
+    property string trackAlbum: currentPlayer ? (currentPlayer.trackAlbum || "") : ""
+    property string coverUrl: currentPlayer ? (currentPlayer.trackArtUrl || "") : ""
     property real trackLength: currentPlayer ? currentPlayer.length : 0
     property bool canPlay: currentPlayer ? currentPlayer.canPlay : false
     property bool canPause: currentPlayer ? currentPlayer.canPause : false
@@ -32,7 +30,6 @@ Singleton {
         }
     }
 
-
     function getAvailablePlayers() {
         if (!Mpris.players || !Mpris.players.values) {
             return []
@@ -40,25 +37,20 @@ Singleton {
         
         let allPlayers = Mpris.players.values
         let controllablePlayers = []
-        
         for (let i = 0; i < allPlayers.length; i++) {
             let player = allPlayers[i]
             if (player && player.canControl) {
                 controllablePlayers.push(player)
             }
         }
-        
         return controllablePlayers
     }
-
 
     function findActivePlayer() {
         let availablePlayers = getAvailablePlayers()
         if (availablePlayers.length === 0) {
             return null
         }
-        
-
         if (selectedPlayerIndex < availablePlayers.length) {
             return availablePlayers[selectedPlayerIndex]
         } else {
@@ -158,11 +150,6 @@ Singleton {
         }
     }
 
-    Cava {
-        id: cava
-        count: 44
-    }
-
-    // Expose cava values
-    property alias cavaValues: cava.values
+    Cava { id: cava; count: 44 }
+    property alias cavaValues: cava.values // Expose cava values
 }
