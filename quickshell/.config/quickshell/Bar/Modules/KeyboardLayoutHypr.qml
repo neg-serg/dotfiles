@@ -7,24 +7,24 @@ import qs.Settings
 
 Item {
     id: kb
-    // === Public API ===
-    property string deviceMatch: ""   // substring to match keyboard device name
+
+    // Public API
+    property string deviceMatch: ""
     property alias  fontPixelSize: label.font.pixelSize
-    property int    desiredHeight: 24 // outer capsule height
-    property var    screen: null      // pass panel.screen for Theme scaling
-    property bool   useTheme: true    // use Theme.* colors if true
-
-    // Icon tuning (similar to workspace indicator)
-    property real   iconScale: 1.0    // scale of the icon relative to text
-    property int    iconSpacing: 4    // spacing between icon and text
-    property color  iconColor: useTheme ? Theme.accentPrimary : "#3b7bb3"
-
-    // === Color properties ===
+    property int    desiredHeight: 24
+    property var    screen: null
+    property bool   useTheme: true
+    // Icon tuning (match workspace look)
+    property real   iconScale: 1.0
+    property int    iconSpacing: 4
+    // ↓ Same softness as workspace icon
+    property color  iconColor: useTheme && Theme.gothicColor ? Theme.gothicColor : "#D6DFE6"
+    // Colors
     property color  bgColor:      useTheme ? Theme.backgroundPrimary : "#1e293b"
     property color  textColor:    useTheme ? Theme.textPrimary : "white"
     property color  hoverBgColor: useTheme ? Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.06) : "#223043"
 
-    // === Internal state ===
+    // Internal
     property string layoutText: "??"
     property string deviceName: ""
     property var    knownKeyboards: []
@@ -44,6 +44,7 @@ Item {
         height: Math.max(20 * sc(), kb.desiredHeight)
         radius: Math.round(height / 2)
         color:  hovered ? hoverBgColor : bgColor
+        border.color: Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.12) // subtle, not the icon color
         border.width: 1
         antialiasing: true
         anchors.verticalCenter: parent.verticalCenter
@@ -53,12 +54,14 @@ Item {
             anchors.centerIn: parent
             spacing: kb.iconSpacing * sc()
 
+            // Soft keyboard icon (Font Awesome Regular)
             Label {
                 id: iconLabel
-                text: "\uf11c" // Font Awesome keyboard icon
-                font.family: "Font Awesome 6 Free"
+                text: "\uf11c"                     // "keyboard" glyph
+                font.family: "Font Awesome 6 Free" // ensure "Regular" face is installed
+                font.styleName: "Regular"
                 font.weight: Font.Normal
-                font.pixelSize: kb.fontPixelSize * kb.iconScale
+                font.pixelSize: kb.fontPixelSize * kb.iconScale * 0.9
                 color: kb.iconColor
                 verticalAlignment: Text.AlignVCenter
             }
@@ -70,6 +73,7 @@ Item {
                 font.family: Theme.fontFamily
                 font.weight: Font.Medium
                 verticalAlignment: Text.AlignVCenter
+                padding: 1.5 * sc()
             }
         }
 
@@ -87,7 +91,7 @@ Item {
         }
     }
 
-    // === Hyprland events ===
+    // Hyprland events
     Connections {
         target: Hyprland
         function onRawEvent(a, b) {
@@ -98,10 +102,8 @@ Item {
                 null
             if (!payload) return
 
-            const i = payload.indexOf(",")
-            if (i < 0) return
-
-            const kbd    = payload.slice(0, i)
+            const i = payload.indexOf(","); if (i < 0) return
+            const kbd = payload.slice(0, i)
             const layout = payload.slice(i + 1)
 
             const byMatch = deviceAllowed(kbd)
@@ -114,6 +116,7 @@ Item {
         }
     }
 
+    // Init snapshot
     Process {
         id: initProc
         command: ["bash", "-lc", "hyprctl -j devices"]
@@ -133,14 +136,15 @@ Item {
         }
     }
 
+    // Click runner
     Process { id: switchProc }
 
+    // Helpers
     function deviceAllowed(name) {
         const needle = (kb.deviceMatch || "").toLowerCase().trim()
         if (!needle) return true
         return (name || "").toLowerCase().includes(needle)
     }
-
     function selectKeyboard(list) {
         if (!Array.isArray(list) || list.length === 0) return null
         const needle = (kb.deviceMatch || "").toLowerCase().trim()
@@ -158,7 +162,6 @@ Item {
         }
         return list[0]
     }
-
     function shortenLayout(s) {
         if (!s) return "??"
         const map = {
