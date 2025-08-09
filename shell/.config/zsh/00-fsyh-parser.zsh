@@ -7,7 +7,6 @@ if [ -f "$THEME_FILE" ] && tail -n1 "$THEME_FILE" | grep -Fxq "$MAGIC"; then
     return 0 2>/dev/null || exit 0
 fi
 
-setopt rematchpcre  # Enable PCRE regex matching for =~ operator
 typeset -gA FILE_EXTENSION_STYLES  # Global associative array for file extension styles
 section=""
 
