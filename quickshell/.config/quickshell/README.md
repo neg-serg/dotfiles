@@ -15,35 +15,9 @@
   <a href="https://discord.gg/7JFFYWzWRn">
     <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&labelColor=0C0D11&color=A8AEFF&logo=discord&logoColor=white" alt="Discord" />
   </a>
-
-
-
 </p>
 
 A sleek, minimal, and thoughtfully crafted setup for Wayland using **Quickshell**. This setup includes a status bar, notification system, control panel, wifi & bluetooth support, power profiles, lockscreen, tray, workspaces, and more — all styled with a warm lavender palette.
-
-## Preview
-
-<details>
-<summary>Click to expand preview images</summary>
-
-![Main](https://i.imgur.com/5mOIGD2.jpeg)  
-</br>
-
-![Control Panel](https://i.imgur.com/fJmCV6m.jpeg)  
-</br>
-
-![Applauncher](https://i.imgur.com/9OPV30q.jpeg)
-
-</details>
-<br>
-
----
-
-> ⚠️ **Note:**  
-> This setup currently only supports **Niri** and **Hyprland** (for the most part), mostly due to the workspace integration. For anything else you will have to add your own workspace logic.
-
----
 
 ## Features
 
@@ -58,47 +32,12 @@ A sleek, minimal, and thoughtfully crafted setup for Wayland using **Quickshell*
 
 ---
 
-<details>
-<summary><strong>Theme Colors</strong></summary>
-
-| Color Role           | Color       | Description                |
-| -------------------- | ----------- | -------------------------- |
-| Background Primary   | `#0C0D11`   | Deep indigo-black          |
-| Background Secondary | `#151720`   | Slightly lifted dark       |
-| Background Tertiary  | `#1D202B`   | Soft contrast surface      |
-| Surface              | `#1A1C26`   | Material-like base layer   |
-| Surface Variant      | `#2A2D3A`   | Lightly elevated           |
-| Text Primary         | `#CACEE2`   | Gentle off-white           |
-| Text Secondary       | `#B7BBD0`   | Muted lavender-blue        |
-| Text Disabled        | `#6B718A`   | Dimmed blue-gray           |
-| Accent Primary       | `#A8AEFF`   | Light enchanted lavender   |
-| Accent Secondary     | `#9EA0FF`   | Softer lavender hue        |
-| Accent Tertiary      | `#8EABFF`   | Warm golden glow           |
-| Error                | `#FF6B81`   | Soft rose red              |
-| Warning              | `#FFBB66`   | Candlelight amber-orange   |
-| Highlight            | `#E3C2FF`   | Bright magical lavender    |
-| Ripple Effect        | `#F3DEFF`   | Gentle soft splash         |
-| On Accent            | `#1A1A1A`   | Text on accent background  |
-| Outline              | `#44485A`   | Subtle bluish-gray line    |
-| Shadow               | `#000000B3` | Standard soft black shadow |
-| Overlay              | `#11121ACC` | Deep bluish overlay        |
-
-</details>
-
----
-
 ## Installation & Usage
 
 <details>
 <summary><strong>Installation</strong></summary>
 
 Install quickshell:
-
-```
-yay -S quickshell-git
-```
-
-or use any other way of installing quickshell-git (flake, paru etc).
 
 _Download and install the latest release:_
 
@@ -112,17 +51,6 @@ Or download manually from [releases](https://github.com/Ly-sec/Noctalia/releases
 mkdir -p ~/.config/quickshell && tar -xzf noctalia-*.tar.gz --strip-components=1 -C ~/.config/quickshell/
 ```
 
-### _niri only_
-
-Add this to your `layout` section:
-
-`background-color "transparent"`
-
-That is to make swww work properly.
-
-</details>
-</br>
-
 <details>
 <summary><strong>Usage</strong></summary>
 
@@ -132,15 +60,6 @@ That is to make swww work properly.
 qs
 ```
 
-(If you want to autostart it, just add it to your niri configuration.)
-
-It is recommended to set the following in your Niri configuration (hyprland equivalent):
-
-```
-window-rule {
-    geometry-corner-radius 20
-    clip-to-geometry true
-}
 ```
 
 ### Settings:
@@ -199,11 +118,9 @@ You will need to install a few things to get everything working:
 - `wallust` to theme the setup based on wallpaper (optional)
 
 ## zigstat and zigbrightness
-
 The zigstat and zigbrightness utilities are automatically built from source during release creation. Source code can be found [here](https://git.pika-os.com/wm-packages/pikabar/src/branch/main/src).
 
 ## Known issues
-
 It is perfect now
 
 ---
@@ -237,5 +154,4 @@ Thank you to everyone who supports me and this project 💜!
 ---
 
 ## License
-
 This project is licensed under the terms of the [MIT License](./LICENSE).
