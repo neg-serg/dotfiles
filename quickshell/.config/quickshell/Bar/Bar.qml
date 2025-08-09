@@ -73,6 +73,16 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
+                        DiagonalSeparatorRect {
+                            width: Math.round(15 * Theme.scale(panel.screen))
+                            height: barBackground.height + 60
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: "#BFC8D0"
+                            alpha: 0.05
+                            thickness: 7.0
+                            angleDeg: 30
+                        }
+
                         KeyboardLayoutHypr {
                             id: kbIndicator
                             deviceMatch: "dygma-defy-keyboard"
@@ -82,7 +92,7 @@ Scope {
                             // Align vertically to workspace widget, then fine-tune with yNudge if needed
                             anchors.verticalCenter: wsindicator.verticalCenter
                             // anchors.verticalCenter: parent.verticalCenter
-                            yNudge: 0  // tweak ±1 px if needed
+                            yNudge: -1  // tweak ±1 px if needed
                             // Match workspace icon softness and spacing
                             iconScale: 0.95
                             iconSpacing: Math.round(4 * Theme.scale(panel.screen))
