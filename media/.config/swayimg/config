@@ -1,83 +1,63 @@
-########################################
-# [general] — global behavior
-########################################
+# Global settings
 [general]
-# Start in viewer; overlay creates terminal-like preview over focused window (Sway/Hyprland)
 mode = viewer
-overlay = yes            # default is yes, but set explicitly
-position = auto          # ignored when overlay=yes
-size = image             # use first image/frame size
-decoration = no          # no server-side decorations
-
-# App identity and signal-controlled actions
+# Use overlay if supported by your version; otherwise delete next line.
+overlay = yes
+position = auto
+size = image
+decoration = no
 app_id = swayimg-preview
-sigusr1 = reload         # kill -USR1 $(pidof swayimg) -> reload current image
-sigusr2 = next_file      # kill -USR2 $(pidof swayimg) -> next image
+sigusr1 = reload
+sigusr2 = next_file
 
-# You can override any option from CLI:
-#   swayimg --config="viewer.scale=fill"
+# Split config into separate files (no equals sign!)
+include keys-viewer.conf
+include keys-gallery.conf
+include keys-slideshow.conf
 
-# Split config: keep keys in dedicated files
-include = keys-viewer.conf
-include = keys-gallery.conf
-include = keys-slideshow.conf
-
-########################################
-# [viewer] — single image behavior
-########################################
+# Single-image viewer tuning
 [viewer]
-# Smart background and transparency handling
-window = extend          # extend/mirror/#RRGGBBAA; "extend" blurs current img
-transparency = grid      # grid or solid color like #10101080
-
-# Initial scale/position and quality
-scale = optimal          # optimal|width|height|fit|fill|real|keep
-position = center        # or free/top_left/...
-antialiasing = mks13     # none|box|bilinear|bicubic|mks13 (best default)
+window = extend
+transparency = grid
+scale = optimal
+position = center
+antialiasing = mks13
 loop = yes
-history = 16             # back/forward cache
-preload = 8              # prefetch images in a separate thread
+history = 16
+preload = 8
 
-########################################
-# [slideshow]
-########################################
+# Slideshow
 [slideshow]
-time = 5                 # seconds
+time = 5
 window = mirror
 transparency = #00000080
 scale = fit
 position = center
 antialiasing = mks13
 
-########################################
-# [gallery] — thumbnail grid
-########################################
+# Gallery (thumbnail grid)
 [gallery]
-size = 256               # tile size
-cache = 400              # number of cached off-screen thumbs
-preload = yes            # prefetch adjacent thumbs
-pstore = yes             # persist thumbs to XDG_CACHE_HOME/swayimg
+size = 256
+cache = 400
+preload = yes
+pstore = yes
 fill = yes
 antialiasing = mks13
 window = #00000000
-background = #1f2937ff   # non-selected tile
-select = #334155ff       # selected tile bg
+background = #1f2937ff
+select = #334155ff
 border = #000000ff
 shadow = #000000ff
 
-########################################
-# [list] — how images are discovered/ordered
-########################################
+# Image list discovery/sorting
 [list]
-order = alpha            # none|alpha|numeric|mtime|size|random
+order = alpha
 reverse = no
-recursive = yes          # recurse directories
-all = no                 # add neighbors from the same dir when one file given
-fsmon = yes              # watch FS and update list automatically
+recursive = yes
+all = no
+fsmon = yes
 
-########################################
-# [font] — info/status text drawing
-########################################
+# Text and font
 [font]
 name = JetBrainsMono Nerd Font
 size = 14
@@ -85,37 +65,27 @@ color = #e5e7ebff
 shadow = #000000d0
 background = #00000000
 
-########################################
-# [info] — global text info behavior
-########################################
+# Info overlay defaults
 [info]
 show = yes
-info_timeout = 0         # 0 = always
+info_timeout = 0
 status_timeout = 3
 
-########################################
-# [info.viewer] — per-corner layouts (titles with '+')
-########################################
+# Per-mode info layouts (titles with '+')
 [info.viewer]
-top_left    = +name,+format,+filesize,+imagesize,+exif
-top_right   = +index,frame
+top_left = +name,+format,+filesize,+imagesize,+exif
+top_right = +index,frame
 bottom_left = +scale
-bottom_right= status
+bottom_right = status
 
-########################################
-# [info.gallery] — what to show in grid mode
-########################################
 [info.gallery]
-top_left    = +name
-top_right   = +imagesize
+top_left = +name
+top_right = +imagesize
 bottom_left = +index
-bottom_right= status
+bottom_right = status
 
-########################################
-# [info.slideshow]
-########################################
 [info.slideshow]
-top_left    = +name,+format
-top_right   = +index,frame
+top_left = +name,+format
+top_right = +index,frame
 bottom_left = +scale
-bottom_right= status
+bottom_right = status
