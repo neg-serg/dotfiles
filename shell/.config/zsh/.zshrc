@@ -8,8 +8,8 @@ if [[ -r "${XDG_CONFIG_HOME:-${HOME}/.config}/zi/init.zsh" ]]; then
   source "${XDG_CONFIG_HOME:-${HOME}/.config}/zi/init.zsh" && zzinit
 fi
 [[ -f /etc/NIXOS ]] && fpath=(${ZDOTDIR}/lazyfuncs ${XDG_CONFIG_HOME}/zsh-nix $fpath)
-zi light neg-serg/F-Sy-H
-FAST_HIGHLIGHT[use_async]=1
+zi ice atinit'typeset -gA FAST_HIGHLIGHT; FAST_HIGHLIGHT[use_async]=1' wait lucid
+zi load neg-serg/F-Sy-H
 zi ice atload"!source ${ZDOTDIR}/.p10k.zsh" lucid nocd
 zi light romkatv/powerlevel10k
 zi light romkatv/zsh-defer
