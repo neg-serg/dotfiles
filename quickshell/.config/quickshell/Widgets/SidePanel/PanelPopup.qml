@@ -117,7 +117,8 @@ PanelWithOverlay {
         height: 660 * Theme.scale(screen)
         visible: parent.visible
         color: "transparent"
-        anchors.top: parent.top
+        anchors.top: Settings.settings.barPosition === "top" ? parent.top : undefined
+        anchors.bottom: Settings.settings.barPosition === "bottom" ? parent.bottom : undefined
         anchors.right: parent.right
         // Clean up processes on destruction
         Component.onDestruction: {

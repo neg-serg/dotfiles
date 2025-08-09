@@ -130,9 +130,11 @@ PanelWithOverlay {
         implicitWidth: 400
         implicitHeight: Math.max(Math.min(contentHeight, maxPopupHeight), minPopupHeight)
         visible: parent.visible
-        anchors.top: parent.top
+        anchors.top: Settings.settings.barPosition === "top" ? parent.top : undefined
+        anchors.bottom: Settings.settings.barPosition === "bottom" ? parent.bottom : undefined
         anchors.right: parent.right
-        anchors.topMargin: 4
+        anchors.topMargin: Settings.settings.barPosition === "top" ? 4 : 0
+        anchors.bottomMargin: Settings.settings.barPosition === "bottom" ? 4 : 0
         anchors.rightMargin: 4
         color: Theme.backgroundPrimary
         radius: 20

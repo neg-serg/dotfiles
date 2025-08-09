@@ -7,6 +7,8 @@ PanelWindow {
     id: outerPanel
     property bool showOverlay: Settings.settings.dimPanels
     property int topMargin: 36 * Theme.scale(screen)
+    property int bottomMargin: 36 * Theme.scale(screen)
+    property string barPosition: Settings.settings.barPosition || "bottom"
     property color overlayColor: showOverlay ? Theme.overlay : "transparent"
     
     function dismiss() {
@@ -27,7 +29,8 @@ PanelWindow {
     anchors.left: true
     anchors.right: true
     anchors.bottom: true
-    margins.top: topMargin
+    margins.top: barPosition === "top" ? topMargin : 0
+    margins.bottom: barPosition === "bottom" ? bottomMargin : 0
 
     MouseArea {
         anchors.fill: parent

@@ -14,10 +14,12 @@ PanelWindow {
     implicitHeight: 780 * Theme.scale(screen)
     visible: false
     color: "transparent"
-    anchors.top: true
+    anchors.top: Settings.settings.barPosition === "top"
+    anchors.bottom: Settings.settings.barPosition === "bottom"
     anchors.right: true
-    margins.right: 0
     margins.top: 0
+    margins.bottom: 0
+    margins.right: 0
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
     // Signal to request weather refresh
