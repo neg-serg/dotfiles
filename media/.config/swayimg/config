@@ -1,20 +1,24 @@
 [general]
-mode = viewer # Startup mode: viewer | slideshow | gallery
-decoration = no # Show window decorations (borders, titlebar)
+# Startup mode: viewer | slideshow | gallery
+mode = viewer
+# Show window decorations (borders, titlebar)
+decoration = no
 # Actions for SIGUSR1/SIGUSR2
 sigusr1 = reload
 sigusr2 = next_file
 # Wayland app_id
 app_id = swayimg
 size = 1200,800
-position = auto # Window position: auto | X,Y
 
 [viewer]
-window = extend # Background fill: auto | extend | mirror | #RGBA
-transparency = #080A14F7 # Background for transparent images
-scale = optimal # Initial zoom: optimal | width | height | fit | fill | real | keep
-position = center # Image alignment
-antialiasing = mks13 # Anti-aliasing: none | box | bilinear | bicubic | mks13
+# Background fill: auto | extend | mirror | #RGBA
+window = extend
+# Background for transparent images
+transparency = #0A14F708
+# Initial zoom: optimal | width | height | fit | fill | real | keep
+scale = optimal
+# Image alignment
+position = center
 # Image loop and preloading
 loop = yes
 history = 4
@@ -26,12 +30,18 @@ time = 3
 # (other options same as in [viewer] if needed)
 
 [gallery]
-size = 200 # Thumbnail size in pixels
-cache = 8000 # Cache size for thumbnails
-preload = yes # Preload thumbnails
-pstore = yes # Persistent storage for thumbnails
-fill = yes # Fill thumbnails to cell size
-antialiasing = mks13 # Anti-aliasing for thumbnails
+# Thumbnail size in pixels
+size = 200
+# Cache size for thumbnails
+cache = 200
+# Preload thumbnails
+preload = yes
+# Persistent storage for thumbnails
+pstore = yes
+# Fill thumbnails to cell size
+fill = yes
+# Anti-aliasing for thumbnails
+antialiasing = mks13
 # Colors
 window = #00000000
 background = #202020ff
@@ -43,20 +53,30 @@ shadow = #000000ff
 # File order: none | alpha | numeric | mtime | size | random
 order = alpha
 reverse = no
-recursive = no # Search subdirectories
-all = no # Include hidden files
-fsmon = yes # Monitor FS changes and update list automatically
+# Search subdirectories
+recursive = no
+# Include hidden files
+all = no
+# Monitor FS changes and update list automatically
+fsmon = yes
 
 [font]
-name = Iosevka # Font name
-size = 14 # Font size in px
-color = #ccccccff # Font color
-shadow = #000000d0 # Text shadow
-background = #00000000 # Font background
+# Font name
+name = monospace
+# Font size in px
+size = 14
+# Font color
+color = #ccccccff
+# Text shadow
+shadow = #000000d0
+# Font background
+background = #00000000
 
 [info]
-show = yes # Show info overlay
-info_timeout = 5 # Timeouts for info/status (seconds)
+# Show info overlay
+show = yes
+# Timeouts for info/status (seconds)
+info_timeout = 5
 status_timeout = 3
 
 [info.viewer]
@@ -82,8 +102,6 @@ p        = prev_file
 g        = first_file
 G        = last_file
 # Zoom and panning
-=        = zoom +10
--        = zoom -10
 0        = zoom real
 h        = step_left
 l        = step_right
@@ -107,9 +125,6 @@ k        = step_up
 j        = step_down
 PageUp   = page_up
 PageDown = page_down
-# Change thumbnail size
-=        = thumb +16
--        = thumb -16
 # Misc
 r        = reload
 i        = info
