@@ -23,6 +23,7 @@ in
 {
   home.packages = with pkgs; [
     cantarell-fonts
+    cava
     kdePackages.kdialog
     kdePackages.qt5compat # needed for Qt5Compat modules in Qt6
     kdePackages.qtdeclarative # Qt6
@@ -38,6 +39,7 @@ in
     kdePackages.qtwayland
     kdePackages.syntax-highlighting
     material-symbols
+    networkmanager
     qt6.qtimageformats
     qt6.qtsvg
     quickshellWrapped
