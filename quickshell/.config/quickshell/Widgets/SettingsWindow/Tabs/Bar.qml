@@ -35,24 +35,6 @@ ColumnLayout {
             }
 
             ToggleOption {
-                label: "Show Active Window"
-                description: "Display the title of the currently focused window below the bar"
-                value: Settings.settings.showActiveWindow
-                onToggled: function() {
-                    Settings.settings.showActiveWindow = !Settings.settings.showActiveWindow;
-                }
-            }
-
-            ToggleOption {
-                label: "Show Active Window Icon"
-                description: "Display the icon of the currently focused window"
-                value: Settings.settings.showActiveWindowIcon
-                onToggled: function() {
-                    Settings.settings.showActiveWindowIcon = !Settings.settings.showActiveWindowIcon;
-                }
-            }
-
-            ToggleOption {
                 label: "Show System Info"
                 description: "Display system information (CPU, RAM, Temperature)"
                 value: Settings.settings.showSystemInfoInBar

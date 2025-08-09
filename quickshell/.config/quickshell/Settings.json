@@ -21,8 +21,6 @@
     "recordingFrameRate": 60,
     "recordingQuality": "very_high",
     "reverseDayMonth": false,
-    "showActiveWindow": true,
-    "showActiveWindowIcon": false,
     "showCursor": true,
     "showDock": false,
     "showMediaInBar": true,

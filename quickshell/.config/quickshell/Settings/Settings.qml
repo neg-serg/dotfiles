@@ -44,8 +44,6 @@ Singleton {
             property string wallpaperFolder: "~/pic/wl/"
             property string currentWallpaper: ""
             property string videoPath: "~/vid/"
-            property bool showActiveWindow: false
-            property bool showActiveWindowIcon: false
             property bool showSystemInfoInBar: false
             property bool showMediaInBar: false
             property bool useSWWW: false
