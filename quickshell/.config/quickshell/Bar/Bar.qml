@@ -14,24 +14,19 @@ import qs.Widgets
 import qs.Widgets.Notification
 import qs.Widgets.SidePanel
 
-// Main bar component - creates panels on selected monitors with widgets and corners
 Scope {
     id: rootScope
-
     property var shell
     property alias visible: barRootItem.visible
 
     Item {
         id: barRootItem
-
         anchors.fill: parent
 
         Variants {
             model: Quickshell.screens
-
             Item {
                 property var modelData
-
                 PanelWindow {
                     id: panel
                     screen: modelData
@@ -75,7 +70,6 @@ Scope {
 
                     Workspace {
                         id: workspace
-
                         screen: modelData
                         anchors.horizontalCenter: barBackground.horizontalCenter
                         anchors.verticalCenter: barBackground.verticalCenter
@@ -83,7 +77,6 @@ Scope {
 
                     Row {
                         id: rightWidgetsRow
-
                         anchors.verticalCenter: barBackground.verticalCenter
                         anchors.right: barBackground.right
                         anchors.rightMargin: 18 * Theme.scale(panel.screen)
@@ -91,7 +84,6 @@ Scope {
 
                         SystemTray {
                             id: systemTrayModule
-
                             shell: rootScope.shell
                             anchors.verticalCenter: parent.verticalCenter
                             bar: panel
@@ -117,7 +109,6 @@ Scope {
 
                         Battery {
                             id: widgetsBattery
-
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
@@ -149,11 +140,9 @@ Scope {
 
                 Loader {
                     active: (Settings.settings.barMonitors.length === 0))
-
                     sourceComponent: Item {
                         PanelWindow {
                             id: topLeftPanel
-
                             anchors.top: true
                             anchors.left: true
                             color: "transparent"
@@ -164,23 +153,10 @@ Scope {
                             WlrLayershell.namespace: "swww-daemon"
                             aboveWindows: false
                             implicitHeight: 24
-
-                            Corner {
-                                id: topLeftCorner
-
-                                position: "bottomleft"
-                                size: 1.3
-                                fillColor: (Theme.backgroundPrimary !== undefined && Theme.backgroundPrimary !== null) ? Theme.backgroundPrimary : "#222"
-                                offsetX: -39
-                                offsetY: 0
-                                anchors.top: parent.top
-                            }
-
                         }
 
                         PanelWindow {
                             id: topRightPanel
-
                             anchors.top: true
                             anchors.right: true
                             color: "transparent"
@@ -191,23 +167,10 @@ Scope {
                             WlrLayershell.namespace: "swww-daemon"
                             aboveWindows: false
                             implicitHeight: 24
-
-                            Corner {
-                                id: topRightCorner
-
-                                position: "bottomright"
-                                size: 1.3
-                                fillColor: (Theme.backgroundPrimary !== undefined && Theme.backgroundPrimary !== null) ? Theme.backgroundPrimary : "#222"
-                                offsetX: 39
-                                offsetY: 0
-                                anchors.top: parent.top
-                            }
-
                         }
 
                         PanelWindow {
                             id: bottomLeftPanel
-
                             anchors.bottom: true
                             anchors.left: true
                             color: "transparent"
@@ -217,23 +180,10 @@ Scope {
                             WlrLayershell.namespace: "swww-daemon"
                             aboveWindows: false
                             implicitHeight: 24
-
-                            Corner {
-                                id: bottomLeftCorner
-
-                                position: "topleft"
-                                size: 1.3
-                                fillColor: Theme.backgroundPrimary
-                                offsetX: -39
-                                offsetY: 0
-                                anchors.top: parent.top
-                            }
-
                         }
 
                         PanelWindow {
                             id: bottomRightPanel
-
                             anchors.bottom: true
                             anchors.right: true
                             color: "transparent"
@@ -243,28 +193,10 @@ Scope {
                             WlrLayershell.namespace: "swww-daemon"
                             aboveWindows: false
                             implicitHeight: 24
-
-                            Corner {
-                                id: bottomRightCorner
-
-                                position: "topright"
-                                size: 1.3
-                                fillColor: Theme.backgroundPrimary
-                                offsetX: 39
-                                offsetY: 0
-                                anchors.top: parent.top
-                            }
-
                         }
-
                     }
-
                 }
-
             }
-
         }
-
     }
-
 }
