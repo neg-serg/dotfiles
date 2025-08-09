@@ -6,6 +6,17 @@
 }:
 with {
   alkano-aio = pkgs.callPackage ./alkano-aio.nix {};
+  mergedIcons = pkgs.buildEnv {
+    name = "merged-icons";
+    paths = [
+      pkgs.kora-icon-theme          # put first = wins on conflicts
+      pkgs.kdePackages.breeze-icons
+    ];
+    pathsToLink = [ "/share/icons" ];
+    ignoreCollisions = true;
+  };
+
+
 }; {
   home.packages = with pkgs; [
     adw-gtk3 # adwaita port to gtk3
@@ -41,7 +52,7 @@ with {
   qt = {
     platformTheme = "qt6ct";
   };
-  
+
   gtk = {
     enable = true;
 
@@ -58,7 +69,7 @@ with {
 
     iconTheme = {
       name = "kora";
-      package = pkgs.kora-icon-theme;
+      package = mergedIcons;
     };
 
     gtk3 = {
