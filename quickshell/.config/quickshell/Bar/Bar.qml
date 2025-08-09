@@ -64,13 +64,6 @@ Scope {
                         }
                     }
 
-                    Workspace {
-                        id: workspace
-                        screen: modelData
-                        anchors.horizontalCenter: barBackground.horizontalCenter
-                        anchors.verticalCenter: barBackground.verticalCenter
-                    }
-
                     Row {
                         id: rightWidgetsRow
                         anchors.verticalCenter: barBackground.verticalCenter

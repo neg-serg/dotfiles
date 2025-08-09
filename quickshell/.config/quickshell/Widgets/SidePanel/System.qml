@@ -19,25 +19,6 @@ Rectangle {
     property bool panelVisible: false
     property var settingsModal: null
  
-    function logout() {
-        if (WorkspaceManager.isHyprland)
-            logoutProcessHyprland.running = true;
-        else
-            console.warn("No supported compositor detected for logout");
-    }
- 
-    function suspend() {
-        suspendProcess.running = true;
-    }
- 
-    function shutdown() {
-        shutdownProcess.running = true;
-    }
- 
-    function reboot() {
-        rebootProcess.running = true;
-    }
- 
     function updateSystemInfo() {
         uptimeProcess.running = true;
     }
