@@ -53,17 +53,12 @@ Scope {
         Quickshell.shell = root;
     }
 
-    Background {}
     Overview {}
 
     Bar {
         id: bar
         shell: root
         property var notificationHistoryWin: notificationHistoryLoader.active ? notificationHistoryLoader.item : null
-    }
-
-    Dock {
-        id: dock
     }
 
     Applauncher {

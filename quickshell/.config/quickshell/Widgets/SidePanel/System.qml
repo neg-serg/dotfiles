@@ -20,9 +20,7 @@ Rectangle {
     property var settingsModal: null
  
     function logout() {
-        if (WorkspaceManager.isNiri)
-            logoutProcessNiri.running = true;
-        else if (WorkspaceManager.isHyprland)
+        if (WorkspaceManager.isHyprland)
             logoutProcessHyprland.running = true;
         else
             console.warn("No supported compositor detected for logout");
@@ -554,13 +552,6 @@ Rectangle {
         id: suspendProcess
  
         command: ["systemctl", "suspend"]
-        running: false
-    }
- 
-    Process {
-        id: logoutProcessNiri
- 
-        command: ["niri", "msg", "action", "quit", "--skip-confirmation"]
         running: false
     }
  

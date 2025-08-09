@@ -12,7 +12,6 @@ Singleton {
 
     property ListModel workspaces: ListModel {}
     property bool isHyprland: false
-    property bool isNiri: false
     property var hlWorkspaces: Hyprland.workspaces.values
     // Detect which compositor we're using
     Component.onCompleted: {
@@ -26,20 +25,11 @@ Singleton {
                 if (Hyprland.eventSocketPath) {
                     console.log("Detected Hyprland compositor");
                     isHyprland = true;
-                    isNiri = false;
                     initHyprland();
                     return;
                 }
             } catch (e) {
                 console.log("Hyprland not available:", e);
-            }
-            
-            if (typeof Niri !== "undefined") {
-                console.log("Detected Niri service");
-                isHyprland = false;
-                isNiri = true;
-                initNiri();
-                return;
             }
             
             console.log("No supported compositor detected");
@@ -102,49 +92,12 @@ Singleton {
         }
     }
 
-    function initNiri() {
-        updateNiriWorkspaces();
-    }
-
-    Connections {
-        target: Niri
-        function onWorkspacesChanged() { 
-            updateNiriWorkspaces();
-        }
-    }
-
-    function updateNiriWorkspaces() {
-        const niriWorkspaces = Niri.workspaces || [];
-        workspaces.clear();
-        for (let i = 0; i < niriWorkspaces.length; i++) {
-            const ws = niriWorkspaces[i];
-            workspaces.append({
-                id: ws.id,
-                idx: ws.idx || 1,
-                name: ws.name || "",
-                output: ws.output || "",
-                isFocused: ws.isFocused === true,
-                isActive: ws.isActive === true,
-                isUrgent: ws.isUrgent === true,
-                isOccupied: ws.isOccupied === true,
-            });
-        }
-        
-        workspacesChanged();
-    }
-
     function switchToWorkspace(workspaceId) {    
         if (isHyprland) {
             try {
                 Hyprland.dispatch(`workspace ${workspaceId}`);
             } catch (e) {
                 console.error("Error switching Hyprland workspace:", e);
-            }
-        } else if (isNiri) {
-            try {
-                Quickshell.execDetached(["niri", "msg", "action", "focus-workspace", workspaceId.toString()]);
-            } catch (e) {
-                console.error("Error switching Niri workspace:", e);
             }
         } else {
             console.warn("No supported compositor detected for workspace switching");
