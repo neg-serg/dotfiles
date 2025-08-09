@@ -137,14 +137,6 @@ PanelWithOverlay {
 
     }
 
-    Component {
-        id: wallpaperSettings
-
-        Wallpaper {
-        }
-
-    }
-
     Rectangle {
         id: settingsWindowRect
 
