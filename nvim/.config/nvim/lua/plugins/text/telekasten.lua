@@ -1,7 +1,7 @@
 -- ┌───────────────────────────────────────────────────────────────────────────────────┐
 -- │ █▓▒░ renerocksai/telekasten.nvim                                                  │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
-return {'renerocksai/telekasten.nvim', ft='md', -- better md wiki stuff
+return {'renerocksai/telekasten.nvim', ft='markdown', -- better md wiki stuff
         config=function()
             local home=vim.fn.expand("~/1st_level")
             local status, telekasten = pcall(require, 'telekasten')
