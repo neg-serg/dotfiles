@@ -8,14 +8,22 @@ if [[ -r "${XDG_CONFIG_HOME:-${HOME}/.config}/zi/init.zsh" ]]; then
   source "${XDG_CONFIG_HOME:-${HOME}/.config}/zi/init.zsh" && zzinit
 fi
 [[ -f /etc/NIXOS ]] && fpath=(${ZDOTDIR}/lazyfuncs ${XDG_CONFIG_HOME}/zsh-nix $fpath)
-zi ice atinit'typeset -gA FAST_HIGHLIGHT; FAST_HIGHLIGHT[use_async]=1' wait lucid
-zi load neg-serg/F-Sy-H
-zi ice atload"!source ${ZDOTDIR}/.p10k.zsh" lucid nocd
-zi light romkatv/powerlevel10k
+
+# zsh-defer first (so calls won’t fail)
+zi ice depth'1' lucid
 zi light romkatv/zsh-defer
+typeset -f zsh-defer >/dev/null || zsh-defer() { "$@"; }
+# F-Sy-H (deferred to next prompt is fine)
+zi ice depth'1' lucid atinit'typeset -gA FAST_HIGHLIGHT; FAST_HIGHLIGHT[use_async]=1' wait'0'
+zi load neg-serg/F-Sy-H
+# P10k — NO wait here -> shows on first prompt
+zi ice lucid atload'[[ -r ${ZDOTDIR}/.p10k.zsh ]] && source ${ZDOTDIR}/.p10k.zsh'
+zi light romkatv/powerlevel10k
+# Utilities (deferred)
+zi ice depth'1' lucid wait'0'
 zi light QuarticCat/zsh-smartcache
 zi light Tarrasch/zsh-functional
-zi ice wait'!0'
+
 source "${ZDOTDIR}/01-init.zsh"
 for file in {02-cmds,03-completion,04-bindings}; do
   zsh-defer source "${ZDOTDIR}/$file.zsh"
