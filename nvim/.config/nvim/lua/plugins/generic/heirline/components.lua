@@ -543,38 +543,8 @@ return function(ctx)
     }),
   }
   
-  -- ── Winbar ────────────────────────────────────────────────────────────────
-  local Winbar = {
-    fallthrough = false,
-    {
-      condition = function() return vim.bo.buftype == '' end,
-      utils.surround({ ' ', ' ' }, colors.base_bg, {
-        provider = prof('winbar.path', function()
-          local p = fn.expand('%:~:.')
-          local parts = vim.split(p, '/', { plain = true })
-          if #parts > 3 and api.nvim_win_get_width(0) >= 90 then
-            for i = 1, #parts - 2 do parts[i] = parts[i]:sub(1, 1) end
-            p = table.concat(parts, '/')
-          else
-            p = fn.pathshorten(p)
-          end
-          return p
-        end),
-        hl = function() return { fg = colors.white, bg = colors.base_bg } end,
-      }),
-    },
-    {
-      provider = prof('winbar.special', function()
-        local label, icon = ft_label_and_icon()
-        return string.format(' %s %s ', icon or '[*]', label or 'Special')
-      end),
-      hl = function() return { fg = colors.yellow, bg = colors.base_bg } end,
-    },
-  }
-  
   return {
     statusline = { fallthrough = false, TinyStatusline, SpecialBuffer, DefaultStatusline },
-    winbar = Winbar,
     SPECIAL_FT = SPECIAL_FT,
   }
 end

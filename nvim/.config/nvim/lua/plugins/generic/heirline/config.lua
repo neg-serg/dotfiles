@@ -305,23 +305,12 @@ return function()
           return
         end
         local statusline = parts.statusline
-        local winbar = parts.winbar
         local SPECIAL_FT = parts.SPECIAL_FT
 
         -- Setup
         heir.setup({
           statusline = statusline,
-          winbar = winbar,
-          opts = {
-            disable_winbar_cb = function(args)
-              if not (args and buf_valid(args.buf)) then return false end
-              local disable = safe_buffer_matches({
-                buftype = { 'nofile','prompt','help','quickfix','terminal' },
-                filetype = SPECIAL_FT,
-              }, args.buf)
-              return disable == true
-            end,
-          },
+          opts = {},
         })
 
         -- Sync HL + autos
