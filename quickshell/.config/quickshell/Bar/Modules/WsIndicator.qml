@@ -17,9 +17,7 @@ Item {
     implicitWidth: label.implicitWidth
     implicitHeight: label.implicitHeight
 
-    // -----------------------
     // Environment helpers
-    // -----------------------
     function hyprSig() {
         // Hyprland instance signature; empty if not present
         return Quickshell.env("HYPRLAND_INSTANCE_SIGNATURE") || "";
@@ -38,9 +36,7 @@ Item {
         return sig ? ["HYPRLAND_INSTANCE_SIGNATURE=" + sig] : null;
     }
 
-    // -----------------------
     // Accent palette (safe defaults; override if needed)
-    // -----------------------
     property color iconColor: "#3b7bb3"       // very light cool grey-blue
     property color gothicColor: "#D6DFE6"     // almost airy grey-blue
     property color separatorColor: "#8d9eb2"
@@ -93,25 +89,21 @@ Item {
         ? decorateName(wsName)
         : (wsId >= 0 ? String(wsId) : "?")
 
-    // -----------------------
     // UI
-    // -----------------------
     Label {
         id: label
-        textFormat: Text.RichText         // enable HTML spans
+        textFormat: Text.RichText
         renderType: Text.NativeRendering
         text: displayText
-        font.bold: true
         font.family: Theme.fontFamily
+        font.weight: Font.Medium
         font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
-        color: Theme.textPrimary          // base color for non-decorated text
+        color: Theme.textPrimary // base color for non-decorated text
         padding: 6
     }
 
-    // -----------------------
     // Live events via socket2
     // Uses `socat` to stream events; replace with `ncat -U` if you prefer.
-    // -----------------------
     Process {
         id: eventMonitor
         command: ["socat", "-u", "UNIX-CONNECT:" + socketPath(), "-"]
@@ -176,9 +168,7 @@ Item {
         Component.onCompleted: running = true
     }
 
-    // -----------------------
     // One-shot refresh using hyprctl (JSON)
-    // -----------------------
     Process {
         id: getCurrentWS
         command: ["hyprctl", "-j", "activeworkspace"]
