@@ -1,9 +1,8 @@
 {
-    "fontFamily": "Iosevka",
     "accentPrimary": "#A8AEFF",
     "accentSecondary": "#9EA0FF",
     "accentTertiary": "#8EABFF",
-    "backgroundPrimary": "#000000",
+    "backgroundPrimary": "#ef000000",
     "backgroundSecondary": "#151720",
     "backgroundTertiary": "#1D202B",
     "error": "#FF6B81",
