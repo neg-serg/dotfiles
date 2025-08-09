@@ -62,11 +62,12 @@ Scope {
                         anchors.leftMargin: 18 * Theme.scale(panel.screen)
                         spacing: 12 * Theme.scale(panel.screen)
 
-                        SystemInfo {
+                        ClockWidget {
+                            screen: modelData
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        Media {
+                        SystemInfo {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
@@ -142,11 +143,6 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        ClockWidget {
-                            screen: modelData
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
                         PanelPopup {
                             id: sidebarPopup
 
@@ -158,6 +154,10 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                             screen: modelData
                             sidebarPopup: sidebarPopup
+                        }
+
+                        Media {
+                            anchors.verticalCenter: parent.verticalCenter
                         }
 
                     }
