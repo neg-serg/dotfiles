@@ -1,0 +1,22 @@
+[general]
+mode = viewer
+position = parent
+size = image
+
+[viewer]
+scale = fit
+antialiasing = yes
+slideshow = no
+
+[info.viewer]
+top_left = +name,+format
+bottom_left = scale
+bottom_right = status
+
+[keys.viewer]
+q = quit
+h = step_left
+l = step_right
++ = zoom_in
+- = zoom_out
+r = reload

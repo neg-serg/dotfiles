@@ -20,6 +20,7 @@ in {
     
     # █▓▒░ media ────────────────────────────────────────────────────────────────────────
     "nsxiv" = mkSymlink "media/.config/nsxiv" true;
+    "swayimg" = mkSymlink "media/.config/swayimg" true;
     
     # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
     "amfora" = mkSymlink "misc/.config/amfora" true;
