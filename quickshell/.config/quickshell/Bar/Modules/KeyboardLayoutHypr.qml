@@ -24,7 +24,7 @@ Item {
     // Icon (match workspace look)
     property real   iconScale: 1.0
     property int    iconSpacing: 4
-    property color  iconColor: useTheme && Theme.gothicColor ? Theme.gothicColor : "#D6DFE6"
+    property color  iconColor: "#8d9eb2"
 
     // Colors
     property color  bgColor:      useTheme ? Theme.backgroundPrimary : "#1e293b"
