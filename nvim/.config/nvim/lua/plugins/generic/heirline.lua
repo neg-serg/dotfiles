@@ -67,16 +67,11 @@ return {
           -- ───────────────────────────────────────────────────────────────────────────
 
           -- ── Compatibility toggles & symbols ────────────────────────────────────────
-          -- User can set before loading: vim.g.heirline_use_icons = false
           local USE_ICONS = vim.g.heirline_use_icons
           if USE_ICONS == nil then
-            -- heuristics: env var or have_nerd_font / default true
             USE_ICONS = not (vim.env.NERD_FONT == '0') and (vim.g.have_nerd_font == true or true)
           end
-
-          -- Global env indicator (off by default): vim.g.heirline_env_indicator = true
           local SHOW_ENV = vim.g.heirline_env_indicator == true
-
           local function I(icons, ascii) return USE_ICONS and icons or ascii end
           local S = {
             folder   = I('','[dir]'),
@@ -98,6 +93,9 @@ return {
             pilcrow  = I(' ¶',' ¶'),
             wrap     = I(' ⤶',' ↩'),
             doc      = I('','[buf]'),
+            plus     = I('','+'),
+            tilde    = I('󰜥','~'),
+            minus    = I('','-'),
           }
           -- ───────────────────────────────────────────────────────────────────────────
 
@@ -123,7 +121,7 @@ return {
             if vim.notify then vim.notify(msg, lvl or vim.log.levels.INFO, { title = 'Heirline' }) end
           end
 
-          -- Env mini-indicator (SSH / WSL / GUI)
+          -- Env mini-indicator
           local function env_label()
             local parts = {}
             if vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT then table.insert(parts, 'SSH') end
@@ -135,7 +133,7 @@ return {
           end
 
           -- Openers
-          local open_file_browser_cwd = function()
+          local function open_file_browser_cwd()
             local cwd = fn.getcwd()
             if has_mod('oil') then
               vim.cmd('Oil ' .. fn.fnameescape(cwd))
@@ -147,7 +145,7 @@ return {
               vim.cmd('Ex ' .. fn.fnameescape(cwd))
             end
           end
-          local open_git_ui = function()
+          local function open_git_ui()
             if has_mod('telescope') and require('telescope.builtin').git_branches then
               return require('telescope.builtin').git_branches()
             end
@@ -156,7 +154,7 @@ return {
             notify('No git UI found (telescope/neogit/fugitive not available)', vim.log.levels.WARN)
             dbg_push('git click: no UI')
           end
-          local open_diagnostics_list = function()
+          local function open_diagnostics_list()
             if has_mod('trouble') then
               local ok = pcall(require('trouble').toggle, { mode = 'document_diagnostics' })
               if not ok then pcall(require('trouble').toggle, { mode = 'workspace_diagnostics' }) end
@@ -165,31 +163,78 @@ return {
             end
           end
 
-          -- Special types (icons kept; labels важнее при ASCII)
+          -- ── Special types (expanded) + SPECIAL_FT builder (оставлено как было ранее) ─
           local FT_ICON = {
             help={'','Help'}, quickfix={'','Quickfix'}, terminal={'','Terminal'}, prompt={'','Prompt'}, nofile={'','Scratch'},
             TelescopePrompt={'','Telescope'}, TelescopeResults={'','Telescope'},
-            fzf={'','FZF'}, ['fzf-lua']={'','FZF'},
-            NvimTree={'','Explorer'}, ['neo-tree']={'','Neo-tree'}, Neotree={'','Neo-tree'},
-            oil={'','Oil'}, dirbuf={'','Dirbuf'}, lir={'','Lir'},
+            fzf={'','FZF'}, ['fzf-lua']={'','FZF'}, ['fzf-checkmarks']={'','FZF'},
+            ['grug-far']={'󰈞','GrugFar'}, Spectre={'','Spectre'}, spectre_panel={'','Spectre'}, ['spectre-replace']={'','Spectre'},
+            NvimTree={'','Explorer'}, ['neo-tree']={'','Neo-tree'}, Neotree={'','Neo-tree'}, ['neo-tree-popup']={'','Neo-tree'},
+            oil={'','Oil'}, dirbuf={'','Dirbuf'}, lir={'','Lir'}, fern={'','Fern'}, chadtree={'','CHADTree'},
+            defx={'','Defx'}, ranger={'','Ranger'}, vifm={'','Vifm'}, minifiles={'','MiniFiles'}, mf={'','MiniFiles'},
+            vaffle={'','Vaffle'}, netrw={'','Netrw'}, explore={'','Explore'}, dirvish={'','Dirvish'}, yazi={'','Yazi'},
             fugitive={'','Fugitive'}, fugitiveblame={'','Git Blame'},
             DiffviewFiles={'','Diffview'}, DiffviewFileHistory={'','Diffview'},
             gitcommit={'','Commit'}, gitrebase={'','Rebase'}, gitconfig={'','Git Config'},
+            NeogitCommitMessage={'','Neogit'}, NeogitStatus={'','Neogit'}, gitgraph={'','GitGraph'},
+            gitstatus={'','GitStatus'}, lazygit={'','LazyGit'}, gitui={'','GitUI'},
             lazy={'󰒲','Lazy'}, mason={'󰏖','Mason'}, notify={'','Notify'}, noice={'','Noice'},
-            toggleterm={'','Terminal'}, Outline={'','Outline'}, aerial={'','Aerial'},
-            ['symbols-outline']={'','Symbols'}, lspinfo={'','LSP Info'}, checkhealth={'','Health'},
-            spectre_panel={'','Spectre'}, OverseerList={'','Overseer'}, Trouble={'','Trouble'},
-            qf={'','Quickfix'}, man={'','Man'}, alpha={'','Alpha'}, dashboard={'','Dashboard'},
-            Floaterm={'','Terminal'}, startify={'','Startify'}, helpview={'','Help'},
-            markdown_preview={'','Preview'}, httpResult={'','HTTP'}, OutlinePanel={'','Outline'},
+            ['noice-log']={'','Noice'}, ['noice-history']={'','Noice'},
+            toggleterm={'','Terminal'}, Floaterm={'','Terminal'}, FTerm={'','FTerm'}, termwrapper={'','TermWrap'},
+            Outline={'','Outline'}, aerial={'','Aerial'}, ['symbols-outline']={'','Symbols'}, OutlinePanel={'','Outline'},
+            lspinfo={'','LSP Info'}, checkhealth={'','Health'}, OverseerList={'','Overseer'}, Overseer={'','Overseer'},
+            Trouble={'','Trouble'}, ['trouble']={'','Trouble'},
+            alpha={'','Alpha'}, dashboard={'','Dashboard'}, startify={'','Startify'}, ['start-screen']={'','Start'},
+            helpview={'','Help'}, todo_comments={'','TODO'}, comment_box={'','CommentBox'},
+            markdown_preview={'','Preview'}, glow={'','Glow'}, peek={'','Peek'},
+            httpResult={'','HTTP'}, ['rest-nvim']={'','REST'},
             neoformat={'','Neoformat'}, undotree={'','Undotree'}, tagbar={'','Tagbar'}, vista={'','Vista'},
             octo={'','Octo'}, harpoon={'󰛢','Harpoon'}, which_key={'','WhichKey'},
+            snacks_dashboard={'','Dashboard'}, snacks_notifier={'','Notify'}, snacks_indent={'','Indent'},
+            zen_mode={'','Zen'}, goyo={'','Goyo'}, twilight={'','Twilight'},
+            SagaOutline={'','Lspsaga'}, saga_codeaction={'','Code Action'}, SagaRename={'','Rename'},
+            ['lspsaga-code-action']={'','Code Action'}, ['lspsaga-outline']={'','Lspsaga'},
+            conform_info={'','Conform'}, ['null-ls-info']={'','Null-LS'}, ['diagnostic-navigator']={'','Diagnostics'},
             dapui_scopes={'','DAP Scopes'}, dapui_breakpoints={'','DAP Breakpoints'},
             dapui_stacks={'','DAP Stacks'}, dapui_watches={'','DAP Watches'},
-            ['dap-repl']={'','DAP REPL'}, dapui_console={'','DAP Console'},
+            ['dap-repl']={'','DAP REPL'}, dapui_console={'','DAP Console'}, dapui_hover={'','DAP Hover'},
+            dap_floating={'','DAP Float'},
             ['neotest-summary']={'','Neotest'}, ['neotest-output']={'','Neotest'}, ['neotest-output-panel']={'','Neotest'},
-            Overseer={'','Overseer'}, FTerm={'','FTerm'}, termwrapper={'','TermWrap'},
+            copilot={'','Copilot'}, ['copilot-chat']={'','Copilot Chat'},
+            ipython={'','IPython'}, python={'','Python'}, node={'','Node'}, lua={'','Lua'},
+            r={'󰟔','R'}, R={'󰟔','R'}, deno={'','Deno'}, bash={'','Bash'},
+            nmtui={'','nmtui'}, htop={'','htop'}, btop={'','btop'}, gpick={'','gpick'},
+            calc={'','calc'}, calendar={'','Calendar'}, orgagenda={'','OrgAgenda'},
+            ['vim-plug']={'','vim-plug'},
           }
+          local function build_special_list()
+            local base = {
+              'qf','help','man','lspinfo','checkhealth','undotree','tagbar','vista','which_key',
+              'TelescopePrompt','TelescopeResults','fzf','fzf%-lua','fzf%-checkmarks','grug%-far','Spectre','spectre_panel','spectre%-replace',
+              'NvimTree','neo%-tree','Neotree','neo%-tree%-popup','oil','dirbuf','lir','fern','chadtree','defx','ranger','vifm','minifiles','mf','vaffle','netrw','explore','dirvish','yazi',
+              '^git.*','fugitive','fugitiveblame','DiffviewFiles','DiffviewFileHistory','gitcommit','gitrebase','gitconfig',
+              'NeogitCommitMessage','NeogitStatus','gitgraph','gitstatus','lazygit','gitui',
+              'lazy','mason','notify','noice','noice%-log','noice%-history','toggleterm','Floaterm','FTerm','termwrapper',
+              'Outline','aerial','symbols%-outline','OutlinePanel','OverseerList','Overseer','Trouble','trouble',
+              'alpha','dashboard','startify','start%-screen','helpview','todo%-comments','comment%-box',
+              'markdown_preview','glow','peek',
+              'httpResult','rest%-nvim','neoformat','snacks_dashboard','snacks_notifier','snacks_indent','zen_mode','goyo','twilight',
+              'SagaOutline','saga_codeaction','SagaRename','lspsaga%-code%-action','lspsaga%-outline','conform_info','null%-ls%-info','diagnostic%-navigator',
+              'dapui_scopes','dapui_breakpoints','dapui_stacks','dapui_watches','dap%-repl','dapui_console','dapui_hover','dap_floating',
+              'neotest%-summary','neotest%-output','neotest%-output%-panel',
+              'copilot','copilot%-chat',
+              'ipython','python','node','lua','r','R','deno','bash','nmtui','htop','btop','gpick','calc','calendar','orgagenda','vim%-plug',
+              'terminal',
+            }
+            local extra = vim.g.heirline_special_ft_extra
+            if type(extra) == 'table' then
+              for _, pat in ipairs(extra) do table.insert(base, pat) end
+            end
+            return base
+          end
+          local SPECIAL_FT = build_special_list()
+          -- ───────────────────────────────────────────────────────────────────────────
+
           local function ft_label_and_icon()
             local bt, ft = vim.bo.buftype, vim.bo.filetype
             if bt ~= '' then
@@ -274,7 +319,7 @@ return {
             on_click = { callback = vim.schedule_wrap(function() vim.wo.wrap = not vim.wo.wrap; dbg_push('toggle: wrap -> '..tostring(vim.wo.wrap)) end), name = 'heirline_toggle_wrap' },
           }
 
-          -- Right-side components
+          -- Right-side components helpers
           local function human_size()
             local size = fn.getfsize(fn.expand('%:p')); if size <= 0 then return '' end
             local i, suffix = 1, { 'B','K','M','G','T','P' }
@@ -292,6 +337,13 @@ return {
             local enc = (vim.bo.fileencoding ~= '' and vim.bo.fileencoding) or vim.o.encoding or 'utf-8'
             enc = enc:lower()
             return (enc == 'utf-8') and (S.utf8 .. ' ') or (S.latin .. ' ')
+          end
+
+          -- ── Debounce state for search component ────────────────────────────────────
+          local SEARCH_DEBOUNCE_MS = 90
+          local last_sc = { t = 0, out = '', pat = '', cur = 0, tot = 0 }
+          local function now_ms()
+            return math.floor(vim.loop.hrtime() / 1e6)
           end
 
           local components = {
@@ -334,6 +386,31 @@ return {
               update = { 'LspAttach', 'LspDetach' },
             },
 
+            -- LSP progress (spinner + message)
+            lsp_progress = {
+              condition = function() return c.lsp_attached end,
+              init = function(self)
+                self.frames = { '⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏' }
+                self.idx = (self.idx or 0) + 1
+                if self.idx > #self.frames then self.idx = 1 end
+                local msgs = {}
+                if vim.lsp and vim.lsp.util and vim.lsp.util.get_progress_messages then
+                  for _, m in ipairs(vim.lsp.util.get_progress_messages()) do
+                    local title = m.title or m.message or ''
+                    local pct = m.percentage and (m.percentage .. '%%') or ''
+                    if title ~= '' then table.insert(msgs, (pct ~= '' and (title .. ' ' .. pct) or title)) end
+                  end
+                end
+                self.text = table.concat(msgs, ' | ')
+              end,
+              provider = function(self)
+                if self.text == nil or self.text == '' then return '' end
+                return string.format(' %s %s ', self.frames[self.idx], self.text)
+              end,
+              hl = hl(colors.blue_light, colors.black),
+              update = { 'LspProgress', 'CursorHold', 'CursorHoldI' },
+            },
+
             git = {
               condition = function() return c.is_git_repo() and not is_narrow() end,
               provider = prof('git', function()
@@ -345,6 +422,35 @@ return {
               hl = hl(colors.blue, colors.black),
               update = { 'BufEnter', 'BufWritePost', 'WinResized' },
               on_click = { callback = vim.schedule_wrap(function() dbg_push('click: git'); open_git_ui() end), name = 'heirline_git_ui' },
+            },
+
+            -- Git diff stats (+/~/−) via gitsigns
+            gitdiff = {
+              condition = function() return c.is_git_repo() and not is_narrow() end,
+              init = function(self)
+                local d = vim.b.gitsigns_status_dict or {}
+                self.added = d.added or 0
+                self.changed = d.changed or 0
+                self.removed = d.removed or 0
+              end,
+              update = { 'BufEnter', 'BufWritePost', 'User', 'WinResized' }, -- Gitsigns fires User events; generic enough
+              provider = function(self)
+                local segs = {}
+                if self.added > 0   then table.insert(segs, S.plus  .. ' ' .. self.added) end
+                if self.changed > 0 then table.insert(segs, S.tilde .. ' ' .. self.changed) end
+                if self.removed > 0 then table.insert(segs, S.minus .. ' ' .. self.removed) end
+                if #segs == 0 then return '' end
+                return ' ' .. table.concat(segs, ' ') .. ' '
+              end,
+              hl = hl(colors.white, colors.black),
+              on_click = { callback = vim.schedule_wrap(function(_,_,_,button)
+                dbg_push('click: gitdiff ('..tostring(button)..')')
+                local ok, gs = pcall(require,'gitsigns'); if not ok then return end
+                if button == 'l' then gs.preview_hunk()
+                elseif button == 'm' then gs.next_hunk()
+                elseif button == 'r' then gs.prev_hunk()
+                end
+              end), name = 'heirline_gitdiff_click' },
             },
 
             encoding = {
@@ -367,17 +473,26 @@ return {
               },
             },
 
+            -- Search (debounced)
             search = {
               condition = function() return vim.v.hlsearch == 1 end,
               provider = prof('search', function()
+                local t = now_ms()
+                if t - last_sc.t < SEARCH_DEBOUNCE_MS then
+                  return last_sc.out
+                end
                 local ok_sc, s = pcall(fn.searchcount, { recompute = 1, maxcount = 1000 })
                 local pattern = fn.getreg('/')
-                if not pattern or pattern == '' or not ok_sc then return '' end
+                if not ok_sc or not pattern or pattern == '' then
+                  last_sc.t, last_sc.out = t, ''
+                  return ''
+                end
                 if #pattern > 15 then pattern = pattern:sub(1, 12) .. '...' end
                 local cur = (s and s.current) or 0
                 local tot = (s and s.total) or 0
-                if tot == 0 then return '' end
-                return string.format('%s%s %d/%d ', S.search, pattern, cur, tot)
+                local out = (tot == 0) and '' or string.format('%s%s %d/%d ', S.search, pattern, cur, tot)
+                last_sc.t, last_sc.out, last_sc.pat, last_sc.cur, last_sc.tot = t, out, pattern, cur, tot
+                return out
               end),
               hl = hl(colors.yellow, colors.black),
               update = { 'CmdlineLeave', 'CursorMoved', 'CursorMovedI' },
@@ -412,18 +527,7 @@ return {
             condition = function()
               return safe_buffer_matches({
                 buftype = { 'help','quickfix','terminal','prompt','nofile' },
-                filetype = {
-                  'qf','help','man','lspinfo','checkhealth','undotree','tagbar','vista','which_key',
-                  'TelescopePrompt','TelescopeResults','fzf','fzf%-lua',
-                  'NvimTree','neo%-tree','Neotree','oil','dirbuf','lir',
-                  '^git.*','fugitive','fugitiveblame','DiffviewFiles','DiffviewFileHistory','gitcommit','gitrebase','gitconfig',
-                  'lazy','mason','notify','noice','toggleterm','Outline','aerial','symbols%-outline',
-                  'spectre_panel','OverseerList','Trouble','alpha','dashboard','startify','helpview',
-                  'markdown_preview','httpResult','OutlinePanel','octo','harpoon','neoformat',
-                  'dapui_scopes','dapui_breakpoints','dapui_stacks','dapui_watches','dap%-repl','dapui_console',
-                  'neotest%-summary','neotest%-output','neotest%-output%-panel','Overseer',
-                  'Floaterm','FTerm','termwrapper','terminal',
-                },
+                filetype = SPECIAL_FT,
               })
             end,
             hl = hl(colors.white, colors.black),
@@ -464,11 +568,13 @@ return {
               align,
               components.diag,
               components.lsp,
+              components.lsp_progress,  -- NEW
               components.git,
+              components.gitdiff,       -- NEW
               components.encoding,
               components.size,
               components.position,
-              components.env,     -- optional env indicator
+              components.env,
               components.toggles,
             },
           }
@@ -511,7 +617,7 @@ return {
                 if not (args and buf_valid(args.buf)) then return false end
                 return safe_buffer_matches({
                   buftype = { 'nofile','prompt','help','quickfix','terminal' },
-                  filetype = { '^git.*','fugitive','TelescopePrompt','TelescopeResults','lazy','mason','alpha','dashboard','fzf','fzf%-lua' },
+                  filetype = SPECIAL_FT,
                 }, args.buf)
               end,
             },
