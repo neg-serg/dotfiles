@@ -83,8 +83,8 @@ _exists duf && alias df="duf -theme ansi -hide 'special' -hide-mp $HOME/'*',/nix
 _exists dust && alias sp='dust -r' || alias sp='du -shc ./*|sort -h'
 _exists fd && {alias fd='fd -H --ignore-vcs' && alias fda='fd -Hu'}
 _exists gdb && alias gdb="gdb -nh -x ${XDG_CONFIG_HOME}/gdb/gdbinit"
-_existsg readelf && alias readelf='readelf -W'
-_existsg strace && alias strace="strace -yy"
+_exists readelf && alias readelf='readelf -W'
+_exists strace && alias strace="strace -yy"
 _exists handlr && alias e='handlr open'
 _exists hxd && alias hexdump='hxd'
 _exists iostat && alias iostat='iostat --compact -p -h -s'
