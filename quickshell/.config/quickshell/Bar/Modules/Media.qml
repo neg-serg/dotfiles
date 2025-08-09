@@ -117,9 +117,10 @@ Item {
             text: MusicManager.trackTitle + " - " + MusicManager.trackArtist
             color: Theme.textPrimary
             font.family: Theme.fontFamily
-            font.pixelSize: 12 * Theme.scale(Screen)
+            font.weight: Font.Medium
+            font.pixelSize: Theme.fontSizeSmall  * Theme.scale(Screen)
             elide: Text.ElideRight
-            Layout.maximumWidth: 300
+            Layout.maximumWidth: 900
             Layout.alignment: Qt.AlignVCenter
         }
     }

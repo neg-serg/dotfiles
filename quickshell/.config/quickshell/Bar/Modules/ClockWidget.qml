@@ -14,7 +14,7 @@ Rectangle {
         id: textItem
         text: Time.time
         font.family: Theme.fontFamily
-        font.weight: Font.Bold
+        font.weight: Font.Medium
         font.pixelSize: Theme.fontSizeSmall * Theme.scale(screen)
         color: Theme.textPrimary
         anchors.centerIn: parent
