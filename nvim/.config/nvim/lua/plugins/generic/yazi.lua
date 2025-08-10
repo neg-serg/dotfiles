@@ -12,7 +12,6 @@ return {'mikavilpas/yazi.nvim',
   opts={
     open_for_directories=true, -- if you want to open yazi instead of netrw, see below for more info
     keymaps={
-        show_help="<f1>",
         open_file_in_vertical_split="<c-v>",
         open_file_in_horizontal_split="<c-x>",
         open_file_in_tab="<c-t>",
