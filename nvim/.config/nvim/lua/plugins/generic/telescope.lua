@@ -11,7 +11,6 @@ return {
     'MrcJkb/telescope-manix',
     'nvim-telescope/telescope-frecency.nvim',
     'nvim-telescope/telescope-live-grep-args.nvim',
-    'nvim-telescope/telescope-file-browser.nvim',
     'brookhong/telescope-pathogen.nvim',
     -- NOTE: DO NOT put Telekasten here; configure it as its own plugin.
     { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable('make') == 1 end },
