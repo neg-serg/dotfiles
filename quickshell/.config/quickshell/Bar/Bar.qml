@@ -97,10 +97,8 @@ Scope {
                             screen: panel.screen
                             // Align vertically to workspace widget, then fine-tune with yNudge if needed
                             anchors.verticalCenter: wsindicator.verticalCenter
-                            // anchors.verticalCenter: parent.verticalCenter
                             yNudge: -1  // tweak ±1 px if needed
-                            // Match workspace icon softness and spacing
-                            iconScale: 0.95
+                            iconScale: 0.95 // Match workspace icon softness and spacing
                             iconSpacing: Math.round(4 * Theme.scale(panel.screen))
                         }
 
