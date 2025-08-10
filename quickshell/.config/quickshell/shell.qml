@@ -10,15 +10,12 @@ import qs.Bar.Modules
 import qs.Widgets
 import qs.Widgets.LockScreen
 import qs.Widgets.Notification
-import qs.Widgets.SettingsWindow
 import qs.Settings
 import qs.Helpers
 
 Scope {
     id: root
-
     property var notificationHistoryWin: notificationHistoryLoader.active ? notificationHistoryLoader.item : null
-    property var settingsWindow: null
     property bool pendingReload: false
     
     // Function to load notification history
@@ -138,30 +135,7 @@ Scope {
         component: NotificationHistory {}
     }
 
-    // Centralized LazyLoader for SettingsWindow - prevents crashes on multiple opens
-    LazyLoader {
-        id: settingsWindowLoader
-        loading: false
-        component: SettingsWindow {
-            Component.onCompleted: {
-                root.settingsWindow = this;
-            }
-        }
-    }
-
-    // Function to safely show/hide settings window
-    function toggleSettingsWindow() {
-        if (!settingsWindowLoader.active) {
-            settingsWindowLoader.loading = true;
-        }
-        
-        if (settingsWindowLoader.item) {
-            settingsWindowLoader.item.visible = !settingsWindowLoader.item.visible;
-        }
-    }
-
-    // Reference to the default audio sink from Pipewire
-    property var defaultAudioSink: Pipewire.defaultAudioSink
+    property var defaultAudioSink: Pipewire.defaultAudioSink // Reference to the default audio sink from Pipewire
 
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSink]

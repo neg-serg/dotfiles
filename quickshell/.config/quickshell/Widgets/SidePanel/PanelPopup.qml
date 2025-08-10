@@ -5,7 +5,6 @@ import Quickshell.Io
 import Quickshell.Wayland
 import qs.Components
 import qs.Settings
-import qs.Widgets.SettingsWindow
 
 PanelWithOverlay {
     id: sidebarPopup
@@ -41,14 +40,12 @@ PanelWithOverlay {
     Rectangle {
         // Access the shell's SettingsWindow instead of creating a new one
         id: sidebarPopupRect
-
         property real slideOffset: width
         property bool isAnimating: false
         property int leftPadding: 20 * Theme.scale(screen)
         property int bottomPadding: 20 * Theme.scale(screen)
         // Recording properties
         property bool isRecording: false
-
         function checkRecordingStatus() {
             if (isRecording)
                 checkRecordingProcess.running = true;
@@ -72,45 +69,11 @@ PanelWithOverlay {
         }
 
         function hidePopup() {
-            if (shell && shell.settingsWindow && shell.settingsWindow.visible)
-                shell.settingsWindow.visible = false;
-
             if (sidebarPopup.visible) {
                 slideAnim.from = 0;
                 slideAnim.to = width;
                 slideAnim.running = true;
             }
-        }
-
-        // Start screen recording using Quickshell.execDetached
-        function startRecording() {
-            var currentDate = new Date();
-            var hours = String(currentDate.getHours()).padStart(2, '0');
-            var minutes = String(currentDate.getMinutes()).padStart(2, '0');
-            var day = String(currentDate.getDate()).padStart(2, '0');
-            var month = String(currentDate.getMonth() + 1).padStart(2, '0');
-            var year = currentDate.getFullYear();
-            var filename = hours + "-" + minutes + "-" + day + "-" + month + "-" + year + ".mp4";
-            var videoPath = Settings.settings.videoPath;
-            if (videoPath && !videoPath.endsWith("/"))
-                videoPath += "/";
-
-            var outputPath = videoPath + filename;
-            var command = "gpu-screen-recorder -w portal" + " -f " + Settings.settings.recordingFrameRate + " -a default_output" + " -k " + Settings.settings.recordingCodec + " -ac " + Settings.settings.audioCodec + " -q " + Settings.settings.recordingQuality + " -cursor " + (Settings.settings.showCursor ? "yes" : "no") + " -cr " + Settings.settings.colorRange + " -o " + outputPath;
-            Quickshell.execDetached(["sh", "-c", command]);
-            isRecording = true;
-        }
-
-        // Stop recording using Quickshell.execDetached
-        function stopRecording() {
-            Quickshell.execDetached(["sh", "-c", "pkill -SIGINT -f 'gpu-screen-recorder.*portal'"]);
-            // Optionally, force kill after a delay
-            var cleanupTimer = Qt.createQmlObject('import QtQuick; Timer { interval: 3000; running: true; repeat: false }', sidebarPopupRect);
-            cleanupTimer.triggered.connect(function() {
-                Quickshell.execDetached(["sh", "-c", "pkill -9 -f 'gpu-screen-recorder.*portal' 2>/dev/null || true"]);
-                cleanupTimer.destroy();
-            });
-            isRecording = false;
         }
 
         width: 480 * Theme.scale(screen)
@@ -169,7 +132,6 @@ PanelWithOverlay {
 
         Rectangle {
             id: mainRectangle
-
             // anchors.top: sidebarPopupRect.top
             width: sidebarPopupRect.width - sidebarPopupRect.leftPadding
             height: sidebarPopupRect.height - sidebarPopupRect.bottomPadding
@@ -188,17 +150,6 @@ PanelWithOverlay {
 
             }
 
-        }
-
-        // SettingsIcon component
-        SettingsIcon {
-            id: settingsModal
-
-            onWeatherRefreshRequested: {
-                if (weather && weather.fetchCityWeather)
-                    weather.fetchCityWeather();
-
-            }
         }
 
         Item {
