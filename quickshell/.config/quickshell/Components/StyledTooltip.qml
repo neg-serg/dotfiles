@@ -14,15 +14,22 @@ Window {
     color: "transparent"
     visible: false
 
-    property var _timerObj: null
+    // Static timer instance
+    property Timer _timer: Timer {
+        interval: tooltipWindow.delay
+        onTriggered: tooltipWindow._showNow()
+    }
+
+    // Scaling parameters with safe fallbacks
+    property real minSize: 20 * scaleFactor
+    property real scaleFactor: Theme.scale ? Theme.scale(screen) : 1
+    property real margin: 12 * scaleFactor
+    property real padding: 8 * scaleFactor
 
     onTooltipVisibleChanged: {
         if (tooltipVisible) {
             if (delay > 0) {
-                if (_timerObj) { _timerObj.destroy(); _timerObj = null; }
-                _timerObj = Qt.createQmlObject(
-                    'import QtQuick 2.0; Timer { interval: ' + delay + '; running: true; repeat: false; onTriggered: tooltipWindow._showNow() }',
-                    tooltipWindow);
+                _timer.restart();
             } else {
                 _showNow();
             }
@@ -31,71 +38,174 @@ Window {
         }
     }
 
+    // Unified size calculation
+    function _updateSize() {
+        if (!tooltipText) return;
+
+        var contentWidth = tooltipText.implicitWidth + 2 * padding;
+        var contentHeight = tooltipText.implicitHeight + 2 * padding;
+        width = Math.max(minSize, contentWidth);
+        height = Math.max(minSize, contentHeight);
+    }
+
     function _showNow() {
-        width = Math.max(20 * Theme.scale(screen), tooltipText.implicitWidth * Theme.scale(screen))
-        height = Math.max(20 * Theme.scale(screen), tooltipText.implicitHeight * Theme.scale(screen))
-
-        if (!targetItem) return;
-
-        if (positionAbove) {
-            // Position tooltip above the target item
-            var pos = targetItem.mapToGlobal(0, 0);
-            x = pos.x - width / 2 + targetItem.width / 2;
-            y = pos.y - height - 12; // 12 px margin above
-        } else {
-            // Position tooltip below the target item
-            var pos = targetItem.mapToGlobal(0, targetItem.height);
-            x = pos.x - width / 2 + targetItem.width / 2;
-            y = pos.y + 12; // 12 px margin below
+        // Validate target before showing
+        if (!targetItem || !targetItem.visible) {
+            _hideNow();
+            return;
         }
+
+        _updateSize();
+
+        // Get safe screen geometry
+        var screenGeometry = getScreenGeometry();
+        if (!screenGeometry) {
+            // Use target item's position as fallback
+            screenGeometry = getFallbackGeometry();
+        }
+
+        var globalPos = targetItem.mapToGlobal(0, 0);
+        var targetHeight = targetItem.height;
+
+        // Default: position above target
+        var proposedY = globalPos.y - height - margin;
+        var finalPositionAbove = true;
+
+        // Check if enough space above target
+        if (proposedY < screenGeometry.y) {
+            // Not enough space above - position below
+            proposedY = globalPos.y + targetHeight + margin;
+            finalPositionAbove = false;
+        }
+
+        // Horizontal centering
+        var proposedX = globalPos.x + (targetItem.width - width) / 2;
+
+        // Horizontal boundary correction
+        if (proposedX < screenGeometry.x) {
+            proposedX = screenGeometry.x;
+        } else if (proposedX + width > screenGeometry.x + screenGeometry.width) {
+            proposedX = screenGeometry.x + screenGeometry.width - width;
+        }
+
+        // Vertical boundary correction
+        if (finalPositionAbove) {
+            proposedY = Math.max(screenGeometry.y, proposedY);
+        } else {
+            if (proposedY + height > screenGeometry.y + screenGeometry.height) {
+                // Fallback to above if below doesn't fit
+                proposedY = globalPos.y - height - margin;
+                finalPositionAbove = true;
+                proposedY = Math.max(screenGeometry.y, proposedY);
+            }
+        }
+
+        x = proposedX;
+        y = proposedY;
+        positionAbove = finalPositionAbove;
         visible = true;
+    }
+
+    // Safe screen geometry determination with multiple fallbacks
+    function getScreenGeometry() {
+        // 1. Try tooltip's own screen
+        if (screen && screen.virtualGeometry) {
+            return screen.virtualGeometry;
+        }
+
+        // 2. Try target item's containing window
+        if (targetItem) {
+            var parentWindow = targetItem.Window ? targetItem.Window.window : null;
+            if (parentWindow && parentWindow.screen && parentWindow.screen.virtualGeometry) {
+                return parentWindow.screen.virtualGeometry;
+            }
+
+            // 3. Try target item's screen property
+            if (targetItem.screen && targetItem.screen.virtualGeometry) {
+                return targetItem.screen.virtualGeometry;
+            }
+        }
+
+        // 4. Try global Screen object
+        if (typeof Screen !== "undefined") {
+            if (Screen.virtualGeometry) return Screen.virtualGeometry;
+            if (Screen.desktopAvailableRect) return Screen.desktopAvailableRect;
+            if (Screen.availableGeometry) return Screen.availableGeometry;
+        }
+
+        // 5. Try application screens
+        if (Qt.application && Qt.application.screens && Qt.application.screens.length > 0) {
+            var primaryScreen = Qt.application.screens[0];
+            if (primaryScreen.virtualGeometry) return primaryScreen.virtualGeometry;
+            if (primaryScreen.desktopAvailableRect) return primaryScreen.desktopAvailableRect;
+        }
+
+        console.warn("Could not determine screen geometry");
+        return null;
+    }
+
+    // Fallback geometry when screen can't be detected
+    function getFallbackGeometry() {
+        // Try to get position from target item
+        var globalPos = targetItem.mapToGlobal(0, 0);
+
+        // Create safe fallback rectangle
+        return Qt.rect(
+            globalPos.x - 500,
+            globalPos.y - 500,
+            1000,  // width
+            1000   // height
+        );
     }
 
     function _hideNow() {
         visible = false;
-        if (_timerObj) { _timerObj.destroy(); _timerObj = null; }
+        _timer.stop();
     }
 
+    // Handle target item changes
     Connections {
         target: tooltipWindow.targetItem
-        function onXChanged() {
-            if (tooltipWindow.visible) tooltipWindow._showNow();
-        }
-        function onYChanged() {
-            if (tooltipWindow.visible) tooltipWindow._showNow();
-        }
-        function onWidthChanged() {
-            if (tooltipWindow.visible) tooltipWindow._showNow();
-        }
-        function onHeightChanged() {
-            if (tooltipWindow.visible) tooltipWindow._showNow();
+        ignoreUnknownSignals: true
+
+        function onXChanged() { if (visible) _showNow(); }
+        function onYChanged() { if (visible) _showNow(); }
+        function onWidthChanged() { if (visible) _showNow(); }
+        function onHeightChanged() { if (visible) _showNow(); }
+        function onVisibleChanged() { if (!targetItem.visible) _hideNow(); }
+        function onDestroyed() {
+            tooltipWindow.targetItem = null;
+            tooltipWindow.tooltipVisible = false;
         }
     }
 
+    // Tooltip background
     Rectangle {
         anchors.fill: parent
-        radius: 2
+        radius: 2 * scaleFactor
         color: Theme.backgroundTertiary || "#222"
         border.color: Theme.outline || "#444"
-        border.width: 1 * Theme.scale(screen)
+        border.width: 1 * scaleFactor
         opacity: 0.97
         z: 1
     }
 
+    // Tooltip text content
     Text {
         id: tooltipText
         text: tooltipWindow.text
         color: Theme.textPrimary
-        font.family: Theme.fontFamily
-        font.pixelSize: 14 * Theme.scale(screen)
+        font.family: Theme.fontFamily || "Arial"
+        font.pixelSize: 14 * scaleFactor
         anchors.centerIn: parent
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         wrapMode: Text.Wrap
-        padding: 8
+        padding: padding
         z: 2
     }
 
+    // Mouse area for hover interactions
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
@@ -103,8 +213,12 @@ Window {
         cursorShape: Qt.ArrowCursor
     }
 
+    // Update when text changes
     onTextChanged: {
-        width = Math.max(minimumWidth * Theme.scale(screen), tooltipText.implicitWidth + 24 * Theme.scale(screen));
-        height = Math.max(minimumHeight * Theme.scale(screen), tooltipText.implicitHeight + 16 * Theme.scale(screen));
+        _updateSize();
+        if (visible) _showNow();
     }
+
+    // Handle screen changes
+    onScreenChanged: if (visible) Qt.callLater(_showNow)
 }
