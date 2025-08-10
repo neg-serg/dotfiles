@@ -8,7 +8,6 @@ if [[ -r "${XDG_CONFIG_HOME:-${HOME}/.config}/zi/init.zsh" ]]; then
   source "${XDG_CONFIG_HOME:-${HOME}/.config}/zi/init.zsh" && zzinit
 fi
 [[ -f /etc/NIXOS ]] && fpath=(${ZDOTDIR}/lazyfuncs ${XDG_CONFIG_HOME}/zsh-nix $fpath)
-# zsh-defer first (so calls won’t fail)
 zi ice depth'1' lucid
 zi light romkatv/zsh-defer
 typeset -f zsh-defer >/dev/null || zsh-defer() { "$@"; }
