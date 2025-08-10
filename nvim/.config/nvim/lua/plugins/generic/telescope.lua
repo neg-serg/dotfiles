@@ -6,12 +6,10 @@ return {
   event = 'VeryLazy',
   dependencies = {
     'nvim-lua/plenary.nvim',
-    'debugloop/telescope-undo.nvim',
+    'brookhong/telescope-pathogen.nvim',
     'jvgrootveld/telescope-zoxide',
-    'MrcJkb/telescope-manix',
     'nvim-telescope/telescope-frecency.nvim',
     'nvim-telescope/telescope-live-grep-args.nvim',
-    'brookhong/telescope-pathogen.nvim',
     -- NOTE: DO NOT put Telekasten here; configure it as its own plugin.
     { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable('make') == 1 end },
   },
@@ -171,21 +169,6 @@ return {
           prompt_title = false, results_title = false,
           show_scores = false, show_unindexed = true, use_sqlite = false,
         },
-        undo = {
-          use_delta = true, side_by_side = true, previewer = true,
-          layout_strategy = 'flex',
-          layout_config = {
-            horizontal = { prompt_position = 'bottom', preview_width = 0.70 },
-            vertical = { mirror = false }, width = 0.87, height = 0.80, preview_cutoff = 120,
-          },
-          mappings = {
-            i = {
-              ['<CR>']   = lazy_call('telescope-undo.actions', 'yank_additions'),
-              ['<S-CR>'] = lazy_call('telescope-undo.actions', 'yank_deletions'),
-              ['<C-CR>'] = lazy_call('telescope-undo.actions', 'restore'),
-            },
-          },
-        },
         zoxide = {
           mappings = {
             ['<S-Enter>'] = { action = function(sel)
@@ -287,12 +270,6 @@ return {
       end
       local t = require('telescope'); pcall(t.load_extension, 'pathogen')
       t.extensions.pathogen.find_files({})
-    end, opts)
-
-    vim.keymap.set('v', '<leader>sg', function()
-      local text = vim.fn.escape(vim.fn.getreg('v'), [[\]])
-      local t = require('telescope'); pcall(t.load_extension, 'live_grep_args')
-      t.extensions.live_grep_args.live_grep_args({ default_text = text })
     end, opts)
   end,
 }
