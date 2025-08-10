@@ -3,10 +3,8 @@ unsetopt rematchpcre
 FAST_WORK_DIR=~/.config/f-sy-h
 source ~/.config/zsh/00-fsyh-parser.zsh
 source ${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh 2>/dev/null || true
-typeset -gx P9K_SSH=0
-if [[ -r "${XDG_CONFIG_HOME:-${HOME}/.config}/zi/init.zsh" ]]; then
-  source "${XDG_CONFIG_HOME:-${HOME}/.config}/zi/init.zsh" && zzinit
-fi
+zi_init=${XDG_CONFIG_HOME:-$HOME/.config}/zi/init.zsh
+[[ -r $zi_init ]] && . $zi_init && zzinit
 [[ -f /etc/NIXOS ]] && fpath=(${ZDOTDIR}/lazyfuncs ${XDG_CONFIG_HOME}/zsh-nix $fpath)
 zi ice depth'1' lucid
 zi light romkatv/zsh-defer
