@@ -2,6 +2,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Pipewire
 import Quickshell.Services.Notifications
+import Quickshell.Hyprland
 import QtQuick
 import QtCore
 import qs.Bar
@@ -51,6 +52,9 @@ Scope {
 
     Component.onCompleted: {
         Quickshell.shell = root;
+        if (Settings.settings.panelPosition === "bottom") {
+            windowMirror.mirror(bar.barHeight);
+        }
     }
 
     Overview {}
@@ -59,6 +63,27 @@ Scope {
         id: bar
         shell: root
         property var notificationHistoryWin: notificationHistoryLoader.active ? notificationHistoryLoader.item : null
+    }
+
+    // Helper to mirror window positions when the panel is at the bottom
+    WindowMirror { id: windowMirror }
+
+    Connections {
+        target: Settings.settings
+        function onPanelPositionChanged() {
+            if (Settings.settings.panelPosition === "bottom") {
+                windowMirror.mirror(bar.barHeight)
+            }
+        }
+    }
+
+    Connections {
+        target: Hyprland
+        function onClientAdded() {
+            if (Settings.settings.panelPosition === "bottom") {
+                windowMirror.mirror(bar.barHeight)
+            }
+        }
     }
 
     Applauncher {

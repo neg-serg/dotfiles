@@ -18,6 +18,8 @@ Scope {
     id: rootScope
     property var shell
     property alias visible: barRootItem.visible
+    // Expose current bar height for other components (e.g. window mirroring)
+    property real barHeight: 0
 
     Item {
         id: barRootItem
@@ -32,7 +34,8 @@ Scope {
                     screen: modelData
                     color: "transparent"
                     implicitHeight: barBackground.height
-                    anchors.bottom: true
+                    anchors.top: Settings.settings.panelPosition === "top"
+                    anchors.bottom: Settings.settings.panelPosition === "bottom"
                     anchors.left: true
                     anchors.right: true
                     visible: Settings.settings.barMonitors.includes(modelData.name) || (Settings.settings.barMonitors.length === 0)
@@ -45,6 +48,9 @@ Scope {
                         anchors.top: parent.top
                         anchors.left: parent.left
                     }
+
+                    // Update exposed bar height once the bar is created
+                    Component.onCompleted: rootScope.barHeight = barBackground.height
 
 
                     Row {

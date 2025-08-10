@@ -2,7 +2,7 @@
     "audioCodec": "opus",
     "barMonitors": [
     ],
-    "barPosition": "bottom",
+    "panelPosition": "bottom",
     "bluetoothEnabled": false,
     "colorRange": "limited",
     "currentWallpaper": "",

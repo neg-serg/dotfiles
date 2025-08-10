@@ -71,8 +71,9 @@ Singleton {
             property string audioCodec: "opus"
             property bool showCursor: true
             property string colorRange: "limited"
-            
+
             // Monitor/Display Settings
+            property string panelPosition: "top" // "top" or "bottom" panel location
             property var barMonitors: [] // Array of monitor names to show the bar on
             property var dockMonitors: [] // Array of monitor names to show the dock on
             property var notificationMonitors: [] // Array of monitor names to show notifications on, "*" means all monitors
