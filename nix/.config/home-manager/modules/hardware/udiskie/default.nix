@@ -1,5 +1,8 @@
 {...}: {
   services = {
-    udiskie = {enable = true;};
+    udiskie = {
+      enable = true;
+      tray = "never";
+    };
   };
 }
