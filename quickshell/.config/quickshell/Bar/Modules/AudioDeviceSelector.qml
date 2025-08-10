@@ -76,9 +76,9 @@ PanelWithOverlay {
         radius: 20
         width: 340
         height: 340
-        anchors.top: parent.top
+        anchors.bottom: parent.bottom
         anchors.right: parent.right
-        anchors.topMargin: 4
+        anchors.bottomMargin: 4
         anchors.rightMargin: 4
 
         // Prevent closing when clicking in the panel bg

@@ -84,11 +84,9 @@ Item {
                     }
                 }
 
-                anchors.top: Settings.settings.barPosition === "top"
-                anchors.bottom: Settings.settings.barPosition === "bottom"
+                anchors.bottom: true
                 anchors.right: true
-                margins.top: Settings.settings.barPosition === "top" ? 6 : 0
-                margins.bottom: Settings.settings.barPosition === "bottom" ? 6 : 0
+                margins.bottom: 6
                 margins.right: 6
 
                 ListModel {
@@ -145,8 +143,7 @@ Item {
                 Column {
                     id: notificationColumn
                     anchors.right: parent.right
-                    anchors.top: Settings.settings.barPosition === "top" ? parent.top : undefined
-                    anchors.bottom: Settings.settings.barPosition === "bottom" ? parent.bottom : undefined
+                    anchors.bottom: parent.bottom
                     spacing: panelWindow.spacing
                     width: parent.width
                     clip: false

@@ -192,7 +192,7 @@ PanelWithOverlay {
         color: "transparent"
         visible: parent.visible
         property bool shouldBeVisible: false
-        anchors.top: parent.top
+        anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
         function showAt() {

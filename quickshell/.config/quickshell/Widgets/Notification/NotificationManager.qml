@@ -12,11 +12,9 @@ PanelWindow {
     screen: Quickshell.primaryScreen
     focusable: false
     
-    anchors.top: Settings.settings.barPosition === "top"
-    anchors.bottom: Settings.settings.barPosition === "bottom"
+    anchors.bottom: true
     anchors.right: true
-    margins.top: Settings.settings.barPosition === "top" ? -20 : 0
-    margins.bottom: Settings.settings.barPosition === "bottom" ? -20 : 0
+    margins.bottom: -20
     margins.right: 6
 
     property var notifications: []
@@ -52,8 +50,7 @@ PanelWindow {
     Column {
         id: notificationColumn
         anchors.right: parent.right
-        anchors.top: Settings.settings.barPosition === "top" ? parent.top : undefined
-        anchors.bottom: Settings.settings.barPosition === "bottom" ? parent.bottom : undefined
+        anchors.bottom: parent.bottom
         spacing: window.spacing
         width: parent.width
         clip: false // Prevent clipping during animation

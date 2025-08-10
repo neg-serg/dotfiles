@@ -95,10 +95,10 @@ Item {
             implicitHeight: 480
             visible: false
             color: "transparent"
-            anchors.top: true
+            anchors.bottom: true
             anchors.right: true
             margins.right: 0
-            margins.top: 0
+            margins.bottom: 0
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
             onVisibleChanged: {
