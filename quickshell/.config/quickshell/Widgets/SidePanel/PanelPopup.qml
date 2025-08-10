@@ -201,12 +201,6 @@ PanelWithOverlay {
                     spacing: 8 * Theme.scale(screen)
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignHCenter
-
-                    Shortcuts {
-                        width: 206 * Theme.scale(screen)
-                        height: 70 * Theme.scale(screen)
-                        Layout.alignment: Qt.AlignVCenter
-                    }
                 }
 
                 Rectangle {
