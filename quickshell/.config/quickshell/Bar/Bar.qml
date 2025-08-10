@@ -5,6 +5,8 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
+import Quickshell.Services.SystemTray
 import qs.Bar.Modules
 import qs.Components
 import qs.Helpers
@@ -20,6 +22,8 @@ Scope {
     property alias visible: barRootItem.visible
     // Expose current bar height for other components (e.g. window mirroring)
     property real barHeight: 0
+    // Track native tray menu visibility globally
+    property bool trayMenuOpen: false
 
     Item {
         id: barRootItem
@@ -29,6 +33,7 @@ Scope {
             model: Quickshell.screens
             Item {
                 property var modelData
+
                 PanelWindow {
                     id: panel
                     screen: modelData
@@ -52,6 +57,27 @@ Scope {
                     // Update exposed bar height once the bar is created
                     Component.onCompleted: rootScope.barHeight = barBackground.height
 
+                    // ── Tray menu + focus grab coordination ───────────────────────────
+                    QsMenuAnchor {
+                        id: trayMenuAnchor
+                        anchor.window: panel
+                        // When native tray menu opens, disable focus grab to avoid instant close
+                        onOpened:  { rootScope.trayMenuOpen = true;  focusGrab.active = false }
+                        // When it closes, re-enable focus grab for your custom popups
+                        onClosed:  { rootScope.trayMenuOpen = false; focusGrab.active = true  }
+                    }
+
+                    HyprlandFocusGrab {
+                        id: focusGrab
+                        windows: [ panel ]
+                        onCleared: {
+                            // Don't auto-close native tray menu; it handles outside clicks itself
+                            if (rootScope.trayMenuOpen) return
+                            // Close ONLY your custom popups here, if needed, e.g.:
+                            // sidebarPopup.close()
+                        }
+                    }
+                    // ─────────────────────────────────────────────────────────────────
 
                     Row {
                         id: leftWidgetsRow
@@ -95,11 +121,8 @@ Scope {
                             fontPixelSize: Theme.fontSizeSmall * Theme.scale(panel.screen)
                             desiredHeight: Math.max(20, barBackground.height - 4)
                             screen: panel.screen
-                            // Align vertically to workspace widget, then fine-tune with yNudge if needed
                             anchors.verticalCenter: wsindicator.verticalCenter
-                            // anchors.verticalCenter: parent.verticalCenter
-                            yNudge: -1  // tweak ±1 px if needed
-                            // Match workspace icon softness and spacing
+                            yNudge: -1
                             iconScale: 0.95
                             iconSpacing: Math.round(4 * Theme.scale(panel.screen))
                         }
@@ -144,11 +167,7 @@ Scope {
                             shell: rootScope.shell
                             anchors.verticalCenter: parent.verticalCenter
                             bar: panel
-                            trayMenu: externalTrayMenu
-                        }
-
-                        CustomTrayMenu {
-                            id: externalTrayMenu
+                            trayMenu: trayMenuAnchor
                         }
 
                         NotificationIcon {
@@ -181,9 +200,7 @@ Scope {
                         Media {
                             anchors.verticalCenter: parent.verticalCenter
                         }
-
                     }
-
                 }
 
                 Loader {
