@@ -155,10 +155,6 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        Bluetooth {
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
                         Volume {
                             id: widgetsVolume
                             shell: rootScope.shell
