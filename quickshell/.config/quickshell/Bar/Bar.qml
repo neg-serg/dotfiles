@@ -128,6 +128,7 @@ Scope {
                         id: center
                         anchors.horizontalCenter: barBackground.horizontalCenter
                         anchors.verticalCenter: barBackground.verticalCenter
+                        visible: false
                     }
 
                     Row {
