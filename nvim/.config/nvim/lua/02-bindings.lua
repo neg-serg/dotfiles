@@ -1,10 +1,9 @@
 vim.g.mapleader = ','
 Map('i', '<C-j>', '<ESC>', {nowait = true})
 Map('v', '<C-j>', '<ESC>', {nowait = true})
-Map('n', '<C-j>', '<C-w>j', {nowait = true})
-Map('n', '<C-k>', '<C-w>k', {nowait = true})
-Map('n', '<C-l>', '<C-w>l', {nowait = true})
-Map('n', '<C-h>', '<C-w>h', {nowait = true})
+for _, key in ipairs({ 'j', 'k', 'l', 'h' }) do
+  Map('n', '<C-' .. key .. '>', '<C-w>' .. key, { nowait = true })
+end
 map('n', '_', "<Cmd>exe 'e ' . getcwd()<CR>")
 
 map('t', '<Esc>', '<C-\\><C-n>', {silent=true}) -- Escape as normal
