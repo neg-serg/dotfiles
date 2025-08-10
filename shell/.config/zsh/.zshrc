@@ -26,7 +26,6 @@ zi light romkatv/powerlevel10k
 # Utilities (deferred)
 zi ice depth'1' lucid wait'0'
 zi light QuarticCat/zsh-smartcache
-zi light Tarrasch/zsh-functional
 source "${ZDOTDIR}/01-init.zsh"
 for file in {02-cmds,03-completion,04-fzf,04-bindings,05-neg-cd}; do
   zsh-defer source "${ZDOTDIR}/$file.zsh"
