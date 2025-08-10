@@ -1,24 +1,18 @@
 vim.g.mapleader = ','
-
 Map('i', '<C-j>', '<ESC>', {nowait = true})
 Map('v', '<C-j>', '<ESC>', {nowait = true})
 Map('n', '<C-j>', '<C-w>j', {nowait = true})
 Map('n', '<C-k>', '<C-w>k', {nowait = true})
 Map('n', '<C-l>', '<C-w>l', {nowait = true})
 Map('n', '<C-h>', '<C-w>h', {nowait = true})
-
 map('n', '_', "<Cmd>exe 'e ' . getcwd()<CR>")
-
-Map('n', 'q', '<NOP>')
-Map('n', 'Q', 'q', {noremap=true})
-Map('', '<F1>', '<NOP>')
 
 map('t', '<Esc>', '<C-\\><C-n>', {silent=true}) -- Escape as normal
 
-Map('', '<up>', '<NOP>')
-Map('', '<down>', '<NOP>')
-Map('', '<left>', '<NOP>')
-Map('', '<right>', '<NOP>')
+Map('n', 'Q', 'q', {noremap=true})
+for _, key in ipairs({ 'q', '<F1>', '<up>', '<down>', '<left>', '<right>' }) do
+  Map('', key, '<NOP>')
+end
 
 map('v', '<C-e>', '"+y', {silent=true, noremap=true})
 
@@ -31,8 +25,8 @@ map('n', 'el', ':normal :<C-u>clist<CR>', {silent=true})
 
 map('n', 'ew', ':w!<cr>', {silent=true})
 map('n', 'eW', ':SudaWrite<cr>', {silent=true})
-map('n', 'es', ':source %<CR>', {silent=true})
-map('n', 'eu', ':Lazy update<CR>', {silent=true})
+map('n', 'eS', ':source %<CR>', {silent=true})
+map('n', 'eU', ':Lazy update<CR>', {silent=true})
 Map('n', '<C-c>', '<C-[>')
 Map('i', '<C-c>', '<C-[>')
 -- These create newlines like o and O but stay in normal mode
