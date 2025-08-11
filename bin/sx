@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-swayimg -C "${XDG_CONFIG_HOME}/swayimg/config" -g -f -F <(
+~/.local/bin/swayimg -C "${XDG_CONFIG_HOME}/swayimg/config" -g -f -F <(
   find "$@" -type f -printf '%C@ %p\n' \
   | sort -rn \
   | cut -d ' ' -f 2- \
