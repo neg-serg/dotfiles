@@ -1,17 +1,10 @@
-#!/bin/sh
-# Port of your sxiv helper for swayimg.
-# Usage from swayimg: exec ~/.local/bin/swayimg-actions.sh <action> "%"
-# Notes:
-# - % is expanded by swayimg to the absolute path of the current image.
-# - We keep your rofi+fasd flow; env and dirs adapted.
+#!/usr/bin/env zsh
 
 set -eu
-
 cache="${HOME}/tmp"
 mkdir -p "${cache}"
 ff="${cache}/swayimg.$$"
 tmp_wall="${cache}/wall_swayimg.$$"
-
 mkdir -p ${XDG_DATA_HOME:-$HOME/.local/share}/swayimg
 z="${XDG_DATA_HOME:-$HOME/.local/share}/swayimg/data"
 last_file="${XDG_DATA_HOME:-$HOME/.local/share}/swayimg/last"
@@ -19,7 +12,6 @@ trash="${HOME}/trash/1st-level/pic"
 rofi_cmd='rofi -dmenu -sort -matching fuzzy -no-plugins -no-only-match -theme sxiv -custom'
 
 # ---- helpers ---------------------------------------------------------------
-
 rotate() {  # modifies file in-place
   angle="$1"
   shift
@@ -42,7 +34,6 @@ proc() { # mv/cp with remembered last dest
     dest="$(choose_dest "$cmd" || true)"
   fi
   [ -z "${dest}" ] && exit 0
-
   if [ -d "$dest" ]; then
     while read -r line; do
       "$cmd" "$(realpath "$line")" "$dest"
