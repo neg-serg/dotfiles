@@ -188,12 +188,6 @@ PanelWithOverlay {
                         width: 332 * Theme.scale(screen)
                         height: 250 * Theme.scale(screen)
                     }
-
-                    SystemMonitor {
-                        width: 80 * Theme.scale(screen)
-                        height: 250 * Theme.scale(screen)
-                    }
-
                 }
 
 

@@ -66,10 +66,6 @@ Rectangle {
                         border.width: 2 * Theme.scale(Screen)
                         z: 2
                     }
- 
-                    Avatar {
-                    }
- 
                 }
  
                 ColumnLayout {
