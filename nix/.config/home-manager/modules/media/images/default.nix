@@ -1,6 +1,5 @@
 { pkgs, ... }:
 let
-  nsxiv-neg = pkgs.callPackage ../../../packages/nsxiv {};
   # Wrapper that starts swayimg and jumps to the first image via IPC.
   swayimg-first = pkgs.writeShellScriptBin "swayimg-first" ''
     set -euo pipefail
@@ -49,14 +48,13 @@ in
     jpegoptim # jpeg optimization
     lutgen # fast lut generator
     mediainfo # another tool to extract media info
-    nsxiv-neg # my favorite image viewer
     optipng # optimize png
     pastel # cli color analyze/convert/manipulation
     pngquant # convert png from RGBA to 8 bit with alpha-channel
     qrencode # qr encoding
     rawtherapee # raw format support
     scour # svg optimizer
-    swayimg-first # image viewer for Wayland display servers (start from the first file in list)
+    swayimg swayimg-first # image viewer for Wayland display servers (start from the first file in list)
     viu # console image viewer
     zbar # bar code reader
   ];
