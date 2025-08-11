@@ -12,6 +12,7 @@ mkdir -p "${cache}"
 ff="${cache}/swayimg.$$"
 tmp_wall="${cache}/wall_swayimg.$$"
 
+mkdir -p ${XDG_DATA_HOME:-$HOME/.local/share}/swayimg
 z="${XDG_DATA_HOME:-$HOME/.local/share}/swayimg/data"
 last_file="${XDG_DATA_HOME:-$HOME/.local/share}/swayimg/last"
 trash="${HOME}/trash/1st-level/pic"
