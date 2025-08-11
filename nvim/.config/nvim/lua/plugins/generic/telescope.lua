@@ -55,7 +55,7 @@ return {
     }
 
     local long_find  = { 'rg', '--files', '--hidden', '--iglob', '!.git' }
-    local short_find = { 'fd', '-H', '--ignore-vcs', '--strip-cwd-prefix' } -- no depth cap; fast enough
+    local short_find = { 'fd', '-H', '--ignore-vcs', '--strip-cwd-prefix' } -- default quick files
 
     -- Safe previewer: guard large/binary files; defer to real previewer otherwise
     local function safe_buffer_previewer_maker(filepath, bufnr, opts)
@@ -313,10 +313,43 @@ return {
       if not ok then require('telescope.builtin').find_files({ find_command = short_find }) end
     end
 
+    -- TURBO mode helpers (super-lightweight for huge repos)
+    local function turbo_find_files(opts)
+      opts = opts or {}
+      local cwd = opts.cwd or vim.fn.expand('%:p:h')
+      require('telescope.builtin').find_files({
+        cwd = cwd,
+        -- shallow listing; super fast on massive trees
+        find_command = { 'fd', '-H', '--ignore-vcs', '-d', '2', '--strip-cwd-prefix' },
+        theme = 'ivy',
+        previewer = false,
+        prompt_title = false,
+        sorting_strategy = 'descending',
+        path_display = { 'truncate' },
+        -- no devicons toggles here to avoid extra deps/work
+      })
+    end
+
+    local function turbo_file_browser(opts)
+      opts = opts or {}
+      local cwd = opts.cwd or vim.fn.expand('%:p:h')
+      local t = require('telescope'); pcall(t.load_extension, 'file_browser')
+      t.extensions.file_browser.file_browser({
+        cwd = cwd,
+        theme = 'ivy',
+        previewer = false,         -- drop preview for speed
+        grouped = false,           -- flat list is faster
+        git_status = false,        -- keep lightweight
+        hidden = { file_browser = false, folder_browser = false },
+        respect_gitignore = true,
+        prompt_title = false,
+        layout_config = { height = 12 },
+      })
+    end
+
     local opts = { silent = true, noremap = true }
 
     -- NOTE: 'cd' as a bare normal-mode mapping can collide with typing. Keep as-is for muscle memory.
-    -- Consider mapping to '<leader>cd' or 'gz' if it interferes.
     vim.keymap.set('n', 'cd', function()
       local t = require('telescope')
       pcall(t.load_extension, 'zoxide')
@@ -355,5 +388,13 @@ return {
       local t = require('telescope'); pcall(t.load_extension, 'pathogen')
       t.extensions.pathogen.find_files({})
     end, opts)
+
+    -- TURBO mode keymaps:
+    -- <leader>sf : turbo find_files in current buffer dir
+    -- <leader>sF : turbo find_files in project root (cwd)
+    -- <leader>sb : turbo file_browser in current buffer dir
+    vim.keymap.set('n', '<leader>sf', function() turbo_find_files({ cwd = vim.fn.expand('%:p:h') }) end, opts)
+    vim.keymap.set('n', '<leader>sF', function() turbo_find_files({ cwd = vim.fn.getcwd() }) end, opts)
+    vim.keymap.set('n', '<leader>sb', function() turbo_file_browser({ cwd = vim.fn.expand('%:p:h') }) end, opts)
   end,
 }
