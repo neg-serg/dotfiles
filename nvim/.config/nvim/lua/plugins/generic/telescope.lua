@@ -407,7 +407,7 @@ return {
           results_title = false,
           show_scores = false,
           show_unindexed = true,
-          use_sqlite = false,
+          use_sqlite = true,
         },
 
         zoxide = {
