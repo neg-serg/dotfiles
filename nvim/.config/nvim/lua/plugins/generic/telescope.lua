@@ -543,10 +543,10 @@ return {
     end, opts)
 
     -- Quickfix interaction
-    vim.keymap.set('n', '<C-q>',  qf_picker, opts)  -- Telescope quickfix picker (delete with "dd")
-    vim.keymap.set('n', '<C-q>q', qf_toggle, opts)  -- toggle quickfix window
-    vim.keymap.set('n', '<C-q>d', qf_clear, opts)   -- clear quickfix (d = delete)
-    vim.keymap.set('n', '<C-q>a', function()
+    vim.keymap.set('n', '<C-b>',  qf_picker, opts)  -- Telescope quickfix picker (delete with "dd")
+    vim.keymap.set('n', '<C-b>q', qf_toggle, opts)  -- toggle quickfix window
+    vim.keymap.set('n', '<C-b>d', qf_clear, opts)   -- clear quickfix (d = delete)
+    vim.keymap.set('n', '<C-b>a', function()
         vim.ui.input({ prompt = ':cdo ' }, function(cmd) if cmd and cmd ~= '' then apply_cmd_to_qf(cmd) end end)
     end, opts)
   end,
