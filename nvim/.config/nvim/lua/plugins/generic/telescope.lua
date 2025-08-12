@@ -73,7 +73,7 @@ return {
       return require('telescope.previewers').buffer_previewer_maker(filepath, bufnr, opts)
     end
 
-    -- ---------- File Browser custom actions (Block #1) ----------
+    -- ---------- File Browser custom actions ---------------------
     -- Deep create: mkdir -p and create empty file
     local function fb_create_deep(prompt_bufnr)
       local fb = require('telescope').extensions.file_browser
@@ -104,7 +104,7 @@ return {
       end)
     end
 
-    -- ---------- Diff helpers (Block #5) ----------
+    -- ---------- Diff helpers ---------------------
     -- Diff two selected files (multi-select with <Tab>)
     local function fb_diff_two()
       local st = require('telescope.actions.state')
@@ -138,7 +138,7 @@ return {
       vim.cmd('vert diffsplit ' .. vim.fn.fnameescape(file))
     end
 
-    -- ---------- Quickfix helpers (Block #10 + interaction) ----------
+    -- ---------- Quickfix helpers ------------------------------------
     local function apply_cmd_to_qf(cmd)
       if not cmd or cmd == '' then return end
       vim.cmd('copen')
