@@ -4,12 +4,67 @@ set -eu
 cache="${HOME}/tmp"
 mkdir -p "${cache}"
 ff="${cache}/swayimg.$$"
-tmp_wall="${cache}/wall_swayimg.$$"
+tmp_wall="${cache}/wall_swww.$$"
 mkdir -p ${XDG_DATA_HOME:-$HOME/.local/share}/swayimg
 z="${XDG_DATA_HOME:-$HOME/.local/share}/swayimg/data"
 last_file="${XDG_DATA_HOME:-$HOME/.local/share}/swayimg/last"
 trash="${HOME}/trash/1st-level/pic"
 rofi_cmd='rofi -dmenu -sort -matching fuzzy -no-plugins -no-only-match -theme sxiv -custom'
+
+# ---- swww helpers -----------------------------------------------------------
+ensure_swww() {
+  # Start swww daemon if not running
+  if ! swww query >/dev/null 2>&1; then
+    swww init >/dev/null 2>&1 || true
+    # небольшая пауза, чтобы сокет поднялся
+    sleep 0.05
+  fi
+}
+
+# Return maximum WxH among active outputs (fallback 1920x1080)
+screen_wh() {
+  local wh
+  if command -v swaymsg >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+    wh="$(swaymsg -t get_outputs -r 2>/dev/null \
+      | jq -r '[.[] | select(.active and .current_mode != null)
+                | {w:.current_mode.width|tonumber, h:.current_mode.height|tonumber, a:(.current_mode.width|tonumber)*(.current_mode.height|tonumber)}]
+               | if length>0 then (max_by(.a) | "\(.w)x\(.h)") else empty end' 2>/dev/null || true)"
+  fi
+  [ -n "${wh:-}" ] && printf '%s\n' "$wh" || printf '1920x1080\n'
+}
+
+# Render image to tmp file based on mode for swww
+# writes output path to $tmp_wall
+render_for_mode() {
+  local mode="$1" file="$2" wh
+  wh="$(screen_wh)"
+  rm -f "$tmp_wall" 2>/dev/null || true
+
+  case "$mode" in
+    cover|full|fill)
+      # cover: crop to fill screen from center
+      convert "$file" -resize "${wh}^" -gravity center -extent "$wh" "$tmp_wall"
+      ;;
+    center)
+      # fit inside with borders, centered
+      convert "$file" -resize "${wh}" -gravity center -background black -extent "$wh" "$tmp_wall"
+      ;;
+    tile)
+      # make tiled canvas of exact screen size
+      convert -size "$wh" tile:"$file" "$tmp_wall"
+      ;;
+    mono)
+      convert "$file" -colors 2 "$tmp_wall"
+      ;;
+    retro)
+      convert "$file" -colors 12 "$tmp_wall"
+      ;;
+    *)
+      # default to cover
+      convert "$file" -resize "${wh}^" -gravity center -extent "$wh" "$tmp_wall"
+      ;;
+  esac
+}
 
 # ---- helpers ---------------------------------------------------------------
 rotate() {  # modifies file in-place
@@ -20,9 +75,29 @@ rotate() {  # modifies file in-place
 
 choose_dest() {
   # Fuzzy-pick a destination dir using fasd history
-  _FASD_DATA="$z" fasd -tlR \
-    | sed "s:^$HOME:~:" \
-    | sh -c "$rofi_cmd -p \"⟬$1⟭ ❯>\"" \
+  local prompt="$1"
+  local entries
+
+  entries="$(
+    _FASD_DATA="$z" fasd -Rdl 2>/dev/null \
+      | awk '{ $1=""; sub(/^ +/, ""); print }' \
+      | sed "s:^$HOME:~:"
+  )"
+
+  if [ -z "$entries" ]; then
+    entries="$(
+      {
+        printf '%s\n' "$HOME/Pictures" "$HOME/Downloads" "$trash"
+        command -v fd >/dev/null 2>&1 && fd -td -d 3 . "$HOME" 2>/dev/null
+      } \
+      | sed "s:^$HOME:~:" \
+      | awk 'NF' \
+      | sort -u
+    )"
+  fi
+
+  printf '%s\n' "$entries" \
+    | sh -c "$rofi_cmd -p \"⟬$prompt⟭ ❯>\"" \
     | sed "s:^~:$HOME:"
 }
 
@@ -62,30 +137,12 @@ copy_name() { # copy absolute path to clipboard
   [ -x "$HOME/bin/pic-notify" ] && "$HOME/bin/pic-notify" "$file" || true
 }
 
-make_mono(){
-  convert "$1" -colors 2 "$cache/mono__$(basename "$1")"
-  hsetroot -cover "$cache/mono__$(basename "$1")"
-  echo "$1" >> "${XDG_DATA_HOME:-$HOME/.local/share}/wl/wallpaper.list" 2>/dev/null || true
-  rm -f "$cache/mono__$(basename "$1")"
-}
-
-make_retro(){
-  convert "$1" -colors 12 "$cache/retro__$(basename "$1")"
-  hsetroot -cover "$cache/retro__$(basename "$1")"
-  echo "$1" >> "${XDG_DATA_HOME:-$HOME/.local/share}/wl/wallpaper.list" 2>/dev/null || true
-  rm -f "$cache/retro__$(basename "$1")"
-}
-
-wall() { # wall <mode> <file>
-  mode="$1"; file="$2"
-  case "$mode" in
-    center) hsetroot -center "$file" ;;
-    tile)   hsetroot -tile "$file" ;;
-    fill)   hsetroot -fill "$file" ;;
-    full|cover) hsetroot -full "$file" ;;
-    mono)   make_mono "$file" ;;
-    retro)  make_retro "$file" ;;
-  esac
+wall() { # wall <mode> <file> via swww
+  local mode="$1" file="$2"
+  ensure_swww
+  render_for_mode "$mode" "$file"
+  # Allow user to override transition opts via $SWWW_FLAGS
+  swww img "${SWWW_IMAGE_OVERRIDE:-$tmp_wall}" ${SWWW_FLAGS:-} >/dev/null 2>&1 || true
   echo "$file" >> "${XDG_DATA_HOME:-$HOME/.local/share}/wl/wallpaper.list" 2>/dev/null || true
 }
 
