@@ -17,7 +17,6 @@ return {
     local telescope = require('telescope')
 
     -- ---------- Helpers ----------
-    -- Resolve module only on first call; walk dotted path to function
     local function lazy_call(mod, fn)
       return function(...)
         local ok, m = pcall(require, mod); if not ok then return end
@@ -28,10 +27,7 @@ return {
         return f(...)
       end
     end
-
-    -- Lazy action helper (avoids requiring on setup)
     local function act(name) return function(...) return require('telescope.actions')[name](...) end end
-
     local function builtin(name, opts) return function() return require('telescope.builtin')[name](opts or {}) end end
 
     local function best_find_cmd()
@@ -45,10 +41,8 @@ return {
     local function project_root()
       local cwd = vim.loop.cwd()
       for _, marker in ipairs({ '.git', '.hg', 'pyproject.toml', 'package.json', 'Cargo.toml', 'go.mod' }) do
-        local p = vim.fn.finddir(marker, cwd .. ';')
-        if p ~= '' then return vim.fn.fnamemodify(p, ':h') end
-        p = vim.fn.findfile(marker, cwd .. ';')
-        if p ~= '' then return vim.fn.fnamemodify(p, ':h') end
+        local p = vim.fn.finddir(marker, cwd .. ';'); if p ~= '' then return vim.fn.fnamemodify(p, ':h') end
+        p = vim.fn.findfile(marker, cwd .. ';'); if p ~= '' then return vim.fn.fnamemodify(p, ':h') end
       end
       return cwd
     end
@@ -64,7 +58,6 @@ return {
       '%.mp4', '%.mkv', '%.rar', '%.zip', '%.7z', '%.tar', '%.bz2', '%.epub',
       '%.flac', '%.tar.gz',
     }
-
     local short_find = best_find_cmd()
 
     -- ---------- Previewer guard ----------
@@ -72,28 +65,161 @@ return {
       local max_bytes = 1.5 * 1024 * 1024
       local stat = vim.loop.fs_stat(filepath)
       if stat and stat.size and stat.size > max_bytes then
-        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { '<< file too large to preview >>' })
-        return
+        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { '<< file too large to preview >>' }); return
       end
       if filepath:match('%.(png|jpe?g|gif|webp|pdf|zip|7z|rar)$') then
-        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { '<< binary file >>' })
-        return
+        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { '<< binary file >>' }); return
       end
       return require('telescope.previewers').buffer_previewer_maker(filepath, bufnr, opts)
     end
 
+    -- ---------- File Browser custom actions (Block #1) ----------
+    -- Deep create: mkdir -p and create empty file
+    local function fb_create_deep(prompt_bufnr)
+      local fb = require('telescope').extensions.file_browser
+      local actions = fb.actions
+      local state = require('telescope.actions.state')
+      local picker = state.get_current_picker(prompt_bufnr)
+      local cwd = (picker and picker._cwd) or vim.loop.cwd()
+      vim.ui.input({ prompt = 'New path (relative): ' }, function(input)
+        if not input or input == '' then return end
+        local abs = vim.fs.normalize(cwd .. '/' .. input)
+        vim.fn.mkdir(vim.fn.fnamemodify(abs, ':h'), 'p')
+        if vim.fn.filereadable(abs) == 0 then vim.fn.writefile({}, abs) end
+        actions.refresh(prompt_bufnr)
+        vim.cmd.edit(abs)
+      end)
+    end
+    -- Duplicate selected file
+    local function fb_duplicate(prompt_bufnr)
+      local e = require('telescope.actions.state').get_selected_entry(); if not e or not e.path then return end
+      local src = e.path
+      local default = src .. '.copy'
+      vim.ui.input({ prompt = 'Duplicate to: ', default = default }, function(dst)
+        if not dst or dst == '' then return end
+        vim.fn.mkdir(vim.fn.fnamemodify(dst, ':h'), 'p')
+        vim.fn.writefile(vim.fn.readfile(src, 'b'), dst, 'b')
+        require('telescope').extensions.file_browser.actions.refresh(prompt_bufnr)
+        vim.notify('Duplicated → ' .. dst)
+      end)
+    end
+
+    -- ---------- Diff helpers (Block #5) ----------
+    -- Diff two selected files (multi-select with <Tab>)
+    local function fb_diff_two()
+      local st = require('telescope.actions.state')
+      local pick = st.get_current_picker(0)
+      local sels = pick and pick:get_multi_selection() or {}
+      if #sels < 2 then return vim.notify('Select two files (use <Tab>)', vim.log.levels.WARN) end
+      local a = sels[1].path or sels[1].value
+      local b = sels[2].path or sels[2].value
+      vim.cmd('tabnew')
+      vim.cmd('edit ' .. vim.fn.fnameescape(a))
+      vim.cmd('vert diffsplit ' .. vim.fn.fnameescape(b))
+    end
+    -- Diff against HEAD (uses fugitive if present, else fallback)
+    local function fb_diff_head()
+      local e = require('telescope.actions.state').get_selected_entry(); if not e or not e.path then return end
+      local file = e.path
+      if vim.fn.exists(':Gvdiffsplit') == 2 then
+        vim.cmd('Gvdiffsplit ' .. vim.fn.fnameescape(file))
+        return
+      end
+      local root = project_root()
+      local rel = file:gsub('^' .. vim.pesc(root) .. '/?', '')
+      local lines = vim.fn.systemlist({ 'git', '-C', root, 'show', 'HEAD:' .. rel })
+      if vim.v.shell_error ~= 0 then return vim.notify('Not in git or file not tracked at HEAD', vim.log.levels.WARN) end
+      vim.cmd('tabnew')
+      local head_buf = vim.api.nvim_get_current_buf()
+      vim.api.nvim_buf_set_option(head_buf, 'buftype', 'nofile')
+      vim.api.nvim_buf_set_option(head_buf, 'bufhidden', 'wipe')
+      vim.api.nvim_buf_set_name(head_buf, 'HEAD:' .. rel)
+      vim.api.nvim_buf_set_lines(head_buf, 0, -1, false, lines)
+      vim.cmd('vert diffsplit ' .. vim.fn.fnameescape(file))
+    end
+
+    -- ---------- Quickfix helpers (Block #10 + interaction) ----------
+    local function apply_cmd_to_qf(cmd)
+      if not cmd or cmd == '' then return end
+      vim.cmd('copen')
+      vim.cmd('cdo ' .. cmd)
+    end
+    local function qf_toggle()
+      local winid = vim.fn.getqflist({ winid = 0 }).winid
+      if winid ~= 0 then vim.cmd('cclose') else vim.cmd('copen') end
+    end
+    local function qf_clear()
+      vim.fn.setqflist({})
+      vim.notify('Quickfix cleared')
+    end
+    local function qf_picker()
+      local pickers = require('telescope.pickers')
+      local finders = require('telescope.finders')
+      local conf = require('telescope.config').values
+      local actions = require('telescope.actions')
+      local state = require('telescope.actions.state')
+
+      local qf = vim.fn.getqflist({ items = 1 }).items or {}
+      if #qf == 0 then return vim.notify('Quickfix is empty') end
+
+      pickers.new({}, {
+        prompt_title = 'Quickfix',
+        finder = finders.new_table({
+          results = qf,
+          entry_maker = function(item)
+            local bufname = (item.bufnr and vim.api.nvim_buf_is_valid(item.bufnr)) and vim.api.nvim_buf_get_name(item.bufnr) or item.filename or ''
+            local disp = (bufname ~= '' and (vim.fn.fnamemodify(bufname, ':.')) or '[No Name]') ..
+                         ':' .. (item.lnum or 0) .. ':' .. (item.col or 0) .. '  ' .. (item.text or '')
+            return {
+              value = item,
+              display = disp,
+              ordinal = disp,
+              path = bufname,
+              lnum = item.lnum, col = item.col,
+            }
+          end
+        }),
+        sorter = conf.generic_sorter({}),
+        previewer = conf.qflist_previewer({}),
+        attach_mappings = function(bufnr, map)
+          -- open (default <CR> already works)
+          -- delete current selection(s) from qf
+          local function delete_selected()
+            local picker = state.get_current_picker(bufnr)
+            local sels = picker:get_multi_selection()
+            if #sels == 0 then
+              local cur = state.get_selected_entry(bufnr); if cur then sels = { cur } end
+            end
+            if #sels == 0 then return end
+            local current = vim.fn.getqflist({ items = 1 }).items or {}
+            local function key(e)
+              return table.concat({ e.bufnr or 0, e.lnum or 0, e.col or 0, e.text or '' }, '|')
+            end
+            local rm = {}
+            for _, s in ipairs(sels) do rm[key(s.value)] = true end
+            local kept = {}
+            for _, it in ipairs(current) do if not rm[key(it)] then table.insert(kept, it) end end
+            vim.fn.setqflist({}, ' ', { items = kept })
+            actions.close(bufnr)
+            qf_picker()
+          end
+          map('i', 'dd', delete_selected)
+          map('n', 'dd', delete_selected)
+          return true
+        end,
+      }):find()
+    end
+
     -- ---------- Setup ----------
+    local layout_actions = require('telescope.actions.layout')
+
     telescope.setup({
       defaults = {
         vimgrep_arguments = {
-          'rg',
-          '--color=never', '--no-heading', '--with-filename',
-          '--line-number', '--column', '--smart-case',
-          '--hidden',
-          '--glob', '!.git',
-          '--glob', '!.obsidian',
-          '--max-filesize', '1M',
-          '--no-binary',
+          'rg','--color=never','--no-heading','--with-filename',
+          '--line-number','--column','--smart-case','--hidden',
+          '--glob','!.git','--glob','!.obsidian',
+          '--max-filesize','1M','--no-binary',
         },
         mappings = {
           i = {
@@ -102,20 +228,14 @@ return {
             ['<C-s>'] = act('select_horizontal'),
             ['<C-v>'] = act('select_vertical'),
             ['<C-t>'] = act('select_tab'),
-            -- Send to quickfix & open (sequential, not multi-return)
-            ['<A-q>'] = function(...)
-              local a = require('telescope.actions')
-              a.smart_send_to_qflist(...); return a.open_qflist(...)
-            end,
-            -- Alternative: add without closing picker
-            ['<C-q>'] = function(...)
-              local a = require('telescope.actions')
-              a.smart_send_to_qflist(...); a.open_qflist(...)
-            end,
-            -- Copy path variations
+            -- send to qf + open
+            ['<A-q>'] = function(...) local a=require('telescope.actions'); a.smart_send_to_qflist(...); return a.open_qflist(...) end,
+            -- add to qf (keep picker)
+            ['<C-q>'] = function(...) local a=require('telescope.actions'); a.smart_send_to_qflist(...); a.open_qflist(...) end,
+            -- copy path variations
             ['<C-y>'] = (function()
               local function copier(kind)
-                return function(prompt_bufnr)
+                return function()
                   local e = require('telescope.actions.state').get_selected_entry(); if not e then return end
                   local p = e.path or e.value; if not p then return end
                   if kind == 'name' then p = vim.fn.fnamemodify(p, ':t')
@@ -128,7 +248,7 @@ return {
             end)(),
             ['<A-y>'] = (function()
               local function copier(kind)
-                return function(prompt_bufnr)
+                return function()
                   local e = require('telescope.actions.state').get_selected_entry(); if not e then return end
                   local p = e.path or e.value; if not p then return end
                   if kind == 'name' then p = vim.fn.fnamemodify(p, ':t')
@@ -141,7 +261,7 @@ return {
             end)(),
             ['<S-y>'] = (function()
               local function copier(kind)
-                return function(prompt_bufnr)
+                return function()
                   local e = require('telescope.actions.state').get_selected_entry(); if not e then return end
                   local p = e.path or e.value; if not p then return end
                   if kind == 'name' then p = vim.fn.fnamemodify(p, ':t')
@@ -152,9 +272,12 @@ return {
               end
               return copier('name')
             end)(),
+            -- (Block #9) Toggle preview on demand
+            ['<C-p>'] = layout_actions.toggle_preview,
           },
           n = {
             ['q'] = act('close'),
+            ['<C-p>'] = layout_actions.toggle_preview,
           },
         },
         dynamic_preview_title = true,
@@ -165,12 +288,9 @@ return {
         selection_strategy = 'reset',
         sorting_strategy = 'descending',
         layout_strategy = 'vertical',
-        layout_config = {
-          prompt_position = 'bottom',
-          vertical = { width = 0.9, height = 0.9, preview_height = 0.6 },
-        },
+        layout_config = { prompt_position = 'bottom', vertical = { width = 0.9, height = 0.9, preview_height = 0.6 } },
         file_ignore_patterns = ignore_patterns,
-        path_display = { truncate = 3 }, -- keep tail segments visible
+        path_display = { truncate = 3 },
         winblend = 8,
         border = {},
         borderchars = { '─','│','─','│','╭','╮','╯','╰' },
@@ -178,10 +298,7 @@ return {
         set_env = { COLORTERM = 'truecolor' },
         scroll_strategy = 'limit',
         wrap_results = true,
-        history = {
-          path = vim.fn.stdpath('state') .. '/telescope_history',
-          limit = 200,
-        },
+        history = { path = vim.fn.stdpath('state') .. '/telescope_history', limit = 200 },
       },
 
       pickers = {
@@ -197,13 +314,7 @@ return {
       },
 
       extensions = {
-        -- fzf-native: override sorters globally
-        fzf = {
-          fuzzy = true,
-          override_generic_sorter = true,
-          override_file_sorter = true,
-          case_mode = 'smart_case',
-        },
+        fzf = { fuzzy = true, override_generic_sorter = true, override_file_sorter = true, case_mode = 'smart_case' },
 
         file_browser = {
           theme = 'ivy',
@@ -215,11 +326,10 @@ return {
           layout_config = { height = 18 },
           hidden = { file_browser = false, folder_browser = false },
           hijack_netrw = false,
-          git_status = false, -- off by default
+          git_status = false,
 
           mappings = {
             i = {
-              -- Parent dir on empty prompt; else clear input
               ['<C-w>'] = function(prompt_bufnr, bypass)
                 local state = require('telescope.actions.state')
                 local picker = state.get_current_picker(prompt_bufnr)
@@ -231,82 +341,42 @@ return {
                   vim.api.nvim_feedkeys(t('<C-u>'), 'i', true)
                 end
               end,
-
-              -- Open variants
               ['<CR>']  = function(...) return require('telescope').extensions.file_browser.actions.select_default(...) end,
               ['<C-s>'] = act('select_horizontal'),
               ['<C-v>'] = act('select_vertical'),
               ['<C-t>'] = act('select_tab'),
 
-              -- File ops
-              ['a']     = function(...) return require('telescope').extensions.file_browser.actions.create(...) end,
-              ['r']     = function(...) return require('telescope').extensions.file_browser.actions.rename(...) end,
-              ['D']     = function(...) return require('telescope').extensions.file_browser.actions.remove(...) end,
-              ['m']     = function(...) return require('telescope').extensions.file_browser.actions.move(...) end,
-              ['c']     = function(...) return require('telescope').extensions.file_browser.actions.copy(...) end,
+              ['N'] = fb_create_deep,   -- deep create file/dir
+              ['Y'] = fb_duplicate,     -- duplicate file
+              ['='] = fb_diff_two,      -- diff two selected
+              ['H'] = fb_diff_head,     -- diff vs HEAD
 
-              -- Safer "trash" instead of hard delete
-              ['T'] = function(prompt_bufnr)
-                local e = require('telescope.actions.state').get_selected_entry(); if not e or not e.path then return end
-                local cmd
-                if vim.fn.executable('gio') == 1 then cmd = { 'gio', 'trash', e.path }
-                elseif vim.fn.executable('trash-put') == 1 then cmd = { 'trash-put', e.path } end
-                if not cmd then return vim.notify('No trash utility found', vim.log.levels.WARN) end
-                vim.fn.jobstart(cmd, { detach = true })
-                vim.notify('Trashed: ' .. e.path)
-                require('telescope').extensions.file_browser.actions.refresh(prompt_bufnr)
-              end,
-
-              -- Open with system handler
-              ['o'] = function()
-                local e = require('telescope.actions.state').get_selected_entry(); if not e or not e.path then return end
-                local opener = (vim.fn.executable('xdg-open') == 1) and { 'xdg-open', e.path }
-                             or (vim.fn.executable('gio') == 1)      and { 'gio', 'open', e.path } or nil
-                if not opener then return vim.notify('No system opener found', vim.log.levels.WARN) end
-                vim.fn.jobstart(opener, { detach = true })
-              end,
-
-              -- Toggle visibility / gitignore
+              -- keep existing:
               ['.']     = function(...) return require('telescope').extensions.file_browser.actions.toggle_hidden(...) end,
               ['g.']    = function(...) return require('telescope').extensions.file_browser.actions.toggle_respect_gitignore(...) end,
-
-              -- Batch select
               ['<Tab>']   = function(...) return require('telescope').extensions.file_browser.actions.toggle_selected(...) end,
               ['<S-Tab>'] = function(...) return require('telescope').extensions.file_browser.actions.select_all(...) end,
-
-              -- Copy path (absolute)
               ['<C-y>'] = function(prompt_bufnr)
                 local entry = require('telescope.actions.state').get_selected_entry(); if not entry then return end
                 local p = entry.path or entry.value; if not p then return end
                 p = vim.fn.fnamemodify(p, ':p'); vim.fn.setreg('+', p); vim.notify('Path copied: ' .. p)
               end,
-
-              -- FAST scoped find_files from current dir
               ['<C-f>'] = function(prompt_bufnr)
                 local state = require('telescope.actions.state')
                 local picker = state.get_current_picker(prompt_bufnr)
                 local cwd = (picker and picker._cwd) or vim.loop.cwd()
-                require('telescope.builtin').find_files({
-                  cwd = cwd,
-                  find_command = best_find_cmd(),
-                  theme = 'ivy',
-                  previewer = false,
-                })
+                require('telescope.builtin').find_files({ cwd = cwd, find_command = best_find_cmd(), theme = 'ivy', previewer = false })
               end,
-
               ['<Esc>'] = act('close'),
             },
-
             n = {
               ['q']     = act('close'),
               ['.']     = function(...) return require('telescope').extensions.file_browser.actions.toggle_hidden(...) end,
               ['g.']    = function(...) return require('telescope').extensions.file_browser.actions.toggle_respect_gitignore(...) end,
-              ['a']     = function(...) return require('telescope').extensions.file_browser.actions.create(...) end,
-              ['r']     = function(...) return require('telescope').extensions.file_browser.actions.rename(...) end,
-              ['D']     = function(...) return require('telescope').extensions.file_browser.actions.remove(...) end,
-              ['m']     = function(...) return require('telescope').extensions.file_browser.actions.move(...) end,
-              ['c']     = function(...) return require('telescope').extensions.file_browser.actions.copy(...) end,
-              ['T']     = function(...) return vim.cmd.normal({ args = { 'i' } }) end, -- hint: use insert 'T'
+              ['N'] = fb_create_deep,
+              ['Y'] = fb_duplicate,
+              ['='] = fb_diff_two,
+              ['H'] = fb_diff_head,
               ['<Tab>']   = function(...) return require('telescope').extensions.file_browser.actions.toggle_selected(...) end,
               ['<S-Tab>'] = function(...) return require('telescope').extensions.file_browser.actions.select_all(...) end,
               ['h']       = function(...) return require('telescope').extensions.file_browser.actions.goto_parent_dir(...) end,
@@ -315,13 +385,6 @@ return {
               ['v']       = act('select_vertical'),
               ['t']       = act('select_tab'),
               ['/']       = function() vim.cmd('startinsert') end,
-              ['o']       = function()
-                local e = require('telescope.actions.state').get_selected_entry(); if not e or not e.path then return end
-                local opener = (vim.fn.executable('xdg-open') == 1) and { 'xdg-open', e.path }
-                             or (vim.fn.executable('gio') == 1)      and { 'gio', 'open', e.path } or nil
-                if not opener then return vim.notify('No system opener found', vim.log.levels.WARN) end
-                vim.fn.jobstart(opener, { detach = true })
-              end,
             },
           },
         },
@@ -388,7 +451,6 @@ return {
                 local t = require('telescope'); pcall(t.load_extension, 'live_grep_args')
                 t.extensions.live_grep_args.live_grep_args({ cwd = vim.fn.expand('%:p:h') })
               end,
-              -- Quick filters/types (examples)
               ['<C-g>']     = function()
                 local a = require('telescope-live-grep-args.actions')
                 return a.quote_prompt({ postfix = ' -g !**/node_modules/** -g !**/dist/** ' })()
@@ -397,10 +459,7 @@ return {
                 local a = require('telescope-live-grep-args.actions')
                 return a.quote_prompt({ postfix = ' -t rust ' })()
               end,
-              ['<C-p>']     = function()
-                local t = require('telescope'); pcall(t.load_extension, 'live_grep_args')
-                t.extensions.live_grep_args.live_grep_args({ grep_open_files = true })
-              end,
+              ['<C-p>']     = layout_actions.toggle_preview, -- also useful in LGA
             },
           },
         },
@@ -408,99 +467,52 @@ return {
     })
 
     -- ---------- Extensions ----------
-    pcall(telescope.load_extension, 'fzf') -- keep only fzf eagerly
-
+    pcall(telescope.load_extension, 'fzf')
     -- ---------- Smart/Turbo helpers ----------
-
-    -- git_files with graceful fallback
     local function smart_files()
       local ok = pcall(require('telescope.builtin').git_files, { show_untracked = true })
       if not ok then require('telescope.builtin').find_files({ find_command = best_find_cmd() }) end
     end
-
-    -- ultra-light listing for huge trees
     local function turbo_find_files(opts)
       opts = opts or {}
       local cwd = opts.cwd or vim.fn.expand('%:p:h')
       require('telescope.builtin').find_files({
         cwd = cwd,
         find_command = { (vim.fn.executable('fd') == 1 and 'fd' or 'fdfind'), '-H', '--ignore-vcs', '-d', '2', '--strip-cwd-prefix' },
-        theme = 'ivy',
-        previewer = false,
-        prompt_title = false,
-        sorting_strategy = 'descending',
-        path_display = { 'truncate' },
+        theme = 'ivy', previewer = false, prompt_title = false, sorting_strategy = 'descending', path_display = { 'truncate' },
       })
     end
-
     local function turbo_file_browser(opts)
       opts = opts or {}
       local cwd = opts.cwd or vim.fn.expand('%:p:h')
       local t = require('telescope'); pcall(t.load_extension, 'file_browser')
       t.extensions.file_browser.file_browser({
-        cwd = cwd,
-        theme = 'ivy',
-        previewer = false,
-        grouped = false,
-        git_status = false,
-        hidden = { file_browser = false, folder_browser = false },
-        respect_gitignore = true,
-        prompt_title = false,
+        cwd = cwd, theme = 'ivy', previewer = false, grouped = false, git_status = false,
+        hidden = { file_browser = false, folder_browser = false }, respect_gitignore = true, prompt_title = false,
         layout_config = { height = 12 },
-      })
-    end
-
-    -- Only modified/unstaged files
-    local function git_modified_files()
-      local root = project_root()
-      require('telescope.builtin').find_files({
-        cwd = root,
-        find_command = { 'git', '-C', root, 'ls-files', '-m', '-o', '--exclude-standard' },
-        theme = 'ivy', previewer = false, prompt_title = 'Modified/Untracked',
-      })
-    end
-
-    -- Grep across changed files only
-    local function grep_changed()
-      local root = project_root()
-      local files = vim.fn.systemlist('git -C ' .. vim.fn.shellescape(root) .. ' ls-files -m -o --exclude-standard')
-      if #files == 0 then return vim.notify('No changed files', vim.log.levels.INFO) end
-      local cfg = require('telescope.config').values
-      local args = vim.deepcopy(cfg.vimgrep_arguments)
-      for _, f in ipairs(files) do table.insert(args, f) end
-      require('telescope.builtin').grep_string({
-        search = '',
-        cwd = root,
-        grep_open_files = false,
-        vimgrep_arguments = args,
-        prompt_title = 'Grep changed files',
       })
     end
 
     -- ---------- Keymaps ----------
     local opts = { silent = true, noremap = true }
-
-    -- zoxide list (consider mapping to <leader>cd if 'cd' collides)
+    -- zoxide (note: consider <leader>cd if 'cd' conflicts)
     vim.keymap.set('n', 'cd', function()
       local t = require('telescope')
       pcall(t.load_extension, 'zoxide')
       t.extensions.zoxide.list(require('telescope.themes').get_ivy({ layout_config = { height = 8 }, border = false }))
     end, opts)
 
-    -- frecency
     vim.keymap.set('n', '<leader>.', function()
       local t = require('telescope')
       pcall(t.load_extension, 'frecency')
       vim.cmd('Telescope frecency theme=ivy layout_config={height=12} sorting_strategy=descending')
     end, opts)
 
-    -- file browser in current buffer dir
     vim.keymap.set('n', '<leader>l', function()
       local t = require('telescope'); pcall(t.load_extension, 'file_browser')
       vim.cmd('Telescope file_browser path=%:p:h select_buffer=true')
     end, opts)
 
-    -- pathogen from file dir / project root
     vim.keymap.set('n', 'E', function()
       if vim.bo.filetype then pcall(function() require('oil.actions').cd.callback() end)
       else vim.cmd('chdir %:p:h') end
@@ -524,20 +536,17 @@ return {
     -- Resume last picker
     vim.keymap.set('n', '<leader>sr', builtin('resume'), opts)
 
-    -- Project-scoped helpers
-    vim.keymap.set('n', '<leader>sd', function()
-      require('telescope.builtin').find_files({
-        cwd = vim.fn.expand('%:p:h'),
-        find_command = best_find_cmd(),
-        theme = 'ivy', previewer = false,
-      })
+    -- Project helpers
+    vim.keymap.set('n', 'gz', function()
+      require('telescope.builtin').find_files({ cwd = vim.fn.expand('%:p:h'), find_command = best_find_cmd(), theme = 'ivy', previewer = false })
     end, opts)
 
-    vim.keymap.set('n', '<leader>*', function()
-      require('telescope.builtin').grep_string({ cwd = project_root(), word_match = '-w' })
+    -- Quickfix interaction
+    vim.keymap.set('n', '<C-q>',  qf_picker, opts)  -- Telescope quickfix picker (delete with "dd")
+    vim.keymap.set('n', '<C-q>q', qf_toggle, opts)  -- toggle quickfix window
+    vim.keymap.set('n', '<C-q>d', qf_clear, opts)   -- clear quickfix (d = delete)
+    vim.keymap.set('n', '<C-q>a', function()
+        vim.ui.input({ prompt = ':cdo ' }, function(cmd) if cmd and cmd ~= '' then apply_cmd_to_qf(cmd) end end)
     end, opts)
-
-    vim.keymap.set('n', '<leader>sm', git_modified_files, opts)
-    vim.keymap.set('n', '<leader>sg', grep_changed, opts)
   end,
 }
