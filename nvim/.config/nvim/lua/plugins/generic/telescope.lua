@@ -24,7 +24,7 @@ return {
         for name in tostring(fn):gmatch('[^%.]+') do
           f = f[name]; if not f then return end
         end
-        return f(...)
+        return f(...) 
       end
     end
     local function act(name) return function(...) return require('telescope.actions')[name](...) end end
@@ -200,7 +200,7 @@ return {
             local kept = {}
             for _, it in ipairs(current) do if not rm[key(it)] then table.insert(kept, it) end end
             vim.fn.setqflist({}, ' ', { items = kept })
-            actions.close(bufnr)
+            require('telescope.actions').close(bufnr)
             qf_picker()
           end
           map('i', 'dd', delete_selected)
@@ -341,7 +341,8 @@ return {
                   vim.api.nvim_feedkeys(t('<C-u>'), 'i', true)
                 end
               end,
-              ['<CR>']  = function(...) return require('telescope').extensions.file_browser.actions.select_default(...) end,
+              -- FIX: use core select_default, not fb_actions.select_default
+              ['<CR>']  = act('select_default'),
               ['<C-s>'] = act('select_horizontal'),
               ['<C-v>'] = act('select_vertical'),
               ['<C-t>'] = act('select_tab'),
@@ -380,7 +381,8 @@ return {
               ['<Tab>']   = function(...) return require('telescope').extensions.file_browser.actions.toggle_selected(...) end,
               ['<S-Tab>'] = function(...) return require('telescope').extensions.file_browser.actions.select_all(...) end,
               ['h']       = function(...) return require('telescope').extensions.file_browser.actions.goto_parent_dir(...) end,
-              ['l']       = function(...) return require('telescope').extensions.file_browser.actions.select_default(...) end,
+              -- FIX: use core select_default, not fb_actions.select_default
+              ['l']       = act('select_default'),
               ['s']       = act('select_horizontal'),
               ['v']       = act('select_vertical'),
               ['t']       = act('select_tab'),
