@@ -272,8 +272,7 @@ return {
               end
               return copier('name')
             end)(),
-            -- (Block #9) Toggle preview on demand
-            ['<C-p>'] = layout_actions.toggle_preview,
+            ['<C-S-p>'] = layout_actions.toggle_preview,
           },
           n = {
             ['q'] = act('close'),
