@@ -15,7 +15,7 @@ import qs.Widgets.SidePanel
 
 Scope {
     id: rootScope
-    property var  shell
+    property var shell
     property alias visible: barRootItem.visible
     property real barHeight: 0 // Expose current bar height for other components (e.g. window mirroring)
 
@@ -40,12 +40,10 @@ Scope {
                     anchors.right:  true
                     visible: Settings.settings.barMonitors.includes(modelData.name)
                              || (Settings.settings.barMonitors.length === 0)
-
                     // --- Docking: reserve space & push tiled windows ---
                     implicitHeight: barBackground.height
                     exclusionMode: ExclusionMode.Normal
                     exclusiveZone: panel.barHeightPx   // reserve exactly bar height
-
                     // ---------- Lifted/shared properties ----------
                     // UI scale for this screen
                     property real s: Theme.scale(panel.screen)
@@ -97,7 +95,7 @@ Scope {
                     SystemInfo {
                         anchors.horizontalCenter: barBackground.horizontalCenter
                         anchors.verticalCenter: barBackground.verticalCenter
-                        visible: true
+                        visible: false
                     }
 
                     Row {
