@@ -59,6 +59,7 @@ Scope {
                         WsIndicator { id: wsindicator; anchors.verticalCenter: parent.verticalCenter }
                         DiagonalSeparatorRect { height: barBackground.height + 60 }
                         KeyboardLayoutHypr { id: kbIndicator; anchors.verticalCenter: wsindicator.verticalCenter; /* deviceMatch: "dygma-defy-keyboard" */ }
+                        DiagonalSeparatorRect { height: barBackground.height + 60 }
                         NetworkUsage { id: net; anchors.verticalCenter: wsindicator.verticalCenter; }
                         DiagonalSeparatorRect { height: barBackground.height + 60 }
                     }
