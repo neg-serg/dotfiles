@@ -129,6 +129,7 @@ Item {
             // Baseline alignment (tweak offset for pixel-perfect visual centering)
             anchors.baseline: label.baseline
             anchors.baselineOffset: iconBaselineOffset
+            padding: 4
         }
 
         // Main text remains RichText with soft decoration
