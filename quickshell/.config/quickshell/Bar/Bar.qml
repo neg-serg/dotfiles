@@ -17,8 +17,7 @@ Scope {
     id: rootScope
     property var shell
     property alias visible: barRootItem.visible
-    // Expose current bar height for other components (e.g. window mirroring)
-    property real barHeight: 0
+    property real barHeight: 0 // Expose current bar height for other components (e.g. window mirroring)
 
     Item {
         id: barRootItem
@@ -50,7 +49,6 @@ Scope {
 
                     // Update exposed bar height once the bar is created
                     Component.onCompleted: rootScope.barHeight = barBackground.height
-
 
                     Row {
                         id: leftWidgetsRow
@@ -169,67 +167,6 @@ Scope {
 
                         Media {
                             anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                    }
-
-                }
-
-                Loader {
-                    active: (Settings.settings.barMonitors.length === 0)
-                    sourceComponent: Item {
-                        PanelWindow {
-                            id: topLeftPanel
-                            anchors.top: true
-                            anchors.left: true
-                            color: "transparent"
-                            screen: modelData
-                            margins.top: 36 * Theme.scale(screen) - 1
-                            WlrLayershell.exclusionMode: ExclusionMode.Ignore
-                            WlrLayershell.layer: WlrLayer.Top
-                            WlrLayershell.namespace: "swww-daemon"
-                            aboveWindows: false
-                            implicitHeight: 24
-                        }
-
-                        PanelWindow {
-                            id: topRightPanel
-                            anchors.top: true
-                            anchors.right: true
-                            color: "transparent"
-                            screen: modelData
-                            margins.top: 36 * Theme.scale(screen) - 1
-                            WlrLayershell.exclusionMode: ExclusionMode.Ignore
-                            WlrLayershell.layer: WlrLayer.Top
-                            WlrLayershell.namespace: "swww-daemon"
-                            aboveWindows: false
-                            implicitHeight: 24
-                        }
-
-                        PanelWindow {
-                            id: bottomLeftPanel
-                            anchors.bottom: true
-                            anchors.left: true
-                            color: "transparent"
-                            screen: modelData
-                            WlrLayershell.exclusionMode: ExclusionMode.Ignore
-                            WlrLayershell.layer: WlrLayer.Top
-                            WlrLayershell.namespace: "swww-daemon"
-                            aboveWindows: false
-                            implicitHeight: 24
-                        }
-
-                        PanelWindow {
-                            id: bottomRightPanel
-                            anchors.bottom: true
-                            anchors.right: true
-                            color: "transparent"
-                            screen: modelData
-                            WlrLayershell.exclusionMode: ExclusionMode.Ignore
-                            WlrLayershell.layer: WlrLayer.Top
-                            WlrLayershell.namespace: "swww-daemon"
-                            aboveWindows: false
-                            implicitHeight: 24
                         }
                     }
                 }
