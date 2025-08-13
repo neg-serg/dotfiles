@@ -14,18 +14,13 @@ import qs.Helpers
 Scope {
     id: root
     property bool pendingReload: false
-    
     // Helper function to round value to nearest step
-    function roundToStep(value, step) {
-        return Math.round(value / step) * step;
-    }
-
+    function roundToStep(value, step) { return Math.round(value / step) * step; }
     // Volume property reflecting current audio volume in 0-100
     // Will be kept in sync dynamically below
     property int volume: (defaultAudioSink && defaultAudioSink.audio && !defaultAudioSink.audio.muted)
                         ? Math.round(defaultAudioSink.audio.volume * 100)
                         : 0
-
     // Function to update volume with clamping, stepping, and applying to audio sink
     function updateVolume(vol) {
         var clamped = Math.max(0, Math.min(100, vol));
@@ -44,15 +39,8 @@ Scope {
     }
 
     Overview {}
-
-    Bar {
-        id: bar
-        shell: root
-    }
-
-    // Helper to mirror window positions when the panel is at the bottom
-    WindowMirror { id: windowMirror }
-
+    Bar { id: bar; shell: root; }
+    WindowMirror { id: windowMirror } // Helper to mirror window positions when the panel is at the bottom
     Connections {
         target: Settings.settings
         function onPanelPositionChanged() {
@@ -76,47 +64,20 @@ Scope {
         visible: false
     }
 
-    LockScreen {
-        id: lockScreen
-        onLockedChanged: {
-            if (!locked && root.pendingReload) {
-                reloadTimer.restart();
-                root.pendingReload = false;
-            }
-        }
-    }
-
-    IdleInhibitor {
-        id: idleInhibitor
-    }
-
+    IdleInhibitor { id: idleInhibitor; }
     property var defaultAudioSink: Pipewire.defaultAudioSink // Reference to the default audio sink from Pipewire
-
-    PwObjectTracker {
-        objects: [Pipewire.defaultAudioSink]
-    }
-
-    IPCHandlers {
-        appLauncherPanel: appLauncherPanel
-        lockScreen: lockScreen
-        idleInhibitor: idleInhibitor
-    }
+    PwObjectTracker { objects: [Pipewire.defaultAudioSink]; }
+    IPCHandlers { appLauncherPanel: appLauncherPanel; idleInhibitor: idleInhibitor; }
 
     Connections {
-        function onReloadCompleted() {
-            Quickshell.inhibitReloadPopup();
-        }
-
-        function onReloadFailed() {
-            Quickshell.inhibitReloadPopup();
-        }
-
+        function onReloadCompleted() { Quickshell.inhibitReloadPopup(); }
+        function onReloadFailed() { Quickshell.inhibitReloadPopup(); }
         target: Quickshell
     }
 
     Timer {
         id: reloadTimer
-        interval: 500 // ms
+        interval: 500
         repeat: false
         onTriggered: Quickshell.reload(true)
     }
