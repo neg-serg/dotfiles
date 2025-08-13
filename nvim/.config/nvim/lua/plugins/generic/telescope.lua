@@ -219,7 +219,7 @@ return {
           'rg','--color=never','--no-heading','--with-filename',
           '--line-number','--column','--smart-case','--hidden',
           '--glob','!.git','--glob','!.obsidian',
-          '--max-filesize','1M','--no-binary',
+          '--max-filesize','1M','--no-binary','--trim',
         },
         mappings = {
           i = {
