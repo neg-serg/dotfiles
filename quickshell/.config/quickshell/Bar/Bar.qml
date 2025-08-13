@@ -38,7 +38,7 @@ Scope {
                     anchors.right: true
                     visible: Settings.settings.barMonitors.includes(modelData.name) || (Settings.settings.barMonitors.length === 0)
 
-                    Rectangle {
+                    Rectangle { // Bar itself
                         id: barBackground
                         width: parent.width
                         height: 28 * Theme.scale(panel.screen)
@@ -75,37 +75,12 @@ Scope {
                         anchors.right: barBackground.right
                         anchors.rightMargin: 18 * Theme.scale(panel.screen)
                         spacing: 12 * Theme.scale(panel.screen)
-                        SystemTray {
-                            id: systemTrayModule
-                            shell: rootScope.shell
-                            anchors.verticalCenter: parent.verticalCenter
-                            bar: panel
-                            trayMenu: externalTrayMenu
-                        }
-
+                        SystemTray { id: systemTrayModule; shell: rootScope.shell; anchors.verticalCenter: parent.verticalCenter; bar: panel; trayMenu: externalTrayMenu; }
                         CustomTrayMenu { id: externalTrayMenu }
-
-                        Volume {
-                            id: widgetsVolume
-                            shell: rootScope.shell
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Media {
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        PanelPopup {
-                            id: sidebarPopup
-                            shell: rootScope.shell
-                        }
-
-                        Button {
-                            barBackground: barBackground
-                            anchors.verticalCenter: parent.verticalCenter
-                            screen: modelData
-                            sidebarPopup: sidebarPopup
-                        }
+                        Volume { id: widgetsVolume; shell: rootScope.shell; anchors.verticalCenter: parent.verticalCenter; }
+                        Media { anchors.verticalCenter: parent.verticalCenter; }
+                        PanelPopup { id: sidebarPopup; shell: rootScope.shell; }
+                        Button { barBackground: barBackground; anchors.verticalCenter: parent.verticalCenter; screen: modelData; sidebarPopup: sidebarPopup; }
                     }
                 }
             }
