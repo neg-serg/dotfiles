@@ -49,7 +49,6 @@ Scope {
 
                     // Update exposed bar height once the bar is created
                     Component.onCompleted: rootScope.barHeight = barBackground.height
-
                     Row {
                         id: leftWidgetsRow
                         anchors.verticalCenter: barBackground.verticalCenter
@@ -61,46 +60,35 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        DiagonalSeparatorRect {
-                            height: barBackground.height + 60
-                        }
+                        DiagonalSeparatorRect { height: barBackground.height + 60 }
 
                         WsIndicator {
                             id: wsindicator
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        DiagonalSeparatorRect {
-                            height: barBackground.height + 60
-                        }
+                        DiagonalSeparatorRect { height: barBackground.height + 60 }
 
                         KeyboardLayoutHypr {
                             id: kbIndicator
                             deviceMatch: "dygma-defy-keyboard"
-                            fontPixelSize: Theme.fontSizeSmall * Theme.scale(panel.screen)
                             desiredHeight: Math.max(20, barBackground.height - 4)
                             screen: panel.screen
-                            // Align vertically to workspace widget, then fine-tune with yNudge if needed
                             anchors.verticalCenter: wsindicator.verticalCenter
-                            yNudge: -1  // tweak ±1 px if needed
                             iconScale: 0.95 // Match workspace icon softness and spacing
                             iconSpacing: Math.round(4 * Theme.scale(panel.screen))
                         }
 
                         NetworkUsage {
                             id: net
-                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.verticalCenter: wsindicator.verticalCenter
                             desiredHeight: barBackground.height
-                            fontPixelSize: Theme.fontSizeSmall * Theme.scale(panel.screen)
-                            height: barBackground.height
                             iconSpacing: 6
                             screen: panel.screen
                             useTheme: false
                         }
 
-                        DiagonalSeparatorRect {
-                            height: barBackground.height + 60
-                        }
+                        DiagonalSeparatorRect { height: barBackground.height + 60 }
                     }
 
                     SystemInfo {
@@ -125,9 +113,7 @@ Scope {
                             trayMenu: externalTrayMenu
                         }
 
-                        CustomTrayMenu {
-                            id: externalTrayMenu
-                        }
+                        CustomTrayMenu { id: externalTrayMenu }
 
                         Volume {
                             id: widgetsVolume
