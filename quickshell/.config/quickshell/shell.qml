@@ -9,23 +9,13 @@ import qs.Bar
 import qs.Bar.Modules
 import qs.Widgets
 import qs.Widgets.LockScreen
-import qs.Widgets.Notification
 import qs.Settings
 import qs.Helpers
 
 Scope {
     id: root
-    property var notificationHistoryWin: notificationHistoryLoader.active ? notificationHistoryLoader.item : null
     property bool pendingReload: false
     
-    // Function to load notification history
-    function loadNotificationHistory() {
-        if (!notificationHistoryLoader.active) {
-            notificationHistoryLoader.loading = true;
-        }
-        return notificationHistoryLoader;
-    }
-
     // Helper function to round value to nearest step
     function roundToStep(value, step) {
         return Math.round(value / step) * step;
@@ -59,7 +49,6 @@ Scope {
     Bar {
         id: bar
         shell: root
-        property var notificationHistoryWin: notificationHistoryLoader.active ? notificationHistoryLoader.item : null
     }
 
     // Helper to mirror window positions when the panel is at the bottom
@@ -102,39 +91,6 @@ Scope {
         id: idleInhibitor
     }
 
-    NotificationServer {
-        id: notificationServer
-        onNotification: function (notification) {
-            console.log("[Notification] Received notification:", notification.appName, "-", notification.summary);
-            notification.tracked = true;
-            if (notificationPopup.notificationsVisible) {
-                // Add notification to the popup manager
-                notificationPopup.addNotification(notification);
-            }
-            if (notificationHistoryLoader.active && notificationHistoryLoader.item) {
-                notificationHistoryLoader.item.addToHistory({
-                    id: notification.id,
-                    appName: notification.appName || "Notification",
-                    summary: notification.summary || "",
-                    body: notification.body || "",
-                    urgency: notification.urgency,
-                    timestamp: Date.now()
-                });
-            }
-        }
-    }
-
-    NotificationPopup {
-        id: notificationPopup
-    }
-
-    // LazyLoader for NotificationHistory - only load when needed
-    LazyLoader {
-        id: notificationHistoryLoader
-        loading: false
-        component: NotificationHistory {}
-    }
-
     property var defaultAudioSink: Pipewire.defaultAudioSink // Reference to the default audio sink from Pipewire
 
     PwObjectTracker {
@@ -145,7 +101,6 @@ Scope {
         appLauncherPanel: appLauncherPanel
         lockScreen: lockScreen
         idleInhibitor: idleInhibitor
-        notificationPopup: notificationPopup
     }
 
     Connections {

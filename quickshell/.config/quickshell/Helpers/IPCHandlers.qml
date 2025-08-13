@@ -3,7 +3,6 @@ import Quickshell.Io
 import qs.Bar.Modules
 import qs.Helpers
 import qs.Widgets.LockScreen
-import qs.Widgets.Notification
 
 Item {
     id: root
@@ -11,19 +10,12 @@ Item {
     property Applauncher appLauncherPanel
     property LockScreen lockScreen
     property IdleInhibitor idleInhibitor
-    property NotificationPopup notificationPopup
 
     IpcHandler {
         target: "globalIPC"
 
         function toggleIdleInhibitor(): void {
             root.idleInhibitor.toggle()
-        }
-
-        function toggleNotificationPopup(): void {
-            console.log("[IPC] NotificationPopup toggle() called")
-            // Use the global toggle function from the notification manager
-            root.notificationPopup.togglePopup();
         }
 
         // Toggle Applauncher visibility
