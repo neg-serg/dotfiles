@@ -8,8 +8,8 @@ Item {
     id: root
     // Public props
     property var    screen: null
-    property int    desiredHeight: 28          // full component height
-    property int    fontPixelSize: 0           // if 0 → computed from desiredHeight
+    property int    desiredHeight: 28
+    property int    fontPixelSize: 0
     property color  textColor: Theme.textPrimary
     property color  bgColor:   "transparent"
     property int    iconSpacing: 4
@@ -21,12 +21,12 @@ Item {
     // Icon tuning
     property real   iconScale: 0.7
     property color  iconColor: useTheme && Theme.gothicColor ? Theme.gothicColor : "#8d9eb2"
-    property int    iconBaselineAdjust: 0
-    property string iconText: ""                 // Font Awesome: network-wired
+    property int    iconVAdjust: 0                 // vertical nudge (px) for the icon
+    property string iconText: ""                  // Font Awesome: network-wired
     property string iconFontFamily: "Font Awesome 6 Free"
     property string iconStyleName: "Solid"
 
-    // Text padding (affects computed font size)
+    // Text padding
     property int    textPadding: 6
 
     // Sizing
@@ -41,38 +41,42 @@ Item {
         visible: bgColor !== "transparent"
     }
 
-    // Computed font sizes to keep content centered across desiredHeight changes
+    // Computed font size tied to height
     readonly property int computedFontPx: fontPixelSize > 0
         ? fontPixelSize
         : Math.max(16, Math.round((desiredHeight - 2 * textPadding) * 0.6))
 
-    // Font metrics for baseline alignment
+    // Font metrics for text (not icon)
     FontMetrics { id: fmText; font: label.font }
-    FontMetrics { id: fmIcon; font: iconLabel.font }
 
-    // Content row, kept vertically in the middle of the panel
+    // Content row
     Row {
         id: lineBox
         spacing: iconSpacing
-        anchors.verticalCenter: parent.verticalCenter   // strict vertical center of the whole row
-        anchors.left: parent.left                       // keep left alignment (no horizontal centering)
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: parent.left
 
-        // Icon (Font Awesome glyph)
-        Label {
-            id: iconLabel
-            text: iconText
-            color: iconColor
-            font.family: iconFontFamily
-            font.styleName: iconStyleName
-            font.weight: Font.Medium
-            font.pixelSize: Math.max(8, Math.round(root.computedFontPx * iconScale))
-            verticalAlignment: Text.AlignVCenter
-            // Align icon to the text baseline with optional nudge
-            baselineOffset: fmIcon.ascent + iconBaselineAdjust
-            padding: 0
+        // Icon container: forces vertical centering of the glyph
+        Item {
+            id: iconBox
+            implicitHeight: root.desiredHeight
+            implicitWidth: iconGlyph.implicitWidth
+            // The actual glyph
+            Text {
+                id: iconGlyph
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: iconVAdjust
+                text: iconText
+                color: iconColor
+                font.family: iconFontFamily
+                font.styleName: iconStyleName
+                font.weight: Font.Normal
+                font.pixelSize: Math.max(8, Math.round(root.computedFontPx * iconScale))
+                renderType: Text.NativeRendering
+            }
         }
 
-        // Text
+        // Text (оставляем Label: padding, палитра и т.п.)
         Label {
             id: label
             text: displayText
@@ -81,7 +85,6 @@ Item {
             font.pixelSize: root.computedFontPx
             padding: textPadding
             verticalAlignment: Text.AlignVCenter
-            baselineOffset: fmText.ascent
         }
     }
 
@@ -96,11 +99,10 @@ Item {
                 if (line.length) parseJsonLine(line)
             }
         }
-
         onRunningChanged: if (!running) restartTimer.restart()
     }
 
-    // Backoff before restart to avoid tight loops
+    // Backoff before restart
     Timer {
         id: restartTimer
         interval: 1500
@@ -122,13 +124,13 @@ Item {
         }
     }
 
-    // Build compact text like "12.3K/4.5K" or "0"
+    // "12.3K/4.5K" or "0"
     function formatData(data) {
         if (data.rx_kib_s === 0 && data.tx_kib_s === 0) return "0"
         return `${fmtKiBps(data.rx_kib_s)}/${fmtKiBps(data.tx_kib_s)}`
     }
 
-    function fmtKiBps(kib) { return kib.toFixed(1) + "K" } // KiB/s formatter
+    function fmtKiBps(kib) { return kib.toFixed(1) + "K" }
 
     Component.onCompleted: {
         console.log("Starting network monitor:", Array.isArray(cmd) ? cmd.join(" ") : String(cmd))
