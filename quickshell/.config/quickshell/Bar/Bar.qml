@@ -11,7 +11,6 @@ import qs.Helpers
 import qs.Services
 import qs.Settings
 import qs.Widgets
-import qs.Widgets.Notification
 import qs.Widgets.SidePanel
 
 Scope {
@@ -148,11 +147,6 @@ Scope {
 
                         CustomTrayMenu {
                             id: externalTrayMenu
-                        }
-
-                        NotificationIcon {
-                            shell: rootScope.shell
-                            anchors.verticalCenter: parent.verticalCenter
                         }
 
                         Volume {
