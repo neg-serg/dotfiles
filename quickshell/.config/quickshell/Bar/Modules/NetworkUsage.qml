@@ -8,26 +8,26 @@ import qs.Settings
 Item {
     id: root
     // Public props
-    property var    screen: null
-    property int    desiredHeight: 24
-    property int    fontPixelSize: 0
-    property color  textColor: Theme.textPrimary
-    property color  bgColor:   "transparent"
-    property int    iconSpacing: 4
+    property var screen: null
+    property int desiredHeight: 28
+    property int fontPixelSize: 0
+    property color textColor: Theme.textPrimary
+    property color bgColor:   "transparent"
+    property int iconSpacing: 4
     property string deviceMatch: ""
     // NOTE: Process.command expects a string list [exe, arg1, ...]
-    property var    cmd: ["rsmetrx"]
-    property string displayText: "0/0"
-    property bool   useTheme: true
+    property var cmd: ["rsmetrx"]
+    property string displayText: "0/0K"
+    property bool useTheme: true
 
     // Icon tuning (mirrors KeyboardLayoutHypr structure)
     // You can tweak size, spacing, baseline, glyph, and font face.
-    property real   iconScale: 0.7
-    property color  iconColor: useTheme && Theme.gothicColor ? Theme.gothicColor : "#8d9eb2"
-    property int    iconBaselineAdjust: 0          // fine-tune icon vertical alignment (px)
-    property string iconText: ""             // FA 'network-wired' (Font Awesome 6)
+    property real iconScale: 0.7
+    property color iconColor: useTheme && Theme.gothicColor ? Theme.gothicColor : "#8d9eb2"
+    property int iconBaselineAdjust: 0 // fine-tune icon vertical alignment (px)
+    property string iconText: ""  // FA 'network-wired' (Font Awesome 6)
     property string iconFontFamily: "Font Awesome 6 Free"
-    property string iconStyleName: "Solid"         // "Regular" / "Solid" / etc.
+    property string iconStyleName: "Solid" // "Regular" / "Solid" / etc.
 
     // Sizing
     implicitHeight: desiredHeight
