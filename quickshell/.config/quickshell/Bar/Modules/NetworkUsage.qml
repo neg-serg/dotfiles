@@ -1,4 +1,3 @@
-
 import QtQuick
 import QtQuick.Controls
 import Quickshell
@@ -8,119 +7,108 @@ import qs.Settings
 Item {
     id: root
     // Public props
-    property var screen: null
-    property int desiredHeight: 28
-    property int fontPixelSize: 0
-    property color textColor: Theme.textPrimary
-    property color bgColor:   "transparent"
-    property int iconSpacing: 4
+    property var    screen: null
+    property int    desiredHeight: 28          // full component height
+    property int    fontPixelSize: 0           // if 0 → computed from desiredHeight
+    property color  textColor: Theme.textPrimary
+    property color  bgColor:   "transparent"
+    property int    iconSpacing: 4
     property string deviceMatch: ""
-    // NOTE: Process.command expects a string list [exe, arg1, ...]
-    property var cmd: ["rsmetrx"]
+    property var    cmd: ["rsmetrx"]
     property string displayText: "0/0K"
-    property bool useTheme: true
+    property bool   useTheme: true
 
-    // Icon tuning (mirrors KeyboardLayoutHypr structure)
-    // You can tweak size, spacing, baseline, glyph, and font face.
-    property real iconScale: 0.7
-    property color iconColor: useTheme && Theme.gothicColor ? Theme.gothicColor : "#8d9eb2"
-    property int iconBaselineAdjust: 0 // fine-tune icon vertical alignment (px)
-    property string iconText: ""  // FA 'network-wired' (Font Awesome 6)
+    // Icon tuning
+    property real   iconScale: 0.7
+    property color  iconColor: useTheme && Theme.gothicColor ? Theme.gothicColor : "#8d9eb2"
+    property int    iconBaselineAdjust: 0
+    property string iconText: ""                 // Font Awesome: network-wired
     property string iconFontFamily: "Font Awesome 6 Free"
-    property string iconStyleName: "Solid" // "Regular" / "Solid" / etc.
+    property string iconStyleName: "Solid"
+
+    // Text padding (affects computed font size)
+    property int    textPadding: 6
 
     // Sizing
     implicitHeight: desiredHeight
-    implicitWidth: lineBox.implicitWidth
-    width: implicitWidth
+    width: lineBox.implicitWidth
     height: desiredHeight
 
-    // Optional background
+    // Background (optional)
     Rectangle {
         anchors.fill: parent
         color: bgColor
         visible: bgColor !== "transparent"
     }
 
-    // Use font metrics to align icon baseline with text baseline
+    // Computed font sizes to keep content centered across desiredHeight changes
+    readonly property int computedFontPx: fontPixelSize > 0
+        ? fontPixelSize
+        : Math.max(16, Math.round((desiredHeight - 2 * textPadding) * 0.6))
+
+    // Font metrics for baseline alignment
     FontMetrics { id: fmText; font: label.font }
     FontMetrics { id: fmIcon; font: iconLabel.font }
 
+    // Content row, kept vertically in the middle of the panel
     Row {
         id: lineBox
         spacing: iconSpacing
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenter: parent.verticalCenter   // strict vertical center of the whole row
+        anchors.left: parent.left                       // keep left alignment (no horizontal centering)
 
-        // Left icon (Font Awesome glyph)
-        // Keeps visual baseline aligned with the text using metrics.
+        // Icon (Font Awesome glyph)
         Label {
             id: iconLabel
             text: iconText
             color: iconColor
             font.family: iconFontFamily
             font.styleName: iconStyleName
-            font.weight: Font.Normal
-            font.pixelSize: (fontPixelSize > 0
-                             ? fontPixelSize
-                             : Theme.fontSizeSmall * Theme.scale(screen)) * iconScale
+            font.weight: Font.Medium
+            font.pixelSize: Math.max(8, Math.round(root.computedFontPx * iconScale))
             verticalAlignment: Text.AlignVCenter
-            // Align FA icon's baseline to the text baseline + optional nudge
-            y: Math.round((lineBox.height - fmIcon.height) / 2
-                          + (fmText.ascent - fmIcon.ascent)
-                          + iconBaselineAdjust)
+            // Align icon to the text baseline with optional nudge
+            baselineOffset: fmIcon.ascent + iconBaselineAdjust
+            padding: 0
         }
 
+        // Text
         Label {
             id: label
             text: displayText
             color: textColor
             font.family: Theme.fontFamily
-            font.pixelSize: fontPixelSize > 0
-                           ? fontPixelSize
-                           : Theme.fontSizeSmall * Theme.scale(screen)
-            padding: 6
+            font.pixelSize: root.computedFontPx
+            padding: textPadding
             verticalAlignment: Text.AlignVCenter
-            // Center text block in the row via metrics (keeps things tidy)
-            y: Math.round((lineBox.height - fmText.height) / 2)
+            baselineOffset: fmText.ascent
         }
     }
 
     // External process runner
     Process {
         id: runner
-        running: true              // launch immediately
+        running: true
         command: cmd
-
-        // Stream stdout line-by-line
         stdout: SplitParser {
-            // Emitted once per line (separator \n by default)
             onRead: (data) => {
                 const line = (data || "").trim()
                 if (line.length) parseJsonLine(line)
             }
         }
 
-        // If process stops (exits or fails), schedule a restart
-        onRunningChanged: {
-            if (!running) {
-                console.log("Process stopped; scheduling restart…")
-                restartTimer.restart()
-            }
-        }
+        onRunningChanged: if (!running) restartTimer.restart()
     }
 
-    // Backoff timer before relaunch (prevents tight loops on failure)
+    // Backoff before restart to avoid tight loops
     Timer {
         id: restartTimer
         interval: 1500
         repeat: false
-        onTriggered: {
-            // Toggle running to relaunch
-            runner.running = true
-        }
+        onTriggered: runner.running = true
     }
 
-    // Parse one JSON line from rsmetrx
+    // JSON parsing from rsmetrx
     function parseJsonLine(line) {
         try {
             const data = JSON.parse(line)
@@ -140,13 +128,9 @@ Item {
         return `${fmtKiBps(data.rx_kib_s)}/${fmtKiBps(data.tx_kib_s)}`
     }
 
-    // KiB/s formatter (keep it minimal; extend to MiB/GiB if needed)
-    function fmtKiBps(kib) {
-        return kib.toFixed(1) + "K"
-    }
+    function fmtKiBps(kib) { return kib.toFixed(1) + "K" } // KiB/s formatter
 
     Component.onCompleted: {
-        // Safe join: cmd is a string list
         console.log("Starting network monitor:", Array.isArray(cmd) ? cmd.join(" ") : String(cmd))
     }
 }
