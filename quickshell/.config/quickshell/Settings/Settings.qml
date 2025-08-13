@@ -13,8 +13,7 @@ Singleton {
 
     Item {
         Component.onCompleted: {
-            // ensure settings dir
-            Quickshell.execDetached(["mkdir", "-p", settingsDir]);
+            Quickshell.execDetached(["mkdir", "-p", settingsDir]); // ensure settings dir
         }
     }
 
@@ -76,7 +75,6 @@ Singleton {
             property string panelPosition: "top" // "top" or "bottom" panel location
             property var barMonitors: [] // Array of monitor names to show the bar on
             property var dockMonitors: [] // Array of monitor names to show the dock on
-            property var notificationMonitors: [] // Array of monitor names to show notifications on, "*" means all monitors
             property var monitorScaleOverrides: {} // Map of monitor name -> scale override (e.g., 0.8..2.0). When set, Theme.scale() returns this value
         }
     }
@@ -86,7 +84,5 @@ Singleton {
         function onRandomWallpaperChanged() { WallpaperManager.toggleRandomWallpaper() }
         function onWallpaperIntervalChanged() { WallpaperManager.restartRandomWallpaperTimer() }
         function onWallpaperFolderChanged() { WallpaperManager.loadWallpapers() }
-        function onNotificationMonitorsChanged() { 
-        }
     }
 }

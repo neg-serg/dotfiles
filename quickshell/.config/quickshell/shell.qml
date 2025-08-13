@@ -1,7 +1,6 @@
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Pipewire
-import Quickshell.Services.Notifications
 import Quickshell.Hyprland
 import QtQuick
 import QtCore
