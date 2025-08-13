@@ -505,7 +505,6 @@ return function(ctx)
   -- ── Default statusline ────────────────────────────────────────────────────
   local DefaultStatusline = {
     utils.surround({ '', '' }, colors.base_bg, {
-      ModePill,
       { condition = is_empty, provider = '[N]', hl = function() return { fg = colors.white, bg = colors.base_bg } end },
       LeftComponents,
       components.search,
