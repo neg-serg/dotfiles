@@ -43,14 +43,15 @@
     cpufetch # fetch for cpu
     czkawka # find duplicate pictures and more
     dcfldd # better dd with progress bar and inline hash verification
-    diff-so-fancy # human-readable diff
     diffoscope # diff for various format
+    diff-so-fancy # human-readable diff
     enca # autoreencode
     entr # run commands when files change
     expect # do tty stuff noninteractively
     fasd # my favorite mru autocompletion
     frawk # small text processing language
     grex # tool to generate regexes
+    kubectx # switch k8s contexts faster
     lnav # logfile navigator
     massren # massive rename
     mergiraf # ast-aware git merge driver
