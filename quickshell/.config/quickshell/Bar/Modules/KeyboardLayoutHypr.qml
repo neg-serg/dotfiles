@@ -1,8 +1,9 @@
 // Bar/Modules/KeyboardLayoutHypr.qml — keyboard layout indicator (QS-only, themed)
-// - Listens to Hyprland raw events and updates on "deviceName,Layout" strings.
-// - Click toggles layout via `hyprctl switchxkblayout` (runs via bash -lc for NixOS PATH).
-// - Soft FA icon color (matches workspace look), precise baseline alignment via FontMetrics.
-// - Tunable spacing/scale and vertical nudge to match your workspace widget 1:1.
+// - Listens to Hyprland raw events and shows "deviceName,Layout" updates.
+// - Click toggles layout via `hyprctl switchxkblayout` (bash -lc for NixOS PATH).
+// - Font Awesome icon + label aligned by baseline (FontMetrics + baselineAligned).
+// - Tunable spacing/scale and tiny baseline nudges for perfect visual alignment.
+
 import QtQuick
 import QtQuick.Controls
 import Quickshell
@@ -16,7 +17,7 @@ Item {
     // === Public API ===
     property string deviceMatch: ""       // substring to match keyboard device name
     property alias  fontPixelSize: label.font.pixelSize
-    property int    desiredHeight: 24     // capsule visual height
+    property int    desiredHeight: 28     // minimum capsule height
     property var    screen: null          // pass panel.screen for Theme scaling
     property bool   useTheme: true
     property int    yNudge: 0             // ±px vertical tweak for the whole pill
@@ -25,6 +26,10 @@ Item {
     property real   iconScale: 1.0
     property int    iconSpacing: 4
     property color  iconColor: "#8d9eb2"
+
+    // Fine baseline nudges (if needed, usually -2..+3 px)
+    property int    iconBaselineAdjust: 0
+    property int    textBaselineAdjust: 0
 
     // Colors
     property color  bgColor:      useTheme ? Theme.backgroundPrimary : "#1e293b"
@@ -42,47 +47,51 @@ Item {
         return s ? Theme.scale(s) : 1
     }
 
-    // Size hints
-    implicitWidth:  Math.ceil(row.implicitWidth  + 10 * sc())
-    implicitHeight: Math.ceil(row.implicitHeight + 6  * sc())
+    readonly property int margin: Math.round(4 * sc())
+
+    // Size hints — IMPORTANT: implicitHeight tracks the capsule height
+    implicitWidth:  Math.ceil(row.implicitWidth + 2 * margin)
+    implicitHeight: capsule.height
 
     // === Capsule UI ===
     Rectangle {
         id: capsule
         readonly property bool hovered: ma.containsMouse
-        width:  Math.max(kb.implicitWidth,  40 * sc())
-        height: Math.max(20 * sc(), kb.desiredHeight)
-        radius: Math.round(height / 2)
+        // Capsule height follows content but won't go below desiredHeight
+        height: Math.max(kb.desiredHeight, row.implicitHeight + 2 * kb.margin)
+        width:  Math.max(40 * sc(), row.implicitWidth + 2 * kb.margin)
         color:  hovered ? kb.hoverBgColor : kb.bgColor
-        border.width: 1
         antialiasing: true
+
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: kb.yNudge
 
-        // Use metrics to align FA icon baseline with text baseline
+        // Metrics used for baseline alignment
         FontMetrics { id: fmText; font: label.font }
         FontMetrics { id: fmIcon; font: iconLabel.font }
 
         Row {
             id: row
             anchors.fill: parent
-            anchors.margins: Math.round(4 * sc())
+            anchors.margins: kb.margin
             spacing: kb.iconSpacing * sc()
 
-            // Keyboard icon (Font Awesome Regular; soft color)
+            // Font Awesome keyboard icon
             Label {
                 id: iconLabel
-                text: "\uf11c"                         // FA "keyboard" glyph
+                text: "\uf11c" // FA "keyboard"
                 font.family: "Font Awesome 6 Free"
-                font.styleName: "Regular"              // ensure Regular face is installed
+                font.styleName: "Regular"
                 font.weight: Font.Normal
-                font.pixelSize: kb.fontPixelSize * kb.iconScale * 0.9
+                font.pixelSize: Math.round(kb.fontPixelSize * kb.iconScale * 0.9)
                 color: kb.iconColor
                 verticalAlignment: Text.AlignVCenter
-                // Align FA icon's baseline to text baseline using metrics:
-                y: Math.round((row.height - fmIcon.height)/2 + (fmText.ascent - fmIcon.ascent))
+                padding: 4
+                // Baseline from the top of this control (metrics + optional nudge)
+                baselineOffset: fmIcon.ascent + kb.iconBaselineAdjust
             }
 
+            // Layout text
             Label {
                 id: label
                 text: kb.layoutText
@@ -91,8 +100,8 @@ Item {
                 font.weight: Font.Medium
                 verticalAlignment: Text.AlignVCenter
                 padding: 1.5 * sc()
-                // Center text block in the row via metrics:
-                y: Math.round((row.height - fmText.height)/2)
+                // Baseline from the top of this control (metrics + optional nudge)
+                baselineOffset: fmText.ascent + kb.textBaselineAdjust
             }
         }
 
@@ -114,6 +123,7 @@ Item {
     Connections {
         target: Hyprland
         function onRawEvent(a, b) {
+            // Accept either (a,b) strings, single string a, or object with .data
             let payload =
                 (typeof a === "string" && typeof b === "string") ? b :
                 (typeof a === "string" && b === undefined)       ? a :
@@ -150,7 +160,7 @@ Item {
                     if (pick && deviceAllowed(pick.name || "")) {
                         kb.layoutText = shortenLayout(pick.active_keymap || pick.layout || kb.layoutText)
                     }
-                } catch (_) { /* ignore */ }
+                } catch (_) { /* ignore parse errors */ }
             }
         }
     }

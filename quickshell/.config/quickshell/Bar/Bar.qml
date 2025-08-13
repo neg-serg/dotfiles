@@ -72,11 +72,9 @@ Scope {
                         KeyboardLayoutHypr {
                             id: kbIndicator
                             deviceMatch: "dygma-defy-keyboard"
-                            desiredHeight: Math.max(20, barBackground.height - 4)
-                            screen: panel.screen
                             anchors.verticalCenter: wsindicator.verticalCenter
-                            iconScale: 0.95 // Match workspace icon softness and spacing
-                            iconSpacing: Math.round(4 * Theme.scale(panel.screen))
+                            desiredHeight: barBackground.height
+                            iconSpacing: 6
                         }
 
                         NetworkUsage {

@@ -27,7 +27,7 @@ Item {
     property string iconStyleName: "Solid"
 
     // Text padding
-    property int    textPadding: 6
+    property int    textPadding: 4
 
     // Sizing
     implicitHeight: desiredHeight
@@ -76,7 +76,6 @@ Item {
             }
         }
 
-        // Text (оставляем Label: padding, палитра и т.п.)
         Label {
             id: label
             text: displayText
