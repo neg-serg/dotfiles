@@ -47,7 +47,6 @@ Scope {
                         anchors.left: parent.left
                     }
 
-                    // Update exposed bar height once the bar is created
                     Component.onCompleted: rootScope.barHeight = barBackground.height
                     Row {
                         id: leftWidgetsRow
@@ -55,45 +54,19 @@ Scope {
                         anchors.left: barBackground.left
                         anchors.leftMargin: 18 * Theme.scale(panel.screen)
                         spacing: 12 * Theme.scale(panel.screen)
-
-                        ClockWidget {
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
+                        ClockWidget { anchors.verticalCenter: parent.verticalCenter }
                         DiagonalSeparatorRect { height: barBackground.height + 60 }
-
-                        WsIndicator {
-                            id: wsindicator
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
+                        WsIndicator { id: wsindicator; anchors.verticalCenter: parent.verticalCenter }
                         DiagonalSeparatorRect { height: barBackground.height + 60 }
-
-                        KeyboardLayoutHypr {
-                            id: kbIndicator
-                            deviceMatch: "dygma-defy-keyboard"
-                            anchors.verticalCenter: wsindicator.verticalCenter
-                            desiredHeight: barBackground.height
-                            iconSpacing: 6
-                        }
-
-                        NetworkUsage {
-                            id: net
-                            anchors.verticalCenter: wsindicator.verticalCenter
-                            desiredHeight: barBackground.height
-                            iconSpacing: 6
-                            screen: panel.screen
-                            useTheme: false
-                        }
-
+                        KeyboardLayoutHypr { id: kbIndicator; anchors.verticalCenter: wsindicator.verticalCenter; /* deviceMatch: "dygma-defy-keyboard" */ }
+                        NetworkUsage { id: net; anchors.verticalCenter: wsindicator.verticalCenter; }
                         DiagonalSeparatorRect { height: barBackground.height + 60 }
                     }
 
                     SystemInfo {
-                        id: center
                         anchors.horizontalCenter: barBackground.horizontalCenter
                         anchors.verticalCenter: barBackground.verticalCenter
-                        visible: false
+                        visible: true
                     }
 
                     Row {
@@ -102,7 +75,6 @@ Scope {
                         anchors.right: barBackground.right
                         anchors.rightMargin: 18 * Theme.scale(panel.screen)
                         spacing: 12 * Theme.scale(panel.screen)
-
                         SystemTray {
                             id: systemTrayModule
                             shell: rootScope.shell
@@ -119,6 +91,10 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
+                        Media {
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
                         PanelPopup {
                             id: sidebarPopup
                             shell: rootScope.shell
@@ -129,10 +105,6 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                             screen: modelData
                             sidebarPopup: sidebarPopup
-                        }
-
-                        Media {
-                            anchors.verticalCenter: parent.verticalCenter
                         }
                     }
                 }
