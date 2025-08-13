@@ -62,13 +62,7 @@ Scope {
                         }
 
                         DiagonalSeparatorRect {
-                            width: Math.round(15 * Theme.scale(panel.screen))
                             height: barBackground.height + 60
-                            anchors.verticalCenter: parent.verticalCenter
-                            color: "#BFC8D0"
-                            alpha: 0.05
-                            thickness: 7.0
-                            angleDeg: 30
                         }
 
                         WsIndicator {
@@ -77,13 +71,7 @@ Scope {
                         }
 
                         DiagonalSeparatorRect {
-                            width: Math.round(15 * Theme.scale(panel.screen))
                             height: barBackground.height + 60
-                            anchors.verticalCenter: parent.verticalCenter
-                            color: "#BFC8D0"
-                            alpha: 0.05
-                            thickness: 7.0
-                            angleDeg: 30
                         }
 
                         KeyboardLayoutHypr {
@@ -111,13 +99,7 @@ Scope {
                         }
 
                         DiagonalSeparatorRect {
-                            width: Math.round(15 * Theme.scale(panel.screen))
                             height: barBackground.height + 60
-                            anchors.verticalCenter: parent.verticalCenter
-                            color: "#BFC8D0"
-                            alpha: 0.05
-                            thickness: 7.0
-                            angleDeg: 30
                         }
                     }
 
