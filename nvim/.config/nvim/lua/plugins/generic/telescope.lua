@@ -352,9 +352,9 @@ return {
               ['H'] = fb_diff_head,     -- diff vs HEAD
 
               -- keep existing:
-              ['.']     = function(...) return require('telescope').extensions.file_browser.actions.toggle_hidden(...) end,
-              ['g.']    = function(...) return require('telescope').extensions.file_browser.actions.toggle_respect_gitignore(...) end,
-              ['<Tab>']   = function(...) return require('telescope').extensions.file_browser.actions.toggle_selected(...) end,
+              ['<C-.>'] = function(...) return require('telescope').extensions.file_browser.actions.toggle_hidden(...) end,
+              ['g.'] = function(...) return require('telescope').extensions.file_browser.actions.toggle_respect_gitignore(...) end,
+              ['<Tab>'] = function(...) return require('telescope').extensions.file_browser.actions.toggle_selected(...) end,
               ['<S-Tab>'] = function(...) return require('telescope').extensions.file_browser.actions.select_all(...) end,
               ['<C-y>'] = function(prompt_bufnr)
                 local entry = require('telescope.actions.state').get_selected_entry(); if not entry then return end
@@ -370,22 +370,21 @@ return {
               ['<Esc>'] = act('close'),
             },
             n = {
-              ['q']     = act('close'),
-              ['.']     = function(...) return require('telescope').extensions.file_browser.actions.toggle_hidden(...) end,
-              ['g.']    = function(...) return require('telescope').extensions.file_browser.actions.toggle_respect_gitignore(...) end,
+              ['q'] = act('close'),
+              ['gh'] = function(...) return require('telescope').extensions.file_browser.actions.toggle_hidden(...) end,
+              ['g.'] = function(...) return require('telescope').extensions.file_browser.actions.toggle_respect_gitignore(...) end,
               ['N'] = fb_create_deep,
               ['Y'] = fb_duplicate,
               ['='] = fb_diff_two,
               ['H'] = fb_diff_head,
-              ['<Tab>']   = function(...) return require('telescope').extensions.file_browser.actions.toggle_selected(...) end,
+              ['<Tab>'] = function(...) return require('telescope').extensions.file_browser.actions.toggle_selected(...) end,
               ['<S-Tab>'] = function(...) return require('telescope').extensions.file_browser.actions.select_all(...) end,
-              ['h']       = function(...) return require('telescope').extensions.file_browser.actions.goto_parent_dir(...) end,
-              -- FIX: use core select_default, not fb_actions.select_default
-              ['l']       = act('select_default'),
-              ['s']       = act('select_horizontal'),
-              ['v']       = act('select_vertical'),
-              ['t']       = act('select_tab'),
-              ['/']       = function() vim.cmd('startinsert') end,
+              ['h'] = function(...) return require('telescope').extensions.file_browser.actions.goto_parent_dir(...) end,
+              ['l'] = act('select_default'),
+              ['s'] = act('select_horizontal'),
+              ['v'] = act('select_vertical'),
+              ['t'] = act('select_tab'),
+              ['/'] = function() vim.cmd('startinsert') end,
             },
           },
         },
@@ -441,26 +440,26 @@ return {
           auto_quoting = true,
           mappings = {
             i = {
-              ['<C-k>']     = lazy_call('telescope-live-grep-args.actions', 'quote_prompt'),
-              ['<C-i>']     = function() return require('telescope-live-grep-args.actions').quote_prompt({ postfix = ' --iglob ' })() end,
+              ['<C-k>'] = lazy_call('telescope-live-grep-args.actions', 'quote_prompt'),
+              ['<C-i>'] = function() return require('telescope-live-grep-args.actions').quote_prompt({ postfix = ' --iglob ' })() end,
               ['<C-space>'] = lazy_call('telescope-live-grep-args.actions', 'to_fuzzy_refine'),
-              ['<C-o>']     = function()
+              ['<C-o>'] = function()
                 local t = require('telescope'); pcall(t.load_extension, 'live_grep_args')
                 t.extensions.live_grep_args.live_grep_args({ grep_open_files = true })
               end,
-              ['<C-.>']     = function()
+              ['<C-.>'] = function()
                 local t = require('telescope'); pcall(t.load_extension, 'live_grep_args')
                 t.extensions.live_grep_args.live_grep_args({ cwd = vim.fn.expand('%:p:h') })
               end,
-              ['<C-g>']     = function()
+              ['<C-g>'] = function()
                 local a = require('telescope-live-grep-args.actions')
                 return a.quote_prompt({ postfix = ' -g !**/node_modules/** -g !**/dist/** ' })()
               end,
-              ['<C-t>']     = function()
+              ['<C-t>'] = function()
                 local a = require('telescope-live-grep-args.actions')
                 return a.quote_prompt({ postfix = ' -t rust ' })()
               end,
-              ['<C-p>']     = layout_actions.toggle_preview, -- also useful in LGA
+              ['<C-p>'] = layout_actions.toggle_preview, -- also useful in LGA
             },
           },
         },
