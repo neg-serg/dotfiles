@@ -7,9 +7,9 @@ return {
   dependencies = {
     'nvim-lua/plenary.nvim',
     { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable('make') == 1 end },
-    { 'brookhong/telescope-pathogen.nvim',          lazy = true },
-    { 'jvgrootveld/telescope-zoxide',               lazy = true },
-    { 'nvim-telescope/telescope-frecency.nvim',     lazy = true },
+    { 'brookhong/telescope-pathogen.nvim', lazy = true },
+    { 'jvgrootveld/telescope-zoxide', lazy = true },
+    { 'nvim-telescope/telescope-frecency.nvim', lazy = true },
     { 'nvim-telescope/telescope-live-grep-args.nvim', lazy = true },
     { 'nvim-telescope/telescope-file-browser.nvim', lazy = true },
   },
