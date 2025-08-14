@@ -37,7 +37,7 @@ Scope {
         }
     }
 
-    Overview {}
+    // Overview {}
     Bar { id: bar; shell: root; }
     WindowMirror { id: windowMirror } // Helper to mirror window positions when the panel is at the bottom
     Connections {
