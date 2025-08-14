@@ -10,7 +10,6 @@ import qs.Helpers
 import qs.Services
 import qs.Settings
 import qs.Widgets
-import qs.Widgets.LockScreen
  
 Rectangle {
     id: systemWidget
@@ -179,11 +178,7 @@ Rectangle {
             anchors.rightMargin: 32 * Theme.scale(Screen)
             anchors.topMargin: systemButton.y + systemButton.height + 48 * Theme.scale(Screen)
  
-            // Prevent closing when clicking in the panel bg
-            MouseArea {
-                anchors.fill: parent
-            }
- 
+            MouseArea { anchors.fill: parent; } // Prevent closing when clicking in the panel bg
             ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: 8 * Theme.scale(Screen)
@@ -201,48 +196,7 @@ Rectangle {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.leftMargin: 12 * Theme.scale(Screen)
                         anchors.rightMargin: 12 * Theme.scale(Screen)
- 
-                        Row {
-                            id: lockRow
-                            spacing: 8 * Theme.scale(Screen)
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.verticalCenter
- 
-                            Text {
-                                text: "lock_outline"
-                                font.family: "Material Symbols Outlined"
-                                font.pixelSize: 16 * Theme.scale(Screen)
-                                color: lockButtonArea.containsMouse ? Theme.onAccent : Theme.textPrimary
-                                verticalAlignment: Text.AlignVCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.verticalCenterOffset: 1 * Theme.scale(Screen)
-                            }
- 
-                            Text {
-                                text: "Lock Screen"
-                                font.family: Theme.fontFamily
-                                font.pixelSize: 14 * Theme.scale(Screen)
-                                color: lockButtonArea.containsMouse ? Theme.onAccent : Theme.textPrimary
-                                verticalAlignment: Text.AlignVCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.verticalCenterOffset: 1 * Theme.scale(Screen)
-                            }
-                        }
                     }
- 
-                    MouseArea {
-                        id: lockButtonArea
- 
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            lockScreen.locked = true;
-                            systemMenu.visible = false;
-                        }
-                    }
- 
                 }
  
                 Rectangle {
@@ -518,9 +472,4 @@ Rectangle {
         running: panelVisible
         onTriggered: updateSystemInfo()
     }
- 
-    LockScreen {
-        id: lockScreen
-    }
- 
 }

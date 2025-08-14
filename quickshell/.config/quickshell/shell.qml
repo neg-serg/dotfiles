@@ -7,7 +7,6 @@ import QtCore
 import qs.Bar
 import qs.Bar.Modules
 import qs.Widgets
-import qs.Widgets.LockScreen
 import qs.Settings
 import qs.Helpers
 
@@ -84,11 +83,6 @@ Scope {
 
     Connections {
         target: Quickshell
-        function onScreensChanged() {
-            if (lockScreen.locked) {
-                pendingReload = true;
-            }
-        }
     }
 
     Connections {
