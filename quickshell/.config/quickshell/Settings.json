@@ -1,38 +1,7 @@
 {
-    "audioCodec": "opus",
-    "barMonitors": [
-    ],
     "panelPosition": "bottom",
-    "bluetoothEnabled": false,
-    "colorRange": "limited",
-    "currentWallpaper": "",
     "dimPanels": false,
-    "dockMonitors": [
-    ],
     "fontSizeMultiplier": 1.2,
-    "monitorScaleOverrides": null,
-    "pinnedExecs": [
-    ],
-    "profileImage": "/home/neg/.face",
-    "randomWallpaper": false,
-    "recordingCodec": "h264",
-    "recordingFrameRate": 60,
-    "recordingQuality": "very_high",
-    "showCursor": true,
     "showMediaInBar": true,
-    "showSystemInfoInBar": true,
-    "transitionDuration": 1.1,
-    "transitionFps": 60,
-    "transitionType": "random",
-    "use12HourClock": false,
-    "useFahrenheit": false,
-    "useSWWW": false,
-    "useWallpaperTheme": false,
-    "videoPath": "~/vid/",
-    "visualizerType": "radial",
-    "wallpaperFolder": "~/pic/wl",
-    "wallpaperInterval": 300,
-    "wallpaperResize": "crop",
-    "weatherCity": "Moscow",
-    "wifiEnabled": false
+    "showSystemInfoInBar": true
 }
