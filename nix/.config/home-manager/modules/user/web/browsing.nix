@@ -1,7 +1,7 @@
 {pkgs, yandex-browser, ...}: {
   imports = [
-    ./firefox.nix
-    # ./floorp.nix
+    # ./firefox.nix
+    ./floorp.nix
   ];
   home.packages = with pkgs; [
     nyxt # common lisp browser
