@@ -12,7 +12,6 @@ import qs.Helpers
 
 Scope {
     id: root
-    property bool pendingReload: false
     // Helper function to round value to nearest step
     function roundToStep(value, step) { return Math.round(value / step) * step; }
     // Volume property reflecting current audio volume in 0-100
@@ -29,12 +28,24 @@ Scope {
         }
         volume = stepped;
     }
-
-    Component.onCompleted: {
-        Quickshell.shell = root;
+    // Sync volume with current sink state
+    function syncVolume() {
+        if (defaultAudioSink && defaultAudioSink.audio) {
+            volume = defaultAudioSink.audio.muted
+                ? 0
+                : Math.round(defaultAudioSink.audio.volume * 100);
+        }
+    }
+    // Mirror panel when positioned at the bottom
+    function mirrorIfBottom() {
         if (Settings.settings.panelPosition === "bottom") {
             windowMirror.mirror(bar.barHeight);
         }
+    }
+
+    Component.onCompleted: {
+        Quickshell.shell = root;
+        mirrorIfBottom();
     }
 
     // Overview {}
@@ -42,20 +53,12 @@ Scope {
     WindowMirror { id: windowMirror } // Helper to mirror window positions when the panel is at the bottom
     Connections {
         target: Settings.settings
-        function onPanelPositionChanged() {
-            if (Settings.settings.panelPosition === "bottom") {
-                windowMirror.mirror(bar.barHeight)
-            }
-        }
+        function onPanelPositionChanged() { mirrorIfBottom(); }
     }
 
     Connections {
         target: Hyprland
-        function onClientAdded() {
-            if (Settings.settings.panelPosition === "bottom") {
-                windowMirror.mirror(bar.barHeight)
-            }
-        }
+        function onClientAdded() { mirrorIfBottom(); }
     }
 
     Applauncher {
@@ -82,25 +85,9 @@ Scope {
     }
 
     Connections {
-        target: Quickshell
-    }
-
-    Connections {
         target: defaultAudioSink ? defaultAudioSink.audio : null
-        function onVolumeChanged() {
-            if (defaultAudioSink.audio && !defaultAudioSink.audio.muted) {
-                volume = Math.round(defaultAudioSink.audio.volume * 100);
-            }
-        }
-        function onMutedChanged() {
-            if (defaultAudioSink.audio) {
-                if (defaultAudioSink.audio.muted) {
-                    volume = 0;
-                } else {
-                    volume = Math.round(defaultAudioSink.audio.volume * 100);
-                }
-            }
-        }
+        function onVolumeChanged() { syncVolume(); }
+        function onMutedChanged() { syncVolume(); }
     }
 
 }
