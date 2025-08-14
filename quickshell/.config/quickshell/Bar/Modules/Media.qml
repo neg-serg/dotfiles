@@ -106,7 +106,9 @@ Item {
         }
 
         Text { // Track info
-            text:  MusicManager.trackArtist + " - " +  MusicManager.trackTitle
+            text:  (MusicManager.trackArtist || MusicManager.trackTitle) 
+                ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(Boolean).join(" - ") 
+                : ""
             color: Theme.textPrimary
             font.family: Theme.fontFamily
             font.weight: Font.Medium
