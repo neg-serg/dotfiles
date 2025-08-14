@@ -90,17 +90,14 @@ Scope {
         function onVolumeChanged() {
             if (defaultAudioSink.audio && !defaultAudioSink.audio.muted) {
                 volume = Math.round(defaultAudioSink.audio.volume * 100);
-                console.log("Volume changed externally to:", volume);
             }
         }
         function onMutedChanged() {
             if (defaultAudioSink.audio) {
                 if (defaultAudioSink.audio.muted) {
                     volume = 0;
-                    console.log("Audio muted, volume set to 0");
                 } else {
                     volume = Math.round(defaultAudioSink.audio.volume * 100);
-                    console.log("Audio unmuted, volume restored to:", volume);
                 }
             }
         }

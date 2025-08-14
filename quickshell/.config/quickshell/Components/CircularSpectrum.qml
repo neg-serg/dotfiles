@@ -11,7 +11,6 @@ Item {
     property int strokeWidth: 0 * Theme.scale(Screen)
     property var values: []
     property int usableOuter: 48
-
     width: usableOuter * 2
     height: usableOuter * 2
 
@@ -31,9 +30,7 @@ Item {
             border.color: root.strokeColor
             border.width: root.strokeWidth
             antialiasing: true
-
             x: Settings.settings.visualizerType === "radial" ? root.width / 2 - width / 2 : root.width / 2 + root.innerRadius * Math.cos(Math.PI / 2 + 2 * Math.PI * index / root.values.length) - width / 2
-
             y: Settings.settings.visualizerType === "radial" ? root.height / 2 - height : Settings.settings.visualizerType === "diamond" ? root.height / 2 - root.innerRadius * Math.sin(Math.PI / 2 + 2 * Math.PI * index / root.values.length) - height / 2 : root.height / 2 - root.innerRadius * Math.sin(Math.PI / 2 + 2 * Math.PI * index / root.values.length) - height
             transform: [
                 Rotation {
