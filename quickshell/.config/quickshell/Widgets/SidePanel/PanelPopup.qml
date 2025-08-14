@@ -8,33 +8,14 @@ import qs.Settings
 
 PanelWithOverlay {
     id: sidebarPopup
-
     property var shell: null
-
-    function showAt() {
-        sidebarPopupRect.showAt();
-    }
-
-    function hidePopup() {
-        sidebarPopupRect.hidePopup();
-    }
-
-    function show() {
-        sidebarPopupRect.showAt();
-    }
-
-    function dismiss() {
-        sidebarPopupRect.hidePopup();
-    }
-
-    // Trigger initial weather loading when component is completed
-    Component.onCompleted: {
+    function showAt() { sidebarPopupRect.showAt(); }
+    function hidePopup() { sidebarPopupRect.hidePopup(); }
+    function show() { sidebarPopupRect.showAt(); }
+    function dismiss() { sidebarPopupRect.hidePopup(); }
+    Component.onCompleted: { // Trigger initial weather loading when component is completed
         // Load initial weather data after a short delay to ensure all components are ready
-        Qt.callLater(function() {
-            if (weather && weather.fetchCityWeather)
-                weather.fetchCityWeather();
-
-        });
+        Qt.callLater(function() { if (weather && weather.fetchCityWeather) weather.fetchCityWeather(); });
     }
 
     Rectangle {
@@ -44,14 +25,6 @@ PanelWithOverlay {
         property bool isAnimating: false
         property int leftPadding: 20 * Theme.scale(screen)
         property int bottomPadding: 20 * Theme.scale(screen)
-        // Recording properties
-        property bool isRecording: false
-        function checkRecordingStatus() {
-            if (isRecording)
-                checkRecordingProcess.running = true;
-
-        }
-
         function showAt() {
             if (!sidebarPopup.visible) {
                 sidebarPopup.visible = true;
@@ -61,10 +34,6 @@ PanelWithOverlay {
                 slideAnim.running = true;
                 if (weather)
                     weather.startWeatherFetch();
-
-                if (systemWidget)
-                    systemWidget.panelVisible = true;
-
             }
         }
 
@@ -82,33 +51,9 @@ PanelWithOverlay {
         color: "transparent"
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        // Clean up processes on destruction
-        Component.onDestruction: {
-            if (isRecording)
-                stopRecording();
-
-        }
-
-        Process {
-            id: checkRecordingProcess
-
-            command: ["pgrep", "-f", "gpu-screen-recorder.*portal"]
-            onExited: function(exitCode, exitStatus) {
-                var isActuallyRecording = exitCode === 0;
-                if (isRecording && !isActuallyRecording)
-                    isRecording = isActuallyRecording;
-
-            }
-        }
-
-        // Prevent closing when clicking in the panel bg
-        MouseArea {
-            anchors.fill: parent
-        }
-
+        MouseArea { anchors.fill: parent; } // Prevent closing when clicking in the panel bg
         NumberAnimation {
             id: slideAnim
-
             target: sidebarPopupRect
             property: "slideOffset"
             duration: 300
@@ -116,12 +61,7 @@ PanelWithOverlay {
             onStopped: {
                 if (sidebarPopupRect.slideOffset === sidebarPopupRect.width) {
                     sidebarPopup.visible = false;
-                    if (weather)
-                        weather.stopWeatherFetch();
-
-                    if (systemWidget)
-                        systemWidget.panelVisible = false;
-
+                    if (weather) weather.stopWeatherFetch();
                 }
                 sidebarPopupRect.isAnimating = false;
             }
@@ -139,10 +79,8 @@ PanelWithOverlay {
             y: 0
             color: Theme.backgroundPrimary
             bottomLeftRadius: 20
-
             Behavior on x {
                 enabled: !sidebarPopupRect.isAnimating
-
                 NumberAnimation {
                     duration: 300
                     easing.type: Easing.OutCubic
@@ -156,40 +94,25 @@ PanelWithOverlay {
             anchors.fill: mainRectangle
             x: sidebarPopupRect.slideOffset
             Keys.onEscapePressed: sidebarPopupRect.hidePopup()
-
             ColumnLayout {
                 anchors.fill: parent
                 spacing: 8 * Theme.scale(screen)
-
-                System {
-                    id: systemWidget
-
-                    width: 420 * Theme.scale(screen)
-                    height: 80 * Theme.scale(screen)
-                    settingsModal: settingsModal
-                    Layout.alignment: Qt.AlignHCenter
-                }
-
                 Weather {
                     id: weather
-
                     width: 420 * Theme.scale(screen)
                     height: 180 * Theme.scale(screen)
                     Layout.alignment: Qt.AlignHCenter
                 }
 
-                // Music and System Monitor row
-                RowLayout {
+                RowLayout { // Music and System Monitor row
                     spacing: 8 * Theme.scale(screen)
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignHCenter
-
                     Music {
                         width: 332 * Theme.scale(screen)
                         height: 250 * Theme.scale(screen)
                     }
                 }
-
 
                 RowLayout {
                     spacing: 8 * Theme.scale(screen)
@@ -206,16 +129,11 @@ PanelWithOverlay {
 
             Behavior on x {
                 enabled: !sidebarPopupRect.isAnimating
-
                 NumberAnimation {
                     duration: 300
                     easing.type: Easing.OutCubic
                 }
-
             }
-
         }
-
     }
-
 }

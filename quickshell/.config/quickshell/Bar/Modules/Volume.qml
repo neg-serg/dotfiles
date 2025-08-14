@@ -123,11 +123,5 @@ Item {
             }
         }
     }
-
-    AudioDeviceSelector {
-        id: ioSelector
-        onPanelClosed: ioSelector.dismiss()
-    }
-
     property bool containsMouse: false
 }
