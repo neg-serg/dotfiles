@@ -12,18 +12,32 @@ Item {
     width: visible ? mediaRow.width : 0
     height: 36 * Theme.scale(Screen)
     visible: Settings.settings.showMediaInBar && MusicManager.currentPlayer
+
+    // Format ms -> m:ss or h:mm:ss
+    function fmtTime(ms) {
+        if (ms === undefined || ms < 0) return "0:00";
+        var s = Math.floor(ms / 1000);
+        var m = Math.floor(s / 60);
+        var h = Math.floor(m / 60);
+        s = s % 60; m = m % 60;
+        var mm = h > 0 ? (m < 10 ? "0"+m : ""+m) : ""+m;
+        var ss = s < 10 ? "0"+s : ""+s;
+        return h > 0 ? (h + ":" + mm + ":" + ss) : (mm + ":" + ss);
+    }
+
     RowLayout {
         id: mediaRow
         height: parent.height
         spacing: 12
-        // AlbumArtWidget.qml Compact album art + circular spectrum + play/pause overlay with aggressive debug logging Expects a Singleton
-        // named MusicManager (pragma Singleton) that exposes coverUrl, cavaValues, playback state, etc.
+
+        // --- Album art + overlay ---
         Item {
             id: albumArtContainer
             width: 24 * Theme.scale(Screen)
             height: 24 * Theme.scale(Screen)
             Layout.alignment: Qt.AlignVCenter
-            CircularSpectrum { // Circular spectrum visualizer
+
+            CircularSpectrum {
                 id: spectrum
                 values: MusicManager.cavaValues
                 anchors.centerIn: parent
@@ -35,7 +49,7 @@ Item {
                 z: 2
             }
 
-            Rectangle { // Album art frame (rounded, antialiased, clipped to circle)
+            Rectangle {
                 id: albumArtwork
                 width: 24 * Theme.scale(Screen)
                 height: 24 * Theme.scale(Screen)
@@ -44,28 +58,27 @@ Item {
                 border.color: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.3)
                 z: 1
                 clip: true
-                antialiasing: true // smooth rounded border/clip
+                antialiasing: true
                 layer.enabled: true
-                layer.smooth: true // linear filtering on layer scaling
-                layer.samples: 4 // MSAA; consider 8 if GPU allows
+                layer.smooth: true
+                layer.samples: 4
 
-                // Album art image (with HiDPI-friendly settings)
                 Image {
                     id: cover
                     anchors.fill: parent
                     source: MusicManager.coverUrl
-                    smooth: true // linear filtering on texture
-                    mipmap: true // better minification transitions
-                    sourceSize: Qt.size( // Request higher rasterization for HiDPI
+                    smooth: true
+                    mipmap: true
+                    sourceSize: Qt.size(
                         Math.round(width  * Screen.devicePixelRatio),
                         Math.round(height * Screen.devicePixelRatio)
                     )
                     fillMode: Image.PreserveAspectCrop
                     cache: true
-                    visible: status === Image.Ready // Show only when ready
+                    visible: status === Image.Ready
                 }
 
-                Text { // Fallback icon when image isn't ready
+                Text {
                     id: fallbackIcon
                     anchors.centerIn: parent
                     text: "music_note"
@@ -73,11 +86,9 @@ Item {
                     font.pixelSize: 14 * Theme.scale(Screen)
                     color: Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.4)
                     visible: !cover.visible
-                    Component.onCompleted: console.log("[fallbackIcon] visible:", visible)
-                    onVisibleChanged: console.log("[fallbackIcon] visible:", visible)
                 }
 
-                Rectangle { // Play/Pause overlay (visible on hover)
+                Rectangle {
                     anchors.fill: parent
                     radius: parent.radius
                     color: Qt.rgba(0, 0, 0, 0.5)
@@ -98,21 +109,25 @@ Item {
                     cursorShape: Qt.PointingHandCursor
                     hoverEnabled: true
                     enabled: MusicManager.canPlay || MusicManager.canPause
-                    onClicked: {
-                        MusicManager.playPause()
-                    }
+                    onClicked: MusicManager.playPause()
                 }
             }
         }
 
-        Text { // Track info
-            text:  (MusicManager.trackArtist || MusicManager.trackTitle) 
-                ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(Boolean).join(" - ") 
-                : ""
+        // --- Track info + inline time (concatenated) ---
+        Text {
+            text: (MusicManager.trackArtist || MusicManager.trackTitle)
+                  ? [MusicManager.trackArtist, MusicManager.trackTitle]
+                        .filter(function(x){ return !!x; })
+                        .join(" - ")
+                    + " ["
+                    + fmtTime(MusicManager.currentPosition || 0)
+                    + "/" + fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0)) + "]"
+                  : ""
             color: Theme.textPrimary
             font.family: Theme.fontFamily
             font.weight: Font.Medium
-            font.pixelSize: Theme.fontSizeSmall  * Theme.scale(Screen)
+            font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
             elide: Text.ElideRight
             Layout.maximumWidth: 1000
             Layout.alignment: Qt.AlignVCenter
