@@ -39,6 +39,7 @@
     PIPEWIRE_DEBUG = 0;
     PIPEWIRE_LOG_SYSTEMD = "true";
     PYLINTHOME = "${config.home.sessionVariables.XDG_CONFIG_HOME}/pylint";
+    QMK_HOME = "${config.home.homeDirectory}/src/qmk_firmware";
     TERMINAL = "kitty";
     TERMINFO = "${config.home.sessionVariables.XDG_DATA_HOME}/terminfo";
     TERMINFO_DIRS = "${config.home.sessionVariables.XDG_DATA_HOME}/terminfo:/usr/share/terminfo";
