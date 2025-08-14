@@ -9,8 +9,7 @@
   home.sessionVariables = {
     DEFAULT_BROWSER = "${pkgs.floorp}/bin/floorp";
     MOZ_DBUS_REMOTE = "1";
-    MOZ_ENABLE_WAYLAND = "0";
-    LIBVA_DRIVER_NAME = "radeonsi";
+    MOZ_ENABLE_WAYLAND = "1";
   };
   xdg.mimeApps.defaultApplications = {
     "text/html" = "floorp.desktop";
