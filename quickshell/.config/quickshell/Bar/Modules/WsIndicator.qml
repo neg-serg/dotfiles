@@ -224,7 +224,6 @@ Item {
                     const obj = JSON.parse(text);
                     root.wsId = obj.id;
                     root.wsName = obj.name;
-                    console.log("Workspace updated:", obj.id, obj.name);
                 } catch (e) {
                     console.error("activeworkspace parse error:", e, "Raw:", text);
                 }
