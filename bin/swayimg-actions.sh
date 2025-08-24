@@ -16,7 +16,6 @@ ensure_swww() {
   # Start swww daemon if not running
   if ! swww query >/dev/null 2>&1; then
     swww init >/dev/null 2>&1 || true
-    # небольшая пауза, чтобы сокет поднялся
     sleep 0.05
   fi
 }
@@ -39,26 +38,20 @@ render_for_mode() {
   local mode="$1" file="$2" wh
   wh="$(screen_wh)"
   rm -f "$tmp_wall" 2>/dev/null || true
-
   case "$mode" in
     cover|full|fill)
       # cover: crop to fill screen from center
-      convert "$file" -resize "${wh}^" -gravity center -extent "$wh" "$tmp_wall"
-      ;;
+      convert "$file" -resize "${wh}^" -gravity center -extent "$wh" "$tmp_wall" ;;
     center)
       # fit inside with borders, centered
-      convert "$file" -resize "${wh}" -gravity center -background black -extent "$wh" "$tmp_wall"
-      ;;
+      convert "$file" -resize "${wh}" -gravity center -background black -extent "$wh" "$tmp_wall" ;;
     tile)
       # make tiled canvas of exact screen size
-      convert -size "$wh" tile:"$file" "$tmp_wall"
-      ;;
+      convert -size "$wh" tile:"$file" "$tmp_wall" ;;
     mono)
-      convert "$file" -colors 2 "$tmp_wall"
-      ;;
+      convert "$file" -colors 2 "$tmp_wall" ;;
     retro)
-      convert "$file" -colors 12 "$tmp_wall"
-      ;;
+      convert "$file" -colors 12 "$tmp_wall" ;;
     *)
       # default to cover
       convert "$file" -resize "${wh}^" -gravity center -extent "$wh" "$tmp_wall"
@@ -153,19 +146,19 @@ trap finish EXIT
 action="${1:-}"; file="${2:-}"
 
 case "$action" in
-  rotate-left)    printf '%s\n' "$file" | rotate 270 ;;
-  rotate-right)   printf '%s\n' "$file" | rotate 90 ;;
-  rotate-180)     printf '%s\n' "$file" | rotate 180 ;;
-  rotate-ccw)     printf '%s\n' "$file" | rotate -90 ;;
-  copyname)       copy_name "$file" ;;
-  repeat)         repeat_action "$file" ;;
-  mv)             proc mv "$file" "${3:-}" ;;
-  cp)             proc cp "$file" "${3:-}" ;;
-  wall-mono)      wall mono "$file" ;;
-  wall-fill)      wall fill "$file" ;;
-  wall-full)      wall full "$file" ;;
-  wall-tile)      wall tile "$file" ;;
-  wall-center)    wall center "$file" ;;
-  wall-cover)     wall cover "$file" ;;
-  *)              echo "Unknown action: $action" >&2; exit 2 ;;
+  rotate-left) printf '%s\n' "$file" | rotate 270 ;;
+  rotate-right) printf '%s\n' "$file" | rotate 90 ;;
+  rotate-180) printf '%s\n' "$file" | rotate 180 ;;
+  rotate-ccw) printf '%s\n' "$file" | rotate -90 ;;
+  copyname) copy_name "$file" ;;
+  repeat) repeat_action "$file" ;;
+  mv) proc mv "$file" "${3:-}" ;;
+  cp) proc cp "$file" "${3:-}" ;;
+  wall-mono) wall mono "$file" ;;
+  wall-fill) wall fill "$file" ;;
+  wall-full) wall full "$file" ;;
+  wall-tile) wall tile "$file" ;;
+  wall-center) wall center "$file" ;;
+  wall-cover) wall cover "$file" ;;
+  *) echo "Unknown action: $action" >&2; exit 2 ;;
 esac
