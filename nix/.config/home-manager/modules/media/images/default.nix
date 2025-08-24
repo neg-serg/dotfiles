@@ -3,22 +3,20 @@ let
   # Wrapper that starts swayimg and jumps to the first image via IPC.
   swayimg-first = pkgs.writeShellScriptBin "swayimg-first" ''
     set -euo pipefail
-    # Unique socket path for this instance
-    uid="$(id -u)"
+    uid="$(id -u)" # Unique socket path for this instance
     rt="$XDG_RUNTIME_DIR"; [ -n "$rt" ] || rt="/run/user/$uid"
     sock="$rt/swayimg-$PPID-$$-$RANDOM.sock"
     # Start swayimg with IPC enabled
     "${pkgs.swayimg}/bin/swayimg" --ipc="$sock" "$@" &
     pid=$!
-    # Wait until the socket appears or process exits (max ~3s)
     i=0
     while :; do
       if ! kill -0 "$pid" 2>/dev/null; then break; fi
       [ -S "$sock" ] && break
       i=$((i+1))
-      [ "$i" -ge 120 ] && break
+      [ "$i" -ge 40 ] && break
       sleep 0.025
-    done
+    done # Wait until the socket appears or process exits (max ~1s)
     # Send on-start action(s) if socket is ready
     if [ -S "$sock" ]; then
       action="$(printenv SWAYIMG_ONSTART_ACTION 2>/dev/null || true)"
@@ -29,12 +27,9 @@ let
           | sed '/^[[:space:]]*$/d' \
           | "${pkgs.socat}/bin/socat" - "UNIX-CONNECT:$sock" >/dev/null 2>&1 || true
     fi
-
-    # Forward exit code
-    wait "$pid"
+    wait "$pid" # Forward exit code
     rc=$?
-    # Best-effort cleanup
-    [ -S "$sock" ] && rm -f "$sock" || true
+    [ -S "$sock" ] && rm -f "$sock" || true # Best-effort cleanup
     exit $rc
   '';
 in
