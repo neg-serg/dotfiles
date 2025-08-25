@@ -243,19 +243,17 @@ _exists git && {
     alias gswc='git switch -c'
     alias gsw='git switch'
     alias gts='git tag -s'
-    alias gu="git reset @ --"
+    alias gu="git reset --soft 'HEAD^'"
     alias gupa='git pull --rebase --autostash'
     alias gupav='git pull --rebase --autostash -v'
     alias gup='git pull --rebase'
     alias gupv='git pull --rebase -v'
     alias gwch='git whatchanged -p --abbrev-commit --pretty=medium'
-    alias gx="git reset --hard @"
     alias pull="git pull"
     alias push='git push'
     alias resolve="git mergetool --tool=nwim"
     alias stash="git stash"
     alias status="git status"
-    alias uncommit="git reset --soft 'HEAD^'"
 }
 _exists curl && {
     alias cht='f(){ curl -s "cheat.sh/$(echo -n "$*"|jq -sRr @uri)";};f'
