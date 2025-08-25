@@ -28,14 +28,14 @@ bindkey "^n" down-line-or-beginning-search
 
 bindkey " " magic-abbrev-expand
 bindkey . rationalise-dot
-bindkey "^xD" describe-key-briefly
-bindkey "^z" fg-widget
+bindkey "^xd" describe-key-briefly
+bindkey "^Z" fg-widget
 bindkey '^J' fasd-complete
 bindkey '^@' fasd-complete
-bindkey '^m' special-accept-line
+bindkey '^M' special-accept-line
 bindkey " "  magic-space
 bindkey ",." zleiab
 bindkey . rationalise-dot
 bindkey -M isearch . self-insert # without this, typing a . aborts incremental history search
-bindkey '^xM' inplace_mk_dirs # load the lookup subsystem if it's available on the system
+bindkey '^xm' inplace_mk_dirs # load the lookup subsystem if it's available on the system
 # vim: ft=zsh:nowrap
