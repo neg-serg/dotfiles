@@ -18,11 +18,10 @@
         dbus-python # need for some scripts
         docopt
         fontforge # for font monospacifier
-        tabulate
-        i3ipc
         psutil
         pynvim
         requests
+        tabulate
       ]))
   ];
 }
