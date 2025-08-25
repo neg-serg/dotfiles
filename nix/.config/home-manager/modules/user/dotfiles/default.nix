@@ -26,7 +26,6 @@ in {
     "amfora" = mkSymlink "misc/.config/amfora" true;
     "dosbox" = mkSymlink "misc/.config/dosbox" true;
     "icedtea-web" = mkSymlink "misc/.config/icedtea-web" true;
-    "stig" = mkSymlink "misc/.config/stig" true;
     "rustmission" = mkSymlink "misc/.config/rustmission" true;
     "transmission-daemon" = mkSymlink "misc/.config/transmission-daemon" true;
     "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
