@@ -1,6 +1,5 @@
 {pkgs, yandex-browser, ...}: {
   imports = [
-    # ./firefox.nix
     ./floorp.nix
   ];
   home.packages = with pkgs; [
