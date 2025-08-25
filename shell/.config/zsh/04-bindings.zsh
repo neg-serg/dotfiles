@@ -30,7 +30,7 @@ bindkey " " magic-abbrev-expand
 bindkey . rationalise-dot
 bindkey "^xd" describe-key-briefly
 bindkey "^Z" fg-widget
-bindkey '^J' fasd-complete
+bindkey '^Y' fasd-complete
 bindkey '^@' fasd-complete
 bindkey '^M' special-accept-line
 bindkey " "  magic-space
