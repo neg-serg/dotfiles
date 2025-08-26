@@ -12,6 +12,7 @@
     };
   };
   home.packages = with pkgs; [
+    pipx
     (python3-lto.withPackages (ps:
       with ps; [
         colored
