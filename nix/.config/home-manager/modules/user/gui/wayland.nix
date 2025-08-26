@@ -4,9 +4,9 @@
     clipse # yet another clipboard manager
     fuzzel # wayland launcher
     gowall # tool to convert a Wallpaper's color scheme / palette
+    grimblast # hyprland screenshot tool
     grim # to take screenshots
     inputs.iwmenu.packages.${pkgs.system}.default # wifi menu
-    satty # screenshot helper tool
     slurp # select region in wayland compositor
     swww # wallpaper daemon for wayland
     waybar # install temporary
