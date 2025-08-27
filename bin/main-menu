@@ -15,10 +15,6 @@ termbin
 minevpn
 '
 
-# 󰊿translate
-# 󱃖termbin
-# minevpn
-
 generate_menu() {
     blue="<span weight='bold' color='#395573'>"
     count=0
@@ -28,50 +24,48 @@ generate_menu() {
     done
 }
 
+# Helpers for JSON from rmpc-song
+_song_json() { rmpc song 2>/dev/null; } # prints JSON for current song
+jq_str()     { jq -r "$1 // empty"; }
+
 title_copy(){
-    mpc current | wl-copy
+    # Emulate `mpc current`: "Artist - Title" when possible, else Title, else empty
+    _song_json | jq -r 'if .metadata.artist and .metadata.title then "\(.metadata.artist) - \(.metadata.title)"
+                        else (.metadata.title // .metadata.name // "") end' | wl-copy
 }
 
-album_copy(){
-    mpc current -f "[%album%]" | wl-copy
-}
-
-artist_copy(){
-    mpc current -f "[%artist%]" | wl-copy
-}
+album_copy(){  _song_json | jq_str '.metadata.album'  | wl-copy; }
+artist_copy(){ _song_json | jq_str '.metadata.artist' | wl-copy; }
 
 path_copy(){
-    mpd_music_dir="$XDG_MUSIC_DIR"
-    echo "$mpd_music_dir/$(mpc -f '%file%' current)" | wl-copy
+    mpd_music_dir="${XDG_MUSIC_DIR:-$HOME/Music}"
+    file=$(_song_json | jq_str '.file')
+    [ -n "$file" ] && printf '%s/%s\n' "$mpd_music_dir" "$file" | wl-copy
 }
 
 pipewire_output(){
-    mpc pause
-    mpc enable PipeWire
-    mpc disable "$dac_name" && mpc play
+    rmpc-pause
+    rmpc-enableoutput PipeWire
+    rmpc-disableoutput "$dac_name"
+    rmpc-play
 }
 
 alsa_output(){
     timeout="5s"
-    mpc pause
-    mpc enable "$dac_name"
-    mpc disable PipeWire
-    mpc play
-    sleep "$timeout";
-    mpc play
+    rmpc-pause
+    rmpc-enableoutput "$dac_name"
+    rmpc-disableoutput PipeWire
+    rmpc-play
+    sleep "$timeout"
+    rmpc-play
 }
 
-game_start(){
-    systemctl --user stop picom
-}
-
-game_end(){
-    systemctl --user start picom
-}
+game_start(){ systemctl --user stop picom; }
+game_end(){   systemctl --user start picom; }
 
 bt_headphones(){
     data="$APP_DATA/menu/data.json"
-    mac=$(jq -r ".[] | select(.name==\"Galaxy Buds+\") .mac" "$data")
+    mac=$(jq -r '.[] | select(.name=="Galaxy Buds+") .mac' "$data")
     state=$(bluetoothctl info "$mac" | awk '/Connected:/{print $2}')
     if [ "$state" = "no" ]; then
         bluetoothctl connect "$mac"
@@ -97,7 +91,7 @@ termbin(){
 }
 
 minevpn(){
-    if pgrep -f 'sudo openconnect --user' > /dev/null; then
+    if pgrep -f 'sudo openconnect --user' >/dev/null; then
         pkill -f 'sudo openconnect --user'
     else
         ~/bin/vpn_up
@@ -107,7 +101,7 @@ minevpn(){
 handler() {
     while IFS= read -r arg; do
         for t in $main_menu; do
-            if echo "$arg" | rg "$t" > /dev/null; then
+            if echo "$arg" | rg "$t" >/dev/null; then
                 eval "$t"
             fi
         done
