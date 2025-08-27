@@ -7,12 +7,8 @@ album_copy
 path_copy
 pipewire_output
 alsa_output
-game_start
-game_end
-bt_headphones
 translate
 termbin
-minevpn
 '
 
 generate_menu() {
@@ -60,22 +56,6 @@ alsa_output(){
     rmpc-play
 }
 
-game_start(){ systemctl --user stop picom; }
-game_end(){   systemctl --user start picom; }
-
-bt_headphones(){
-    data="$APP_DATA/menu/data.json"
-    mac=$(jq -r '.[] | select(.name=="Galaxy Buds+") .mac' "$data")
-    state=$(bluetoothctl info "$mac" | awk '/Connected:/{print $2}')
-    if [ "$state" = "no" ]; then
-        bluetoothctl connect "$mac"
-        notify-send --hint=string:x-dunst-stack-tag:headphones "Galaxy Buds+ connected"
-    else
-        bluetoothctl disconnect "$mac"
-        notify-send --hint=string:x-dunst-stack-tag:headphones "Galaxy Buds+ disconnected"
-    fi
-}
-
 translate(){
     text="$(wl-paste)"
     translate="$(trans -brief :ru "$text")"
@@ -88,14 +68,6 @@ termbin(){
     echo "$url" | wl-copy
     notify-send "$url copied to clipboard"
     play-sound "direct.ogg"
-}
-
-minevpn(){
-    if pgrep -f 'sudo openconnect --user' >/dev/null; then
-        pkill -f 'sudo openconnect --user'
-    else
-        ~/bin/vpn_up
-    fi
 }
 
 handler() {
