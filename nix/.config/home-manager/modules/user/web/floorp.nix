@@ -1,8 +1,12 @@
 { config, pkgs, ... }:
 let
   dlDir = "${config.home.homeDirectory}/dw";
+  fa = pkgs.nur.repos.rycee.firefox-addons; # requires NUR
 in
 {
+  # Needed for some addons like tampermonkey
+  nixpkgs.config.allowUnfree = true;
+
   programs.floorp = {
     enable = true;
 
@@ -13,6 +17,22 @@ in
 
     profiles."bqtlgdxw.default" = {
       isDefault = true;
+
+      # Declarative extensions (NUR where available)
+      extensions = with fa; [
+        augmented-steam
+        cookie-quick-manager
+        darkreader
+        enhanced-github
+        export-tabs-urls-and-titles
+        lovely-forks
+        search-by-image
+        stylus
+        tabliss
+        tampermonkey
+        to-google-translate
+        tridactyl
+      ];
 
       # about:config prefs
       settings = {
@@ -77,7 +97,7 @@ in
         "browser.startup.preXulSkeletonUI" = false;
       };
 
-      # Optional toggles kept from your config
+      # Optional toggles
       extraConfig = ''
         // Optional / disabled prefs (enable only if you really want them)
 
@@ -107,6 +127,35 @@ in
         #nav-bar #stop-reload-button,
         #nav-bar #home-button { display: none !important; }
       '';
+    };
+
+    # Policies: force-install addons missing in NUR (AMO latest.xpi)
+    policies = {
+      ExtensionSettings = {
+        # Hide Scrollbars
+        "hide-scrollbars@qashto" = {
+          installation_mode = "force_installed";
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/hide-scrollbars/latest.xpi";
+        };
+
+        # Free music downloader for VK (slug/ID may change on AMO)
+        "{4a311e5c-1ccc-49b7-9c23-3e2b47b6c6d5}" = {
+          installation_mode = "force_installed";
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/%D1%81%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C-%D0%BC%D1%83%D0%B7%D1%8B%D0%BA%D1%83-%D1%81-%D0%B2%D0%BA-vkd/latest.xpi";
+        };
+
+        # KellyC Show YouTube Dislikes (may be unavailable on AMO at times)
+        "kellyc-show-youtube-dislikes@nradiowave" = {
+          installation_mode = "force_installed";
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/kellyc-show-youtube-dislikes/latest.xpi";
+        };
+      };
+
+      # Keep automatic updates for extensions
+      Extensions = {
+        Install = true;
+        Updates = true;
+      };
     };
   };
 
