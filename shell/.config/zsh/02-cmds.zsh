@@ -260,6 +260,7 @@ _exists curl && {
     alias moon='curl wttr.in/Moon'
     alias we="curl 'wttr.in/?T'"
     alias wem="curl wttr.in/Moscow\?lang=ru"
+    geoip(){ curl ipinfo.io/$1; }
     sprunge(){ curl -F "sprunge=<-" http://sprunge.us <"$1" ;}
 }
 _exists fzf && {
