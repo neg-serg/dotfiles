@@ -3,11 +3,10 @@
   ...
 }: {
   home.packages = with pkgs; [
-    asciinema-agg # asciinema files to gif
     asciinema # record terminal
+    asciinema-agg # asciinema files to gif
     chafa # terminal graphics
     kitty # fastest terminal emulator so far
     kitty-img # print images inline in kitty
-    wezterm # install it when reliability matters most
   ];
 }
