@@ -213,6 +213,23 @@ return {
     -- ---------- Setup ----------
     local layout_actions = require('telescope.actions.layout')
 
+    -- Fix: force dot to be a literal '.' inside Telescope prompt
+    vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'TelescopePrompt',
+        callback = function(ev)
+            -- 1) Kill any insert-map on '.'
+            pcall(vim.keymap.del, 'i', '.', { buffer = ev.buf })
+            -- 2) Disable input method / lang remaps locally
+            vim.opt_local.keymap = ''
+            vim.opt_local.langmap = ''
+            vim.opt_local.iminsert = 0
+            vim.opt_local.imsearch = 0
+            -- 3) Re-bind '.' to literal dot (expr+nowait to bypass remaps)
+            vim.keymap.set('i', '.', function() return '.' end,
+            { buffer = ev.buf, expr = true, nowait = true })
+        end,
+    })
+
     telescope.setup({
       defaults = {
         vimgrep_arguments = {
@@ -509,8 +526,12 @@ return {
     end, opts)
 
     vim.keymap.set('n', '<leader>l', function()
-      local t = require('telescope'); pcall(t.load_extension, 'file_browser')
-      vim.cmd('Telescope file_browser path=%:p:h select_buffer=true')
+        local t = require('telescope')
+        pcall(t.load_extension, 'file_browser')
+        t.extensions.file_browser.file_browser({
+            path = vim.fn.expand('%:p:h'),
+            select_buffer = true,
+        })
     end, opts)
 
     vim.keymap.set('n', 'E', function()
