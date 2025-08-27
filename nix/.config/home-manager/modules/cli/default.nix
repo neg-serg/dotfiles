@@ -34,6 +34,7 @@
     nix-search-tv = { enable = true; }; # fast search for nix packages
     numbat = { enable = true; }; # fancy scientific calculator
     television = { enable = true; }; # yet another fuzzy finder
+    tray-tui = { enable = true; }; # system tray in your terminal
     visidata = { enable = true; }; # interactive multitool for tabular data
   };
   home.packages = with pkgs; [
