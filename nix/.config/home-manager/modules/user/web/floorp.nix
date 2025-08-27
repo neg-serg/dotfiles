@@ -17,22 +17,27 @@ in
 
     profiles."bqtlgdxw.default" = {
       isDefault = true;
-
       # Declarative extensions (NUR where available)
-      extensions = with fa; [
-        augmented-steam
-        cookie-quick-manager
-        darkreader
-        enhanced-github
-        export-tabs-urls-and-titles
-        lovely-forks
-        search-by-image
-        stylus
-        tabliss
-        tampermonkey
-        to-google-translate
-        tridactyl
-      ];
+      extensions = {
+        packages = with fa; [
+          augmented-steam
+          cookie-quick-manager
+          darkreader
+          enhanced-github
+          export-tabs-urls-and-titles
+          lovely-forks
+          search-by-image
+          stylus
+          tabliss
+          tampermonkey
+          to-google-translate
+          tridactyl
+        ];
+        # Example for per-addon config (keep empty if not needed):
+        # settings."[email protected]".settings = {
+        #   selectedFilterLists = [ "ublock-filters" ];
+        # };
+      };
 
       # about:config prefs
       settings = {
