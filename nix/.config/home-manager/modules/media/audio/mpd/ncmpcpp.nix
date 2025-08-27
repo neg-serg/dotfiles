@@ -1,6 +1,6 @@
 {config, ...}: {
   programs.ncmpcpp = {
-    enable = true;
+    enable = false;
     mpdMusicDir = "~/music";
     settings = {
       #--=[ mpd ]=---------------
