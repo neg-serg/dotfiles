@@ -119,7 +119,6 @@ with {
     };
     targets.helix.enable = true;
     targets.sxiv.enable = true;
-    targets.zed.enable = true;
 
     base16Scheme = {
       base00 = "#020202"; # Background
