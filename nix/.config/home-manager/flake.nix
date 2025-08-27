@@ -15,6 +15,7 @@
     rsmetrx = { url = "github:neg-serg/rsmetrx"; inputs.nixpkgs.follows = "nixpkgs"; };
     sops-nix = { url = "github:Mic92/sops-nix"; };
     stylix = { url = "github:danth/stylix"; inputs.nixpkgs.follows = "nixpkgs"; };
+    nur = { url = "github:nix-community/NUR"; };
     yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
@@ -26,6 +27,7 @@
     hyprland,
     iosevka-neg,
     nixpkgs,
+    nur,
     nvfetcher,
     quickshell,
     rsmetrx,
@@ -38,7 +40,7 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [];
+        overlays = [ nur.overlay ]; # inject NUR
       };
       iosevkaneg = iosevka-neg.packages.${system};
       yandex-browser = yandex-browser.packages.${system};
