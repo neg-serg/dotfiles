@@ -14,6 +14,7 @@ in
     profiles."bqtlgdxw.default" = {
       isDefault = true;
 
+      # about:config prefs
       settings = {
         # Region / locale
         "browser.region.update.region" = "US";
@@ -46,8 +47,37 @@ in
         # Color management
         "gfx.color_management.enabled" = true;
         "gfx.color_management.enablev4" = false;
+
+        # FastFox-like (safe subset)
+        "dom.ipc.processCount" = 8;                                # more content processes
+        "fission.autostart" = true;                                # site isolation
+        "network.http.max-connections" = 1800;
+        "network.http.max-persistent-connections-per-server" = 10;
+        "network.http.max-urgent-start-excessive-connections-per-host" = 6;
+        "network.dnsCacheEntries" = 10000;
+        "network.dnsCacheExpirationGracePeriod" = 240;
+        "network.ssl_tokens_cache_capacity" = 32768;
+        "network.speculative-connection.enabled" = true;
+        "browser.tabs.unloadOnLowMemory" = true;
+        "browser.sessionstore.restore_tabs_lazily" = true;
+        "gfx.webrender.all" = true;
+        "gfx.webrender.precache-shaders" = true;
+
+        # HW video decoding (Wayland/VA-API)
+        "media.ffmpeg.vaapi.enabled" = true;
+        "media.hardware-video-decoding.enabled" = true;
+
+        # Disable autoplay
+        "media.autoplay.default" = 1;                               # block audible
+        "media.autoplay.blocking_policy" = 2;
+        "media.autoplay.block-webaudio" = true;
+        "media.block-autoplay-until-in-foreground" = true;
+
+        # Minor QoL
+        "browser.startup.preXulSkeletonUI" = false;
       };
 
+      # Optional toggles kept from your config
       extraConfig = ''
         // Optional / disabled prefs (enable only if you really want them)
 
@@ -68,6 +98,14 @@ in
         // Forcing GPU acceleration may cause artifacts; usually unnecessary
         // user_pref("gfx.webrender.all", true);
         // user_pref("layers.acceleration.force-enabled", true);
+      '';
+
+      # Hide back/forward/reload/home buttons
+      userChrome = ''
+        #nav-bar #back-button,
+        #nav-bar #forward-button,
+        #nav-bar #stop-reload-button,
+        #nav-bar #home-button { display: none !important; }
       '';
     };
   };
