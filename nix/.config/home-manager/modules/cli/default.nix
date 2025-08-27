@@ -31,6 +31,7 @@
     };
     hwatch = { enable = true; }; # better watch with history
     kubecolor = { enable = true; }; # kubectl colorizer
+    nix-search-tv = { enable = true; }; # fast search for nix packages
     numbat = { enable = true; }; # fancy scientific calculator
     television = { enable = true; }; # yet another fuzzy finder
     visidata = { enable = true; }; # interactive multitool for tabular data
