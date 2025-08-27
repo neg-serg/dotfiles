@@ -11,7 +11,6 @@ with {
 }; {
   home.packages = with pkgs; [
     inori # alternative cli mpd client
-    mpc-cli # mpd client
     rmpc_git # alternative tui client with album cover
   ];
   services.mpd = {
@@ -90,7 +89,6 @@ with {
           "${pkgs.cached-nix-shell}/bin/cached-nix-shell "
           "-p 'python3.withPackages (p: [p.pygobject3 p.systemd p.dbus-python])' "
           "-p gobject-introspection"
-          "-p mpc-cli"
           "-p sox"
           "-p dunst"
           "-p swaynotificationcenter"
