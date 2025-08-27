@@ -63,8 +63,9 @@
         ExecStart = "${pkgs.pyprland}/bin/pypr";
         Restart = "on-failure";
         RestartSec = "1";
+        Slice = "background-graphical.slice";
       };
-      Install = { WantedBy = [ "default.target" ]; };
+      Install = { WantedBy = [ "graphical-session.target" ]; };
     };
 
     # Quickshell session
@@ -78,10 +79,11 @@
         ExecStart = "${pkgs.quickshell}/bin/qs";
         Restart = "on-failure";
         RestartSec = "1";
+        Slice = "background-graphical.slice";
         # Uncomment if you need explicit env passing:
         # PassEnvironment = [ "WAYLAND_DISPLAY" "XDG_RUNTIME_DIR" ];
       };
-      Install = { WantedBy = [ "default.target" ]; };
+      Install = { WantedBy = [ "graphical-session.target" ]; };
     };
   };
 }
