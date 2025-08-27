@@ -11,13 +11,11 @@ game_start
 game_end
 bt_headphones
 translate
-touchpad
 termbin
 minevpn
 '
 
 # 󰊿translate
-# 󰟸touchpad
 # 󱃖termbin
 # minevpn
 
@@ -84,29 +82,16 @@ bt_headphones(){
     fi
 }
 
-touchpad(){
-    device="DELL0825:00 06CB:7E92 Touchpad"
-    state=$(xinput list-props "$device" | grep "Device Enabled" | grep -o "[01]$")
-    if [ "$state" -eq "1" ]; then
-        xinput --disable "$device"
-        notify-send --hint=string:x-dunst-stack-tag:touchpad "Touchpad disabled"
-    else
-        xinput --enable "$device"
-        notify-send --hint=string:x-dunst-stack-tag:touchpad "Touchpad enabled"
-    fi
-}
-
 translate(){
-    text="$(xsel -o)"
+    text="$(wl-paste)"
     translate="$(trans -brief :ru "$text")"
     notify-send -t $((${#text} * 150)) "$translate"
     play-sound "cyclist.ogg"
 }
 
 termbin(){
-    url=$(xsel -p | nc termbin.com 9999)
-    echo "$url" | xsel -ib
-    echo "$url" | xsel -ip
+    url=$(wl-paste | nc termbin.com 9999)
+    echo "$url" | wl-copy
     notify-send "$url copied to clipboard"
     play-sound "direct.ogg"
 }
