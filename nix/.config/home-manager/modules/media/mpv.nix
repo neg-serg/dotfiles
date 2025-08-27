@@ -17,6 +17,8 @@
       cache = "no";
       correct-downscaling = true;
       gpu-shader-cache-dir = "/home/neg/tmp/";
+      hwdec = "auto-safe";
+      profile = "gpu-hq";
       # hwdec-codecs = "all";
       # icc-cache-dir = "/home/neg/tmp/";
       vd-lavc-dr = true;
@@ -186,42 +188,6 @@
         # apply all luma and chroma upscaling and downscaling settings
         interpolation = false; # no motion interpolation required because 60fps is hardware ceiling
       };
-
-      "full-hd-interlaced" = {
-        # 1080i @ 24-30fps (HDTV, interlaced Blu-rays)
-        profile-desc = "full-hd-interlaced";
-        profile-cond = "((width ==1920 and height ==1080) and p[\"video-frame-info/interlaced\"] and p[\"estimated-vf-fps\"]<31)";
-        # apply all luma and chroma upscaling and downscaling settings
-        # apply motion interpolation
-        vf = "bwdif"; # apply FFMPEG's bwdif deinterlacer
-      };
-
-      "hd" = {
-        # 720p @ 60 fps (HDTV, Blu-ray - progressive)
-        profile-desc = "hd";
-        profile-cond = "(width == 1280 and height == 720)";
-        # apply all luma and chroma upscaling and downscaling settings
-        interpolation = false; # no motion interpolation required because 60fps is hardware ceiling
-        # no deinterlacer required because progressive
-      };
-
-      "sdtv-ntsc" = {
-        # 640x480, 704x480, 720x480 @ 30fps (NTSC DVD - interlaced)
-        profile-desc = "sdtv-ntsc";
-        profile-cond = "((width == 640 and height == 480) or (width == 704 and height == 480) or (width == 720 and height == 480))";
-        # apply all luma and chroma upscaling and downscaling settings
-        # apply motion interpolation
-        vf = "bwdif"; # apply FFMPEG's bwdif deinterlacer
-      };
-
-      "sdtv-pal" = {
-        # 352x576, 480x576, 544x576, 720x576 @ 30fps (PAL broadcast or DVD - interlaced)
-        profile-desc = "sdtv-pal";
-        profile-cond = "((width==352 and height==576) or (width==480 and height==576) or (width==544 and height==576) or (width==720 and height==576))";
-        # # apply all luma and chroma upscaling and downscaling settings
-        # # apply motion interpolation
-        vf = "bwdif"; # apply FFMPEG's bwdif deinterlacer
-      };
     };
 
     scripts = with pkgs.mpvScripts; [
@@ -242,22 +208,6 @@
         scalewindowed = 0.666;
         scalefullscreen = 0.666;
         boxalpha = 140;
-      };
-      thumbfast = {
-        socket = ""; # Socket path (leave empty for auto)
-        thumbnail = ""; # Thumbnail path (leave empty for auto)
-        # Maximum thumbnail size in pixels (scaled down to fit)
-        # Values are scaled when hidpi is enabled
-        max_height = 200;
-        max_width = 200;
-        tone_mapping = "auto"; # Apply tone-mapping, no to disable
-        overlay_id = 42; # Overlay id
-        spawn_first = "no"; # Spawn thumbnailer on file load for faster initial thumbnails
-        quit_after_inactivity = 0; # Close thumbnailer process after an inactivity period in seconds, 0 to disable
-        network = "no"; # Enable on network playback
-        audio = "no"; # Enable on audio playback
-        hwdec = "no"; # Enable hardware decoding
-        direct_io = "no"; # Windows only: use native Windows API to write to pipe (requires LuaJIT)
       };
       uosc = {
         # Display style of current position. available: line, bar
