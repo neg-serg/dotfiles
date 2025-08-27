@@ -2,6 +2,7 @@
   home.sessionVariables = {};
   home.packages = with pkgs; [
     clipse # yet another clipboard manager
+    dragon-drop # drag-n-drop from console
     fuzzel # wayland launcher
     gowall # tool to convert a Wallpaper's color scheme / palette
     grimblast # hyprland screenshot tool
