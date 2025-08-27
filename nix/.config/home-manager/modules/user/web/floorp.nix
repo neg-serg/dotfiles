@@ -4,12 +4,9 @@ let
   fa = pkgs.nur.repos.rycee.firefox-addons; # requires NUR
 in
 {
-  # Needed for some addons like tampermonkey
   nixpkgs.config.allowUnfree = true;
-
   programs.floorp = {
     enable = true;
-
     nativeMessagingHosts = [
       pkgs.pywalfox-native
       pkgs.tridactyl-native
@@ -29,7 +26,6 @@ in
           search-by-image
           stylus
           tabliss
-          tampermonkey
           to-google-translate
           tridactyl
         ];
