@@ -13,7 +13,7 @@ in
 
     # Profile with sane defaults and optional extras
     profiles.main = {
-      isDefault = true;
+      isDefault = false;
       settings = {
         # --- Telemetry / Experiments ---
         "browser.newtabpage.activity-stream.telemetry" = false;
