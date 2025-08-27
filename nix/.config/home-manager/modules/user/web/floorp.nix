@@ -11,8 +11,8 @@ in
       pkgs.tridactyl-native
     ];
 
-    profiles.main = {
-      isDefault = false;
+    profiles."bqtlgdxw.default" = {
+      isDefault = true;
 
       settings = {
         # Region / locale
