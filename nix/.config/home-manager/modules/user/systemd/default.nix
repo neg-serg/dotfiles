@@ -1,5 +1,7 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   systemd.user.startServices = true;
+
   systemd.user.services = {
     # RGB lights daemon
     openrgb = {
@@ -61,6 +63,23 @@
         ExecStart = "${pkgs.pyprland}/bin/pypr";
         Restart = "on-failure";
         RestartSec = "1";
+      };
+      Install = { WantedBy = [ "default.target" ]; };
+    };
+
+    # Quickshell session
+    quickshell = {
+      Unit = {
+        Description = "Quickshell Wayland shell";
+        After = [ "graphical-session.target" ];
+        Wants = [ "graphical-session.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.quickshell}/bin/qs";
+        Restart = "on-failure";
+        RestartSec = "1";
+        # Uncomment if you need explicit env passing:
+        # PassEnvironment = [ "WAYLAND_DISPLAY" "XDG_RUNTIME_DIR" ];
       };
       Install = { WantedBy = [ "default.target" ]; };
     };
