@@ -21,6 +21,7 @@ require'lazy'.setup({
         {import='plugins/panel'},       -- █▓▒░ Panel
         {import='plugins/performance'}, -- █▓▒░ Performance / Fixes
         {import='plugins/text'},        -- █▓▒░ Text
+        {import='plugins/ui'},          -- █▓▒░ UI
         {import='plugins/viz'},         -- █▓▒░ Viz
     },
     defaults={lazy=false},
