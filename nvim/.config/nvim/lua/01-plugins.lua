@@ -13,8 +13,8 @@ require'lazy'.setup({
         {import='plugins/debug'},       -- █▓▒░ Debug
         {import='plugins/dev'},         -- █▓▒░ Dev
         {import='plugins/edit'},        -- █▓▒░ Edit
+        {import='plugins/files'},       -- █▓▒░ Rule files
         {import='plugins/filetypes'},   -- █▓▒░ Filetypes
-        {import='plugins/fm'},          -- █▓▒░ Filemanager
         {import='plugins/generic'},     -- █▓▒░ Generic
         {import='plugins/keymap'},      -- █▓▒░ Keymap
         {import='plugins/navigation'},  -- █▓▒░ Navigation
