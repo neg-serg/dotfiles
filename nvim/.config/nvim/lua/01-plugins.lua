@@ -7,19 +7,19 @@ end
 vim.opt.rtp:prepend(lazypath)
 require'lazy'.setup({
     spec={
-        {import='plugins/performance'}, -- █▓▒░ Performance / Fixes
-        {import='plugins/generic'},     -- █▓▒░ Generic
-        {import='plugins/completion'},  -- █▓▒░ Completion
-        {import='plugins/dev'},         -- █▓▒░ Dev
-        {import='plugins/debug'},       -- █▓▒░ Debug
-        {import='plugins/text'},        -- █▓▒░ Text
-        {import='plugins/edit'},        -- █▓▒░ Edit
         {import='plugins/appearance'},  -- █▓▒░ Appearance
-        {import='plugins/filetypes'},   -- █▓▒░ Filetypes
+        {import='plugins/completion'},  -- █▓▒░ Completion
         {import='plugins/dcvs'},        -- █▓▒░ DCVS
-        {import='plugins/panel'},       -- █▓▒░ Panel
-        {import='plugins/viz'},         -- █▓▒░ Viz
+        {import='plugins/debug'},       -- █▓▒░ Debug
+        {import='plugins/dev'},         -- █▓▒░ Dev
+        {import='plugins/edit'},        -- █▓▒░ Edit
+        {import='plugins/filetypes'},   -- █▓▒░ Filetypes
+        {import='plugins/generic'},     -- █▓▒░ Generic
         {import='plugins/navigation'},  -- █▓▒░ Navigation
+        {import='plugins/panel'},       -- █▓▒░ Panel
+        {import='plugins/performance'}, -- █▓▒░ Performance / Fixes
+        {import='plugins/text'},        -- █▓▒░ Text
+        {import='plugins/viz'},         -- █▓▒░ Viz
     },
     defaults={lazy=false},
     install={colorscheme={"neg"}},
