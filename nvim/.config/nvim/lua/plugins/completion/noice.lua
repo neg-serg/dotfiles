@@ -2,6 +2,7 @@
 -- │ █▓▒░ folke/noice.nvim                                                             │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {'folke/noice.nvim', -- better UX
+    enabled=false,
     event={'VeryLazy'},
     config=function()
         local status, noice = pcall(require, 'noice')
