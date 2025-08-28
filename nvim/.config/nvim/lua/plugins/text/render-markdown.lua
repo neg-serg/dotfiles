@@ -3,7 +3,16 @@
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {'MeanderingProgrammer/render-markdown.nvim',
   dependencies={'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim'}, -- if you use the mini.nvim suite
-  -- ft={'markdown', 'quarto'},
+  init = function()
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = { 'markdown', 'quarto', 'Avante', 'mdx' },
+      callback = function()
+        -- Defer to ensure the command exists even on lazy load
+        vim.schedule(function() pcall(vim.cmd, 'RenderMarkdown buf_enable') end)
+        -- or: pcall(require('render-markdown').buf_enable)
+      end,
+    })
+  end,
   config=function()
     require'render-markdown'.setup{
       completions={blink={enabled=true}},
