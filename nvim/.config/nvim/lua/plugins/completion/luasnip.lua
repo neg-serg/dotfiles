@@ -15,4 +15,4 @@ return {'L3MON4D3/LuaSnip', -- snippets engine
         luasnip_snips.lazy_load()
     end,
     dependencies={'rafamadriz/friendly-snippets',},
-    event={'BufRead','BufNewFile','InsertEnter'}}
+    event={'InsertEnter'}}
