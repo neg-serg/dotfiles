@@ -1,4 +1,4 @@
 -- ┌───────────────────────────────────────────────────────────────────────────────────┐
--- │ █▓▒░ kopischke/vim-fetch                                                          │
+-- │ █▓▒░ wsdjeg/vim-fetch                                                             │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
-return {'kopischke/vim-fetch'} -- vim path/to/file.ext:12:4
+return {'wsdjeg/vim-fetch'} -- vim path/to/file.ext:12:4
