@@ -17,6 +17,7 @@ require'lazy'.setup({
         {import='plugins/appearance'},  -- █▓▒░ Appearance
         {import='plugins/filetypes'},   -- █▓▒░ Filetypes
         {import='plugins/dcvs'},        -- █▓▒░ DCVS
+        {import='plugins/panel'},       -- █▓▒░ Panel
     },
     defaults={lazy=false},
     install={colorscheme={"neg"}},

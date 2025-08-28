@@ -281,7 +281,7 @@ return function()
         end, {})
 
         -- Components
-        local ok_parts, parts_ctor = pcall(require, 'plugins.generic.heirline.components')
+        local ok_parts, parts_ctor = pcall(require, 'plugins.panel.heirline.components')
         if not ok_parts or type(parts_ctor) ~= 'function' then
           dbg_notify('components module missing or invalid', vim.log.levels.ERROR)
           return
