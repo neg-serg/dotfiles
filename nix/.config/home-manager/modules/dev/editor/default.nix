@@ -6,6 +6,5 @@
   programs.claude-code.enable = true;
   imports = [
     ./neovim
-    ./helix
   ];
 }
