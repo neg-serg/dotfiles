@@ -121,13 +121,27 @@ in
         // user_pref("layers.acceleration.force-enabled", true);
       '';
 
-      # Hide back/forward/reload/home buttons
       userChrome = ''
+        /* Hide buttons you don't use */
         #nav-bar #back-button,
         #nav-bar #forward-button,
         #nav-bar #stop-reload-button,
         #nav-bar #home-button { display: none !important; }
-      '';
+
+        /* Bigger, bolder URL bar text */
+        :root { --urlbar-min-height: 36px !important; } /* increase bar height */
+        #urlbar-input {
+          font-size: 17px !important;   /* adjust size */
+          font-weight: 500 !important;  /* 600–700 = semi-bold/bold */
+        }
+
+        /* Optional: make suggestions list text match */
+        .urlbarView-row .urlbarView-title,
+        .urlbarView-row .urlbarView-url {
+          font-size: 14px !important;
+          font-weight: 400 !important;
+        }
+        '';
     };
 
     # Policies: force-install addons missing in NUR (AMO latest.xpi)
