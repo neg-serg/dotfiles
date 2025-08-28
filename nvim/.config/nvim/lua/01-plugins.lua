@@ -16,6 +16,7 @@ require'lazy'.setup({
         {import='plugins/filetypes'},   -- █▓▒░ Filetypes
         {import='plugins/fm'},          -- █▓▒░ Filemanager
         {import='plugins/generic'},     -- █▓▒░ Generic
+        {import='plugins/keymap'},      -- █▓▒░ Keymap
         {import='plugins/navigation'},  -- █▓▒░ Navigation
         {import='plugins/panel'},       -- █▓▒░ Panel
         {import='plugins/performance'}, -- █▓▒░ Performance / Fixes
