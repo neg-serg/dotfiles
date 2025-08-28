@@ -2,7 +2,6 @@
 -- │ █▓▒░ MeanderingProgrammer/render-markdown.nvim                                    │
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {'MeanderingProgrammer/render-markdown.nvim',
-  dependencies={'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim'}, -- if you use the mini.nvim suite
   init = function()
     vim.api.nvim_create_autocmd('FileType', {
       pattern = { 'markdown', 'quarto', 'Avante', 'mdx' },
