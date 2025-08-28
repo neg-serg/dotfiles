@@ -14,6 +14,7 @@ require'lazy'.setup({
         {import='plugins/dev'},         -- █▓▒░ Dev
         {import='plugins/edit'},        -- █▓▒░ Edit
         {import='plugins/filetypes'},   -- █▓▒░ Filetypes
+        {import='plugins/fm'},          -- █▓▒░ Filemanager
         {import='plugins/generic'},     -- █▓▒░ Generic
         {import='plugins/navigation'},  -- █▓▒░ Navigation
         {import='plugins/panel'},       -- █▓▒░ Panel
