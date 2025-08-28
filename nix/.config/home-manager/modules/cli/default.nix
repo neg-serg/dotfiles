@@ -3,6 +3,7 @@
   ...
 }: {
   imports = [
+    ./atuin.nix # replacement for a shell history which records additional commands context with optional encrypted synchronization between machines
     ./bat.nix # better cat
     ./broot.nix # nested fuzzy finding
     ./btop.nix
@@ -14,21 +15,6 @@
     ./yazi.nix
   ];
   programs = {
-    atuin = {
-      enable = true;
-      flags = [ "--disable-up-arrow" ];
-      settings = {
-        update_check = false;
-        style = "compact";
-        invert = true;
-        inline_height = 15;
-        show_help = false;
-        show_tabs = false;
-        enter_accept = true;
-        prefers_reduced_motion = true;
-        keys.scroll_exits = false;
-      };
-    };
     hwatch = { enable = true; }; # better watch with history
     kubecolor = { enable = true; }; # kubectl colorizer
     nix-search-tv = { enable = true; }; # fast search for nix packages
