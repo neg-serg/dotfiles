@@ -15,7 +15,7 @@ require'lazy'.setup({
         {import='plugins/edit'},        -- █▓▒░ Edit
         {import='plugins/files'},       -- █▓▒░ Rule files
         {import='plugins/filetypes'},   -- █▓▒░ Filetypes
-        {import='plugins/generic'},     -- █▓▒░ Generic
+        {import='plugins/integration'}, -- █▓▒░ Integration
         {import='plugins/keymap'},      -- █▓▒░ Keymap
         {import='plugins/navigation'},  -- █▓▒░ Navigation
         {import='plugins/panel'},       -- █▓▒░ Panel
