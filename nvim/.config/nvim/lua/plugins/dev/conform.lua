@@ -3,7 +3,6 @@
 -- └───────────────────────────────────────────────────────────────────────────────────┘
 return {
 	"stevearc/conform.nvim", -- neovim modern formatter
-	-- event='BufWritePre',
 	cmd = { "ConformInfo" },
 	config = function()
 		local conform = require("conform")
@@ -40,11 +39,13 @@ return {
 			},
 		})
 	end,
-	keys = { {
-		"<leader>rf",
-		function()
-			require("conform").format({ async = true })
-		end,
-		desc = "format buffer",
-	} },
+	keys = {
+		{
+			"<leader>rf",
+			function()
+				require("conform").format({ async = true })
+			end,
+			desc = "format buffer",
+		},
+	},
 }
