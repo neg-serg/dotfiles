@@ -17,10 +17,6 @@ return {'3rd/image.nvim',
         floating_windows = false, -- if true, images will be rendered in floating markdown windows
         filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
       },
-      neorg = {
-        enabled = true,
-        filetypes = { "norg" },
-      },
       typst = {
         enabled = true,
         filetypes = { "typst" },
