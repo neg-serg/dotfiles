@@ -1,6 +1,6 @@
 {...}: {
   programs.notmuch = {
-    enable = false;
+    enable = true;
     new = {
       tags = ["unread" "inbox"];
       ignore = [];
