@@ -11,14 +11,11 @@ in {
             "/home/neg/.config/hypr/init.conf"
         ];
         permission = [
-          "${hy3Plugin}/lib/libhy3.so, plugin, allow"
           "${pkgs.grim}/bin/grim, screencopy, allow"
           "${pkgs.hyprlock}/bin/hyprlock, screencopy, allow"
         ];
     };
-    plugins = [ 
-        hy3Plugin
-    ];
+    plugins = [ ];
     systemd.variables = ["--all"];
   };
   home.packages = with pkgs; [
