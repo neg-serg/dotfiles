@@ -11,13 +11,4 @@
     preferXdgDirectories = true;
     username = "neg";
   };
-  nixCats = {
-    enable = true;
-    luaPath = inputs.self + "/nvim/.config/nvim";
-    packageDefinitions.merge = {
-      nixCats = { pkgs, ... }: {
-        categories = inputs.self.lib.lazyPlugins;
-      };
-    };
-  };
 }
