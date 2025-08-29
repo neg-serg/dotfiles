@@ -6,7 +6,8 @@
     crane = { url = "github:ipetkov/crane"; };
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     hy3 = { url = "github:outfoxxed/hy3"; inputs.hyprland.follows = "hyprland"; };
-    hyprland = { url = "github:hyprwm/Hyprland"; };
+    # Pin Hyprland to a stable release to reduce API churn with hy3
+    hyprland = { url = "github:hyprwm/Hyprland?ref=v0.50.0"; };
     iosevka-neg = { url = "git+ssh://git@github.com/neg-serg/iosevka-neg"; inputs.nixpkgs.follows = "nixpkgs"; };
     iwmenu = { url = "github:e-tho/iwmenu"; };
     nixpkgs = { url = "github:nixos/nixpkgs"; };
@@ -49,8 +50,15 @@
       # Some upstream commits enable -Werror. Force warnings to not be treated
       # as errors for both C and C++ to avoid build breaks on benign warnings.
       hy3Fixed = hy3.packages.${system}.hy3.overrideAttrs (old: {
-        NIX_CFLAGS_COMPILE = (old.NIX_CFLAGS_COMPILE or "") + " -Wno-error";
-        NIX_CXXFLAGS_COMPILE = (old.NIX_CXXFLAGS_COMPILE or "") + " -Wno-error";
+        # Ensure no warnings are treated as errors, including specific ones
+        NIX_CFLAGS_COMPILE = (old.NIX_CFLAGS_COMPILE or "")
+          + " -Wno-error -Wno-error=return-type -Wno-error=maybe-uninitialized";
+        NIX_CXXFLAGS_COMPILE = (old.NIX_CXXFLAGS_COMPILE or "")
+          + " -Wno-error -Wno-error=return-type -Wno-error=maybe-uninitialized";
+        CFLAGS = (old.CFLAGS or "")
+          + " -Wno-error -Wno-error=return-type -Wno-error=maybe-uninitialized";
+        CXXFLAGS = (old.CXXFLAGS or "")
+          + " -Wno-error -Wno-error=return-type -Wno-error=maybe-uninitialized";
       });
     }; {
       packages.${system}.default = nixpkgs.legacyPackages.${system}.zsh;
