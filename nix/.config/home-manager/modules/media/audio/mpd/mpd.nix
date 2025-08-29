@@ -30,8 +30,7 @@ with {
     mpdas = {
       Unit = {
         Description = "mpdas last.fm scrobbler";
-        After = ["network.target" "sound.target" "mpd.service"];
-        Requires = "mpd.service";
+        After = ["network.target" "sound.target"];
       };
       Service = {
         ExecStart = "${pkgs.mpdas}/bin/mpdas -c ${config.sops.secrets.mpdas_negrc.path}";
@@ -44,9 +43,7 @@ with {
     cover-notify = {
       Unit = {
         Description = "Music track notification with cover";
-        After = ["mpd.service"];
         StartLimitIntervalSec = "1";
-        BindsTo = ["mpd.service"];
       };
       Service = {
         ExecStart = lib.strings.concatStringsSep " " [

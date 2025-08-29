@@ -39,7 +39,6 @@ with {
     playerctld = {
       Unit = {
         Description = "Keep track of media player activity";
-        After = ["mpd.service"];
       };
       Service = {
         Type = "oneshot";
