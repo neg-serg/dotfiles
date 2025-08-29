@@ -1,23 +1,32 @@
 {...}: {
   programs.atuin = {
     enable = true;
-    # I *despise* this hijacking of the up key, even though I use Ctrl-p
-    flags = ["--disable-up-arrow"];
+    # Disable intrusive key hijacking (I prefer Ctrl-p)
+    flags = [ "--disable-up-arrow" ];
     settings = {
-      daemon.enabled = false;
-      enter_accept = false; # I like being able to edit my commands
+      daemon = {
+        enabled = false;
+      };
+      enter_accept = false; # Keep editing after selection
       inline_height = 25;
       invert = false;
-      keys.scroll_exits = false;
+      keys = {
+        scroll_exits = false;
+      };
       prefers_reduced_motion = true;
-      preview.max_preview_height = 0;
-      preview.strategy = "fixed";
-      search_mode = "skim"; # Get closer to fzf's fuzzy search
-      show_help = false;
-      show_preview = false; # Show long command lines at the bottom
-      show_tabs = false;
+      preview = {
+        max_preview_height = 0;
+        strategy = "fixed";
+      };
+
+      search_mode = "skim";   # Closer to fzf-style fuzzy search
       smart_sort = true;
-      update_check = false; # The package is managed by Nix
+
+      show_help = false;
+      show_preview = false;    # Prevent long lines at the bottom
+      show_tabs = false;
+
+      update_check = false;    # Managed by Nix
     };
   };
 }
