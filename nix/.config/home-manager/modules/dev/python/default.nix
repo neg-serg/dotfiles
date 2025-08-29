@@ -19,6 +19,9 @@
         dbus-python # need for some scripts
         docopt
         fontforge # for font monospacifier
+        numpy
+        annoy
+        orjson
         psutil
         pynvim
         requests

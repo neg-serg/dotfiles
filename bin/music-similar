@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+import argparse
+import json
+import os
+import subprocess as sp
+import sys
+import tempfile
+from pathlib import Path
+
+try:
+    import orjson  # type: ignore
+except Exception:
+    orjson = None
+import numpy as np
+from annoy import AnnoyIndex  # type: ignore
+
+
+def read_json_bytes(path: Path) -> dict:
+    data = path.read_bytes()
+    if orjson:
+        return orjson.loads(data)
+    return json.loads(data.decode("utf-8"))
+
+
+def vec_from_essentia(d: dict) -> np.ndarray:
+    def arr(path, default=()):
+        cur = d
+        for k in path:
+            if not isinstance(cur, dict) or k not in cur:
+                return np.asarray(default, dtype=np.float32)
+            cur = cur[k]
+        return np.asarray(cur, dtype=np.float32)
+
+    parts = [
+        arr(["lowlevel", "mfcc", "mean"]),
+        arr(["tonal", "hpcp", "mean"]),
+        arr(["tonal", "chords_histogram"], default=()),
+        np.asarray([float(d.get("rhythm", {}).get("bpm", 0.0))], dtype=np.float32),
+    ]
+    v = np.concatenate([p for p in parts if p.size > 0], axis=0)
+    n = float(np.linalg.norm(v))
+    return v / (n + 1e-8)
+
+
+def current_track_path() -> str | None:
+    try:
+        url = sp.check_output(["playerctl", "metadata", "xesam:url"], text=True).strip()
+        if url.startswith("file://"):
+            # Unescape minimal URL-encoding
+            from urllib.parse import urlparse, unquote
+
+            p = urlparse(url)
+            return unquote(p.path)
+    except Exception:
+        return None
+    return None
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Query similar tracks using a prebuilt Annoy index")
+    ap.add_argument("audio", nargs="?", help="audio file to query; if omitted, uses current playerctl track")
+    ap.add_argument("--index", default=str(Path.home() / ".cache" / "music-index"), help="index directory (contains index.ann and tracks.jsonl)")
+    ap.add_argument("-k", type=int, default=15, help="number of neighbors")
+    args = ap.parse_args()
+
+    audio = args.audio or current_track_path()
+    if not audio:
+        print("[music-similar] no audio path and no current track", file=sys.stderr)
+        return 2
+    audio_path = Path(audio).expanduser()
+    if not audio_path.exists():
+        print(f"[music-similar] file not found: {audio_path}", file=sys.stderr)
+        return 2
+
+    index_dir = Path(args.index).expanduser()
+    index_path = index_dir / "index.ann"
+    tracks_path = index_dir / "tracks.jsonl"
+    if not index_path.exists() or not tracks_path.exists():
+        print(f"[music-similar] index not found in {index_dir}; build with music-index", file=sys.stderr)
+        return 2
+
+    # Extract features for the query
+    with tempfile.TemporaryDirectory() as td:
+        out_json = Path(td) / "q.json"
+        sp.run(["streaming_extractor_music", str(audio_path), str(out_json)], check=True, stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+        d = read_json_bytes(out_json)
+        q = vec_from_essentia(d)
+
+    # Load index
+    dim = q.shape[0]
+    idx = AnnoyIndex(dim, "angular")
+    if not idx.load(str(index_path)):
+        print(f"[music-similar] failed to load {index_path}", file=sys.stderr)
+        return 3
+
+    tracks = []
+    with open(tracks_path, "r") as f:
+        for line in f:
+            try:
+                tracks.append(json.loads(line)["path"])
+            except Exception:
+                continue
+
+    ids, dists = idx.get_nns_by_vector(q.tolist(), args.k, include_distances=True)
+    for i, dist in zip(ids, dists):
+        try:
+            print(f"{dist:.3f}\t{tracks[i]}")
+        except Exception:
+            pass
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+

@@ -17,5 +17,6 @@
     sox # audio processing
     streamlink # CLI for extracting streams from websites
     unflac # split2flac alternative
+    # Similarity scripts rely on your existing Python env from dev/python module
   ];
 }
