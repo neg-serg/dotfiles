@@ -13,55 +13,11 @@ with {
     inori # alternative cli mpd client
     rmpc_git # alternative tui client with album cover
   ];
+
   services.mpd = {
-    enable = true;
+    enable = false;
     dataDir = "${config.home.homeDirectory}/.config/mpd";
     musicDirectory = "${config.home.homeDirectory}/music";
-    network = {
-      listenAddress = "any";
-      port = 6600;
-      startWhenNeeded = true;
-    };
-    extraConfig = ''
-      bind_to_address "192.168.2.240"
-      bind_to_address "127.0.0.1"
-      bind_to_address "::1"
-
-      log_file "/dev/null"
-      max_output_buffer_size "131072"
-      max_connections "100"
-      connection_timeout "864000"
-      restore_paused "yes"
-      save_absolute_paths_in_playlists "yes"
-      #metadata_to_use "artist,album,title,track,name,genre,date"
-      follow_inside_symlinks "yes"
-      replaygain "off"
-      auto_update "no"
-      mixer_type "software"
-
-      input_cache {
-          size "1 GB"
-      }
-
-      audio_output {
-          type "alsa"
-          name "RME ADI-2/4 PRO SE"
-          device "hw:CARD=SE53011083"
-          auto_resample "no"
-          auto_format "no"
-          auto_channels "no"
-          replay_gain_handler "none"
-          dsd_native "yes"
-          dop "no"
-          tags "yes"
-      }
-
-      audio_output {
-          type "pipewire"
-          name "PipeWire"
-          dsd "yes"
-      }
-    '';
   };
 
   services.mpdris2 = {
@@ -69,7 +25,7 @@ with {
     mpd.host = "localhost";
     mpd.port = 6600;
   };
-
+  
   systemd.user.services = {
     mpdas = {
       Unit = {
