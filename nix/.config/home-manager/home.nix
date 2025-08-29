@@ -16,7 +16,7 @@
     luaPath = inputs.self + "/nvim/.config/nvim";
     packageDefinitions.merge = {
       nixCats = { pkgs, ... }: {
-        categories = inputs.self.lazyPlugins;
+        categories = inputs.self.lib.lazyPlugins;
       };
     };
   };
