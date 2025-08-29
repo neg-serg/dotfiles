@@ -1,0 +1,20 @@
+return {
+  { import = "plugins.appearance" },
+  { import = "plugins.completion" },
+  { import = "plugins.dcvs" },
+  { import = "plugins.debug" },
+  { import = "plugins.dev" },
+  { import = "plugins.edit" },
+  { import = "plugins.files" },
+  { import = "plugins.filetypes" },
+  { import = "plugins.fun" },
+  { import = "plugins.integration" },
+  { import = "plugins.keymap" },
+  { import = "plugins.navigation" },
+  { import = "plugins.panel" },
+  { import = "plugins.performance" },
+  { import = "plugins.text" },
+  { import = "plugins.ui" },
+  { import = "plugins.viz" },
+}
+
