@@ -29,5 +29,7 @@ for file in {02-cmds,03-completion,04-fzf,04-bindings,05-neg-cd}; do
 done
 command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
 [[ $NEOVIM_TERMINAL ]] && source "${ZDOTDIR}/08-neovim-cd.zsh"
+export ATUIN_NOBIND=true
+zsh-defer eval "$(atuin init zsh)"
 setopt rematchpcre
 # vim: ft=zsh:nowrap
