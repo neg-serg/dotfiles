@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    # chirp # Configuration tool for amateur radios
-    # gnuradio # GNU Radio Software Radio Toolkit
+    chirp # Configuration tool for amateur radios
+    gnuradio # GNU Radio Software Radio Toolkit
     gqrx # Software defined radio receiver
     # gr-air-modes # Gnuradio Mode-S/ADS-B radio
     # gr-iqbal # GNU Radio Blind IQ imbalance estimator and correction
