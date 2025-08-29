@@ -3,7 +3,6 @@
     binwalk # tool library for analyzing binary blobs and executable code
     capstone
     ddrescue
-    distorm3
     ext4magic
     extundelete
     ghidra-bin
