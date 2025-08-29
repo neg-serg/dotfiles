@@ -24,9 +24,10 @@
     bzmenu,
     chaotic,
     home-manager,
-    hy3, 
+    hy3,
     hyprland,
     iosevka-neg,
+    nixCats,
     nixpkgs,
     nur,
     nvfetcher,
@@ -61,6 +62,7 @@
           stylix.homeModules.stylix
           chaotic.homeManagerModules.default
           sops-nix.homeManagerModules.sops
+          nixCats.homeModule
         ];
       };
       lazyPlugins = {
@@ -112,7 +114,7 @@
           cellular-automaton-nvim
           neocord
           kitty-scrollback-nvim
-          langmapper-nvim
+          # langmapper-nvim
           harpoon
           leap-nvim
           vim-asterisk
