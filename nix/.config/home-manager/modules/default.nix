@@ -1,6 +1,7 @@
 {
   imports = [
     ./cli
+    ./db
     ./dev
     ./distros
     ./flatpak
