@@ -1,4 +1,7 @@
-{pkgs, hy3, inputs, ...}: {
+{ pkgs, hy3, inputs, hy3Fixed ? null, ... }:
+let
+  hy3Plugin = if hy3Fixed != null then hy3Fixed else hy3.packages.x86_64-linux.hy3;
+in {
   wayland.windowManager.hyprland = {
     enable = true;
     package = null;
@@ -8,13 +11,13 @@
             "/home/neg/.config/hypr/init.conf"
         ];
         permission = [
-          "${hy3.packages.x86_64-linux.hy3}/lib/libhy3.so, plugin, allow"
+          "${hy3Plugin}/lib/libhy3.so, plugin, allow"
           "${pkgs.grim}/bin/grim, screencopy, allow"
           "${pkgs.hyprlock}/bin/hyprlock, screencopy, allow"
         ];
     };
     plugins = [ 
-        hy3.packages.x86_64-linux.hy3 
+        hy3Plugin
     ];
     systemd.variables = ["--all"];
   };

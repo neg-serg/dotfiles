@@ -45,12 +45,22 @@
       iosevkaneg = iosevka-neg.packages.${system};
       yandex-browser = yandex-browser.packages.${system};
       bzmenu = bzmenu.packages.${system};
+      # Work around hy3 build failing due to warnings treated as errors
+      # Some upstream commits enable -Werror. Force warnings to not be treated
+      # as errors for both C and C++ to avoid build breaks on benign warnings.
+      hy3Fixed = hy3.packages.${system}.hy3.overrideAttrs (old: {
+        NIX_CFLAGS_COMPILE = (old.NIX_CFLAGS_COMPILE or "") + " -Wno-error";
+        NIX_CXXFLAGS_COMPILE = (old.NIX_CXXFLAGS_COMPILE or "") + " -Wno-error";
+      });
     }; {
       packages.${system}.default = nixpkgs.legacyPackages.${system}.zsh;
       homeConfigurations."neg" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         extraSpecialArgs = {
+          # Pass the entire inputs set to modules that reference it
+          inputs = inputs;
           inherit hy3;
+          inherit hy3Fixed;
           inherit iosevkaneg;
           inherit yandex-browser;
         };
