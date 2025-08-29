@@ -2,7 +2,7 @@
 #![enable(unwrap_newtypes)]
 #![enable(unwrap_variant_newtypes)]
 (
-    address: "127.0.0.1:6600",
+    address: "localhost:6600",
     theme: Some("neg"),
     cache_dir: None,
     on_song_change: None,
