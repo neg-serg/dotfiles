@@ -1,6 +1,6 @@
 {...}: {
   programs.khal = {
-    enable = false;
+    enable = true;
 
     locale = {
         local_timezone = "Europe/Moscow";
