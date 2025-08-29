@@ -17,6 +17,7 @@
     stylix = { url = "github:danth/stylix"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
     yandex-browser = { url = "github:miuirussia/yandex-browser.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
+    nixCats = { url = "github:BirdeeHub/nixCats-nvim"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
   outputs = inputs @ {
@@ -60,6 +61,78 @@
           stylix.homeModules.stylix
           chaotic.homeManagerModules.default
           sops-nix.homeManagerModules.sops
+        ];
+      };
+      lazyPlugins = {
+        start = with pkgs.vimPlugins; [
+          lazy-nvim
+          rainbow-delimiters-nvim
+          neg-nvim
+          nvim-treesitter
+          shirotelin
+          LuaSnip
+          noice-nvim
+          nvim-lspconfig
+          blink-cmp
+          neogit
+          gitsigns-nvim
+          vim-flog
+          diffview-nvim
+          nvim-dap
+          fastaction-nvim
+          LeetBuddy-nvim
+          nvim-highlight-colors
+          lazydev-nvim
+          trouble-nvim
+          fidget-nvim
+          vim-gnupg
+          vimtex
+          nvim-lint
+          Comment-nvim
+          officer-nvim
+          other-nvim
+          conform-nvim
+          treesj
+          vim-matchup
+          trim-nvim
+          flash-nvim
+          vim-easy-align
+          nvim-surround
+          suda-vim
+          hop-nvim
+          vim-NotableFt
+          mkdir-nvim
+          yazi-nvim
+          oil-nvim
+          vim-fetch
+          nginx-vim
+          qmk-nvim
+          kdl-vim
+          vim-tridactyl
+          cellular-automaton-nvim
+          neocord
+          kitty-scrollback-nvim
+          langmapper-nvim
+          harpoon
+          leap-nvim
+          vim-asterisk
+          vim-ref
+          heirline-nvim
+          vim-startuptime
+          grug-far-nvim
+          render-markdown-nvim
+          nvim-rip-substitute
+          nvim-various-textobjs
+          zen-mode-nvim
+          vim-markdown-toc
+          orgmode
+          vim-markdown
+          telekasten-nvim
+          vim-diagon
+          toggleterm-nvim
+          telescope-nvim
+          diagram-nvim
+          image-nvim
         ];
       };
     };
