@@ -17,7 +17,11 @@ with {
     enable = true;
     dataDir = "${config.home.homeDirectory}/.config/mpd";
     musicDirectory = "${config.home.homeDirectory}/music";
-    network.startWhenNeeded = true;
+    network = {
+      listenAddress = "any";
+      port = 6600;
+      startWhenNeeded = true;
+    };
     extraConfig = ''
       log_file "/dev/null"
       max_output_buffer_size "131072"
