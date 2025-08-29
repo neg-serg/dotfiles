@@ -31,6 +31,15 @@ def read_json_bytes(path: Path) -> dict:
     return json.loads(data.decode("utf-8"))
 
 
+def file_hash(path: Path, chunk_size: int = 1 << 20) -> str:
+    """Compute SHA-256 of file contents."""
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(chunk_size), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def vec_from_essentia(d: dict) -> np.ndarray:
     # Minimal, robust feature vector
     def arr(path, default=()):
@@ -78,6 +87,15 @@ def walk_audios(root: Path):
             yield p
 
 
+def extract_one_with_hash(arg: tuple[Path, str]) -> tuple[Path, str, np.ndarray] | None:
+    path, h = arg
+    res = extract_one(path)
+    if res is None:
+        return None
+    _, v = res
+    return (path, h, v)
+
+
 def main():
     ap = argparse.ArgumentParser(description="Build a similarity index from audio files using Essentia + Annoy")
     ap.add_argument("music_dir", nargs="?", default=os.environ.get("MUSIC_DIR", str(Path.home() / "music")))
@@ -97,22 +115,96 @@ def main():
         print(f"[music-index] no audio files under {music_dir}")
         return 1
 
-    print(f"[music-index] extracting features from {len(files)} files with {args.jobs} workers…")
+    # Load cached feature vectors by content hash
+    out_dir = Path(args.out).expanduser().resolve()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    cache_file = out_dir / "features.jsonl"
+    cache: dict[str, list[float]] = {}
+    if cache_file.exists():
+        try:
+            for line in cache_file.read_text().splitlines():
+                if not line:
+                    continue
+                try:
+                    obj = json.loads(line)
+                    h = obj.get("hash")
+                    v = obj.get("vec")
+                    if isinstance(h, str) and isinstance(v, list):
+                        cache[h] = v
+                except Exception:
+                    continue
+        except Exception as e:
+            print(f"[music-index] failed reading cache: {e}", file=sys.stderr)
 
-    results: list[tuple[Path, np.ndarray]] = []
+    # Compute hashes for all files (parallelized)
+    print(f"[music-index] hashing {len(files)} files…")
+    path_to_hash: dict[Path, str] = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as ex:
-        for res in ex.map(extract_one, files):
-            if res is not None:
-                results.append(res)
+        for p, h in ex.map(lambda p: (p, file_hash(p)), files):
+            path_to_hash[p] = h
+
+    # Split into cached vs new
+    to_extract: list[tuple[Path, str]] = []
+    results: list[tuple[Path, str, np.ndarray]] = []
+    reused = 0
+    for p in files:
+        h = path_to_hash[p]
+        if h in cache:
+            v = np.asarray(cache[h], dtype=np.float32)
+            if v.size == 0:
+                continue
+            results.append((p, h, v))
+            reused += 1
+        else:
+            to_extract.append((p, h))
+
+    if to_extract:
+        print(f"[music-index] extracting features for {len(to_extract)} new files with {args.jobs} workers… (reused {reused})")
+        with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as ex:
+            for res in ex.map(extract_one_with_hash, to_extract):
+                if res is None:
+                    continue
+                p, h, v = res
+                results.append((p, h, v))
+                # Save to in-memory cache for this run
+                cache[h] = v.astype(float).tolist()
+        # Append newly discovered hashes to on-disk cache
+        try:
+            # Determine which entries are new vs previously present
+            # We rebuild a set to avoid duplicates
+            existing_hashes = set()
+            try:
+                if cache_file.exists():
+                    for line in cache_file.read_text().splitlines():
+                        if not line:
+                            continue
+                        try:
+                            obj = json.loads(line)
+                        except Exception:
+                            continue
+                        h = obj.get("hash")
+                        if isinstance(h, str):
+                            existing_hashes.add(h)
+            except Exception:
+                pass
+            with cache_file.open("a", encoding="utf-8") as f:
+                for h, v in cache.items():
+                    if h in existing_hashes:
+                        continue
+                    f.write(json.dumps({"hash": h, "vec": v}) + "\n")
+        except Exception as e:
+            print(f"[music-index] failed updating cache: {e}", file=sys.stderr)
+    else:
+        print(f"[music-index] all {len(files)} files reused from cache")
 
     if not results:
         print("[music-index] no features extracted", file=sys.stderr)
         return 2
 
-    dim = results[0][1].shape[0]
+    dim = results[0][2].shape[0]
     idx = AnnoyIndex(dim, "angular")
-    tracks = []
-    for i, (path, vec) in enumerate(results):
+    tracks: list[str] = []
+    for i, (path, h, vec) in enumerate(results):
         idx.add_item(i, vec.tolist())
         tracks.append(str(path))
 
@@ -128,4 +220,3 @@ def main():
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
