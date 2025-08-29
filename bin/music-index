@@ -9,6 +9,26 @@ import sys
 import tempfile
 from pathlib import Path
 
+# Simple verbosity-aware logger
+def _mk_logger(verbosity: int, quiet: bool = False):
+    class _L:
+        def __init__(self, v: int, q: bool):
+            self.v = -1 if q else v
+
+        def info(self, msg: str):
+            if self.v >= 0:
+                print(msg, file=sys.stderr)
+
+        def v1(self, msg: str):
+            if self.v >= 1:
+                print(msg, file=sys.stderr)
+
+        def v2(self, msg: str):
+            if self.v >= 2:
+                print(msg, file=sys.stderr)
+
+    return _L(verbosity, quiet)
+
 try:
     import orjson  # type: ignore
 except Exception:  # pragma: no cover
@@ -102,15 +122,22 @@ def main():
     ap.add_argument("--out", default=str(Path.home() / ".cache" / "music-index"), help="output directory for index files")
     ap.add_argument("-j", "--jobs", type=int, default=os.cpu_count() or 4, help="parallel workers")
     ap.add_argument("-n", "--limit", type=int, default=0, help="limit number of files (debug)")
+    ap.add_argument("-v", "--verbose", action="count", default=0, help="increase verbosity (-v, -vv)")
+    ap.add_argument("-q", "--quiet", action="store_true", help="suppress non-error output")
     args = ap.parse_args()
+
+    log = _mk_logger(args.verbose, args.quiet)
 
     music_dir = Path(args.music_dir).expanduser().resolve()
     out_dir = Path(args.out).expanduser().resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    log.info(f"[music-index] scanning for audio files under {music_dir}…")
     files = list(walk_audios(music_dir))
+    log.v1(f"[music-index] found {len(files)} candidate files before filtering")
     if args.limit:
         files = files[: args.limit]
+        log.v1(f"[music-index] applying limit: {len(files)} files")
     if not files:
         print(f"[music-index] no audio files under {music_dir}")
         return 1
@@ -122,6 +149,7 @@ def main():
     cache: dict[str, list[float]] = {}
     if cache_file.exists():
         try:
+            log.info(f"[music-index] loading feature cache from {cache_file}…")
             for line in cache_file.read_text().splitlines():
                 if not line:
                     continue
@@ -135,13 +163,18 @@ def main():
                     continue
         except Exception as e:
             print(f"[music-index] failed reading cache: {e}", file=sys.stderr)
+    log.v1(f"[music-index] cache size: {len(cache)} entries")
 
     # Compute hashes for all files (parallelized)
     print(f"[music-index] hashing {len(files)} files…")
     path_to_hash: dict[Path, str] = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as ex:
-        for p, h in ex.map(lambda p: (p, file_hash(p)), files):
+        total = len(files)
+        every = 500 if args.verbose <= 1 else 50
+        for i, (p, h) in enumerate(ex.map(lambda p: (p, file_hash(p)), files), start=1):
             path_to_hash[p] = h
+            if i % every == 0:
+                log.v1(f"[music-index] hashed {i}/{total} files…")
 
     # Split into cached vs new
     to_extract: list[tuple[Path, str]] = []
@@ -157,10 +190,14 @@ def main():
             reused += 1
         else:
             to_extract.append((p, h))
+    log.info(f"[music-index] to extract: {len(to_extract)}; reused from cache: {reused}")
 
     if to_extract:
         print(f"[music-index] extracting features for {len(to_extract)} new files with {args.jobs} workers… (reused {reused})")
         with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as ex:
+            total = len(to_extract)
+            done = 0
+            every = 200 if args.verbose <= 1 else 25
             for res in ex.map(extract_one_with_hash, to_extract):
                 if res is None:
                     continue
@@ -168,6 +205,9 @@ def main():
                 results.append((p, h, v))
                 # Save to in-memory cache for this run
                 cache[h] = v.astype(float).tolist()
+                done += 1
+                if done % every == 0:
+                    log.v1(f"[music-index] extracted {done}/{total} files…")
         # Append newly discovered hashes to on-disk cache
         try:
             # Determine which entries are new vs previously present
@@ -187,6 +227,7 @@ def main():
                             existing_hashes.add(h)
             except Exception:
                 pass
+            log.info(f"[music-index] updating cache file {cache_file}…")
             with cache_file.open("a", encoding="utf-8") as f:
                 for h, v in cache.items():
                     if h in existing_hashes:
@@ -204,12 +245,14 @@ def main():
     dim = results[0][2].shape[0]
     idx = AnnoyIndex(dim, "angular")
     tracks: list[str] = []
+    log.info(f"[music-index] adding {len(results)} items to Annoy index…")
     for i, (path, h, vec) in enumerate(results):
         idx.add_item(i, vec.tolist())
         tracks.append(str(path))
 
     print(f"[music-index] building Annoy index (items={len(tracks)}, dim={dim})…")
     idx.build(50)
+    log.v2("[music-index] saving index and metadata files…")
     idx.save(str(out_dir / "index.ann"))
     (out_dir / "tracks.jsonl").write_text("\n".join(json.dumps({"path": p}) for p in tracks))
     meta = {"dim": dim, "count": len(tracks)}
