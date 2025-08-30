@@ -1,0 +1,17 @@
+# Garnix configuration (optional): if you enable the Garnix GitHub App
+# for this repo, it will build these targets and publish caches.
+systems:
+  - x86_64-linux
+
+builds:
+  include:
+    # Flake checks (already include hm activation package via checks.hm)
+    - .#checks.x86_64-linux.hm
+
+    # Useful packages/outputs to keep cached
+    - .#packages.x86_64-linux.default
+    - .#packages.x86_64-linux.hy3Plugin
+
+    # Explicit activation package build
+    - .#homeConfigurations.neg.activationPackage
+

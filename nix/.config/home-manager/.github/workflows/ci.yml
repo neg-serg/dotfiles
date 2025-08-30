@@ -1,0 +1,43 @@
+# Nix CI: runs flake checks and uses fast caches
+name: nix-ci
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  flake-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v12
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+
+      - name: Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v7
+
+      # Optional: enable Cachix if you have a cache and token
+      - name: Enable Cachix (optional)
+        if: secrets.CACHIX_AUTH_TOKEN != ''
+        uses: cachix/cachix-action@v14
+        with:
+          # Replace with your Cachix cache name, e.g. "neg-serg".
+          name: neg-serg
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Run flake checks
+        run: |
+          nix flake check -L --accept-flake-config
+
