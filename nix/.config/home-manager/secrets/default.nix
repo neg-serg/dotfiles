@@ -37,22 +37,6 @@ in {
       };
   };
 
-  # Inject access-tokens into user nix.conf at activation if token exists
-  home.activation = lib.mkIf hasGitHubToken {
-    nixAccessToken = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      token="$(cat ${config.sops.secrets."github-token".path} 2>/dev/null || true)"
-      if [ -n "$token" ]; then
-        mkdir -p "${config.xdg.configHome}/nix"
-        conf="${config.xdg.configHome}/nix/nix.conf"
-        tmp="$(mktemp)"
-        if [ -f "$conf" ]; then
-          # remove any existing github access-tokens line to avoid duplicates
-          grep -v '^access-tokens = github\.com=' "$conf" > "$tmp" || true
-        fi
-        echo "access-tokens = github.com=$token" >> "$tmp"
-        install -m 0644 "$tmp" "$conf"
-        rm -f "$tmp"
-      fi
-    '';
-  };
+  # Note: we intentionally avoid writing access tokens to nix.conf.
+  # Authentication is handled via the sops-managed netrc referenced by nix.settings.netrc-file.
 }
