@@ -1,4 +1,4 @@
-{...}: {
+{ config, ... }: {
   services.flameshot.enable = true;
   services.flameshot.settings = {
     General = {
@@ -7,7 +7,7 @@
       disabledTrayIcon = true;
       drawColor = "#ff1ad4";
       drawThickness = 3;
-      savePath = "/home/neg/dw";
+      savePath = "${config.home.homeDirectory}/dw";
       savePathFixed = false;
       uiColor = "#005faf";
     };

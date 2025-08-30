@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   ...
@@ -16,11 +17,11 @@
       #--[Decoding]----------------------------------------------
       cache = "no";
       correct-downscaling = true;
-      gpu-shader-cache-dir = "/home/neg/tmp/";
+      gpu-shader-cache-dir = "${config.home.homeDirectory}/tmp/";
       hwdec = "auto-safe";
       profile = "gpu-hq";
       # hwdec-codecs = "all";
-      # icc-cache-dir = "/home/neg/tmp/";
+      # icc-cache-dir = "${config.home.homeDirectory}/tmp/";
       vd-lavc-dr = true;
       vd-lavc-threads = "12";
       vo = "gpu-next";

@@ -1,4 +1,4 @@
-{ pkgs, hy3, inputs, hy3Fixed ? null, ... }:
+{ config, pkgs, hy3, inputs, hy3Fixed ? null, ... }:
 let
   hy3Plugin = if hy3Fixed != null then hy3Fixed else hy3.packages.x86_64-linux.hy3;
 in {
@@ -8,7 +8,7 @@ in {
     portalPackage = null;
     settings = {
         source = [
-            "/home/neg/.config/hypr/init.conf"
+          "${config.xdg.configHome}/hypr/init.conf"
         ];
         permission = [
           "${hy3Plugin}/lib/libhy3.so, plugin, allow"

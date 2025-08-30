@@ -1,4 +1,4 @@
-{...}: {
+{ config, ... }: {
   programs.notmuch = {
     enable = true;
     new = {
@@ -13,7 +13,7 @@
     };
     extraConfig = {
       database = {
-        path = "/home/neg/.local/mail";
+        path = "${config.home.homeDirectory}/.local/mail";
       };
     };
   };
