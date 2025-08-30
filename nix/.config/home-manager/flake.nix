@@ -88,5 +88,25 @@
           sops-nix.homeManagerModules.sops
         ];
       };
+      formatter = {
+        ${system} = pkgs.alejandra;
+      };
+      checks = {
+        ${system} = {
+          fmt-alejandra = pkgs.runCommand "fmt-alejandra" { nativeBuildInputs = [ pkgs.alejandra ]; } ''
+            alejandra -q --check .
+            touch $out
+          '';
+          lint-deadnix = pkgs.runCommand "lint-deadnix" { nativeBuildInputs = [ pkgs.deadnix ]; } ''
+            deadnix --fail .
+            touch $out
+          '';
+          lint-statix = pkgs.runCommand "lint-statix" { nativeBuildInputs = [ pkgs.statix ]; } ''
+            statix check .
+            touch $out
+          '';
+          hm = homeConfigurations."neg".activationPackage;
+        };
+      };
     };
 }
