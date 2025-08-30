@@ -25,6 +25,15 @@ in {
           sopsFile = ./musicbrainz;
           path = "/run/user/1000/secrets/musicbrainz.yaml";
         };
+        # Cachix token for watch-store user service (systemd EnvironmentFile format)
+        "cachix_env" = {
+          format = "dotenv";
+          # Create and encrypt this file with sops; contents must be a single line:
+          #   CACHIX_AUTH_TOKEN=... 
+          sopsFile = ./cachix.env;
+          path = "/run/user/1000/secrets/cachix.env";
+          mode = "0400";
+        };
       }
       // lib.optionalAttrs hasGitHubToken {
         # Optional: personal GitHub token for Nix access-tokens
