@@ -113,7 +113,10 @@ with {
     targets.btop.enable = true;
     targets.foot.enable = true;
     targets.gnome.enable = true;
-    targets.gtk.enable = false;
+    targets.gtk = {
+      enable = false;
+      flatpakSupport.enable = true;
+    };
     targets.helix.enable = true;
     targets.sxiv.enable = true;
 
@@ -136,7 +139,19 @@ with {
       base0F = "#162b44"; # Brown
     };
 
+    cursor = {
+      size = 23;
+      name = "Alkano-aio";
+      package = alkano-aio;
+    };
+
     polarity = "dark";
+    fonts = {
+      serif = { name = "Cantarell"; package = pkgs.cantarell-fonts; };
+      sansSerif = { name = "Iosevka"; package = iosevkaneg.nerd-font; };
+      monospace = { name = "Iosevka"; package = iosevkaneg.nerd-font; };
+      sizes = { applications = 10; desktop = 10; };
+    };
 
   };
 }
