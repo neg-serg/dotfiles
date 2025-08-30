@@ -48,6 +48,24 @@
       yandex-browser = yandex-browser.packages.${system};
       bzmenu = bzmenu.packages.${system};
     }; {
+      devShells = {
+        ${system} = {
+          default = pkgs.mkShell {
+            packages = with pkgs; [
+              alejandra
+              age
+              deadnix
+              git-absorb
+              gitoxide
+              just
+              nil
+              sops
+              statix
+              treefmt
+            ];
+          };
+        };
+      };
       packages = {
         ${system} = {
           default = nixpkgs.legacyPackages.${system}.zsh;
