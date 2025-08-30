@@ -19,6 +19,7 @@
 
     BROWSER = "${pkgs.floorp}/bin/floorp";
     CARGO_HOME = "${config.home.sessionVariables.XDG_DATA_HOME}/cargo";
+    RUSTUP_HOME = "${config.home.sessionVariables.XDG_DATA_HOME}/rustup";
     CCACHE_CONFIGPATH = "${config.home.sessionVariables.XDG_CONFIG_HOME}/ccache.config";
     CCACHE_DIR = "${config.home.sessionVariables.XDG_CACHE_HOME}/ccache";
     CRAWL_DIR = "${config.home.sessionVariables.XDG_DATA_HOME}/crawl/";
@@ -44,6 +45,12 @@
     TERMINFO = "${config.home.sessionVariables.XDG_DATA_HOME}/terminfo";
     TERMINFO_DIRS = "${config.home.sessionVariables.XDG_DATA_HOME}/terminfo:/usr/share/terminfo";
     VAGRANT_HOME = "${config.home.sessionVariables.XDG_DATA_HOME}/vagrant";
+    # CUDA JIT cache (helps avoid polluting $HOME)
+    CUDA_CACHE_PATH = "${config.home.sessionVariables.XDG_CACHE_HOME}/cuda";
+    # LLVM profiling output (when using -fprofile-instr-generate)
+    LLVM_PROFILE_FILE = "${config.home.sessionVariables.XDG_CACHE_HOME}/llvm/%h-%p-%m.profraw";
+    # Go module cache separate from GOPATH
+    GOMODCACHE = "${config.home.sessionVariables.XDG_CACHE_HOME}/gomod";
     WINEPREFIX = "${config.home.sessionVariables.XDG_DATA_HOME}/wineprefixes/default";
     WORDCHARS = "*?_-.[]~&;!#$%^(){}<>~\\` ";
     XAUTHORITY = "${config.home.sessionVariables.XDG_RUNTIME_DIR}/Xauthority";
