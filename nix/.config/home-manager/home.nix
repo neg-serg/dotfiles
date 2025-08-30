@@ -1,8 +1,13 @@
 { config, pkgs, inputs, ... }: {
   nix = {
     package = pkgs.nix;
-    # Use the sops-managed GitHub netrc for authenticated fetches
-    settings.netrc-file = config.sops.secrets."github-netrc".path;
+    # Per-user Nix settings
+    settings = {
+      # Trust flake-provided nixConfig (substituters, keys, features)
+      accept-flake-config = true;
+      # Use the sops-managed GitHub netrc for authenticated fetches
+      netrc-file = config.sops.secrets."github-netrc".path;
+    };
   };
   imports = [
     ./secrets
