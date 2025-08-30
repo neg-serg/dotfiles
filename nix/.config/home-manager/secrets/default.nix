@@ -1,6 +1,7 @@
 { config, lib, ... }:
 let
   hasGitHubToken = builtins.pathExists ./github-token.sops.yaml;
+  hasCachixEnv = builtins.pathExists ./cachix.env;
 in {
   sops = {
     age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
@@ -26,10 +27,13 @@ in {
           path = "/run/user/1000/secrets/musicbrainz.yaml";
         };
         # Cachix token for watch-store user service (systemd EnvironmentFile format)
+        # Included only if secrets/cachix.env exists in the repo.
+        # Create and encrypt this file with sops; contents must be a single line:
+        #   CACHIX_AUTH_TOKEN=...
+      }
+      // lib.optionalAttrs hasCachixEnv {
         "cachix_env" = {
           format = "dotenv";
-          # Create and encrypt this file with sops; contents must be a single line:
-          #   CACHIX_AUTH_TOKEN=... 
           sopsFile = ./cachix.env;
           path = "/run/user/1000/secrets/cachix.env";
           mode = "0400";

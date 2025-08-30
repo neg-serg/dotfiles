@@ -15,4 +15,11 @@
     preferXdgDirectories = true;
     username = "neg";
   };
+
+  # Auto-push built store paths to Cachix
+  services.cachix.watchStore = {
+    enable = true;
+    cacheName = "neg-serg";
+    authTokenFile = "/run/user/1000/secrets/cachix.env";
+  };
 }

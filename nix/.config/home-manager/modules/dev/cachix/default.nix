@@ -41,7 +41,8 @@ in {
       Service = {
         Type = "simple";
         # Use token from file if provided (expects CACHIX_AUTH_TOKEN=... in dotenv format)
-        EnvironmentFile = lib.mkIf (cfg.authTokenFile != null) cfg.authTokenFile;
+        # Prefix with '-' to make it optional if the file is missing
+        EnvironmentFile = lib.mkIf (cfg.authTokenFile != null) ("-" + cfg.authTokenFile);
         ExecStart = lib.concatStringsSep " " ([
           "${lib.getBin pkgs.cachix}/bin/cachix"
           "watch-store"
@@ -56,4 +57,3 @@ in {
     };
   };
 }
-
