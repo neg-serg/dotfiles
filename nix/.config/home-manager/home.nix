@@ -1,5 +1,9 @@
 { config, pkgs, inputs, ... }: {
-  nix.package = pkgs.nix;
+  nix = {
+    package = pkgs.nix;
+    # Use the sops-managed GitHub netrc for authenticated fetches
+    settings.netrc-file = config.sops.secrets."github-netrc".path;
+  };
   imports = [
     ./secrets
     ./modules
