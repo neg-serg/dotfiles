@@ -36,7 +36,6 @@ in {
           format = "dotenv";
           sopsFile = ./cachix.env;
           path = "/run/user/1000/secrets/cachix.env";
-          symlink = false;
           mode = "0400";
         };
       }
