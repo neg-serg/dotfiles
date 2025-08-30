@@ -36,7 +36,7 @@
   inputs = {
     bzmenu = { url = "github:e-tho/bzmenu"; inputs.nixpkgs.follows = "nixpkgs"; };
     chaotic = { url = "github:chaotic-cx/nyx/nyxpkgs-unstable"; inputs.nixpkgs.follows = "nixpkgs"; };
-    crane = { url = "github:ipetkov/crane"; inputs.nixpkgs.follows = "nixpkgs"; };
+    crane = { url = "github:ipetkov/crane"; };
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     # Pin hy3 to a commit compatible with Hyprland v0.50.0 (GitHub archive available)
     hy3 = { url = "github:outfoxxed/hy3?rev=d61a2eb9b9f22c6e46edad3e8f5fbd3578961b11"; inputs.hyprland.follows = "hyprland"; };
