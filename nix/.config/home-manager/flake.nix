@@ -48,6 +48,25 @@
       yandex-browser = yandex-browser.packages.${system};
       bzmenu = bzmenu.packages.${system};
     }; {
+      # Global Nix configuration for this flake (affects local and CI usage when respected)
+      nixConfig = {
+        # Enable modern features
+        experimental-features = [ "nix-command" "flakes" ];
+        # Popular public caches to speed up builds
+        extra-substituters = [
+          "https://nix-community.cachix.org"
+          "https://hyprland.cachix.org"
+          "https://cache.garnix.io"
+        ];
+        extra-trusted-public-keys = [
+          # nix-community
+          "nix-community.cachix.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+          # Hyprland
+          "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+          # Garnix
+          "cache.garnix.io-1:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+        ];
+      };
       devShells = {
         ${system} = {
           default = pkgs.mkShell {
