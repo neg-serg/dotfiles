@@ -48,9 +48,17 @@
   };
 
   # Auto-push built store paths to Cachix
+  # Disabled for now due to 401 Unauthorized from cache "neg-serg".
   services.cachix.watchStore = {
     enable = true;
     cacheName = "neg-serg";
-    authTokenFile = "/run/user/1000/secrets/cachix.env";
+    authTokenFile = config.sops.secrets."cachix_env".path;
+    # Enable for troubleshooting when re-enabling the service
+    extraArgs = [ "--verbose" ];
+    ownCache = {
+      enable = true;
+      name = "neg-serg";
+      publicKey = "neg-serg.cachix.org-1:MZ+xYOrDj1Uhq8GTJAg//KrS4fAPpnIvaWU/w3Qz/wo=";
+    };
   };
 }

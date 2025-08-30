@@ -21,6 +21,40 @@ in {
       '';
     };
 
+    requireAuthFile = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "If true, fail the unit when auth token file is missing.";
+    };
+
+    ownCache = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Add this cache to Nix substituters and trusted keys.";
+      };
+      name = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        example = "neg-serg";
+        description = "Your Cachix cache name (without URL).";
+      };
+      publicKey = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        example = "neg-serg.cachix.org-1:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+        description = "Public signing key for your Cachix cache (from Cachix UI).";
+      };
+    };
+
+    hardening = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Apply systemd hardening options to the service.";
+      };
+    };
+
     extraArgs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [];
@@ -29,20 +63,27 @@ in {
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.cachix ];
+  config = {
+    home.packages = lib.mkIf (cfg.enable || cfg.ownCache.enable) [ pkgs.cachix ];
 
-    systemd.user.services."cachix-watch-store" = {
+    nix.settings = lib.mkIf cfg.ownCache.enable {
+      substituters = [ ("https://" + cfg.ownCache.name + ".cachix.org") ];
+      trusted-public-keys = [ cfg.ownCache.publicKey ];
+    };
+
+    systemd.user.services."cachix-watch-store" = lib.mkIf cfg.enable {
       Unit = {
         Description = "Cachix watch-store for ${cfg.cacheName}";
-        After = [ "network-online.target" ];
-        Wants = [ "network-online.target" ];
+        After = [ "network-online.target" "sops-nix.service" ];
+        Wants = [ "network-online.target" "sops-nix.service" ];
       };
       Service = {
         Type = "simple";
-        # Use token from file if provided (expects CACHIX_AUTH_TOKEN=... in dotenv format)
-        # Prefix with '-' to make it optional if the file is missing
-        EnvironmentFile = lib.mkIf (cfg.authTokenFile != null) ("-" + cfg.authTokenFile);
+        EnvironmentFile = lib.mkIf (cfg.authTokenFile != null)
+          (if cfg.requireAuthFile then cfg.authTokenFile else ("-" + cfg.authTokenFile));
+        ExecStartPre = lib.mkIf (cfg.authTokenFile != null && cfg.requireAuthFile) ''
+          ${pkgs.bash}/bin/bash -c 'if ! grep -q "^CACHIX_AUTH_TOKEN=" ${cfg.authTokenFile}; then echo "CACHIX_AUTH_TOKEN not set in ${cfg.authTokenFile}"; exit 1; fi'
+        '';
         ExecStart = lib.concatStringsSep " " ([
           "${lib.getBin pkgs.cachix}/bin/cachix"
           "watch-store"
@@ -50,6 +91,23 @@ in {
         ] ++ cfg.extraArgs);
         Restart = "always";
         RestartSec = 10;
+
+        # Optional hardening
+        NoNewPrivileges = lib.mkIf cfg.hardening.enable true;
+        PrivateTmp = lib.mkIf cfg.hardening.enable true;
+        PrivateDevices = lib.mkIf cfg.hardening.enable true;
+        ProtectControlGroups = lib.mkIf cfg.hardening.enable true;
+        # Need read access to $HOME because the secret path is a symlink into ~/.config/sops-nix
+        ProtectHome = lib.mkIf cfg.hardening.enable "read-only";
+        ProtectKernelModules = lib.mkIf cfg.hardening.enable true;
+        ProtectKernelTunables = lib.mkIf cfg.hardening.enable true;
+        ProtectSystem = lib.mkIf cfg.hardening.enable "strict";
+        RestrictNamespaces = lib.mkIf cfg.hardening.enable true;
+        RestrictSUIDSGID = lib.mkIf cfg.hardening.enable true;
+        LockPersonality = lib.mkIf cfg.hardening.enable true;
+        MemoryDenyWriteExecute = lib.mkIf cfg.hardening.enable true;
+        CapabilityBoundingSet = lib.mkIf cfg.hardening.enable [ "" ];
+        RestrictAddressFamilies = lib.mkIf cfg.hardening.enable [ "AF_INET" "AF_INET6" ];
       };
       Install = {
         WantedBy = [ "default.target" ];
