@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./atuin.nix # replacement for a shell history which records additional commands context with optional encrypted synchronization between machines
     ./bat.nix # better cat
@@ -15,13 +12,13 @@
     ./yazi.nix
   ];
   programs = {
-    hwatch = { enable = true; }; # better watch with history
-    kubecolor = { enable = true; }; # kubectl colorizer
-    nix-search-tv = { enable = true; }; # fast search for nix packages
-    numbat = { enable = true; }; # fancy scientific calculator
-    television = { enable = true; }; # yet another fuzzy finder
-    tray-tui = { enable = true; }; # system tray in your terminal
-    visidata = { enable = true; }; # interactive multitool for tabular data
+    hwatch = {enable = true;}; # better watch with history
+    kubecolor = {enable = true;}; # kubectl colorizer
+    nix-search-tv = {enable = true;}; # fast search for nix packages
+    numbat = {enable = true;}; # fancy scientific calculator
+    television = {enable = true;}; # yet another fuzzy finder
+    tray-tui = {enable = true;}; # system tray in your terminal
+    visidata = {enable = true;}; # interactive multitool for tabular data
   };
   home.packages = with pkgs; [
     babashka # native clojure for scripts

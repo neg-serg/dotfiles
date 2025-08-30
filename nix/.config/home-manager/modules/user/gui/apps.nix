@@ -1,4 +1,8 @@
-{pkgs, inputs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   programs.wallust.enable = true;
   home.packages = with pkgs; [
     cliphist # wayland stuff for clipboard

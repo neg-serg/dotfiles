@@ -44,8 +44,8 @@
       size = {maxPrefix = "TB";};
       percent = {type = 1;};
       color = {
-          output = "01;38;5;248";
-          keys = "38;5;24;1";
+        output = "01;38;5;248";
+        keys = "38;5;24;1";
       };
     };
     modules = [

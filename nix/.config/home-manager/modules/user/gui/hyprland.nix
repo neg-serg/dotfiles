@@ -1,5 +1,10 @@
-{ config, pkgs, hy3, inputs, ... }:
-let
+{
+  config,
+  pkgs,
+  hy3,
+  inputs,
+  ...
+}: let
   hy3Plugin = hy3.packages.x86_64-linux.hy3;
 in {
   wayland.windowManager.hyprland = {
@@ -7,17 +12,17 @@ in {
     package = null;
     portalPackage = null;
     settings = {
-        source = [
-          "${config.xdg.configHome}/hypr/init.conf"
-        ];
-        permission = [
-          "${hy3Plugin}/lib/libhy3.so, plugin, allow"
-          "${pkgs.grim}/bin/grim, screencopy, allow"
-          "${pkgs.hyprlock}/bin/hyprlock, screencopy, allow"
-        ];
+      source = [
+        "${config.xdg.configHome}/hypr/init.conf"
+      ];
+      permission = [
+        "${hy3Plugin}/lib/libhy3.so, plugin, allow"
+        "${pkgs.grim}/bin/grim, screencopy, allow"
+        "${pkgs.hyprlock}/bin/hyprlock, screencopy, allow"
+      ];
     };
     plugins = [
-        hy3Plugin
+      hy3Plugin
     ];
     systemd.variables = ["--all"];
   };

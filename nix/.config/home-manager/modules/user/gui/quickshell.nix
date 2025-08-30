@@ -1,8 +1,11 @@
-{ pkgs, inputs, ... }:
-let
+{
+  pkgs,
+  inputs,
+  ...
+}: let
   quickshellWrapped = pkgs.stdenv.mkDerivation {
     name = "quickshell-wrapped";
-    buildInputs = [ pkgs.makeWrapper ];
+    buildInputs = [pkgs.makeWrapper];
     dontUnpack = true;
 
     installPhase = ''
@@ -16,11 +19,10 @@ let
         --prefix QML2_IMPORT_PATH : "${pkgs.kdePackages.syntax-highlighting}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
         --prefix QT_PLUGIN_PATH : "${pkgs.qt6.qtmultimedia}/${pkgs.qt6.qtbase.qtPluginPrefix}" \
         --prefix QML2_IMPORT_PATH : "${pkgs.qt6.qtmultimedia}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
-        --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.fd pkgs.coreutils ]}
+        --prefix PATH : ${pkgs.lib.makeBinPath [pkgs.fd pkgs.coreutils]}
     '';
   };
-in
-{
+in {
   home.packages = with pkgs; [
     cantarell-fonts
     cava

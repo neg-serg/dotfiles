@@ -1,4 +1,8 @@
-{pkgs, inputs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   home.sessionVariables = {};
   home.packages = with pkgs; [
     clipse # yet another clipboard manager

@@ -1,4 +1,7 @@
-{ writeShellScriptBin, util-linux }:
+{
+  writeShellScriptBin,
+  util-linux,
+}:
 writeShellScriptBin "umount_prefix" ''
   echo "Unmounting overlayfs" >&2
   TMPDIR="$HOME/yabridgemgr"

@@ -1,4 +1,4 @@
-{ config, ... }: {
+{config, ...}: {
   programs.notmuch = {
     enable = true;
     new = {

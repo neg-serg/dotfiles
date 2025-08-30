@@ -1,4 +1,10 @@
-{ writeShellScriptBin, fuse-overlayfs, wineprefix, squashfuse, mktemp, coreutils
+{
+  writeShellScriptBin,
+  fuse-overlayfs,
+  wineprefix,
+  squashfuse,
+  mktemp,
+  coreutils,
 }:
 writeShellScriptBin "mount_prefix" ''
   echo "Creating tmpfir" >&2

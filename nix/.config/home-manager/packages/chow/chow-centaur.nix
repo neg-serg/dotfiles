@@ -1,21 +1,21 @@
-{ stdenv
-, lib
-, fetchFromGitHub
-, cmake
-, pkg-config
-, cairo
-, libxkbcommon
-, xcbutilcursor
-, xcbutilkeysyms
-, xcbutil
-, libXrandr
-, libXinerama
-, libXcursor
-, alsa-lib
-, libjack2
-, lv2
+{
+  stdenv,
+  lib,
+  fetchFromGitHub,
+  cmake,
+  pkg-config,
+  cairo,
+  libxkbcommon,
+  xcbutilcursor,
+  xcbutilkeysyms,
+  xcbutil,
+  libXrandr,
+  libXinerama,
+  libXcursor,
+  alsa-lib,
+  libjack2,
+  lv2,
 }:
-
 stdenv.mkDerivation rec {
   pname = "ChowCentaur";
   version = "1.4.0";
@@ -28,7 +28,7 @@ stdenv.mkDerivation rec {
     fetchSubmodules = true;
   };
 
-  nativeBuildInputs = [ cmake pkg-config ];
+  nativeBuildInputs = [cmake pkg-config];
   buildInputs = [
     cairo
     libxkbcommon
@@ -59,20 +59,19 @@ stdenv.mkDerivation rec {
 
   # JUCE dlopens these, make sure they are in rpath
   # Otherwise, segfault will happen
-  NIX_LDFLAGS = (toString [
+  NIX_LDFLAGS = toString [
     "-lX11"
     "-lXext"
     "-lXcursor"
     "-lXinerama"
     "-lXrandr"
-  ]);
+  ];
 
   meta = with lib; {
-    description =
-      "Digital emulation of the Klon Centaur guitar pedal using RNNs, Wave Digital Filters, and more";
+    description = "Digital emulation of the Klon Centaur guitar pedal using RNNs, Wave Digital Filters, and more";
     homepage = "https://github.com/jatinchowdhury18/KlonCentaur";
     license = licenses.bsd3;
-    platforms = [ "x86_64-linux" ];
-    maintainers = with maintainers; [ magnetophon ];
+    platforms = ["x86_64-linux"];
+    maintainers = with maintainers; [magnetophon];
   };
 }

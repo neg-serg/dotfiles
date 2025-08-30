@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   # Wrapper that starts swayimg and jumps to the first image via IPC.
   swayimg-first = pkgs.writeShellScriptBin "swayimg-first" ''
     set -euo pipefail
@@ -32,8 +31,7 @@ let
     [ -S "$sock" ] && rm -f "$sock" || true # Best-effort cleanup
     exit $rc
   '';
-in
-{
+in {
   home.packages = with pkgs; [
     advancecomp # AdvanceCOMP PNG Compression Utility
     exiftool # extract media metadata
@@ -49,7 +47,8 @@ in
     qrencode # qr encoding
     rawtherapee # raw format support
     scour # svg optimizer
-    swayimg swayimg-first # image viewer for Wayland display servers (start from the first file in list)
+    swayimg
+    swayimg-first # image viewer for Wayland display servers (start from the first file in list)
     viu # console image viewer
     zbar # bar code reader
   ];

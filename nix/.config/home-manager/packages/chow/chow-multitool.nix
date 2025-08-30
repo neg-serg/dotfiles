@@ -1,33 +1,34 @@
-{ alsa-lib
-, cmake
-, curl
-, libepoxy
-, fetchFromGitHub
-, freetype
-, gcc11
-, gtk3
-, lib
-, libXcursor
-, libXdmcp
-, libXext
-, libXinerama
-, libXrandr
-, libXtst
-, libdatrie
-, libjack2
-, libpsl
-, libselinux
-, libsepol
-, libsysprof-capture
-, libthai
-, libuuid
-, libxkbcommon
-, pcre
-, pcre2
-, pkg-config
-, sqlite
-, webkitgtk
-, stdenv
+{
+  alsa-lib,
+  cmake,
+  curl,
+  libepoxy,
+  fetchFromGitHub,
+  freetype,
+  gcc11,
+  gtk3,
+  lib,
+  libXcursor,
+  libXdmcp,
+  libXext,
+  libXinerama,
+  libXrandr,
+  libXtst,
+  libdatrie,
+  libjack2,
+  libpsl,
+  libselinux,
+  libsepol,
+  libsysprof-capture,
+  libthai,
+  libuuid,
+  libxkbcommon,
+  pcre,
+  pcre2,
+  pkg-config,
+  sqlite,
+  webkitgtk,
+  stdenv,
 }:
 stdenv.mkDerivation rec {
   pname = "ChowMultiTool";
@@ -41,7 +42,7 @@ stdenv.mkDerivation rec {
     fetchSubmodules = true;
   };
 
-  nativeBuildInputs = [ pkg-config cmake ];
+  nativeBuildInputs = [pkg-config cmake];
 
   buildInputs = [
     alsa-lib
@@ -94,20 +95,19 @@ stdenv.mkDerivation rec {
 
   # JUCE dlopens these, make sure they are in rpath
   # Otherwise, segfault will happen
-  NIX_LDFLAGS = (toString [
+  NIX_LDFLAGS = toString [
     "-lX11"
     "-lXext"
     "-lXcursor"
     "-lXinerama"
     "-lXrandr"
-  ]);
+  ];
 
   meta = with lib; {
     homepage = "https://github.com/Chowdhury-DSP/ChowMultiTool";
-    description =
-      "Multi-Tool Audio Plugin";
-    license = with licenses; [ gpl3Only ];
-    maintainers = with maintainers; [ polygon ];
+    description = "Multi-Tool Audio Plugin";
+    license = with licenses; [gpl3Only];
+    maintainers = with maintainers; [polygon];
     platforms = platforms.linux;
   };
 }

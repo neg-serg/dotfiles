@@ -3,7 +3,6 @@
   python3,
   fetchFromGitHub,
 }:
-
 python3.pkgs.buildPythonApplication rec {
   pname = "a2ln-server";
   version = "1.1.14";
@@ -35,7 +34,7 @@ python3.pkgs.buildPythonApplication rec {
     description = "A way to display Android phone notifications on Linux (Server";
     homepage = "https://github.com/patri9ck/a2ln-server";
     license = lib.licenses.gpl3Only;
-    maintainers = with lib.maintainers; [ ];
+    maintainers = with lib.maintainers; [];
     mainProgram = "a2ln-server";
   };
 }

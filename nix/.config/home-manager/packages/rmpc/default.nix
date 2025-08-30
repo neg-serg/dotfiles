@@ -6,7 +6,6 @@
   pkg-config,
   cmake,
 }:
-
 rustPlatform.buildRustPackage rec {
   pname = "rmpc";
   version = "master";

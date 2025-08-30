@@ -1,4 +1,4 @@
-{ config, ... }: {
+{config, ...}: {
   services.flameshot.enable = true;
   services.flameshot.settings = {
     General = {

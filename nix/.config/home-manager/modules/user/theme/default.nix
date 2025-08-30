@@ -32,16 +32,16 @@ with {
   fonts.fontconfig = {
     enable = true;
     defaultFonts = {
-      serif = [ "Cantarell" ];
-      sansSerif = [ "Cantarell" ];
-      monospace = [ "Iosevka" ];
+      serif = ["Cantarell"];
+      sansSerif = ["Cantarell"];
+      monospace = ["Iosevka"];
     };
   };
 
   qt = {
     platformTheme = "qt6ct";
   };
-  
+
   gtk = {
     enable = true;
 
@@ -147,11 +147,22 @@ with {
 
     polarity = "dark";
     fonts = {
-      serif = { name = "Cantarell"; package = pkgs.cantarell-fonts; };
-      sansSerif = { name = "Iosevka"; package = iosevkaneg.nerd-font; };
-      monospace = { name = "Iosevka"; package = iosevkaneg.nerd-font; };
-      sizes = { applications = 10; desktop = 10; };
+      serif = {
+        name = "Cantarell";
+        package = pkgs.cantarell-fonts;
+      };
+      sansSerif = {
+        name = "Iosevka";
+        package = iosevkaneg.nerd-font;
+      };
+      monospace = {
+        name = "Iosevka";
+        package = iosevkaneg.nerd-font;
+      };
+      sizes = {
+        applications = 10;
+        desktop = 10;
+      };
     };
-
   };
 }

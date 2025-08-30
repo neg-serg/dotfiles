@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   nixpkgs.config.allowUnfree = true;
-  programs.distrobox = { # tool try various distros in cli
+  programs.distrobox = {
+    # tool try various distros in cli
     enable = true;
   };
   home.packages = with pkgs; [

@@ -1,9 +1,11 @@
-{ config, pkgs, ... }:
-let
+{
+  config,
+  pkgs,
+  ...
+}: let
   dlDir = "${config.home.homeDirectory}/dw";
   fa = pkgs.nur.repos.rycee.firefox-addons; # requires NUR
-in
-{
+in {
   nixpkgs.config.allowUnfree = true;
   programs.floorp = {
     enable = true;
@@ -70,8 +72,8 @@ in
         "gfx.color_management.enablev4" = false;
 
         # FastFox-like (safe subset)
-        "dom.ipc.processCount" = 8;                                # more content processes
-        "fission.autostart" = true;                                # site isolation
+        "dom.ipc.processCount" = 8; # more content processes
+        "fission.autostart" = true; # site isolation
         "network.http.max-connections" = 1800;
         "network.http.max-persistent-connections-per-server" = 10;
         "network.http.max-urgent-start-excessive-connections-per-host" = 6;
@@ -89,7 +91,7 @@ in
         "media.hardware-video-decoding.enabled" = true;
 
         # Disable autoplay
-        "media.autoplay.default" = 1;                               # block audible
+        "media.autoplay.default" = 1; # block audible
         "media.autoplay.blocking_policy" = 2;
         "media.autoplay.block-webaudio" = true;
         "media.block-autoplay-until-in-foreground" = true;
@@ -141,7 +143,7 @@ in
           font-size: 14px !important;
           font-weight: 400 !important;
         }
-        '';
+      '';
     };
 
     # Policies: force-install addons missing in NUR (AMO latest.xpi)

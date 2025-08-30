@@ -33,8 +33,8 @@ with {
       vim.opt.runtimepath:prepend(parser_dir)
       vim.g.ts_install_dir = parser_dir
     '';
-    extraLuaPackages = [ luajitPackages.magick ];
-    extraPackages = [ pkgs.imagemagick ];
+    extraLuaPackages = [luajitPackages.magick];
+    extraPackages = [pkgs.imagemagick];
   };
   xdg.configFile = {
     # █▓▒░ nvim ─────────────────────────────────────────────────────────────────────────

@@ -1,5 +1,9 @@
-{ config, pkgs, inputs, ... }:
-let
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}: let
   cachixSubstituters = import ./caches/substituters.nix;
   cachixTrustedKeys = import ./caches/trusted-public-keys.nix;
 in {
@@ -12,12 +16,12 @@ in {
       # Use the sops-managed GitHub netrc for authenticated fetches
       netrc-file = config.sops.secrets."github-netrc".path;
       # Ensure features are available; caches and keys come from imports below
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = ["nix-command" "flakes"];
       # Make caches visible in `nix show-config` via imported lists
       # Keep cache.nixos.org first to retain the official cache
-      substituters = [ "https://cache.nixos.org/" ] ++ cachixSubstituters;
+      substituters = ["https://cache.nixos.org/"] ++ cachixSubstituters;
       trusted-public-keys =
-        [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ]
+        ["cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="]
         ++ cachixTrustedKeys;
     };
   };
@@ -39,6 +43,6 @@ in {
     cacheName = "neg-serg";
     authTokenFile = config.sops.secrets."cachix_env".path;
     # Enable for troubleshooting when re-enabling the service
-    extraArgs = [ "--verbose" ];
+    extraArgs = ["--verbose"];
   };
 }

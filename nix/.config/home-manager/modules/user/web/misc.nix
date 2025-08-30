@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   home.packages = with pkgs; [
     gallery-dl # download image galleries/collections
     monolith # download all webpage stuff as one file

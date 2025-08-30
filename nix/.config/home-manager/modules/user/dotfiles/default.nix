@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
-let
+{
+  config,
+  pkgs,
+  ...
+}: let
   l = config.lib.file.mkOutOfStoreSymlink;
   dots = "${config.home.homeDirectory}/.dotfiles";
   mkSymlink = path: recursive: {
@@ -10,18 +13,18 @@ in {
   xdg.configFile = {
     # █▓▒░ gdb ──────────────────────────────────────────────────────────────────────────
     "gdb" = mkSymlink "gdb/.config/gdb" true;
-    
+
     # █▓▒░ git ──────────────────────────────────────────────────────────────────────────
     "tig" = mkSymlink "git/.config/tig" true;
-    
+
     # █▓▒░ mail ─────────────────────────────────────────────────────────────────────────
     "isync" = mkSymlink "mail/.config/isync" true;
     "mutt" = mkSymlink "mail/.config/mutt" true;
-    
+
     # █▓▒░ media ────────────────────────────────────────────────────────────────────────
     "nsxiv" = mkSymlink "media/.config/nsxiv" true;
     "swayimg" = mkSymlink "media/.config/swayimg" true;
-    
+
     # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
     "amfora" = mkSymlink "misc/.config/amfora" true;
     "dosbox" = mkSymlink "misc/.config/dosbox" true;
@@ -29,18 +32,18 @@ in {
     "rustmission" = mkSymlink "misc/.config/rustmission" true;
     "transmission-daemon" = mkSymlink "misc/.config/transmission-daemon" true;
     "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
-    
+
     # █▓▒░ music ────────────────────────────────────────────────────────────────────────
     "ncpamixer.conf" = mkSymlink "music/.config/ncpamixer.conf" true;
     "rmpc" = mkSymlink "music/.config/rmpc" true;
-    
+
     # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
     "home-manager" = mkSymlink "nix/.config/home-manager" true;
-    
+
     # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
     "rofi" = mkSymlink "rofi/.config/rofi" true;
     "fuzzel" = mkSymlink "fuzzel/.config/fuzzel" true;
-    
+
     # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
     "dircolors" = mkSymlink "shell/.config/dircolors" true;
     "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
@@ -52,7 +55,7 @@ in {
     # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
     "handlr" = mkSymlink "wm/.config/handlr" true;
     "kitty" = mkSymlink "wm/.config/kitty" true;
-    
+
     # Hyprland configuration files
     "hypr/init.conf" = mkSymlink "wm/.config/hypr/init.conf" false;
     "hypr/rules.conf" = mkSymlink "wm/.config/hypr/rules.conf" false;

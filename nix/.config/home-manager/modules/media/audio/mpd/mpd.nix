@@ -25,7 +25,7 @@ with {
     mpd.host = "localhost";
     mpd.port = 6600;
   };
-  
+
   systemd.user.services = {
     mpdas = {
       Unit = {

@@ -1,4 +1,8 @@
-{pkgs, config, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   home.sessionPath = [
     "$HOME/.local/share/cargo/bin"
   ];
@@ -28,7 +32,7 @@
     __GL_VRR_ALLOWED = 1;
     GREP_COLOR = "37;45";
     GREP_COLORS = "ms=0;32:mc=1;33:sl=:cx=:fn=1;32:ln=1;36:bn=36:se=1;30";
-    GRIM_DEFAULT_DIR = "${config.home.sessionVariables.XDG_PICTURES_DIR }/shots";
+    GRIM_DEFAULT_DIR = "${config.home.sessionVariables.XDG_PICTURES_DIR}/shots";
     HTTPIE_CONFIG_DIR = "${config.home.sessionVariables.XDG_CONFIG_HOME}/httpie";
     INPUTRC = "${config.home.sessionVariables.XDG_CONFIG_HOME}/inputrc";
     _JAVA_OPTIONS = "-Djava.util.prefs.userRoot=${config.home.sessionVariables.XDG_CONFIG_HOME}/java";
@@ -56,7 +60,7 @@
     XAUTHORITY = "${config.home.sessionVariables.XDG_RUNTIME_DIR}/Xauthority";
     XINITRC = "${config.home.sessionVariables.XDG_CONFIG_HOME}/xinit/xinitrc";
     XSERVERRC = "${config.home.sessionVariables.XDG_CONFIG_HOME}/xinit/xserverrc";
-    XZ_DEFAULTS="-T 0";
+    XZ_DEFAULTS = "-T 0";
     ZDOTDIR = "${config.home.sessionVariables.XDG_CONFIG_HOME}/zsh";
   };
 }

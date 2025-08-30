@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}:
+{pkgs, ...}:
 with {
   bt-migrate = pkgs.callPackage ../../packages/bt-migrate {};
   transmission = pkgs.transmission_4;

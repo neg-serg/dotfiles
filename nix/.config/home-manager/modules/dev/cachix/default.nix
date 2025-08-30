@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   cfg = config.services.cachix.watchStore;
 in {
   options.services.cachix.watchStore = {
@@ -58,37 +62,43 @@ in {
     extraArgs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [];
-      example = ["--push-filter" ".*\.drv$"]; 
+      example = ["--push-filter" ".*\.drv$"];
       description = "Additional arguments passed to `cachix watch-store`.";
     };
   };
 
   config = {
-    home.packages = lib.mkIf (cfg.enable || cfg.ownCache.enable) [ pkgs.cachix ];
+    home.packages = lib.mkIf (cfg.enable || cfg.ownCache.enable) [pkgs.cachix];
 
     nix.settings = lib.mkIf cfg.ownCache.enable {
-      substituters = [ ("https://" + cfg.ownCache.name + ".cachix.org") ];
-      trusted-public-keys = [ cfg.ownCache.publicKey ];
+      substituters = [("https://" + cfg.ownCache.name + ".cachix.org")];
+      trusted-public-keys = [cfg.ownCache.publicKey];
     };
 
     systemd.user.services."cachix-watch-store" = lib.mkIf cfg.enable {
       Unit = {
         Description = "Cachix watch-store for ${cfg.cacheName}";
-        After = [ "network-online.target" "sops-nix.service" ];
-        Wants = [ "network-online.target" "sops-nix.service" ];
+        After = ["network-online.target" "sops-nix.service"];
+        Wants = ["network-online.target" "sops-nix.service"];
       };
       Service = {
         Type = "simple";
-        EnvironmentFile = lib.mkIf (cfg.authTokenFile != null)
-          (if cfg.requireAuthFile then cfg.authTokenFile else ("-" + cfg.authTokenFile));
+        EnvironmentFile =
+          lib.mkIf (cfg.authTokenFile != null)
+          (
+            if cfg.requireAuthFile
+            then cfg.authTokenFile
+            else ("-" + cfg.authTokenFile)
+          );
         ExecStartPre = lib.mkIf (cfg.authTokenFile != null && cfg.requireAuthFile) ''
           ${pkgs.bash}/bin/bash -c 'if ! grep -q "^CACHIX_AUTH_TOKEN=" ${cfg.authTokenFile}; then echo "CACHIX_AUTH_TOKEN not set in ${cfg.authTokenFile}"; exit 1; fi'
         '';
         ExecStart = lib.concatStringsSep " " ([
-          "${lib.getBin pkgs.cachix}/bin/cachix"
-          "watch-store"
-          cfg.cacheName
-        ] ++ cfg.extraArgs);
+            "${lib.getBin pkgs.cachix}/bin/cachix"
+            "watch-store"
+            cfg.cacheName
+          ]
+          ++ cfg.extraArgs);
         Restart = "always";
         RestartSec = 10;
 
@@ -106,11 +116,11 @@ in {
         RestrictSUIDSGID = lib.mkIf cfg.hardening.enable true;
         LockPersonality = lib.mkIf cfg.hardening.enable true;
         MemoryDenyWriteExecute = lib.mkIf cfg.hardening.enable true;
-        CapabilityBoundingSet = lib.mkIf cfg.hardening.enable [ "" ];
-        RestrictAddressFamilies = lib.mkIf cfg.hardening.enable [ "AF_INET" "AF_INET6" ];
+        CapabilityBoundingSet = lib.mkIf cfg.hardening.enable [""];
+        RestrictAddressFamilies = lib.mkIf cfg.hardening.enable ["AF_INET" "AF_INET6"];
       };
       Install = {
-        WantedBy = [ "default.target" ];
+        WantedBy = ["default.target"];
       };
     };
   };

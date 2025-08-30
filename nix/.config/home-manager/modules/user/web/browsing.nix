@@ -1,4 +1,8 @@
-{pkgs, yandex-browser, ...}: {
+{
+  pkgs,
+  yandex-browser,
+  ...
+}: {
   imports = [
     ./floorp.nix
   ];

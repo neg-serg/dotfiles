@@ -1,41 +1,41 @@
-{ alsa-lib
-, at-spi2-core
-, brotli
-, cmake
-, curl
-, dbus
-, libepoxy
-, fetchFromGitHub
-, freeglut
-, freetype
-, gtk2-x11
-, lib
-, libGL
-, libXcursor
-, libXdmcp
-, libXext
-, libXinerama
-, libXrandr
-, libXtst
-, libdatrie
-, libjack2
-, libpsl
-, libselinux
-, libsepol
-, libsysprof-capture
-, libthai
-, libxkbcommon
-, lv2
-, pcre
-, pcre2
-, pkg-config
-, python3
-, sqlite
-, stdenv
-, util-linuxMinimal
-, webkitgtk
+{
+  alsa-lib,
+  at-spi2-core,
+  brotli,
+  cmake,
+  curl,
+  dbus,
+  libepoxy,
+  fetchFromGitHub,
+  freeglut,
+  freetype,
+  gtk2-x11,
+  lib,
+  libGL,
+  libXcursor,
+  libXdmcp,
+  libXext,
+  libXinerama,
+  libXrandr,
+  libXtst,
+  libdatrie,
+  libjack2,
+  libpsl,
+  libselinux,
+  libsepol,
+  libsysprof-capture,
+  libthai,
+  libxkbcommon,
+  lv2,
+  pcre,
+  pcre2,
+  pkg-config,
+  python3,
+  sqlite,
+  stdenv,
+  util-linuxMinimal,
+  webkitgtk,
 }:
-
 stdenv.mkDerivation rec {
   pname = "ChowKick";
   version = "1.2.0";
@@ -102,19 +102,19 @@ stdenv.mkDerivation rec {
 
   # JUCE dlopens these, make sure they are in rpath
   # Otherwise, segfault will happen
-  NIX_LDFLAGS = (toString [
+  NIX_LDFLAGS = toString [
     "-lX11"
     "-lXext"
     "-lXcursor"
     "-lXinerama"
     "-lXrandr"
-  ]);
+  ];
 
   meta = with lib; {
     homepage = "https://github.com/Chowdhury-DSP/ChowKick";
     description = "Kick synthesizer based on old-school drum machine circuits";
-    license = with licenses; [ bsd3 ];
-    maintainers = with maintainers; [ magnetophon ];
+    license = with licenses; [bsd3];
+    maintainers = with maintainers; [magnetophon];
     platforms = platforms.linux;
   };
 }
