@@ -51,14 +51,17 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Pin hy3 to a commit compatible with Hyprland v0.50.0 (GitHub archive available)
+    # Pin hy3 to a commit compatible with Hyprland v0.50.1 (GitHub archive available)
     hy3 = {
-      url = "github:outfoxxed/hy3?rev=d61a2eb9b9f22c6e46edad3e8f5fbd3578961b11";
+      # Pin to the last commit before hy3 switched to the new render API (CHyprColor)
+      # to stay compatible with Hyprland v0.50.1 which expects a float alpha
+      url = "github:outfoxxed/hy3?rev=1fdc0a291f8c23b22d27d6dabb466d018757243c"; # 2025-08-03^ commit
+      # Ensure hy3 uses the same Hyprland input we pin below
       inputs.hyprland.follows = "hyprland";
     };
     # Pin Hyprland to a stable release to reduce API churn with hy3
     hyprland = {
-      url = "github:hyprwm/Hyprland?ref=v0.50.0";
+      url = "github:hyprwm/Hyprland?ref=v0.50.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     iosevka-neg = {
