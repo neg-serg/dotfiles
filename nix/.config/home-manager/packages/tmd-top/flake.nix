@@ -7,10 +7,14 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = import nixpkgs { inherit system; };
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+  }:
+    flake-utils.lib.eachDefaultSystem (
+      system: let
+        pkgs = import nixpkgs {inherit system;};
         lib = pkgs.lib;
         python = pkgs.python3; # use default python3 for this channel
         pyPkgs = python.pkgs;
@@ -24,7 +28,7 @@
             inherit pname version;
             hash = "sha256-vsn+Y1R8HFUladG3XTCQOLfUVsA/ht+jcG3bCZsVE5k=";
           };
-          nativeBuildInputs = [ pyPkgs.poetry-core ];
+          nativeBuildInputs = [pyPkgs.poetry-core];
           propagatedBuildInputs = [
             pyPkgs.rich
             pyPkgs."typing-extensions"
@@ -56,11 +60,14 @@
 
           # Provide required external tools at runtime
           makeWrapperArgs = [
-            "--prefix" "PATH" ":" (pkgs.lib.makeBinPath [
-              pkgs.iproute2   # ss
-              pkgs.procps     # ps
-              pkgs.coreutils  # cat, sleep
-              pkgs.iptables   # optional: for block feature
+            "--prefix"
+            "PATH"
+            ":"
+            (pkgs.lib.makeBinPath [
+              pkgs.iproute2 # ss
+              pkgs.procps # ps
+              pkgs.coreutils # cat, sleep
+              pkgs.iptables # optional: for block feature
             ])
           ];
 
@@ -72,8 +79,7 @@
             platforms = platforms.linux;
           };
         };
-      in
-      {
+      in {
         packages.default = tmd-top;
 
         apps.default = {

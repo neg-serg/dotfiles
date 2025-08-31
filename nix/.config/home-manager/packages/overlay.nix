@@ -1,5 +1,4 @@
-final: prev:
-let
+final: prev: let
   call = prev.callPackage;
 in {
   neg = rec {
@@ -20,7 +19,7 @@ in {
     # Yabridgemgr helpers (plumbing + plugins)
     yabridgemgr = rec {
       build_prefix = call ./yabridgemgr/plumbing/build_prefix.nix {};
-      mount_prefix = call ./yabridgemgr/plumbing/mount_prefix.nix { wineprefix = build_prefix; };
+      mount_prefix = call ./yabridgemgr/plumbing/mount_prefix.nix {wineprefix = build_prefix;};
       umount_prefix = call ./yabridgemgr/plumbing/umount_prefix.nix {};
       plugins = rec {
         voxengo_span = call ./yabridgemgr/plugins/voxengo_span.nix {};
@@ -31,4 +30,3 @@ in {
     };
   };
 }
-

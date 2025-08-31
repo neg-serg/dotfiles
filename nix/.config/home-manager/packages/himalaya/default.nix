@@ -1,8 +1,4 @@
-{
-  pimalaya ? import (fetchTarball "https://github.com/pimalaya/nix/archive/master.tar.gz"),
-  ...
-}@args:
-
+{pimalaya ? import (fetchTarball "https://github.com/pimalaya/nix/archive/master.tar.gz"), ...} @ args:
 pimalaya.mkDefault (
   {
     src = ./.;
@@ -15,15 +11,15 @@ pimalaya.mkDefault (
         defaultFeatures,
         features,
       }:
-      pkgs.callPackage ./package.nix {
-        inherit lib rustPlatform;
-        apple-sdk = pkgs.apple-sdk;
-        installShellCompletions = false;
-        installManPages = false;
-        buildNoDefaultFeatures = !defaultFeatures;
-        buildFeatures = lib.splitString "," features;
-      }
+        pkgs.callPackage ./package.nix {
+          inherit lib rustPlatform;
+          apple-sdk = pkgs.apple-sdk;
+          installShellCompletions = false;
+          installManPages = false;
+          buildNoDefaultFeatures = !defaultFeatures;
+          buildFeatures = lib.splitString "," features;
+        }
     );
   }
-  // removeAttrs args [ "pimalaya" ]
+  // removeAttrs args ["pimalaya"]
 )
