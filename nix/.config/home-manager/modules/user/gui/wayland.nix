@@ -23,5 +23,4 @@
     wtype # typing for wayland
     ydotool # xdotool systemwide
   ];
-  programs.hyprlock.enable = true;
 }
