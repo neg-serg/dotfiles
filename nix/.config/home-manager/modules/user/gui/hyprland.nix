@@ -5,7 +5,7 @@
   inputs,
   ...
 }: let
-  hy3Plugin = hy3.packages.x86_64-linux.hy3;
+  hy3Plugin = hy3.packages.${pkgs.system}.hy3;
 in {
   wayland.windowManager.hyprland = {
     enable = true;
