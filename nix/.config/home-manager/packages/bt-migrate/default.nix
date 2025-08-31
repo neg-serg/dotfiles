@@ -13,13 +13,14 @@
 }:
 stdenv.mkDerivation {
   pname = "bt-migrate";
-  version = "0-unstable-2023-08-17";
+  version = "0-unstable-2025-02-28";
 
   src = fetchFromGitHub {
     owner = "mikedld";
     repo = "bt-migrate";
-    rev = "e15a489c0c76f98355586ebbee08223af4e9bf50";
-    hash = "sha256-kA6yxhbIh3ThmgF8Zyoe3I79giLVmdNr9IIrw5Xx4s0=";
+    # Latest commit on main with jsoncons API changes compatibility
+    rev = "725f35e820a97176c45add333f1f47af881406f4";
+    hash = "sha256-QcoenIlApmd6d1Ajd4TZdZBUmF0Q3IVeywDSwefS8FU=";
   };
 
   nativeBuildInputs = [
