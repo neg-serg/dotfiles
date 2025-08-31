@@ -7,11 +7,10 @@
 with {
   l = config.lib.file.mkOutOfStoreSymlink;
   dots = "${config.home.homeDirectory}/.dotfiles";
-  rmpc_git = pkgs.callPackage ../../../../packages/rmpc {};
 }; {
   home.packages = with pkgs; [
     inori # alternative cli mpd client
-    rmpc_git # alternative tui client with album cover
+    pkgs.neg.rmpc # alternative tui client with album cover
   ];
 
   services.mpd = {

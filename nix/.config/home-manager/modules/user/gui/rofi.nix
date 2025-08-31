@@ -1,13 +1,10 @@
-{pkgs, ...}:
-with {
-  rofi-games = pkgs.callPackage ../../../packages/rofi-games {};
-}; {
+{pkgs, ...}: {
   home.packages = with pkgs; [
     rofi-pass-wayland # pass interface for rofi-wayland
     (rofi-wayland.override {
       plugins = [
         rofi-file-browser
-        rofi-games
+        pkgs.neg.rofi_games
       ];
     }) # modern dmenu alternative
   ];

@@ -1,7 +1,4 @@
-{pkgs, ...}:
-with {
-  cxxmatrix = pkgs.callPackage ../../../packages/cxxmatrix {};
-}; {
+{pkgs, ...}: {
   home.packages = with pkgs; [
     almonds # TUI fractal viewer
     bucklespring # for keyboard sounds
@@ -12,6 +9,7 @@ with {
     free42 # A software clone of HP-42S Calculator
     neo-cowsay # say something
     neo # yet another digital rain
+    pkgs.neg.cxxmatrix
     nms # No More Secrets, a recreation of the live decryption effect from the famous hacker movie "Sneakers"
     solfege # ear training program
     taoup # The Tao of Unix Programming

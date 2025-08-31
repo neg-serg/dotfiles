@@ -125,7 +125,10 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [nur.overlays.default]; # inject NUR
+        overlays = [
+          nur.overlays.default
+          (import ./packages/overlay.nix)
+        ]; # inject NUR and local packages overlay under pkgs.neg.*
       };
       iosevkaneg = iosevka-neg.packages.${system};
       yandex-browser = yandex-browser.packages.${system};

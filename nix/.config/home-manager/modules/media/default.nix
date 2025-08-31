@@ -6,7 +6,6 @@
 with {
   l = config.lib.file.mkOutOfStoreSymlink;
   dots = "${config.home.homeDirectory}/.dotfiles";
-  mkvcleaner = pkgs.callPackage ../../packages/mkvcleaner {};
 }; {
   imports = [
     ./audio
@@ -20,7 +19,7 @@ with {
     imagemagick # for convert
     mediainfo # tag information about video or audio
     media-player-info # repository of data files describing media player capabilities
-    mkvcleaner # clean mkv files from useless data
+    pkgs.neg.mkvcleaner # clean mkv files from useless data
     mpvc # CLI controller for mpv
     playerctl # media controller for everything
   ];

@@ -1,11 +1,10 @@
 {pkgs, ...}:
 with {
-  bt-migrate = pkgs.callPackage ../../packages/bt-migrate {};
   transmission = pkgs.transmission_4;
 }; {
   home.packages = with pkgs; [
     bitmagnet # dht crawler
-    bt-migrate # torrent migrator
+    pkgs.neg.bt_migrate # torrent migrator
     rustmission # new transmission client
   ];
 
