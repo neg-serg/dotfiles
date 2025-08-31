@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   imports = [
+    ./direnv.nix # auto-load per-dir env with nix integration
     ./atuin.nix # replacement for a shell history which records additional commands context with optional encrypted synchronization between machines
     ./bat.nix # better cat
     ./broot.nix # nested fuzzy finding
