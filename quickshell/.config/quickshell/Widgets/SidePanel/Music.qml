@@ -358,6 +358,4 @@ Rectangle {
         }
     }
 
-    // --- Fancy info builder (mpd + sox + id3info) -------------------------
-    // Replicates the Python script's logic to produce styled lines.
 }
