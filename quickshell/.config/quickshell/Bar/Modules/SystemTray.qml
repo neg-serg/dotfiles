@@ -58,11 +58,11 @@ Row {
 
     // Note: we purposely avoid a full overlay here to prevent immediate close issues in Row
 
-    // Inline popup content under the trigger button (parented to bar to avoid Row layout)
+    // Inline popup content under the trigger button (parented to root Row to avoid external deps)
     Rectangle {
         id: inlinePopup
         visible: collapsed && expanded
-        parent: bar
+        parent: root
         z: 1001
         // Dark blue popup background (derived from calendar accent, low brightness)
         radius: 12
@@ -78,13 +78,9 @@ Row {
         border.width: 1
         width: collapsedRow.implicitWidth + 12
         height: collapsedRow.implicitHeight + 12
-        // Position relative to bar using global mapping (guard if bar not ready)
-        x: (bar && bar.x !== undefined)
-             ? collapsedButton.mapToItem(bar, collapsedButton.width/2, collapsedButton.height).x - inlinePopup.width/2
-             : 0
-        y: (bar && bar.y !== undefined)
-             ? collapsedButton.mapToItem(bar, collapsedButton.width/2, collapsedButton.height).y + 6
-             : 0
+        // Position relative to this Row using global mapping
+        x: collapsedButton.mapToItem(root, collapsedButton.width/2, collapsedButton.height).x - inlinePopup.width/2
+        y: collapsedButton.mapToItem(root, collapsedButton.width/2, collapsedButton.height).y + 6
         Row {
             id: collapsedRow
             anchors.left: parent.left
