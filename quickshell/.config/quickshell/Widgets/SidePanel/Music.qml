@@ -14,7 +14,7 @@ Rectangle {
         id: card
         anchors.fill: parent
         // Almost-black with accent hue (strongly darkened)
-        property real cardTint: 0.12
+        property real cardTint: 0.10
         color: Qt.rgba(
             Theme.accentPrimary.r * cardTint,
             Theme.accentPrimary.g * cardTint,
