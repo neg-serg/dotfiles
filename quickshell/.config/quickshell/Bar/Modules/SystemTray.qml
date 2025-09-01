@@ -61,14 +61,12 @@ Row {
 
     // Note: we purposely avoid a full overlay here to prevent immediate close issues in Row
 
-    // Inline popup content under the trigger button (parented to overlay/bar for stable stacking)
-    Rectangle {
-        id: inlinePopup
+    // Inline expanded content that participates in Row layout (shifts neighbors)
+    Item {
+        id: inlineBox
         visible: collapsed && expanded
-        parent: overlay || bar || root
-        z: 1001
-        // Dark blue popup background (derived from calendar accent, low brightness)
-        radius: 12
+        anchors.verticalCenter: parent.verticalCenter
+        // Background behind inline tray icons
         property real pab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
         property color popupAccent: Qt.rgba(
             Theme.accentPrimary.r * pab,
@@ -76,29 +74,21 @@ Row {
             Theme.accentPrimary.b * pab,
             1
         )
-        color: popupAccent
-        border.color: Theme.backgroundTertiary
-        border.width: 1
-        width: collapsedRow.implicitWidth + 12
-        height: collapsedRow.implicitHeight + 12
-        function reposition() {
-            if (!(overlay || bar) || !inlinePopup.visible) return;
-            var target = overlay || bar;
-            var pt = collapsedButton.mapToItem(target, collapsedButton.width/2, collapsedButton.height);
-            var gap = 6 * Theme.scale(Screen);
-            inlinePopup.x = pt.x - inlinePopup.width/2;
-            inlinePopup.y = (Settings.settings && Settings.settings.panelPosition === "bottom")
-                ? (pt.y - inlinePopup.height - gap)
-                : (pt.y + gap);
+        width: bg.width
+        height: bg.height
+        Rectangle {
+            id: bg
+            radius: 12
+            color: inlineBox.popupAccent
+            border.color: Theme.backgroundTertiary
+            border.width: 1
+            width: collapsedRow.implicitWidth + 12
+            height: collapsedRow.implicitHeight + 12
+            anchors.verticalCenter: parent.verticalCenter
         }
-        onVisibleChanged: reposition()
-        onWidthChanged: if (visible) reposition()
-        onHeightChanged: if (visible) reposition()
         Row {
             id: collapsedRow
-            anchors.left: parent.left
-            anchors.leftMargin: 6
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.centerIn: bg
             spacing: 6
             Repeater {
                 model: systemTray.items
@@ -106,7 +96,6 @@ Row {
                     width: 24 * Theme.scale(Screen)
                     height: 24 * Theme.scale(Screen)
                     visible: modelData
-
                     Rectangle {
                         anchors.centerIn: parent
                         width: 16 * Theme.scale(Screen)
@@ -114,7 +103,6 @@ Row {
                         radius: 6
                         color: "transparent"
                         clip: true
-
                         IconImage {
                             anchors.centerIn: parent
                             width: 16 * Theme.scale(Screen)
@@ -135,7 +123,6 @@ Row {
                             opacity: status === Image.Ready ? 1 : 0
                         }
                     }
-
                     MouseArea {
                         anchors.fill: parent
                         hoverEnabled: true
