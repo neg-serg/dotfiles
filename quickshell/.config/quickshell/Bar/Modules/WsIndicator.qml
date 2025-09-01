@@ -62,7 +62,7 @@ Item {
         "browser":             "language",
         "web":                 "language",
         // explicit mappings for discovered submaps
-        "special":             "diamond",
+        "special":             "view_in_ar",
         "wallpaper":           "wallpaper",
     })
     
