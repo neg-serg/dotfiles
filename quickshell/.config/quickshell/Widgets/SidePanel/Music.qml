@@ -157,7 +157,8 @@ Rectangle {
                         fillColor: Theme.accentPrimary
                         strokeColor: Theme.accentPrimary
                         strokeWidth: 0 * Theme.scale(screen)
-                        z: 0
+                        // Ensure spectrum is at the very bottom behind artwork
+                        z: -1
                     }
 
                     // Album art image

@@ -130,7 +130,8 @@ Item {
                 colorStart: Theme.accentSecondary
                 colorMid: Theme.accentPrimary
                 colorEnd: Theme.highlight
-                z: 0
+                // Push spectrum to the very bottom within this container
+                z: -1
             }
 
             // Dim the spectrum area under text for readability
