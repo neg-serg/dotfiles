@@ -82,7 +82,7 @@ Singleton {
             // CAVA tuning (crisper, less smoothing/denoise)
             // CAVA tuning
             // Slightly lower FPS and higher noise reduction for less jittery output
-            property int  cavaFramerate: 18
+            property int  cavaFramerate: 24
             property bool cavaMonstercat: false
             property int  cavaGravity: 150000
             property int  cavaNoiseReduction: 12
