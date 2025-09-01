@@ -21,6 +21,9 @@ Item {
     property color colorStart: Theme.accentSecondary
     property color colorMid: Theme.accentPrimary
     property color colorEnd: Theme.highlight
+    // Selective halves
+    property bool drawTop: true
+    property bool drawBottom: true
 
     readonly property int barCount: values.length
     readonly property real halfH: mirror ? height / 2 : height
@@ -63,6 +66,7 @@ Item {
 
             // Base bar (bottom half)
             Rectangle {
+                visible: root.drawBottom
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 radius: width / 3
@@ -75,7 +79,7 @@ Item {
 
             // Mirrored bar (top half)
             Rectangle {
-                visible: root.mirror
+                visible: root.mirror && root.drawTop
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 radius: width / 3
@@ -88,7 +92,7 @@ Item {
 
             // Peak indicator (optional)
             Rectangle {
-                visible: root.showPeaks && root.mirror
+                visible: root.showPeaks && root.mirror && root.drawTop
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 height: 2

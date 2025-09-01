@@ -113,7 +113,7 @@ Item {
             // keep container height to the text's height so row layout remains unchanged
             height: titleText.implicitHeight
 
-            // Linear spectrum rendered behind the text
+            // Linear spectrum rendered behind the text (bottom half only)
             LinearSpectrum {
                 id: linearSpectrum
                 anchors.left: parent.left
@@ -128,6 +128,8 @@ Item {
                 barGap: 1 * Theme.scale(Screen)
                 minBarWidth: 2 * Theme.scale(Screen)
                 mirror: true
+                drawTop: false
+                drawBottom: true
                 fillOpacity: 0.35
                 peakOpacity: 0.7
                 useGradient: false
@@ -146,6 +148,27 @@ Item {
                 radius: 4 * Theme.scale(Screen)
                 color: Qt.rgba(Theme.backgroundPrimary.r, Theme.backgroundPrimary.g, Theme.backgroundPrimary.b, 0.25)
                 z: 1
+            }
+
+            // Top half spectrum above backdrop but below text (to make it visible)
+            LinearSpectrum {
+                id: linearSpectrumTop
+                anchors.left: parent.left
+                width: Math.ceil(titleText.width)
+                anchors.verticalCenter: titleText.verticalCenter
+                anchors.verticalCenterOffset: -Math.round(titleText.font.pixelSize * 0.15)
+                height: Math.round(titleText.font.pixelSize * 1.0)
+                values: MusicManager.cavaValues
+                amplitudeScale: 1.0
+                barGap: 1 * Theme.scale(Screen)
+                minBarWidth: 2 * Theme.scale(Screen)
+                mirror: true
+                drawTop: true
+                drawBottom: false
+                fillOpacity: 0.30
+                useGradient: false
+                barColor: Theme.accentPrimary
+                z: 1.5
             }
 
             // Title text (left)
