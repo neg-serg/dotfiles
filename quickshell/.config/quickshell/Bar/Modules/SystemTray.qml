@@ -35,9 +35,10 @@ Row {
         anchors.verticalCenter: parent.verticalCenter
         size: 24 * Theme.scale(Screen)
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
-        // Use configurable accent color and make the icon tinted in normal state
-        accentColor: (Settings.settings.trayAccentColor || Theme.accentPrimary)
-        iconNormalColor: (Settings.settings.trayAccentColor || Theme.accentPrimary)
+        // Match calendar styling: neutral icon, saturated blue hover background
+        accentColor: Theme.accentPrimary
+        iconNormalColor: Theme.textPrimary
+        iconHoverColor: Theme.onAccent
         onClicked: {
             expanded = !expanded;
             if (expanded) { openGuard = true; guardTimer.restart(); }
