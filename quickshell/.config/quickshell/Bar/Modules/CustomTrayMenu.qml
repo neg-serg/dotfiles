@@ -117,8 +117,8 @@ import qs.Settings
             Rectangle {
                 id: bg;
                 anchors.fill: parent;
-                // Hover color: very light accent tint (significantly lighter)
-                color: mouseArea.containsMouse ? Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.18) : "transparent";
+                // Hover color: extra light accent tint
+                color: mouseArea.containsMouse ? Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.12) : "transparent";
                 radius: 0;
                 visible: !(modelData?.isSeparator ?? false);
                 property color hoverTextColor: mouseArea.containsMouse ? Theme.textPrimary : Theme.textPrimary;
@@ -361,7 +361,7 @@ import qs.Settings
                     Rectangle {
                         id: bg;
                         anchors.fill: parent;
-                        color: mouseArea.containsMouse ? Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.18) : "transparent";
+                        color: mouseArea.containsMouse ? Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.12) : "transparent";
                         radius: 0;
                         visible: !(modelData?.isSeparator ?? false);
                         property color hoverTextColor: mouseArea.containsMouse ? Theme.textPrimary : Theme.textPrimary;
