@@ -3,6 +3,7 @@ import qs.Settings
 
 Item {
     id: root
+    clip: true
     // Input values (0..1) from CAVA
     property var values: []
     // Visual tuning

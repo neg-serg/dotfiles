@@ -154,7 +154,7 @@ Singleton {
         function onValuesChanged() { updateCurrentPlayer(); }
     }
 
-    // Audio spectrum
-    Cava { id: cava; count: 44 }
+    // Audio spectrum (increase bar divisions)
+    Cava { id: cava; count: 64 }
     property alias cavaValues: cava.values
 }
