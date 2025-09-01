@@ -151,6 +151,7 @@ Rectangle {
                         id: spectrum
                         values: MusicManager.cavaValues
                         anchors.centerIn: parent
+                        visualizerType: "roundedSquare"
                         innerRadius: 30 * Theme.scale(screen) // Position just outside 60x60 album art
                         outerRadius: 48 * Theme.scale(screen) // Extend bars outward from album art
                         fillColor: Theme.accentPrimary

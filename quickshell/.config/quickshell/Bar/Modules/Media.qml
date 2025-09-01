@@ -41,6 +41,7 @@ Item {
                 id: spectrum
                 values: MusicManager.cavaValues
                 anchors.centerIn: parent
+                visualizerType: "roundedSquare"
                 innerRadius: 14 * Theme.scale(Screen)
                 outerRadius: 26 * Theme.scale(Screen)
                 fillColor: Theme.accentPrimary
