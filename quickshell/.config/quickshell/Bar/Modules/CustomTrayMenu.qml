@@ -88,12 +88,14 @@ import qs.Settings
             values: opener.children ? [...opener.children.values] : []
         }
 
-        // Accent/Brackets-like highlight derived from accent but desaturated (similar to player brackets)
-        readonly property real _ab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
-        readonly property color _accentLite: Qt.rgba(Theme.accentPrimary.r * _ab,
-                                                    Theme.accentPrimary.g * _ab,
-                                                    Theme.accentPrimary.b * _ab,
-                                                    1)
+        // Brighter hover color: lighten accentPrimary towards white, then apply light alpha
+        readonly property real _lighten: 0.5
+        readonly property color _hoverColor: Qt.rgba(
+            Theme.accentPrimary.r + (1 - Theme.accentPrimary.r) * _lighten,
+            Theme.accentPrimary.g + (1 - Theme.accentPrimary.g) * _lighten,
+            Theme.accentPrimary.b + (1 - Theme.accentPrimary.b) * _lighten,
+            0.18
+        )
 
         delegate: Rectangle {
             id: entry;
@@ -117,8 +119,8 @@ import qs.Settings
             Rectangle {
                 id: bg;
                 anchors.fill: parent;
-                // Hover color: extra light accent tint
-                color: mouseArea.containsMouse ? Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.12) : "transparent";
+                // Hover color: brightened accent tint with light alpha
+                color: mouseArea.containsMouse ? listView._hoverColor : "transparent";
                 radius: 0;
                 visible: !(modelData?.isSeparator ?? false);
                 property color hoverTextColor: mouseArea.containsMouse ? Theme.textPrimary : Theme.textPrimary;
@@ -332,12 +334,8 @@ import qs.Settings
                     values: opener.children ? [...opener.children.values] : [];
                 }
 
-                // Reuse same accent tinting for submenu entries
-                readonly property real _ab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
-                readonly property color _accentLite: Qt.rgba(Theme.accentPrimary.r * _ab,
-                                                            Theme.accentPrimary.g * _ab,
-                                                            Theme.accentPrimary.b * _ab,
-                                                            1)
+                // Reuse the same brightened hover color for submenu
+                readonly property color _hoverColor: listView._hoverColor
 
                 delegate: Rectangle {
                     id: entry;
@@ -361,7 +359,7 @@ import qs.Settings
                     Rectangle {
                         id: bg;
                         anchors.fill: parent;
-                        color: mouseArea.containsMouse ? Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.12) : "transparent";
+                        color: mouseArea.containsMouse ? _hoverColor : "transparent";
                         radius: 0;
                         visible: !(modelData?.isSeparator ?? false);
                         property color hoverTextColor: mouseArea.containsMouse ? Theme.textPrimary : Theme.textPrimary;
