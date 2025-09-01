@@ -276,7 +276,7 @@ Row {
                             trayMenu.menu = modelData.menu;
                             trayMenu.showAt(parent, menuX, menuY);
                             trayOverlay.show();
-                            try { trayOverlay.showOverlay = Settings.settings.dimPanels; } catch (e) {}
+                            try { trayOverlay.showOverlay = false; } catch (e) {}
                         } else
                         // console.log("No menu available for", modelData.id, "or trayMenu not set")
                         {}
