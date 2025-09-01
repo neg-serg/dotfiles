@@ -274,7 +274,7 @@ Item {
             color: Theme.textPrimary
             padding: 6
             // Reduce left padding to tighten gap next to icon
-            leftPadding: (root.isTerminalWs ? 0 : 2)
+            leftPadding: (root.isTerminalWs ? -2 : 2)
 
             // Optional: lock line box so icon never affects line height
             // lineHeightMode: Text.FixedHeight
