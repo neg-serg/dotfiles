@@ -183,23 +183,14 @@ Item {
                 }
             }
 
-            // Time text (right)
-            Text {
+            // Time text (right) with colored brackets
+            Item {
                 id: timeText
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                text: (MusicManager.trackArtist || MusicManager.trackTitle)
-                      ? ("[" + fmtTime(MusicManager.currentPosition || 0)
-                         + "/" + fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0)) + "]")
-                      : ""
-                color: Theme.textPrimary
-                font.family: Theme.fontFamily
-                font.weight: Font.Medium
-                font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
-                elide: Text.ElideRight
-                maximumLineCount: 1
+                implicitWidth: timeRow.implicitWidth
+                implicitHeight: timeRow.implicitHeight
                 z: 2
-                renderType: Text.NativeRendering
                 layer.enabled: true
                 layer.effect: MultiEffect {
                     shadowEnabled: true
@@ -208,6 +199,48 @@ Item {
                     shadowHorizontalOffset: 0
                     shadowVerticalOffset: 1
                     shadowBlur: 0.8
+                }
+
+                Row {
+                    id: timeRow
+                    anchors.centerIn: parent
+                    spacing: 0
+
+                    // Left bracket
+                    Text {
+                        text: (MusicManager.trackArtist || MusicManager.trackTitle) ? "[" : ""
+                        color: Theme.accentPrimary
+                        font.family: Theme.fontFamily
+                        font.weight: Font.Medium
+                        font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
+                        renderType: Text.NativeRendering
+                        maximumLineCount: 1
+                    }
+
+                    // Time content
+                    Text {
+                        text: (MusicManager.trackArtist || MusicManager.trackTitle)
+                              ? (fmtTime(MusicManager.currentPosition || 0)
+                                 + "/" + fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0)))
+                              : ""
+                        color: Theme.textPrimary
+                        font.family: Theme.fontFamily
+                        font.weight: Font.Medium
+                        font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
+                        renderType: Text.NativeRendering
+                        maximumLineCount: 1
+                    }
+
+                    // Right bracket
+                    Text {
+                        text: (MusicManager.trackArtist || MusicManager.trackTitle) ? "]" : ""
+                        color: Theme.accentPrimary
+                        font.family: Theme.fontFamily
+                        font.weight: Font.Medium
+                        font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
+                        renderType: Text.NativeRendering
+                        maximumLineCount: 1
+                    }
                 }
             }
         }
