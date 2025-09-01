@@ -68,22 +68,59 @@ Rectangle {
             visible: !!MusicManager.currentPlayer
 
             // Player selector
+            // Build a de-duplicated list of players by identity/id
+            property var uniquePlayers: []
+            function dedupePlayers() {
+                try {
+                    const list = MusicManager.getAvailablePlayers();
+                    const seen = {};
+                    const out = [];
+                    for (let i = 0; i < list.length; i++) {
+                        const p = list[i];
+                        if (!p) continue;
+                        const key = (p.identity || p.name || p.id || ("idx_"+i));
+                        if (seen[key]) continue;
+                        seen[key] = true;
+                        out.push(p);
+                    }
+                    uniquePlayers = out;
+                    // Try to keep current selection in sync
+                    if (MusicManager.currentPlayer) {
+                        const curKey = MusicManager.currentPlayer.identity || MusicManager.currentPlayer.name || MusicManager.currentPlayer.id;
+                        let idx = 0;
+                        for (let j = 0; j < uniquePlayers.length; j++) {
+                            const up = uniquePlayers[j];
+                            const upKey = (up && (up.identity || up.name || up.id));
+                            if (upKey === curKey) { idx = j; break; }
+                        }
+                        playerSelector.currentIndex = idx;
+                    } else if (uniquePlayers.length > 0) {
+                        playerSelector.currentIndex = 0;
+                    }
+                } catch (e) {
+                    // ignore
+                }
+            }
+            Component.onCompleted: dedupePlayers()
+            Timer { interval: 2000; running: true; repeat: true; onTriggered: dedupePlayers() }
+            Connections { target: MusicManager; function onCurrentPlayerChanged() { dedupePlayers() } }
             ComboBox {
                 id: playerSelector
                 Layout.fillWidth: true
                 Layout.preferredHeight: 40 * Theme.scale(screen)
-                visible: MusicManager.getAvailablePlayers().length > 1
-                model: MusicManager.getAvailablePlayers()
+                visible: uniquePlayers && uniquePlayers.length > 1
+                model: uniquePlayers
                 textRole: "identity"
-                currentIndex: MusicManager.selectedPlayerIndex
+                currentIndex: 0
 
                 background: Rectangle {
                     implicitWidth: 120 * Theme.scale(screen)
                     implicitHeight: 40 * Theme.scale(screen)
-                    color: Theme.surfaceVariant
-                    border.color: playerSelector.activeFocus ? Theme.accentPrimary : Theme.outline
-                    border.width: 1 * Theme.scale(screen)
-                    radius: 16 * Theme.scale(Screen)
+                    // Match window/card palette
+                    color: card.color
+                    border.color: "transparent"
+                    border.width: 0
+                    radius: 9 * Theme.scale(Screen)
                 }
 
                 contentItem: Text {
@@ -121,10 +158,10 @@ Rectangle {
                     }
 
                     background: Rectangle {
-                        color: Theme.surfaceVariant
-                        border.color: Theme.outline
-                        border.width: 1 * Theme.scale(screen)
-                        radius: 16
+                        color: card.color
+                        border.color: "transparent"
+                        border.width: 0
+                        radius: 9 * Theme.scale(Screen)
                     }
                 }
 
@@ -140,7 +177,7 @@ Rectangle {
                     highlighted: playerSelector.highlightedIndex === index
 
                     background: Rectangle {
-                        color: highlighted ? Theme.accentPrimary.toString().replace(/#/, "#1A") : "transparent"
+                        color: highlighted ? Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.15) : "transparent"
                     }
                 }
 
