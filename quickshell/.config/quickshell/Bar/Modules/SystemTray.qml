@@ -23,6 +23,9 @@ Row {
     // Collapse/expand behavior from settings
     property bool collapsed: Settings.settings.collapseSystemTray
     property bool expanded: false
+    // Guard to avoid immediate close from the same click that opened
+    property bool openGuard: false
+    Timer { id: guardTimer; interval: 120; repeat: false; onTriggered: openGuard = false }
 
     // Collapsed trigger button
     IconButton {
@@ -32,7 +35,10 @@ Row {
         anchors.verticalCenter: parent.verticalCenter
         size: 24 * Theme.scale(Screen)
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
-        onClicked: expanded = !expanded
+        onClicked: {
+            expanded = !expanded;
+            if (expanded) { openGuard = true; guardTimer.restart(); }
+        }
     }
 
     // Click-catcher to close expanded inline popup when clicking near
@@ -41,7 +47,14 @@ Row {
         color: "transparent"
         visible: collapsed && expanded
         z: 1000
-        MouseArea { anchors.fill: parent; onClicked: expanded = false }
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+            onClicked: {
+                if (openGuard) return; // ignore the opener click
+                expanded = false
+            }
+        }
     }
 
     // Inline popup content under the trigger button
