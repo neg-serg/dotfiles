@@ -22,6 +22,7 @@ Row {
 
     // Collapse/expand behavior from settings
     property bool collapsed: Settings.settings.collapseSystemTray
+    property bool expanded: false
 
     // Collapsed trigger button
     IconButton {
@@ -30,39 +31,34 @@ Row {
         anchors.verticalCenter: parent.verticalCenter
         size: 24 * Theme.scale(Screen)
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
-        onClicked: {
-            if (collapsedPopup.visible) { collapsedPopup.close(); return }
-            // Pre-position near button, then open
-            const pt = collapsedButton.mapToItem(null, collapsedButton.width/2, collapsedButton.height)
-            collapsedPopup.x = pt.x - collapsedPopup.implicitWidth/2
-            collapsedPopup.y = pt.y + 6
-            collapsedPopup.open()
-        }
+        onClicked: expanded = !expanded
     }
 
-    Popup {
-        id: collapsedPopup
-        modal: false
-        focus: true
-        visible: false
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent | Popup.CloseOnPressOutside
-        padding: 6
-        transientParent: root.Window.window
-        background: Rectangle {
-            radius: 8
-            color: Theme.surfaceVariant
-            border.color: Theme.outline
-            border.width: 1
-        }
-        // Re-center once sized
-        onOpened: {
-            const pt = collapsedButton.mapToItem(null, collapsedButton.width/2, collapsedButton.height)
-            collapsedPopup.x = pt.x - collapsedPopup.width/2
-            collapsedPopup.y = pt.y + 6
-        }
+    // Click-catcher to close expanded inline popup when clicking near
+    Rectangle {
+        anchors.fill: parent
+        color: "transparent"
+        visible: collapsed && expanded
+        z: 999
+        MouseArea { anchors.fill: parent; onClicked: expanded = false }
+    }
 
-        contentItem: Row {
+    // Inline popup content under the trigger button
+    Rectangle {
+        id: inlinePopup
+        visible: collapsed && expanded
+        z: 1000
+        radius: 8
+        color: Theme.surfaceVariant
+        border.color: Theme.outline
+        border.width: 1
+        anchors.top: collapsedButton.bottom
+        anchors.topMargin: 6
+        x: collapsedButton.x + collapsedButton.width/2 - inlinePopup.width/2
+        Row {
             id: collapsedRow
+            anchors.margins: 6
+            anchors.fill: parent
             spacing: 6
             Repeater {
                 model: systemTray.items
@@ -80,7 +76,6 @@ Row {
                         clip: true
 
                         IconImage {
-                            id: trayIconCollapsed
                             anchors.centerIn: parent
                             width: 16 * Theme.scale(Screen)
                             height: 16 * Theme.scale(Screen)
@@ -111,11 +106,11 @@ Row {
                             if (mouse.button === Qt.LeftButton) {
                                 if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
                                 if (!modelData.onlyMenu) modelData.activate();
-                                collapsedPopup.close();
+                                expanded = false;
                             } else if (mouse.button === Qt.MiddleButton) {
                                 if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
                                 modelData.secondaryActivate && modelData.secondaryActivate();
-                                collapsedPopup.close();
+                                expanded = false;
                             } else if (mouse.button === Qt.RightButton) {
                                 if (trayMenu && trayMenu.visible) { trayMenu.hideMenu(); return; }
                                 if (modelData.hasMenu && modelData.menu && trayMenu) {
@@ -130,7 +125,6 @@ Row {
                 }
             }
         }
-        onClosed: {/* no-op */}
     }
 
     // Inline icons (visible only when not collapsed)
