@@ -77,18 +77,19 @@ Row {
         height: bg.height
         Rectangle {
             id: bg
-            radius: 12
+            radius: 10
             color: inlineBox.popupAccent
             border.color: Theme.backgroundTertiary
             border.width: 1
-            width: collapsedRow.implicitWidth + 12
-            height: collapsedRow.implicitHeight + 12
+            // Tighter padding around content
+            width: collapsedRow.implicitWidth + 6
+            height: collapsedRow.implicitHeight + 6
             anchors.verticalCenter: parent.verticalCenter
         }
         Row {
             id: collapsedRow
             anchors.centerIn: bg
-            spacing: 6
+            spacing: 4
             Repeater {
                 model: systemTray.items
                 delegate: Item {
