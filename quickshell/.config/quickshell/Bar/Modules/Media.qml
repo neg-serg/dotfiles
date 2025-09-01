@@ -118,10 +118,10 @@ Item {
                 id: linearSpectrum
                 anchors.left: parent.left
                 anchors.right: parent.right
-                // Place the spectrum just below the text (slightly higher and taller)
+                // Place the spectrum just below the text, slightly overlapping upward
                 anchors.top: trackText.bottom
-                anchors.topMargin: 0
-                height: Math.round(trackText.font.pixelSize * 1.0)
+                anchors.topMargin: -Math.round(trackText.font.pixelSize * 0.2)
+                height: Math.round(trackText.font.pixelSize * 1.2)
                 values: MusicManager.cavaValues
                 amplitudeScale: 1.0
                 barGap: 1 * Theme.scale(Screen)
