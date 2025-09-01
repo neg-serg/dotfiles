@@ -53,7 +53,15 @@ Row {
         parent: bar
         z: 1001
         radius: 8
-        color: Theme.surfaceVariant
+        // Darken background strongly towards panel background, but not as dark
+        property real d: (Settings.settings.trayPopupDarkness !== undefined ? Settings.settings.trayPopupDarkness : 0.65)
+        property color popupBgColor: Qt.rgba(
+            Theme.surfaceVariant.r * (1 - d) + Theme.backgroundPrimary.r * d,
+            Theme.surfaceVariant.g * (1 - d) + Theme.backgroundPrimary.g * d,
+            Theme.surfaceVariant.b * (1 - d) + Theme.backgroundPrimary.b * d,
+            1
+        )
+        color: popupBgColor
         border.color: Theme.outline
         border.width: 1
         width: collapsedRow.implicitWidth + 12
