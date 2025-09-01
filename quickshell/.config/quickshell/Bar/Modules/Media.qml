@@ -130,7 +130,7 @@ Item {
                 fillOpacity: 0.35
                 peakOpacity: 0.7
                 useGradient: false
-                barColor: Theme.outline
+                barColor: Theme.accentPrimary
                 // Push spectrum to the very bottom within this container
                 z: -1
             }
