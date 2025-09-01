@@ -19,6 +19,9 @@ Item {
     property real  strokeOpacity: 0.5
     property int strokeWidth: 0 * Theme.scale(Screen)
     property var values: []
+    // Cached angles for equal arc spacing on roundedSquare
+    property var thetaMap: []
+    readonly property int barCount: values.length
     property int usableOuter: 48
     width: usableOuter * 2
     height: usableOuter * 2
@@ -26,6 +29,60 @@ Item {
     onOuterRadiusChanged: () => {
         usableOuter = root.visualizerType === "fire" ? outerRadius * 0.85 : outerRadius;
     }
+
+    function computeThetaMap() {
+        // Only needed for roundedSquare
+        if (visualizerType !== "roundedSquare") {
+            thetaMap = [];
+            return;
+        }
+        const n = barCount;
+        if (!n || n <= 0) { thetaMap = []; return; }
+
+        const steps = Math.max(1024, n * 32);
+        const p = superellipsePower;
+        const R = innerRadius;
+        const angles = new Array(steps + 1);
+        const accu = new Array(steps + 1);
+        let lastX = 0, lastY = 0, total = 0;
+        for (let s = 0; s <= steps; s++) {
+            const th = 2 * Math.PI * s / steps;
+            const c = Math.cos(th), si = Math.sin(th);
+            const x = R * Math.sign(c) * Math.pow(Math.abs(c), 2 / p);
+            const y = R * Math.sign(si) * Math.pow(Math.abs(si), 2 / p);
+            angles[s] = th;
+            if (s === 0) {
+                accu[s] = 0; lastX = x; lastY = y; continue;
+            }
+            const dx = x - lastX, dy = y - lastY;
+            const dl = Math.sqrt(dx*dx + dy*dy);
+            total += dl;
+            accu[s] = total;
+            lastX = x; lastY = y;
+        }
+        const map = new Array(n);
+        for (let i = 0; i < n; i++) {
+            const target = total * i / n;
+            // binary search accu for target
+            let lo = 0, hi = steps;
+            while (lo < hi) {
+                const mid = (lo + hi) >> 1;
+                if (accu[mid] < target) lo = mid + 1; else hi = mid;
+            }
+            const j = Math.max(1, lo);
+            const l0 = accu[j-1], l1 = accu[j];
+            const t = l1 === l0 ? 0 : (target - l0) / (l1 - l0);
+            // Rotate by +90deg to match circular default orientation
+            map[i] = (angles[j-1] + t * (angles[j] - angles[j-1])) + Math.PI/2;
+        }
+        thetaMap = map;
+    }
+
+    onBarCountChanged: computeThetaMap()
+    onVisualizerTypeChanged: computeThetaMap()
+    onInnerRadiusChanged: computeThetaMap()
+    onSuperellipsePowerChanged: computeThetaMap()
+    Component.onCompleted: computeThetaMap()
 
     Repeater {
         model: root.values.length
@@ -47,7 +104,7 @@ Item {
                         return root.width / 2 - width / 2;
                     }
                     if (root.visualizerType === "roundedSquare") {
-                        const theta = 2 * Math.PI * index / root.values.length;
+                        const theta = (root.thetaMap[index] !== undefined) ? root.thetaMap[index] : (2 * Math.PI * index / root.values.length + Math.PI/2);
                         const c = Math.cos(theta), s = Math.sin(theta);
                         const p = root.superellipsePower;
                         const px = root.innerRadius * Math.sign(c) * Math.pow(Math.abs(c), 2 / p);
@@ -61,7 +118,7 @@ Item {
                         return root.height / 2 - height;
                     }
                     if (root.visualizerType === "roundedSquare") {
-                        const theta = 2 * Math.PI * index / root.values.length;
+                        const theta = (root.thetaMap[index] !== undefined) ? root.thetaMap[index] : (2 * Math.PI * index / root.values.length + Math.PI/2);
                         const c = Math.cos(theta), s = Math.sin(theta);
                         const p = root.superellipsePower;
                         const py = root.innerRadius * Math.sign(s) * Math.pow(Math.abs(s), 2 / p);
@@ -82,7 +139,7 @@ Item {
                                 return 0;
                             }
                             if (root.visualizerType === "roundedSquare") {
-                                const theta = 2 * Math.PI * index / root.values.length;
+                                const theta = (root.thetaMap[index] !== undefined) ? root.thetaMap[index] : (2 * Math.PI * index / root.values.length + Math.PI/2);
                                 const c = Math.cos(theta), s = Math.sin(theta);
                                 const p = root.superellipsePower;
                                 const px = root.innerRadius * Math.sign(c) * Math.pow(Math.abs(c), 2 / p);
