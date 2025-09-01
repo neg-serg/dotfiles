@@ -83,13 +83,15 @@ Scope {
                         anchors.leftMargin: panel.sideMargin
                         spacing: panel.widgetSpacing
                         ClockWidget { anchors.verticalCenter: parent.verticalCenter }
-                        DiagSep {}
+                        // Separator between clock and workspaces: no accent stripe
+                        DiagSep { stripeEnabled: false }
                         WsIndicator { id: wsindicator; anchors.verticalCenter: parent.verticalCenter }
                         DiagSep {}
                         KeyboardLayoutHypr { id: kbIndicator; anchors.verticalCenter: wsindicator.verticalCenter; /* deviceMatch: "dygma-defy-keyboard" */ }
                         DiagSep {}
                         NetworkUsage { id: net; anchors.verticalCenter: wsindicator.verticalCenter }
-                        DiagSep {}
+                        // Rightmost separator of the left section: no accent stripe
+                        DiagSep { stripeEnabled: false }
                     }
 
                     SystemInfo {
