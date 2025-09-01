@@ -189,7 +189,8 @@ Item {
         const cp = name.codePointAt(0);
         if (!isPUA(cp)) return name;
         const skip = (cp > 0xFFFF) ? 2 : 1; // skip surrogate pair if needed
-        return name.substring(skip);
+        // Trim any whitespace immediately following the icon to keep spacing consistent
+        return name.substring(skip).replace(/^\s+/, "");
     }
 
     // Final values for display
