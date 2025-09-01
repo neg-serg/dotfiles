@@ -71,6 +71,16 @@ Singleton {
             property bool showCursor: true
             property string colorRange: "limited"
 
+            // Media spectrum / CAVA visualization
+            property int  cavaBars: 64
+            property bool spectrumUseGradient: false
+            property bool spectrumMirror: false
+            property bool showSpectrumTopHalf: false
+            property real spectrumFillOpacity: 0.35
+            property real spectrumHeightFactor: 1.2
+            property real spectrumOverlapFactor: 0.2  // how much overlaps upward from baseline (0..1 of font size)
+            property real spectrumBarGap: 1.0         // gap between bars in px (scaled later)
+
             // Monitor/Display Settings
             property string panelPosition: "top" // "top" or "bottom" panel location
             property var barMonitors: [] // Array of monitor names to show the bar on

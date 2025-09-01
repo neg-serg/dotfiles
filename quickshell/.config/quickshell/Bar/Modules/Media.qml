@@ -119,20 +119,20 @@ Item {
                 anchors.left: parent.left
                 // Place the spectrum just below the title text, slightly overlapping upward
                 anchors.top: titleText.bottom
-                anchors.topMargin: -Math.round(titleText.font.pixelSize * 0.2)
-                height: Math.round(titleText.font.pixelSize * 1.2)
+                anchors.topMargin: -Math.round(titleText.font.pixelSize * Settings.settings.spectrumOverlapFactor)
+                height: Math.round(titleText.font.pixelSize * Settings.settings.spectrumHeightFactor)
                 // Limit spectrum width to the actual title text area (does not intrude into time)
                 width: Math.ceil(titleText.width)
                 values: MusicManager.cavaValues
                 amplitudeScale: 1.0
-                barGap: 1 * Theme.scale(Screen)
+                barGap: Settings.settings.spectrumBarGap * Theme.scale(Screen)
                 minBarWidth: 2 * Theme.scale(Screen)
-                mirror: true
-                drawTop: false
+                mirror: Settings.settings.spectrumMirror
+                drawTop: Settings.settings.showSpectrumTopHalf
                 drawBottom: true
-                fillOpacity: 0.35
+                fillOpacity: Settings.settings.spectrumFillOpacity
                 peakOpacity: 0.7
-                useGradient: false
+                useGradient: Settings.settings.spectrumUseGradient
                 barColor: Theme.accentPrimary
                 // Push spectrum to the very bottom within this container
                 z: -1
@@ -150,26 +150,7 @@ Item {
                 z: 1
             }
 
-            // Top half spectrum above backdrop but below text (to make it visible)
-            LinearSpectrum {
-                id: linearSpectrumTop
-                anchors.left: parent.left
-                width: Math.ceil(titleText.width)
-                anchors.verticalCenter: titleText.verticalCenter
-                anchors.verticalCenterOffset: -Math.round(titleText.font.pixelSize * 0.15)
-                height: Math.round(titleText.font.pixelSize * 1.0)
-                values: MusicManager.cavaValues
-                amplitudeScale: 1.0
-                barGap: 1 * Theme.scale(Screen)
-                minBarWidth: 2 * Theme.scale(Screen)
-                mirror: true
-                drawTop: true
-                drawBottom: false
-                fillOpacity: 0.30
-                useGradient: false
-                barColor: Theme.accentPrimary
-                z: 1.5
-            }
+            // No separate top-half spectrum by default (can enable via settings)
 
             // Title text (left)
             Text {
