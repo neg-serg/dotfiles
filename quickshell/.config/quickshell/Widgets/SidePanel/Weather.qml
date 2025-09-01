@@ -85,7 +85,7 @@ Rectangle {
         anchors.fill: parent
         // Almost-black with accent hue (strongly darkened) and high transparency
         property real cardTint: 0.10
-        property real cardAlpha: 0.75 // 25% transparent
+        property real cardAlpha: 0.85 // 15% transparent
         color: Qt.rgba(
             Theme.accentPrimary.r * cardTint,
             Theme.accentPrimary.g * cardTint,
