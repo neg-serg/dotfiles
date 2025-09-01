@@ -5,12 +5,12 @@ import QtQuick.Layouts 1.15
 import Quickshell
 import qs.Settings
 
-PopupWindow {
-    id: trayMenu
-    implicitWidth: 180
-    implicitHeight: Math.max(40, listView.contentHeight + 12)
-    visible: false
-    color: "transparent"
+    PopupWindow {
+        id: trayMenu
+        implicitWidth: 180
+        implicitHeight: Math.max(40, listView.contentHeight + 12)
+        visible: false
+        color: "transparent"
 
     property QsMenuHandle menu
     property var anchorItem: null
@@ -70,7 +70,7 @@ PopupWindow {
         color: Theme.backgroundPrimary || "#222";
         border.color: Theme.outline || "#444";
         border.width: 1;
-        radius: 12;
+        radius: 0;
         z: 0;
     }
 
@@ -94,7 +94,7 @@ PopupWindow {
             width: listView.width;
             height: (modelData?.isSeparator) ? 8 : 32;
             color: "transparent";
-            radius: 12;
+            radius: 0;
 
             property var subMenu: null;
 
@@ -110,7 +110,7 @@ PopupWindow {
                 id: bg;
                 anchors.fill: parent;
                 color: mouseArea.containsMouse ? Theme.highlight : "transparent";
-                radius: 8;
+                radius: 0;
                 visible: !(modelData?.isSeparator ?? false);
                 property color hoverTextColor: mouseArea.containsMouse ? Theme.onAccent : Theme.textPrimary;
 

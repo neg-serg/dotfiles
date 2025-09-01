@@ -59,7 +59,7 @@ Row {
         height: bg.height
         Rectangle {
             id: bg
-            radius: 10
+            radius: 0
             color: inlineBox.popupAccent
             border.color: Theme.backgroundTertiary
             border.width: 1
