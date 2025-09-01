@@ -133,7 +133,19 @@ Item {
                 z: 0
             }
 
-            // Text overlay with subtle shadow to dominate over graphics
+            // Dim the spectrum area under text for readability
+            Rectangle {
+                id: textBackdrop
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                height: Math.round(trackText.font.pixelSize * 1.15)
+                radius: 4 * Theme.scale(Screen)
+                color: Qt.rgba(Theme.backgroundPrimary.r, Theme.backgroundPrimary.g, Theme.backgroundPrimary.b, 0.25)
+                z: 1
+            }
+
+            // Text overlay with outline to dominate over graphics
             Text {
                 id: trackText
                 anchors.left: parent.left
@@ -154,16 +166,9 @@ Item {
                 elide: Text.ElideRight
                 maximumLineCount: 1
                 z: 2
-                // subtle shadow for readability over spectrum
-                layer.enabled: true
-                layer.effect: MultiEffect {
-                    shadowEnabled: true
-                    shadowColor: Theme.shadow
-                    shadowOpacity: 0.9
-                    shadowHorizontalOffset: 0
-                    shadowVerticalOffset: 1
-                    shadowBlur: 0.8
-                }
+                renderType: Text.NativeRendering
+                style: Text.Outline
+                styleColor: Qt.rgba(0, 0, 0, 0.6)
             }
         }
     }
