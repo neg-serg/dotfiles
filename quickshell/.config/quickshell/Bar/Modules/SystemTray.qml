@@ -78,9 +78,12 @@ Row {
         border.width: 1
         width: collapsedRow.implicitWidth + 12
         height: collapsedRow.implicitHeight + 12
-        // Position relative to this Row using global mapping
-        x: collapsedButton.mapToItem(root, collapsedButton.width/2, collapsedButton.height).x - inlinePopup.width/2
-        y: collapsedButton.mapToItem(root, collapsedButton.width/2, collapsedButton.height).y + 6
+        // Position relative to the local Row (no global mapping needed)
+        x: collapsedButton.x + collapsedButton.width/2 - inlinePopup.width/2
+        // Open below for top panel, above for bottom panel
+        y: (Settings.settings.panelPosition === "bottom")
+             ? (collapsedButton.y - inlinePopup.height - 6)
+             : (collapsedButton.y + collapsedButton.height + 6)
         Row {
             id: collapsedRow
             anchors.left: parent.left
