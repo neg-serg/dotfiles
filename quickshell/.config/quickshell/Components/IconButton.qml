@@ -9,6 +9,10 @@ MouseArea {
     property bool enabled: true
     property bool hovering: false
     property real size: 32
+    // Customizable colors
+    property color accentColor: Theme.accentPrimary
+    property color iconNormalColor: Theme.textPrimary
+    property color iconHoverColor: Theme.onAccent
     cursorShape: Qt.PointingHandCursor
     implicitWidth: size
     implicitHeight: size
@@ -20,7 +24,7 @@ MouseArea {
     Rectangle {
         anchors.fill: parent
         radius: 8
-        color: root.hovering ? Theme.accentPrimary : "transparent"
+        color: root.hovering ? root.accentColor : "transparent"
     }
     Text {
         id: iconText
@@ -28,7 +32,7 @@ MouseArea {
         text: root.icon
         font.family: "Material Symbols Outlined"
         font.pixelSize: 24 * Theme.scale(Screen)
-        color: root.hovering ? Theme.onAccent : Theme.textPrimary
+        color: root.hovering ? root.iconHoverColor : root.iconNormalColor
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         opacity: root.enabled ? 1.0 : 0.5

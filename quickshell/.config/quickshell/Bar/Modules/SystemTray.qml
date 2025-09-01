@@ -35,6 +35,9 @@ Row {
         anchors.verticalCenter: parent.verticalCenter
         size: 24 * Theme.scale(Screen)
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
+        // Use configurable accent color and make the icon tinted in normal state
+        accentColor: (Settings.settings.trayAccentColor || Theme.accentPrimary)
+        iconNormalColor: (Settings.settings.trayAccentColor || Theme.accentPrimary)
         onClicked: {
             expanded = !expanded;
             if (expanded) { openGuard = true; guardTimer.restart(); }

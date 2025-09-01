@@ -95,6 +95,7 @@ Singleton {
             // System tray behavior
             property bool collapseSystemTray: true
             property string collapsedTrayIcon: "expand_more" // Material Symbols name
+            property string trayAccentColor: "#3b7bb3" // Accent color for tray button/icon
         }
     }
 
