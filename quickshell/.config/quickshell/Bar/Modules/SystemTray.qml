@@ -70,11 +70,15 @@ Row {
                     height: 24 * Theme.scale(Screen)
                     visible: modelData
                     // Staggered reveal (train) from right to left
-                    // Compute per-item progress based on inlineBox.openProgress and index
+                    // Compute per-item progress based on actual revealed width of bg
                     property int i: index
                     property int n: (systemTray && systemTray.items ? systemTray.items.length : 0)
-                    // Right-most item (largest index) appears first
-                    property real tRaw: (inlineBox.openProgress * n) - (n - 1 - i)
+                    property real w: 24 * Theme.scale(Screen)
+                    property real span: (w + collapsedRow.spacing)
+                    // How many item slots could fit into the currently revealed width (minus padding)
+                    property real revealedSlots: Math.max(0, (bg.width - 6) / Math.max(1, span))
+                    // Right-most item (largest index) appears first as width grows
+                    property real tRaw: (revealedSlots - (n - 1 - i))
                     property real t: Math.max(0, Math.min(1, tRaw))
                     opacity: t
                     x: Math.round((1 - t) * 12)
