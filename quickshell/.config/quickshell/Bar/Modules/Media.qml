@@ -167,8 +167,16 @@ Item {
                 maximumLineCount: 1
                 z: 2
                 renderType: Text.NativeRendering
-                style: Text.Outline
-                styleColor: Qt.rgba(0, 0, 0, 0.6)
+                // Restore subtle shadow without changing weight
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    shadowEnabled: true
+                    shadowColor: Theme.shadow
+                    shadowOpacity: 0.6
+                    shadowHorizontalOffset: 0
+                    shadowVerticalOffset: 1
+                    shadowBlur: 0.8
+                }
             }
         }
     }
