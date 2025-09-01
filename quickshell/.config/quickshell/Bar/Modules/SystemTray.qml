@@ -11,7 +11,9 @@ import qs.Components
 
 Row {
     id: root
+    // 'bar' can be an overlay QQuickItem injected by Bar.qml
     property var bar
+    property var overlay
     property var shell
     property var trayMenu
     spacing: 8
@@ -59,11 +61,11 @@ Row {
 
     // Note: we purposely avoid a full overlay here to prevent immediate close issues in Row
 
-    // Inline popup content under the trigger button (parented to bar for stable stacking)
+    // Inline popup content under the trigger button (parented to overlay/bar for stable stacking)
     Rectangle {
         id: inlinePopup
         visible: collapsed && expanded
-        parent: bar
+        parent: overlay || bar || root
         z: 1001
         // Dark blue popup background (derived from calendar accent, low brightness)
         radius: 12
@@ -80,12 +82,14 @@ Row {
         width: collapsedRow.implicitWidth + 12
         height: collapsedRow.implicitHeight + 12
         function reposition() {
-            if (!bar || !inlinePopup.visible) return;
-            var pt = collapsedButton.mapToItem(bar, collapsedButton.width/2, collapsedButton.height);
+            if (!(overlay || bar) || !inlinePopup.visible) return;
+            var target = overlay || bar;
+            var pt = collapsedButton.mapToItem(target, collapsedButton.width/2, collapsedButton.height);
+            var gap = 6 * Theme.scale(Screen);
             inlinePopup.x = pt.x - inlinePopup.width/2;
             inlinePopup.y = (Settings.settings && Settings.settings.panelPosition === "bottom")
-                ? (pt.y - inlinePopup.height - 6)
-                : (pt.y + 6);
+                ? (pt.y - inlinePopup.height - gap)
+                : (pt.y + gap);
         }
         onVisibleChanged: reposition()
         onWidthChanged: if (visible) reposition()

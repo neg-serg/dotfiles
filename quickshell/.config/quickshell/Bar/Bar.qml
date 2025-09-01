@@ -119,8 +119,9 @@ Scope {
                             shell: rootScope.shell
                             // Avoid anchors inside Row (causes warnings); manual centering instead
                             y: (parent.height - height) / 2
-                            // Provide a QQuickItem parent for popup positioning
-                            bar: barBackground
+                            // Provide overlay layer for popup positioning/stacking
+                            bar: barOverlay
+                            overlay: barOverlay
                             trayMenu: externalTrayMenu
                         }
                         CustomTrayMenu { id: externalTrayMenu }
@@ -129,6 +130,14 @@ Scope {
                             shell: rootScope.shell
                             anchors.verticalCenter: parent.verticalCenter
                         }
+                    }
+
+                    // Overlay layer for popups (above rows)
+                    Item {
+                        id: barOverlay
+                        anchors.fill: barBackground
+                        z: 1000
+                        clip: false
                     }
                 }
             }
