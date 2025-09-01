@@ -206,15 +206,10 @@ Item {
                     anchors.centerIn: parent
                     spacing: 0
 
-                    // Left bracket (toned accent)
+                    // Left bracket (match workspace icon color)
                     Text {
                         text: (MusicManager.trackArtist || MusicManager.trackTitle) ? "[" : ""
-                        color: Qt.rgba(
-                            Theme.accentPrimary.r * 0.35 + Theme.textSecondary.r * 0.65,
-                            Theme.accentPrimary.g * 0.35 + Theme.textSecondary.g * 0.65,
-                            Theme.accentPrimary.b * 0.35 + Theme.textSecondary.b * 0.65,
-                            1
-                        )
+                        color: "#3b7bb3"
                         font.family: Theme.fontFamily
                         font.weight: Font.Medium
                         font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
@@ -236,15 +231,10 @@ Item {
                         maximumLineCount: 1
                     }
 
-                    // Right bracket (toned accent)
+                    // Right bracket (match workspace icon color)
                     Text {
                         text: (MusicManager.trackArtist || MusicManager.trackTitle) ? "]" : ""
-                        color: Qt.rgba(
-                            Theme.accentPrimary.r * 0.35 + Theme.textSecondary.r * 0.65,
-                            Theme.accentPrimary.g * 0.35 + Theme.textSecondary.g * 0.65,
-                            Theme.accentPrimary.b * 0.35 + Theme.textSecondary.b * 0.65,
-                            1
-                        )
+                        color: "#3b7bb3"
                         font.family: Theme.fontFamily
                         font.weight: Font.Medium
                         font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
