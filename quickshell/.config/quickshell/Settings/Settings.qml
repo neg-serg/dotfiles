@@ -96,6 +96,23 @@ Singleton {
             // Additional upward shift for CAVA spectrum behind text (in font-size units)
             property real spectrumVerticalRaise: 0.75
 
+            // Visualizer profiles: group related settings under named presets
+            property string activeVisualizerProfile: "classic"
+            property var visualizerProfiles: ({
+                classic: {
+                    cavaBars: 86,
+                    cavaFramerate: 24,
+                    cavaMonstercat: false,
+                    cavaGravity: 150000,
+                    cavaNoiseReduction: 12,
+                    spectrumFillOpacity: 0.35,
+                    spectrumHeightFactor: 1.2,
+                    spectrumOverlapFactor: 0.2,
+                    spectrumBarGap: 1.0,
+                    spectrumVerticalRaise: 0.75
+                }
+            })
+
             // Media time brackets styling
             // Options: "round" (( )), "tortoise" (〔 〕), "lenticular" (〖 〗), "lenticular_black" (【 】),
             //          "angle" (⟨ ⟩), "square" ([ ])

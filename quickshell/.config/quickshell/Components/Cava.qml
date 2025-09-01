@@ -9,10 +9,12 @@ Scope {
     // Default bars reduced by one third: 64 -> ~43
     property int count: 43
     // Pull defaults from settings for a crisper, less-smoothed look
-    property int noiseReduction: (Settings.settings.cavaNoiseReduction !== undefined ? Settings.settings.cavaNoiseReduction : 5)
-    property int framerate:      (Settings.settings.cavaFramerate      !== undefined ? Settings.settings.cavaFramerate      : 30)
-    property int gravity:        (Settings.settings.cavaGravity        !== undefined ? Settings.settings.cavaGravity        : 20000)
-    property bool monstercat:    (Settings.settings.cavaMonstercat     !== undefined ? Settings.settings.cavaMonstercat     : false)
+    // Active profile (if any)
+    property var _vp: (Settings.settings.visualizerProfiles && Settings.settings.activeVisualizerProfile && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile]) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] : null
+    property int noiseReduction: (_vp && _vp.cavaNoiseReduction !== undefined) ? _vp.cavaNoiseReduction : (Settings.settings.cavaNoiseReduction !== undefined ? Settings.settings.cavaNoiseReduction : 5)
+    property int framerate:      (_vp && _vp.cavaFramerate      !== undefined) ? _vp.cavaFramerate      : (Settings.settings.cavaFramerate      !== undefined ? Settings.settings.cavaFramerate      : 30)
+    property int gravity:        (_vp && _vp.cavaGravity        !== undefined) ? _vp.cavaGravity        : (Settings.settings.cavaGravity        !== undefined ? Settings.settings.cavaGravity        : 20000)
+    property bool monstercat:    (_vp && _vp.cavaMonstercat     !== undefined) ? _vp.cavaMonstercat     : (Settings.settings.cavaMonstercat     !== undefined ? Settings.settings.cavaMonstercat     : false)
     property string channels: "mono"
     property string monoOption: "average"
 

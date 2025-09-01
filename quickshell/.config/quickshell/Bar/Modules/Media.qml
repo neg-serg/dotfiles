@@ -135,20 +135,34 @@ Item {
                 anchors.left: parent.left
                 // Place the spectrum behind the text, raised further upward
                 anchors.top: trackText.bottom
-                anchors.topMargin: -Math.round(trackText.font.pixelSize * (Settings.settings.spectrumOverlapFactor + Settings.settings.spectrumVerticalRaise))
+                // Use active profile overrides if present
+                anchors.topMargin: -Math.round(trackText.font.pixelSize * (
+                    (Settings.settings.visualizerProfiles
+                     && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile]
+                     && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumOverlapFactor !== undefined)
+                        ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumOverlapFactor
+                        : Settings.settings.spectrumOverlapFactor
+                    
+                    +
+                    (Settings.settings.visualizerProfiles
+                     && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile]
+                     && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumVerticalRaise !== undefined)
+                        ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumVerticalRaise
+                        : Settings.settings.spectrumVerticalRaise
+                ))
                 height: Math.round(trackText.font.pixelSize * Settings.settings.spectrumHeightFactor)
                 // Limit spectrum width to the measured title text width
                 width: Math.ceil(titleMeasure.width)
                 values: MusicManager.cavaValues
                 amplitudeScale: 1.0
-                barGap: Settings.settings.spectrumBarGap * Theme.scale(Screen)
+                barGap: ((Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumBarGap !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumBarGap : Settings.settings.spectrumBarGap) * Theme.scale(Screen)
                 minBarWidth: 2 * Theme.scale(Screen)
-                mirror: Settings.settings.spectrumMirror
-                drawTop: Settings.settings.showSpectrumTopHalf
+                mirror: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumMirror !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumMirror : Settings.settings.spectrumMirror
+                drawTop: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].showSpectrumTopHalf !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].showSpectrumTopHalf : Settings.settings.showSpectrumTopHalf
                 drawBottom: true
-                fillOpacity: Settings.settings.spectrumFillOpacity
+                fillOpacity: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumFillOpacity !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumFillOpacity : Settings.settings.spectrumFillOpacity
                 peakOpacity: 0.7
-                useGradient: Settings.settings.spectrumUseGradient
+                useGradient: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient : Settings.settings.spectrumUseGradient
                 barColor: Theme.accentPrimary
                 // Push spectrum to the very bottom within this container
                 z: -1

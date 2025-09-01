@@ -155,7 +155,15 @@ Singleton {
     }
 
     // Audio spectrum (bars count from settings)
-    // Fallback reduced by one third: 128 -> ~86
-    Cava { id: cava; count: (Settings.settings.cavaBars && Settings.settings.cavaBars > 0) ? Settings.settings.cavaBars : 86 }
+    // Prefer active profile bars, then settings, then fallback
+    Cava {
+        id: cava
+        count: (
+            Settings.settings.visualizerProfiles
+            && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile]
+            && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].cavaBars
+        ) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].cavaBars
+          : ((Settings.settings.cavaBars && Settings.settings.cavaBars > 0) ? Settings.settings.cavaBars : 86)
+    }
     property alias cavaValues: cava.values
 }
