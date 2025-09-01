@@ -129,9 +129,8 @@ Item {
                 mirror: true
                 fillOpacity: 0.35
                 peakOpacity: 0.7
-                colorStart: Theme.accentSecondary
-                colorMid: Theme.accentPrimary
-                colorEnd: Theme.highlight
+                useGradient: false
+                barColor: Theme.outline
                 // Push spectrum to the very bottom within this container
                 z: -1
             }

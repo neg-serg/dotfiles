@@ -12,6 +12,9 @@ Item {
     property bool mirror: true               // draw above and below center
     property real fillOpacity: 0.85
     property real peakOpacity: 1.0
+    // Coloring: default to a neutral/darker theme color (no gradient)
+    property bool useGradient: false
+    property color barColor: Theme.outline
     property color colorStart: Theme.accentSecondary
     property color colorMid: Theme.accentPrimary
     property color colorEnd: Theme.highlight
@@ -22,6 +25,7 @@ Item {
     function lerp(a, b, t) { return a + (b - a) * t; }
     function mixColor(c1, c2, t) { return Qt.rgba(lerp(c1.r, c2.r, t), lerp(c1.g, c2.g, t), lerp(c1.b, c2.b, t), 1); }
     function colorAt(i) {
+        if (!useGradient) return barColor;
         if (barCount <= 1) return colorMid;
         const t = i / (barCount - 1);
         // 2-stop gradient: start -> mid -> end
@@ -95,4 +99,3 @@ Item {
         }
     }
 }
-
