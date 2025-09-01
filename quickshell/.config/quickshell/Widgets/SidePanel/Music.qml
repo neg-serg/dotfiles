@@ -183,8 +183,8 @@ Rectangle {
                             asynchronous: true
                             sourceSize.width: 60 * Theme.scale(screen)
                             sourceSize.height: 60 * Theme.scale(screen)
-                            source: MusicManager.trackArtUrl
-                            visible: source.toString() !== ""
+                            source: (MusicManager.coverUrl || "")
+                            visible: source && source.toString() !== ""
 
                             // Apply circular mask for rounded corners
                             layer.enabled: true

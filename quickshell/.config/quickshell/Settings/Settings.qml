@@ -28,7 +28,10 @@ Singleton {
         }
         onLoaded: function() {
             Qt.callLater(function () {
-                WallpaperManager.setCurrentWallpaper(settings.currentWallpaper, true);
+                try {
+                    if (typeof WallpaperManager !== 'undefined' && WallpaperManager.setCurrentWallpaper)
+                        WallpaperManager.setCurrentWallpaper(settings.currentWallpaper, true);
+                } catch (e) { /* ignore if service unavailable */ }
             })
         }
         onLoadFailed: function(error) {
@@ -105,8 +108,14 @@ Singleton {
 
     Connections {
         target: settingAdapter
-        function onRandomWallpaperChanged() { WallpaperManager.toggleRandomWallpaper() }
-        function onWallpaperIntervalChanged() { WallpaperManager.restartRandomWallpaperTimer() }
-        function onWallpaperFolderChanged() { WallpaperManager.loadWallpapers() }
+        function onRandomWallpaperChanged() {
+            try { if (typeof WallpaperManager !== 'undefined' && WallpaperManager.toggleRandomWallpaper) WallpaperManager.toggleRandomWallpaper() } catch (e) {}
+        }
+        function onWallpaperIntervalChanged() {
+            try { if (typeof WallpaperManager !== 'undefined' && WallpaperManager.restartRandomWallpaperTimer) WallpaperManager.restartRandomWallpaperTimer() } catch (e) {}
+        }
+        function onWallpaperFolderChanged() {
+            try { if (typeof WallpaperManager !== 'undefined' && WallpaperManager.loadWallpapers) WallpaperManager.loadWallpapers() } catch (e) {}
+        }
     }
 }

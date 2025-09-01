@@ -36,11 +36,13 @@ Scope {
                 : Math.round(defaultAudioSink.audio.volume * 100);
         }
     }
-    // Mirror panel when positioned at the bottom
+    // Mirror panel when positioned at the bottom (guard settings availability)
     function mirrorIfBottom() {
-        if (Settings.settings.panelPosition === "bottom") {
-            windowMirror.mirror(bar.barHeight);
-        }
+        try {
+            if (Settings.settings && Settings.settings.panelPosition === "bottom") {
+                windowMirror.mirror(bar.barHeight);
+            }
+        } catch (e) { /* ignore until settings load */ }
     }
 
     Component.onCompleted: {
@@ -51,15 +53,7 @@ Scope {
     // Overview {}
     Bar { id: bar; shell: root; }
     WindowMirror { id: windowMirror } // Helper to mirror window positions when the panel is at the bottom
-    Connections {
-        target: Settings.settings
-        function onPanelPositionChanged() { mirrorIfBottom(); }
-    }
-
-    Connections {
-        target: Hyprland
-        function onClientAdded() { mirrorIfBottom(); }
-    }
+    // Remove noisy Connections with unknown signals; we can re-evaluate on demand or via UI events
 
     Applauncher {
         id: appLauncherPanel
