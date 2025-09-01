@@ -10,7 +10,14 @@ Item {
     property real inset: 4
     // Accent stripe options
     property bool  stripeEnabled: true
-    property color stripeColor: Theme.accentPrimary
+    // Darken accent strongly towards black to reduce brightness
+    property real  stripeBrightness: 0.2 // 0..1, lower = closer to black
+    property color stripeColor: Qt.rgba(
+        Theme.accentPrimary.r * stripeBrightness,
+        Theme.accentPrimary.g * stripeBrightness,
+        Theme.accentPrimary.b * stripeBrightness,
+        1
+    )
     property real  stripeOpacity: 0.9
     // Portion of thickness used by the accent stripe (0..1)
     property real  stripeRatio: 0.35
