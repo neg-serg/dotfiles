@@ -112,11 +112,6 @@ Scope {
                             trayMenu: externalTrayMenu
                         }
                         CustomTrayMenu { id: externalTrayMenu }
-                        Volume {
-                            id: widgetsVolume
-                            shell: rootScope.shell
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
                         Media { anchors.verticalCenter: parent.verticalCenter }
                         PanelPopup { id: sidebarPopup; shell: rootScope.shell }
                         Button {
@@ -124,6 +119,11 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                             screen: modelData
                             sidebarPopup: sidebarPopup
+                        }
+                        Volume {
+                            id: widgetsVolume
+                            shell: rootScope.shell
+                            anchors.verticalCenter: parent.verticalCenter
                         }
                     }
                 }
