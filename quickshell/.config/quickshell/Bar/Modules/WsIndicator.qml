@@ -118,7 +118,7 @@ Item {
     // Icon layout tuning
     property real iconScale: 1.45            // icon size relative to label font
     property int  iconBaselineOffset: 4      // fine baseline tweak for icon (−2..+6 typical)
-    property int  iconSpacing: 2             // gap between icon and text
+    property int  iconSpacing: 1             // gap between items (tighter)
 
     // Size follows the composed row
     implicitWidth: lineBox.implicitWidth
@@ -230,7 +230,7 @@ Item {
             // then compensate for font ascent differences + fine adjust
             anchors.baseline: label.baseline
             anchors.baselineOffset: Math.round(iconBaselineOffset + (fmIcon.ascent - fmSub.ascent) + submapBaselineAdjust)
-            padding: 4
+            padding: 1
         }
 
         // Icon as separate Text with baseline alignment to the label
@@ -248,7 +248,7 @@ Item {
             // Baseline alignment (tweak offset for pixel-perfect visual centering)
             anchors.baseline: label.baseline
             anchors.baselineOffset: iconBaselineOffset
-            padding: 4
+            padding: 3
         }
 
         // Main text remains RichText with soft decoration
