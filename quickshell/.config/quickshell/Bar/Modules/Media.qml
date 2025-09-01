@@ -179,8 +179,15 @@ Item {
                     s = (s === undefined || s === null) ? "" : String(s);
                     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 }
-                // Separator color (dash and slash): keep as before (workspace blue)
-                property string sepColor: "#3b7bb3"
+                // Separator color (dash and slash): workspace blue, slightly darkened
+                property color sepBase: "#3b7bb3"
+                property real sepDarken: 0.85
+                property string sepColor: (
+                    "rgba("
+                    + Math.round(sepBase.r * sepDarken * 255) + ","
+                    + Math.round(sepBase.g * sepDarken * 255) + ","
+                    + Math.round(sepBase.b * sepDarken * 255) + ",1)"
+                )
                 // Bracket color only: dark accent derived from calendar/tray
                 property real bracketB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
                 property string bracketColor: (
