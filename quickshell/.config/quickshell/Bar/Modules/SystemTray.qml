@@ -53,16 +53,17 @@ Row {
         onClicked: {
             expanded = !expanded;
             if (expanded) { openGuard = true; guardTimer.restart(); }
+            inlinePopup.reposition();
         }
     }
 
     // Note: we purposely avoid a full overlay here to prevent immediate close issues in Row
 
-    // Inline popup content under the trigger button (parented to root Row to avoid external deps)
+    // Inline popup content under the trigger button (parented to bar for stable stacking)
     Rectangle {
         id: inlinePopup
         visible: collapsed && expanded
-        parent: root
+        parent: bar
         z: 1001
         // Dark blue popup background (derived from calendar accent, low brightness)
         radius: 12
@@ -78,12 +79,17 @@ Row {
         border.width: 1
         width: collapsedRow.implicitWidth + 12
         height: collapsedRow.implicitHeight + 12
-        // Position relative to the local Row (no global mapping needed)
-        x: collapsedButton.x + collapsedButton.width/2 - inlinePopup.width/2
-        // Open below for top panel, above for bottom panel
-        y: (Settings.settings.panelPosition === "bottom")
-             ? (collapsedButton.y - inlinePopup.height - 6)
-             : (collapsedButton.y + collapsedButton.height + 6)
+        function reposition() {
+            if (!bar || !inlinePopup.visible) return;
+            var pt = collapsedButton.mapToItem(bar, collapsedButton.width/2, collapsedButton.height);
+            inlinePopup.x = pt.x - inlinePopup.width/2;
+            inlinePopup.y = (Settings.settings && Settings.settings.panelPosition === "bottom")
+                ? (pt.y - inlinePopup.height - 6)
+                : (pt.y + 6);
+        }
+        onVisibleChanged: reposition()
+        onWidthChanged: if (visible) reposition()
+        onHeightChanged: if (visible) reposition()
         Row {
             id: collapsedRow
             anchors.left: parent.left
