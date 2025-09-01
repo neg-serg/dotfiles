@@ -84,13 +84,17 @@ Singleton {
             // Media time brackets styling
             // Options: "round" (( )), "tortoise" (〔 〕), "lenticular" (〖 〗), "lenticular_black" (【 】),
             //          "angle" (⟨ ⟩), "square" ([ ])
-            property string timeBracketStyle: "round"
+            property string timeBracketStyle: "square"
 
             // Monitor/Display Settings
             property string panelPosition: "top" // "top" or "bottom" panel location
             property var barMonitors: [] // Array of monitor names to show the bar on
             property var dockMonitors: [] // Array of monitor names to show the dock on
             property var monitorScaleOverrides: {} // Map of monitor name -> scale override (e.g., 0.8..2.0). When set, Theme.scale() returns this value
+
+            // System tray behavior
+            property bool collapseSystemTray: true
+            property string collapsedTrayIcon: "expand_more" // Material Symbols name
         }
     }
 

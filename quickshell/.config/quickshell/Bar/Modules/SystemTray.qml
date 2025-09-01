@@ -18,7 +18,109 @@ Row {
     property bool containsMouse: false
     property var systemTray: SystemTray
 
+    // Collapse/expand behavior from settings
+    property bool collapsed: Settings.settings.collapseSystemTray
+
+    // Collapsed trigger button
+    IconButton {
+        id: collapsedButton
+        visible: collapsed
+        anchors.verticalCenter: parent.verticalCenter
+        size: 24 * Theme.scale(Screen)
+        icon: Settings.settings.collapsedTrayIcon || "expand_more"
+        onClicked: collapsedPopup.visible ? collapsedPopup.close() : collapsedPopup.open()
+    }
+
+    Popup {
+        id: collapsedPopup
+        modal: false
+        focus: true
+        visible: false
+        padding: 6
+        background: Rectangle {
+            radius: 8
+            color: Theme.surfaceVariant
+            border.color: Theme.outline
+            border.width: 1
+        }
+        x: collapsedButton.x + collapsedButton.width / 2 - width / 2
+        y: collapsedButton.y + collapsedButton.height + 6
+
+        contentItem: Row {
+            id: collapsedRow
+            spacing: 6
+            Repeater {
+                model: systemTray.items
+                delegate: Item {
+                    width: 24 * Theme.scale(Screen)
+                    height: 24 * Theme.scale(Screen)
+                    visible: modelData
+
+                    Rectangle {
+                        anchors.centerIn: parent
+                        width: 16 * Theme.scale(Screen)
+                        height: 16 * Theme.scale(Screen)
+                        radius: 6
+                        color: "transparent"
+                        clip: true
+
+                        IconImage {
+                            id: trayIconCollapsed
+                            anchors.centerIn: parent
+                            width: 16 * Theme.scale(Screen)
+                            height: 16 * Theme.scale(Screen)
+                            smooth: false
+                            asynchronous: true
+                            backer.fillMode: Image.PreserveAspectFit
+                            source: {
+                                let icon = modelData?.icon || "";
+                                if (!icon) return "";
+                                if (icon.includes("?path=")) {
+                                    const [name, path] = icon.split("?path=");
+                                    const fileName = name.substring(name.lastIndexOf("/") + 1);
+                                    return `file://${path}/${fileName}`;
+                                }
+                                return icon;
+                            }
+                            opacity: status === Image.Ready ? 1 : 0
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+                        onClicked: mouse => {
+                            if (!modelData) return;
+                            if (mouse.button === Qt.LeftButton) {
+                                if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
+                                if (!modelData.onlyMenu) modelData.activate();
+                                collapsedPopup.close();
+                            } else if (mouse.button === Qt.MiddleButton) {
+                                if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
+                                modelData.secondaryActivate && modelData.secondaryActivate();
+                                collapsedPopup.close();
+                            } else if (mouse.button === Qt.RightButton) {
+                                if (trayMenu && trayMenu.visible) { trayMenu.hideMenu(); return; }
+                                if (modelData.hasMenu && modelData.menu && trayMenu) {
+                                    const menuX = (width / 2) - (trayMenu.width / 2);
+                                    const menuY = height + 20 * Theme.scale(Screen);
+                                    trayMenu.menu = modelData.menu;
+                                    trayMenu.showAt(parent, menuX, menuY);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        onClosed: {/* no-op */}
+    }
+
+    // Inline icons (visible only when not collapsed)
     Repeater {
+        visible: !collapsed
         model: systemTray.items
         delegate: Item {
             width: 24 * Theme.scale(Screen)
