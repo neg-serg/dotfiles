@@ -69,6 +69,15 @@ Row {
                     width: 24 * Theme.scale(Screen)
                     height: 24 * Theme.scale(Screen)
                     visible: modelData
+                    // Staggered reveal (train) from right to left
+                    // Compute per-item progress based on inlineBox.openProgress and index
+                    property int i: index
+                    property int n: (systemTray && systemTray.items ? systemTray.items.length : 0)
+                    // Right-most item (largest index) appears first
+                    property real tRaw: (inlineBox.openProgress * n) - (n - 1 - i)
+                    property real t: Math.max(0, Math.min(1, tRaw))
+                    opacity: t
+                    x: Math.round((1 - t) * 12)
                     Rectangle {
                         anchors.centerIn: parent
                         width: 16 * Theme.scale(Screen)
