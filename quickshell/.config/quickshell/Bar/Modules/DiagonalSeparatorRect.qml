@@ -25,8 +25,8 @@ Item {
         width: Math.round(thickness * Theme.scale(panel.screen))
         height: Math.hypot(root.width, root.height) - inset*2
         radius: 0
-        color: root.color
-        opacity: root.alpha
+        // Apply alpha in color so children (accent stripe) are not faded
+        color: Qt.rgba(root.color.r, root.color.g, root.color.b, root.alpha)
         anchors.centerIn: parent
         anchors.verticalCenter: parent.verticalCenter
         rotation: angleDeg
