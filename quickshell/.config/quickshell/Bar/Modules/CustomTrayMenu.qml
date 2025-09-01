@@ -117,17 +117,17 @@ import qs.Settings
             Rectangle {
                 id: bg;
                 anchors.fill: parent;
-                // Hover color: subtle accent tint (like bracket color)
-                color: mouseArea.containsMouse ? Qt.rgba(listView._accentLite.r, listView._accentLite.g, listView._accentLite.b, 0.22) : "transparent";
+                // Hover color: brighter accent tint (similar to diagonal separator)
+                color: mouseArea.containsMouse ? Qt.rgba(listView._accentLite.r, listView._accentLite.g, listView._accentLite.b, 0.35) : "transparent";
                 radius: 0;
                 visible: !(modelData?.isSeparator ?? false);
                 property color hoverTextColor: mouseArea.containsMouse ? Theme.textPrimary : Theme.textPrimary;
 
                 RowLayout {
                     anchors.fill: parent;
-                    anchors.leftMargin: 8;
-                    anchors.rightMargin: 8;
-                    spacing: 6;
+                    anchors.leftMargin: 6;
+                    anchors.rightMargin: 6;
+                    spacing: 4;
 
                     Text {
                         Layout.fillWidth: true;
@@ -135,7 +135,7 @@ import qs.Settings
                         text: modelData?.text ?? "";
                         font.family: Theme.fontFamily;
                         font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * 0.90);
-                        font.weight: Font.Medium;
+                        font.weight: mouseArea.containsMouse ? Font.DemiBold : Font.Medium;
                         verticalAlignment: Text.AlignVCenter;
                         elide: Text.ElideRight;
                     }
@@ -152,7 +152,7 @@ import qs.Settings
                         // Material Symbols Outlined chevron right for submenu
                         text: modelData?.hasChildren ? "menu" : "";
                         font.family: "Material Symbols Outlined";
-                        font.pixelSize: Math.round(16 * Theme.scale(screen));
+                        font.pixelSize: Math.round(15 * Theme.scale(screen));
                         verticalAlignment: Text.AlignVCenter;
                         visible: modelData?.hasChildren ?? false;
                         color: Theme.textPrimary;
@@ -361,16 +361,16 @@ import qs.Settings
                     Rectangle {
                         id: bg;
                         anchors.fill: parent;
-                        color: mouseArea.containsMouse ? Qt.rgba(listView._accentLite.r, listView._accentLite.g, listView._accentLite.b, 0.22) : "transparent";
+                        color: mouseArea.containsMouse ? Qt.rgba(listView._accentLite.r, listView._accentLite.g, listView._accentLite.b, 0.35) : "transparent";
                         radius: 0;
                         visible: !(modelData?.isSeparator ?? false);
                         property color hoverTextColor: mouseArea.containsMouse ? Theme.textPrimary : Theme.textPrimary;
 
                         RowLayout {
                             anchors.fill: parent;
-                            anchors.leftMargin: 8;
-                            anchors.rightMargin: 8;
-                            spacing: 6;
+                            anchors.leftMargin: 6;
+                            anchors.rightMargin: 6;
+                            spacing: 4;
 
                             Text {
                                 Layout.fillWidth: true;
@@ -378,7 +378,7 @@ import qs.Settings
                                 text: modelData?.text ?? "";
                                 font.family: Theme.fontFamily;
                                 font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * 0.90);
-                                font.weight: Font.Medium;
+                                font.weight: mouseArea.containsMouse ? Font.DemiBold : Font.Medium;
                                 verticalAlignment: Text.AlignVCenter;
                                 elide: Text.ElideRight;
                             }
@@ -394,7 +394,7 @@ import qs.Settings
                             Text {
                                 text: modelData?.hasChildren ? "\uE5CC" : "";
                                 font.family: "Material Symbols Outlined";
-                                font.pixelSize: Math.round(16 * Theme.scale(screen));
+                                font.pixelSize: Math.round(15 * Theme.scale(screen));
                                 verticalAlignment: Text.AlignVCenter;
                                 visible: modelData?.hasChildren ?? false;
                                 color: Theme.textPrimary;
