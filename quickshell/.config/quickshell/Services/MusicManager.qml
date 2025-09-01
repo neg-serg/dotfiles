@@ -155,6 +155,6 @@ Singleton {
     }
 
     // Audio spectrum (bars count from settings)
-    Cava { id: cava; count: (Settings.settings.cavaBars && Settings.settings.cavaBars > 0) ? Settings.settings.cavaBars : 64 }
+    Cava { id: cava; count: (Settings.settings.cavaBars && Settings.settings.cavaBars > 0) ? Settings.settings.cavaBars : 128 }
     property alias cavaValues: cava.values
 }

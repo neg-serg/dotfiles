@@ -77,7 +77,7 @@ Singleton {
             property string colorRange: "limited"
 
             // Media spectrum / CAVA visualization
-            property int  cavaBars: 64
+            property int  cavaBars: 128
             property bool spectrumUseGradient: false
             property bool spectrumMirror: false
             property bool showSpectrumTopHalf: false
