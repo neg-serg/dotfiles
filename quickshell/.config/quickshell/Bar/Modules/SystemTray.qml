@@ -29,12 +29,9 @@ Row {
     // Inline expanded content that participates in Row layout (shifts neighbors)
     Item {
         id: inlineBox
-        // Keep visible during close animation until width shrinks to 0
-        visible: collapsed && (expanded || openProgress > 0)
+        // Show only when expanded (no animation)
+        visible: collapsed && expanded
         anchors.verticalCenter: parent.verticalCenter
-        // Open progress 0..1 drives horizontal expansion
-        property real openProgress: 0
-        Behavior on openProgress { NumberAnimation { duration: 220; easing.type: Easing.OutCubic } }
         // Background behind inline tray icons
         property real pab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
         property color popupAccent: Qt.rgba(
@@ -51,8 +48,8 @@ Row {
             color: inlineBox.popupAccent
             border.color: Theme.backgroundTertiary
             border.width: 1
-            // Horizontal expand from right to left
-            width: Math.max(0, Math.round((collapsedRow.implicitWidth + 6) * inlineBox.openProgress))
+            // No animated width — show full content immediately
+            width: collapsedRow.implicitWidth + 6
             height: collapsedRow.implicitHeight + 6
             anchors.verticalCenter: parent.verticalCenter
             clip: true
@@ -69,19 +66,9 @@ Row {
                     width: 24 * Theme.scale(Screen)
                     height: 24 * Theme.scale(Screen)
                     visible: modelData
-                    // Staggered reveal (train) from right to left
-                    // Compute per-item progress based on actual revealed width of bg
-                    property var i: (typeof index === 'number' ? index : 0)
-                    property var n: (systemTray && systemTray.items ? systemTray.items.length : 0)
-                    property real w: 24 * Theme.scale(Screen)
-                    property real span: (w + collapsedRow.spacing)
-                    // How many item slots could fit into the currently revealed width (minus padding)
-                    property real revealedSlots: Math.max(0, (bg.width - 6) / Math.max(1, span))
-                    // Right-most item (largest index) appears first as width grows
-                    property real tRaw: (revealedSlots - (n - 1 - i))
-                    property real t: Math.max(0, Math.min(1, tRaw))
-                    opacity: t
-                    x: Math.round((1 - t) * 12)
+                    // No per-icon animation; show immediately
+                    opacity: 1
+                    x: 0
                     Rectangle {
                         anchors.centerIn: parent
                         width: 16 * Theme.scale(Screen)
@@ -168,14 +155,9 @@ Row {
         onClicked: {
             expanded = !expanded;
             if (expanded) { openGuard = true; guardTimer.restart(); }
-            if (collapsed) inlineBox.openProgress = expanded ? 1 : 0;
         }
     }
 
-    // Keep animation in sync if expanded changes from elsewhere (settings, etc.)
-    onExpandedChanged: {
-        if (collapsed) inlineBox.openProgress = expanded ? 1 : 0;
-    }
 
     // Inline icons (visible only when not collapsed)
     Repeater {
