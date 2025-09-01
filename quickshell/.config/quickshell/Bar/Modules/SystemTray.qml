@@ -36,6 +36,7 @@ Row {
         modal: false
         focus: true
         visible: false
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent | Popup.CloseOnPressOutside
         padding: 6
         background: Rectangle {
             radius: 8
@@ -43,8 +44,12 @@ Row {
             border.color: Theme.outline
             border.width: 1
         }
-        x: collapsedButton.x + collapsedButton.width / 2 - width / 2
-        y: collapsedButton.y + collapsedButton.height + 6
+        // Position near the trigger button using global coords
+        onOpened: {
+            const pt = collapsedButton.mapToItem(null, collapsedButton.width/2, collapsedButton.height);
+            collapsedPopup.x = pt.x - collapsedPopup.width/2;
+            collapsedPopup.y = pt.y + 6;
+        }
 
         contentItem: Row {
             id: collapsedRow
@@ -120,8 +125,8 @@ Row {
 
     // Inline icons (visible only when not collapsed)
     Repeater {
-        visible: !collapsed
-        model: systemTray.items
+        // Hide inline icons when collapsed
+        model: collapsed ? 0 : systemTray.items
         delegate: Item {
             width: 24 * Theme.scale(Screen)
             height: 24 * Theme.scale(Screen)
