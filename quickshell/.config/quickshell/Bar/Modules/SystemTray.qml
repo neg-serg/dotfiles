@@ -61,8 +61,8 @@ Row {
             id: bg
             radius: 0
             color: inlineBox.popupAccent
-            border.color: Theme.backgroundTertiary
-            border.width: 1
+            border.color: "transparent"
+            border.width: 0
             // No animated width — show full content immediately
             width: collapsedRow.implicitWidth + 6
             height: collapsedRow.implicitHeight + 6

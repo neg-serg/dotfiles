@@ -64,12 +64,13 @@ import qs.Settings
         menu: trayMenu.menu;
     }
 
+    // Base background: compact, no border, no radius
     Rectangle {
         id: bg;
         anchors.fill: parent;
         color: Theme.backgroundPrimary || "#222";
-        border.color: Theme.outline || "#444";
-        border.width: 1;
+        border.color: "transparent";
+        border.width: 0;
         radius: 0;
         z: 0;
     }
@@ -77,7 +78,7 @@ import qs.Settings
     ListView {
         id: listView;
         anchors.fill: parent;
-        anchors.margins: 6;
+        anchors.margins: 4;
         spacing: 2;
         interactive: false;
         enabled: trayMenu.visible;
@@ -87,12 +88,19 @@ import qs.Settings
             values: opener.children ? [...opener.children.values] : []
         }
 
+        // Accent/Brackets-like highlight derived from accent but desaturated (similar to player brackets)
+        readonly property real _ab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
+        readonly property color _accentLite: Qt.rgba(Theme.accentPrimary.r * _ab,
+                                                    Theme.accentPrimary.g * _ab,
+                                                    Theme.accentPrimary.b * _ab,
+                                                    1)
+
         delegate: Rectangle {
             id: entry;
             required property var modelData;
 
             width: listView.width;
-            height: (modelData?.isSeparator) ? 8 : 32;
+            height: (modelData?.isSeparator) ? 6 : 26;
             color: "transparent";
             radius: 0;
 
@@ -109,23 +117,25 @@ import qs.Settings
             Rectangle {
                 id: bg;
                 anchors.fill: parent;
-                color: mouseArea.containsMouse ? Theme.highlight : "transparent";
+                // Hover color: subtle accent tint (like bracket color)
+                color: mouseArea.containsMouse ? Qt.rgba(listView._accentLite.r, listView._accentLite.g, listView._accentLite.b, 0.22) : "transparent";
                 radius: 0;
                 visible: !(modelData?.isSeparator ?? false);
-                property color hoverTextColor: mouseArea.containsMouse ? Theme.onAccent : Theme.textPrimary;
+                property color hoverTextColor: mouseArea.containsMouse ? Theme.textPrimary : Theme.textPrimary;
 
                 RowLayout {
                     anchors.fill: parent;
-                    anchors.leftMargin: 12;
-                    anchors.rightMargin: 12;
-                    spacing: 8;
+                    anchors.leftMargin: 8;
+                    anchors.rightMargin: 8;
+                    spacing: 6;
 
                     Text {
                         Layout.fillWidth: true;
                         color: (modelData?.enabled ?? true) ? bg.hoverTextColor : Theme.textDisabled;
                         text: modelData?.text ?? "";
                         font.family: Theme.fontFamily;
-                        font.pixelSize: Theme.fontSizeSmall * Theme.scale(screen);
+                        font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * 0.90);
+                        font.weight: Font.Medium;
                         verticalAlignment: Text.AlignVCenter;
                         elide: Text.ElideRight;
                     }
@@ -142,7 +152,7 @@ import qs.Settings
                         // Material Symbols Outlined chevron right for submenu
                         text: modelData?.hasChildren ? "menu" : "";
                         font.family: "Material Symbols Outlined";
-                        font.pixelSize: 18 * Theme.scale(screen);
+                        font.pixelSize: Math.round(16 * Theme.scale(screen));
                         verticalAlignment: Text.AlignVCenter;
                         visible: modelData?.hasChildren ?? false;
                         color: Theme.textPrimary;
@@ -298,20 +308,21 @@ import qs.Settings
                 menu: subMenu.menu;
             }
 
+            // Submenu background: no border, no radius, compact
             Rectangle {
                 id: bg;
                 anchors.fill: parent;
                 color: Theme.backgroundPrimary || "#222";
-                border.color: Theme.outline || "#444";
-                border.width: 1;
-                radius: 12;
+                border.color: "transparent";
+                border.width: 0;
+                radius: 0;
                 z: 0;
             }
 
             ListView {
                 id: listView;
                 anchors.fill: parent;
-                anchors.margins: 6;
+                anchors.margins: 4;
                 spacing: 2;
                 interactive: false;
                 enabled: subMenu.visible;
@@ -321,14 +332,21 @@ import qs.Settings
                     values: opener.children ? [...opener.children.values] : [];
                 }
 
+                // Reuse same accent tinting for submenu entries
+                readonly property real _ab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
+                readonly property color _accentLite: Qt.rgba(Theme.accentPrimary.r * _ab,
+                                                            Theme.accentPrimary.g * _ab,
+                                                            Theme.accentPrimary.b * _ab,
+                                                            1)
+
                 delegate: Rectangle {
                     id: entry;
                     required property var modelData;
 
                     width: listView.width;
-                    height: (modelData?.isSeparator) ? 8 : 32;
+                    height: (modelData?.isSeparator) ? 6 : 26;
                     color: "transparent";
-                    radius: 12;
+                    radius: 0;
 
                     property var subMenu: null;
 
@@ -343,23 +361,24 @@ import qs.Settings
                     Rectangle {
                         id: bg;
                         anchors.fill: parent;
-                        color: mouseArea.containsMouse ? Theme.highlight : "transparent";
-                        radius: 8;
+                        color: mouseArea.containsMouse ? Qt.rgba(listView._accentLite.r, listView._accentLite.g, listView._accentLite.b, 0.22) : "transparent";
+                        radius: 0;
                         visible: !(modelData?.isSeparator ?? false);
-                        property color hoverTextColor: mouseArea.containsMouse ? Theme.onAccent : Theme.textPrimary;
+                        property color hoverTextColor: mouseArea.containsMouse ? Theme.textPrimary : Theme.textPrimary;
 
                         RowLayout {
                             anchors.fill: parent;
-                            anchors.leftMargin: 12;
-                            anchors.rightMargin: 12;
-                            spacing: 8;
+                            anchors.leftMargin: 8;
+                            anchors.rightMargin: 8;
+                            spacing: 6;
 
                             Text {
                                 Layout.fillWidth: true;
                                 color: (modelData?.enabled ?? true) ? bg.hoverTextColor : Theme.textDisabled;
                                 text: modelData?.text ?? "";
                                 font.family: Theme.fontFamily;
-                                font.pixelSize: Theme.fontSizeSmall * Theme.scale(screen);
+                                font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * 0.90);
+                                font.weight: Font.Medium;
                                 verticalAlignment: Text.AlignVCenter;
                                 elide: Text.ElideRight;
                             }
@@ -375,7 +394,7 @@ import qs.Settings
                             Text {
                                 text: modelData?.hasChildren ? "\uE5CC" : "";
                                 font.family: "Material Symbols Outlined";
-                                font.pixelSize: 18 * Theme.scale(screen);
+                                font.pixelSize: Math.round(16 * Theme.scale(screen));
                                 verticalAlignment: Text.AlignVCenter;
                                 visible: modelData?.hasChildren ?? false;
                                 color: Theme.textPrimary;
