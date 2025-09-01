@@ -85,6 +85,8 @@ Singleton {
             property real spectrumHeightFactor: 1.2
             property real spectrumOverlapFactor: 0.2  // how much overlaps upward from baseline (0..1 of font size)
             property real spectrumBarGap: 1.0         // gap between bars in px (scaled later)
+            // Additional upward shift for CAVA spectrum behind text (in font-size units)
+            property real spectrumVerticalRaise: 0.35
 
             // Media time brackets styling
             // Options: "round" (( )), "tortoise" (〔 〕), "lenticular" (〖 〗), "lenticular_black" (【 】),

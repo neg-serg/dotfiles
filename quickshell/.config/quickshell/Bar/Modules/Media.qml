@@ -133,9 +133,9 @@ Item {
             LinearSpectrum {
                 id: linearSpectrum
                 anchors.left: parent.left
-                // Place the spectrum just below the text, slightly overlapping upward
+                // Place the spectrum behind the text, raised further upward
                 anchors.top: trackText.bottom
-                anchors.topMargin: -Math.round(trackText.font.pixelSize * Settings.settings.spectrumOverlapFactor)
+                anchors.topMargin: -Math.round(trackText.font.pixelSize * (Settings.settings.spectrumOverlapFactor + Settings.settings.spectrumVerticalRaise))
                 height: Math.round(trackText.font.pixelSize * Settings.settings.spectrumHeightFactor)
                 // Limit spectrum width to the measured title text width
                 width: Math.ceil(titleMeasure.width)
