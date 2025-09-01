@@ -11,6 +11,8 @@ Item {
     property int    desiredHeight: 28
     property int    fontPixelSize: 0
     property color  textColor: Theme.textPrimary
+    // Match media separators color (same blue as workspace accents)
+    property color  separatorColor: "#3b7bb3"
     property color  bgColor:   "transparent"
     property int    iconSpacing: 4
     property string deviceMatch: ""
@@ -78,7 +80,11 @@ Item {
 
         Label {
             id: label
-            text: displayText
+            // Render slash with colored separator like in media widget
+            textFormat: Text.RichText
+            text: displayText && displayText.indexOf('/') !== -1
+                    ? displayText.replace('/', "<span style='color:" + root.separatorColor + "'>/</span>")
+                    : displayText
             color: textColor
             font.family: Theme.fontFamily
             font.pixelSize: root.computedFontPx
