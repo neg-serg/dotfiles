@@ -118,7 +118,9 @@ Item {
                 id: linearSpectrum
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
+                // Place the spectrum just below the text
+                anchors.top: trackText.bottom
+                anchors.topMargin: 1 * Theme.scale(Screen)
                 height: Math.round(trackText.font.pixelSize * 0.7)
                 values: MusicManager.cavaValues
                 amplitudeScale: 1.0
