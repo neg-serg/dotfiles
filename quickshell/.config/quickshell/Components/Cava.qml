@@ -2,24 +2,29 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.Services
+import qs.Settings
 
 Scope {
     id: root
     // Default bars reduced by one third: 64 -> ~43
     property int count: 43
-    property int noiseReduction: 60
+    // Pull defaults from settings for a crisper, less-smoothed look
+    property int noiseReduction: (Settings.settings.cavaNoiseReduction !== undefined ? Settings.settings.cavaNoiseReduction : 5)
+    property int framerate:      (Settings.settings.cavaFramerate      !== undefined ? Settings.settings.cavaFramerate      : 60)
+    property int gravity:        (Settings.settings.cavaGravity        !== undefined ? Settings.settings.cavaGravity        : 20000)
+    property bool monstercat:    (Settings.settings.cavaMonstercat     !== undefined ? Settings.settings.cavaMonstercat     : false)
     property string channels: "mono"
     property string monoOption: "average"
 
     property var config: ({
             general: {
                 bars: count,
-                framerate: 30,
+                framerate: framerate,
                 autosens: 1
             },
             smoothing: {
-                monstercat: 1,
-                gravity: 1000000,
+                monstercat: monstercat ? 1 : 0,
+                gravity: gravity,
                 noise_reduction: noiseReduction
             },
             output: {

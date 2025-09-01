@@ -79,6 +79,11 @@ Singleton {
             // Media spectrum / CAVA visualization
             // Reduced by one third from 128 -> ~86
             property int  cavaBars: 86
+            // CAVA tuning (crisper, less smoothing/denoise)
+            property int  cavaFramerate: 60
+            property bool cavaMonstercat: false
+            property int  cavaGravity: 20000
+            property int  cavaNoiseReduction: 5
             property bool spectrumUseGradient: false
             property bool spectrumMirror: false
             property bool showSpectrumTopHalf: false
