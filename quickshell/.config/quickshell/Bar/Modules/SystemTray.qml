@@ -55,7 +55,6 @@ Row {
         onClicked: {
             expanded = !expanded;
             if (expanded) { openGuard = true; guardTimer.restart(); }
-            inlinePopup.reposition();
         }
     }
 
