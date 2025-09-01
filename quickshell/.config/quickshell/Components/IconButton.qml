@@ -9,6 +9,8 @@ MouseArea {
     property bool enabled: true
     property bool hovering: false
     property real size: 32
+    // Corner radius (allows per-usage override)
+    property int cornerRadius: 8
     // Customizable colors
     property color accentColor: Theme.accentPrimary
     property color iconNormalColor: Theme.textPrimary
@@ -23,7 +25,7 @@ MouseArea {
 
     Rectangle {
         anchors.fill: parent
-        radius: 8
+        radius: cornerRadius
         color: root.hovering ? root.accentColor : "transparent"
     }
     Text {

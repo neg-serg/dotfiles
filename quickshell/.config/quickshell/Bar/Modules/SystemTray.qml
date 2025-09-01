@@ -35,6 +35,8 @@ Row {
         anchors.verticalCenter: parent.verticalCenter
         // Keep compact size to match bar density
         size: 24 * Theme.scale(Screen)
+        // Reduce rounding specifically for tray button (half of default 8)
+        cornerRadius: 4
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
         // Derive accent from calendar's accent with low brightness
         property real ab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
