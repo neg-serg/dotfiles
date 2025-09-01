@@ -5,7 +5,8 @@ import qs.Services
 
 Scope {
     id: root
-    property int count: 64
+    // Default bars reduced by one third: 64 -> ~43
+    property int count: 43
     property int noiseReduction: 60
     property string channels: "mono"
     property string monoOption: "average"
