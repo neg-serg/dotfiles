@@ -110,9 +110,9 @@ PanelWithOverlay {
                 RowLayout { // Music and System Monitor row
                     spacing: 8 * Theme.scale(screen)
                     Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignHCenter
+                    // Stretch music module to panel edges
                     Music {
-                        width: 332 * Theme.scale(screen)
+                        Layout.fillWidth: true
                         height: 250 * Theme.scale(screen)
                     }
                 }
