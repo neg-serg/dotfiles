@@ -13,6 +13,11 @@ Row {
     // Screen for overlay placement (set from Bar/Bar.qml)
     property var screen
     property var trayMenu
+    // Track programmatic overlay dismiss to distinguish outside-click
+    property bool programmaticOverlayDismiss: false
+    // Delay collapse after outside click (ms)
+    Timer { id: collapseDelayTimer; interval: 5000; repeat: false; onTriggered: root.expanded = false }
+    function dismissOverlayNow() { root.programmaticOverlayDismiss = true; trayOverlay.dismiss(); root.programmaticOverlayDismiss = false }
     spacing: 8
     Layout.alignment: Qt.AlignVCenter
 
@@ -38,7 +43,15 @@ Row {
         onVisibleChanged: {
             if (!visible) {
                 if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
-                if (root.expanded) root.expanded = false
+                if (root.expanded) {
+                    // Start delayed collapse only for outside-click dismiss
+                    if (!root.programmaticOverlayDismiss) {
+                        collapseDelayTimer.restart();
+                    } else {
+                        if (collapseDelayTimer.running) collapseDelayTimer.stop();
+                        root.expanded = false;
+                    }
+                }
             }
         }
     }
@@ -124,14 +137,14 @@ Row {
                                 if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
                                 if (!modelData.onlyMenu) modelData.activate();
                                 expanded = false;
-                                trayOverlay.dismiss();
+                                root.dismissOverlayNow();
                             } else if (mouse.button === Qt.MiddleButton) {
                                 if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
                                 modelData.secondaryActivate && modelData.secondaryActivate();
                                 expanded = false;
-                                trayOverlay.dismiss();
+                                root.dismissOverlayNow();
                             } else if (mouse.button === Qt.RightButton) {
-                                if (trayMenu && trayMenu.visible) { trayMenu.hideMenu(); trayOverlay.dismiss(); return; }
+                                if (trayMenu && trayMenu.visible) { trayMenu.hideMenu(); root.dismissOverlayNow(); return; }
                                 if (modelData.hasMenu && modelData.menu && trayMenu) {
                                     const menuX = (width / 2) - (trayMenu.width / 2);
                                     const menuY = height + 20 * Theme.scale(Screen);
@@ -177,7 +190,7 @@ Row {
             expanded = !expanded;
             if (expanded) { openGuard = true; guardTimer.restart(); }
             if (expanded) { trayOverlay.show(); try { trayOverlay.showOverlay = false; } catch (e) {} }
-            else trayOverlay.dismiss();
+            else root.dismissOverlayNow();
         }
     }
 
@@ -185,7 +198,7 @@ Row {
     onExpandedChanged: {
         if (!expanded) {
             if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
-            trayOverlay.dismiss();
+            root.dismissOverlayNow();
         }
     }
 
