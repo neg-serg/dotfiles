@@ -188,9 +188,12 @@ Item {
                     const t = trackText.esc(trackText.titlePart).replace(/\s-\s/g, " <span style='color:" + trackText.sepColor + "'>-</span> ");
                     const cur = fmtTime(MusicManager.currentPosition || 0);
                     const tot = fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
-                    return t + " &nbsp;<span style='color:" + trackText.sepColor + "'>[</span>" + cur +
-                           "<span style='color:" + trackText.sepColor + "'>/</span>" + tot +
-                           "<span style='color:" + trackText.sepColor + "'>]</span>";
+                    const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.9));
+                    return t + " &nbsp;<span style='color:" + trackText.sepColor + "'>[</span>"
+                           + "<span style='font-size:" + timeSize + "px'>" + cur + "</span>"
+                           + "<span style='color:" + trackText.sepColor + "'>/</span>"
+                           + "<span style='font-size:" + timeSize + "px'>" + tot + "</span>"
+                           + "<span style='color:" + trackText.sepColor + "'>]</span>";
                 })()
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
