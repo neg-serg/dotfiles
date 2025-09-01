@@ -36,10 +36,18 @@ Row {
         // Keep compact size to match bar density
         size: 24 * Theme.scale(Screen)
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
-        // Match calendar styling: neutral icon, saturated blue hover background
-        accentColor: Theme.accentPrimary
+        // Derive accent from calendar's accent with low brightness
+        property real ab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
+        property color derivedAccent: Qt.rgba(
+            Theme.accentPrimary.r * ab,
+            Theme.accentPrimary.g * ab,
+            Theme.accentPrimary.b * ab,
+            1
+        )
+        accentColor: derivedAccent
+        // Neutral icon normally, readable light icon on hover (dark accent)
         iconNormalColor: Theme.textPrimary
-        iconHoverColor: Theme.onAccent
+        iconHoverColor: Theme.textPrimary
         onClicked: {
             expanded = !expanded;
             if (expanded) { openGuard = true; guardTimer.restart(); }
