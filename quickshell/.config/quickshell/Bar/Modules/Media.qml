@@ -42,12 +42,14 @@ Item {
                 values: MusicManager.cavaValues
                 anchors.centerIn: parent
                 visualizerType: "roundedSquare"
+                amplitudeScale: 0.5
                 innerRadius: 14 * Theme.scale(Screen)
                 outerRadius: 26 * Theme.scale(Screen)
                 fillColor: Theme.accentPrimary
                 strokeColor: Theme.accentPrimary
                 strokeWidth: 0
-                z: 2
+                // Render behind album art to avoid overlaying the image
+                z: 0
             }
 
             Rectangle {

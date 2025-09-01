@@ -11,6 +11,8 @@ Item {
     property string visualizerType: Settings.settings.visualizerType
     // Squircle power for rounded square (m=4 ~ rounded square)
     property real superellipsePower: 4.0
+    // Scale of bar height (0..1)
+    property real amplitudeScale: 1.0
     property color fillColor: "#fff"
     property real  fillOpacity: 0.5
     property color strokeColor: "#fff"
@@ -31,7 +33,9 @@ Item {
             property real value: root.values[index]
             property real angle: (index / root.values.length) * 360
             width: Math.max(2 * Theme.scale(Screen), (root.innerRadius * 2 * Math.PI) / root.values.length - 4 * Theme.scale(Screen))
-            height: root.visualizerType === "diamond" ? value * 2 * (usableOuter - root.innerRadius) : value * (usableOuter - root.innerRadius)
+            height: root.visualizerType === "diamond"
+                    ? value * 2 * root.amplitudeScale * (usableOuter - root.innerRadius)
+                    : value * root.amplitudeScale * (usableOuter - root.innerRadius)
             radius: width / 2
             color: Qt.rgba(root.fillColor.r, root.fillColor.g, root.fillColor.b, root.fillOpacity)
             border.color: Qt.rgba(root.strokeColor.r, root.strokeColor.g, root.strokeColor.b, root.strokeOpacity)
