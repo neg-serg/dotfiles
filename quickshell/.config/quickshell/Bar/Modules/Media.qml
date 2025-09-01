@@ -201,7 +201,7 @@ Item {
                     const tot = fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
                     const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.75));
                     const bp = trackText.bracketPair();
-                    return t + " &#8201;<span style='color:" + trackText.sepColor + "'>" + bp.l + "</span>"
+                    return t + " &#8202;<span style='color:" + trackText.sepColor + "'>" + bp.l + "</span>"
                            + "<span style='font-size:" + timeSize + "px'>" + cur + "</span>"
                            + "<span style='color:" + trackText.sepColor + "'>/</span>"
                            + "<span style='font-size:" + timeSize + "px'>" + tot + "</span>"
