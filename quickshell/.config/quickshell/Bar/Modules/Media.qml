@@ -179,13 +179,15 @@ Item {
                     s = (s === undefined || s === null) ? "" : String(s);
                     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 }
-                // Bracket/separator color: derived dark accent (same logic as tray)
-                property real sepB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
-                property string sepColor: (
+                // Separator color (dash and slash): keep as before (workspace blue)
+                property string sepColor: "#3b7bb3"
+                // Bracket color only: dark accent derived from calendar/tray
+                property real bracketB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
+                property string bracketColor: (
                     "rgba("
-                    + Math.round(Theme.accentPrimary.r * sepB * 255) + ","
-                    + Math.round(Theme.accentPrimary.g * sepB * 255) + ","
-                    + Math.round(Theme.accentPrimary.b * sepB * 255) + ",1)"
+                    + Math.round(Theme.accentPrimary.r * bracketB * 255) + ","
+                    + Math.round(Theme.accentPrimary.g * bracketB * 255) + ","
+                    + Math.round(Theme.accentPrimary.b * bracketB * 255) + ",1)"
                 )
                 property string titlePart: (MusicManager.trackArtist || MusicManager.trackTitle)
                     ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")
@@ -212,11 +214,11 @@ Item {
                     const bp = trackText.bracketPair();
                     // No extra space before bracket to minimize gap; shrink bracket size; raise time via <sup>
                     return t
-                           + " &#8201;<span style='color:" + trackText.sepColor + "'>" + bp.l + "</span>"
+                           + " &#8201;<span style='color:" + trackText.bracketColor + "'>" + bp.l + "</span>"
                            + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1'>" + cur + "</span>"
                            + "<span style='color:" + trackText.sepColor + "'>/</span>"
                            + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1'>" + tot + "</span>"
-                           + "<span style='color:" + trackText.sepColor + "'>" + bp.r + "</span>";
+                           + "<span style='color:" + trackText.bracketColor + "'>" + bp.r + "</span>";
                 })()
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
