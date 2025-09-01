@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Widgets
+// (Io import removed)
 import QtQuick.Effects
 import qs.Settings
 import qs.Services
@@ -15,6 +16,8 @@ Item {
     height: 36 * Theme.scale(Screen)
     visible: Settings.settings.showMediaInBar && MusicManager.currentPlayer
 
+    // Fancy metadata disabled
+
     // Format ms -> m:ss or h:mm:ss
     function fmtTime(ms) {
         if (ms === undefined || ms < 0) return "0:00";
@@ -26,7 +29,6 @@ Item {
         var ss = s < 10 ? "0"+s : ""+s;
         return h > 0 ? (h + ":" + mm + ":" + ss) : (mm + ":" + ss);
     }
-
     RowLayout {
         id: mediaRow
         height: parent.height
@@ -181,8 +183,8 @@ Item {
                 }
                 // Separator color (dash and slash): almost as dark as brackets
                 // Use a slightly higher brightness factor than brackets
-                // 155% lighter than brackets (clamped)
-                property real sepB: Math.min(1, bracketB * 2.55)
+                // 165% lighter than brackets (clamped)
+                property real sepB: Math.min(1, bracketB * 2.65)
                 property string sepColor: (
                     "rgba("
                     + Math.round(Theme.accentPrimary.r * sepB * 255) + ","
@@ -250,4 +252,8 @@ Item {
             // (Time is embedded in trackText; no separate right block)
         }
     }
+
+    // Tooltip removed
+
+    // --- Fancy info builder removed -------------------------
 }

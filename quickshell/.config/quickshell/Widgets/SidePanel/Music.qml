@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
+// (Io import removed)
 import qs.Settings
 import qs.Components
 import qs.Services
@@ -72,6 +73,8 @@ Rectangle {
             property int musicFontPx: Math.round(13 * Theme.scale(screen))
             property color musicTextColor: Theme.textPrimary
             property int musicFontWeight: Font.Medium
+
+            // Fancy info removed
 
             // Player selector
             // Build a de-duplicated list of players by identity/id
@@ -346,10 +349,15 @@ Rectangle {
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
+
+                    // Fancy metadata removed
                 }
             }
 
             // (Progress bar and media controls removed as requested)
         }
     }
+
+    // --- Fancy info builder (mpd + sox + id3info) -------------------------
+    // Replicates the Python script's logic to produce styled lines.
 }
