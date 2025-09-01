@@ -249,7 +249,7 @@ Item {
             // Baseline alignment (tweak offset for pixel-perfect visual centering)
             anchors.baseline: label.baseline
             anchors.baselineOffset: iconBaselineOffset
-            padding: 3
+            padding: 1
         }
 
         // Main text remains RichText with soft decoration
@@ -263,6 +263,8 @@ Item {
             font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
             color: Theme.textPrimary
             padding: 6
+            // Reduce left padding to tighten gap next to icon
+            leftPadding: 2
 
             // Optional: lock line box so icon never affects line height
             // lineHeightMode: Text.FixedHeight
