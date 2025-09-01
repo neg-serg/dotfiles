@@ -10,6 +10,7 @@ import qs.Settings
 import qs.Components
 
 Row {
+    id: root
     property var bar
     property var shell
     property var trayMenu
@@ -46,7 +47,7 @@ Row {
         visible: false
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent | Popup.CloseOnPressOutside
         padding: 6
-        transientParent: (root.Window && root.Window.window) ? root.Window.window : null
+        transientParent: root.Window.window
         background: Rectangle {
             radius: 8
             color: Theme.surfaceVariant
