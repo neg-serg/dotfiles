@@ -92,7 +92,10 @@ Scope {
                         DiagSep {}
                         NetworkUsage { id: net; anchors.verticalCenter: wsindicator.verticalCenter }
                         DiagSep {}
-                        LocalMods.WeatherButton { anchors.verticalCenter: parent.verticalCenter }
+                        LocalMods.WeatherButton {
+                            anchors.verticalCenter: parent.verticalCenter
+                            visible: Settings.settings.showWeatherInBar === true
+                        }
                         // Rightmost separator of the left section: no accent stripe
                         DiagSep { stripeEnabled: false }
                     }

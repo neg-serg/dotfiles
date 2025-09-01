@@ -3,5 +3,6 @@
     "dimPanels": true,
     "fontSizeMultiplier": 1.2,
     "showMediaInBar": true,
+    "showWeatherInBar": false,
     "showSystemInfoInBar": true
 }

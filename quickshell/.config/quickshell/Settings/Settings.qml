@@ -48,6 +48,8 @@ Singleton {
             property string videoPath: "~/vid/"
             property bool showSystemInfoInBar: false
             property bool showMediaInBar: false
+            // Weather button in bar
+            property bool showWeatherInBar: false
             property bool useSWWW: false
             property bool randomWallpaper: false
             property bool useWallpaperTheme: false
