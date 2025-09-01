@@ -30,7 +30,7 @@ Rectangle {
             baseB * desat + lum * (1 - desat),
             cardAlpha
         )
-        radius: 18 * Theme.scale(Screen)
+        radius: 9 * Theme.scale(Screen)
 
         // Show fallback UI if no player is available
         Item {
