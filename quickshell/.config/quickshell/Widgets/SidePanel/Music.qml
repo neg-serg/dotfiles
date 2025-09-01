@@ -162,28 +162,30 @@ Rectangle {
                     height: 96 * Theme.scale(screen) // enough for spectrum and art (will adjust if needed)
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
 
-                    // Circular spectrum visualizer around album art
-                    CircularSpectrum {
+                    // Elliptic spectrum (dual curves with exponential half-life decay)
+                    EllipticSpectrum {
                         id: spectrum
                         values: MusicManager.cavaValues
                         anchors.centerIn: parent
-                        visualizerType: "roundedSquare"
-                        innerRadius: 30 * Theme.scale(screen) // Position just outside 60x60 album art
-                        outerRadius: 48 * Theme.scale(screen) // Extend bars outward from album art
-                        fillColor: Theme.accentPrimary
-                        strokeColor: Theme.accentPrimary
-                        strokeWidth: 0 * Theme.scale(screen)
-                        // Ensure spectrum is at the very bottom behind artwork
+                        rx: 42 * Theme.scale(screen)
+                        ry: 32 * Theme.scale(screen)
+                        amplitudeA: 0.45
+                        amplitudeB: 0.25
+                        lineWidthA: 2 * Theme.scale(screen)
+                        lineWidthB: 1.25 * Theme.scale(screen)
+                        halfLifeMs: 260
+                        strokeA: Theme.accentPrimary
+                        strokeB: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.65)
                         z: -1
                     }
 
-                    // Album art image
+                    // Album art image (square with slight rounding)
                     Rectangle {
                         id: albumArtwork
                         width: 60 * Theme.scale(screen)
                         height: 60 * Theme.scale(screen)
                         anchors.centerIn: parent
-                        radius: width * 0.5
+                        radius: 8 * Theme.scale(screen)
                         color: Qt.darker(Theme.surface, 1.1)
                         border.color: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.3)
                         border.width: 1 * Theme.scale(screen)
@@ -202,7 +204,7 @@ Rectangle {
                             source: (MusicManager.coverUrl || "")
                             visible: source && source.toString() !== ""
 
-                            // Apply circular mask for rounded corners
+                            // Apply rounded-rect mask (small radius)
                             layer.enabled: true
                             layer.effect: MultiEffect {
                                 maskEnabled: true
@@ -220,7 +222,7 @@ Rectangle {
                             Rectangle {
                                 width: albumArt.width
                                 height: albumArt.height
-                                radius: albumArt.width / 2 // circle
+                                radius: 8 * Theme.scale(screen)
                             }
                         }
 
