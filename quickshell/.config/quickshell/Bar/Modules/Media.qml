@@ -112,16 +112,21 @@ Item {
             implicitWidth: trackText.implicitWidth
             // keep container height to the text's height so row layout remains unchanged
             height: trackText.implicitHeight
+            // Track progress (0..1) for dynamic spectrum width
+            property real progress: Math.max(0, Math.min(1,
+                (MusicManager.currentPosition || 0) / Math.max(1, MusicManager.mprisToMs(MusicManager.trackLength || 0))
+            ))
 
             // Linear spectrum rendered behind the text
             LinearSpectrum {
                 id: linearSpectrum
                 anchors.left: parent.left
-                anchors.right: parent.right
                 // Place the spectrum just below the text, slightly overlapping upward
                 anchors.top: trackText.bottom
                 anchors.topMargin: -Math.round(trackText.font.pixelSize * 0.2)
                 height: Math.round(trackText.font.pixelSize * 1.2)
+                // Width follows current track progress; keep a small minimum
+                width: Math.max(16 * Theme.scale(Screen), Math.round(parent.width * trackContainer.progress))
                 values: MusicManager.cavaValues
                 amplitudeScale: 1.0
                 barGap: 1 * Theme.scale(Screen)
