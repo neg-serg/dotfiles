@@ -52,9 +52,9 @@ Rectangle {
 
                 Text {
                     text: MusicManager.hasPlayer ? "No controllable player selected" : "No music player detected"
-                    color: Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.6)
+                    color: playerUI.musicTextColor
                     font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSizeSmall * Theme.scale(screen)
+                    font.pixelSize: playerUI.musicFontPx
                     Layout.alignment: Qt.AlignHCenter
                 }
             }
@@ -65,12 +65,19 @@ Rectangle {
             id: playerUI
             anchors.fill: parent
             anchors.margins: 18 * Theme.scale(screen)
-            spacing: 12 * Theme.scale(screen)
+            spacing: 4 * Theme.scale(screen)
             visible: !!MusicManager.currentPlayer
+
+            // Unified typography for music widget
+            property int musicFontPx: Math.round(13 * Theme.scale(screen))
+            property color musicTextColor: Theme.textPrimary
+            property int musicFontWeight: Font.Medium
 
             // Player selector
             // Build a de-duplicated list of players by identity/id
             property var uniquePlayers: []
+            readonly property bool showCombo: uniquePlayers && uniquePlayers.length > 1
+            readonly property bool showSingleLabel: uniquePlayers && uniquePlayers.length === 1
             function dedupePlayers() {
                 try {
                     const list = MusicManager.getAvailablePlayers() || [];
@@ -109,8 +116,9 @@ Rectangle {
             ComboBox {
                 id: playerSelector
                 Layout.fillWidth: true
-                Layout.preferredHeight: 40 * Theme.scale(screen)
-                visible: uniquePlayers && uniquePlayers.length > 1
+                Layout.preferredHeight: playerUI.showCombo ? 40 * Theme.scale(screen) : 0
+                visible: playerUI.showCombo
+                height: visible ? implicitHeight : 0
                 model: uniquePlayers
                 textRole: "identity"
                 currentIndex: 0
@@ -134,11 +142,11 @@ Rectangle {
                 }
 
                 contentItem: Text {
-                    leftPadding: 12 * Theme.scale(screen)
+                    leftPadding: 6 * Theme.scale(screen)
                     rightPadding: playerSelector.indicator.width + playerSelector.spacing
                     text: playerSelector.displayText
-                    font.pixelSize: 13 * Theme.scale(screen)
-                    color: Theme.textPrimary
+                    font.pixelSize: playerUI.musicFontPx
+                    color: playerUI.musicTextColor
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
                 }
@@ -148,8 +156,8 @@ Rectangle {
                     y: playerSelector.topPadding + (playerSelector.availableHeight - height) / 2
                     text: "arrow_drop_down"
                     font.family: "Material Symbols Outlined"
-                    font.pixelSize: 24 * Theme.scale(screen)
-                    color: Theme.textPrimary
+                    font.pixelSize: 20 * Theme.scale(screen)
+                    color: playerUI.musicTextColor
                 }
 
                 popup: Popup {
@@ -179,8 +187,9 @@ Rectangle {
                     width: playerSelector.width
                     contentItem: Text {
                         text: modelData.identity
-                        font.pixelSize: 13 * Theme.scale(screen)
-                        color: Theme.textPrimary
+                        font.weight: playerUI.musicFontWeight
+                        font.pixelSize: playerUI.musicFontPx
+                        color: playerUI.musicTextColor
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideRight
                     }
@@ -193,11 +202,15 @@ Rectangle {
 
             // Single player label (when no need for ComboBox)
             Text {
-                visible: uniquePlayers && uniquePlayers.length === 1
-                text: uniquePlayers && uniquePlayers.length === 1 ? uniquePlayers[0].identity : ""
-                color: Theme.textPrimary
+                visible: playerUI.showSingleLabel
+                Layout.preferredHeight: visible ? (28 * Theme.scale(screen)) : 0
+                height: visible ? implicitHeight : 0
+                Layout.preferredHeight: visible ? 40 * Theme.scale(screen) : 0
+                height: visible ? implicitHeight : 0
+                text: playerUI.showSingleLabel ? playerUI.uniquePlayers[0].identity : ""
+                color: playerUI.musicTextColor
                 font.family: Theme.fontFamily
-                font.pixelSize: 13 * Theme.scale(screen)
+                font.pixelSize: playerUI.musicFontPx
                 Layout.fillWidth: true
                 elide: Text.ElideRight
             }
@@ -206,14 +219,15 @@ Rectangle {
 
             // Album art with spectrum visualizer
             RowLayout {
-                spacing: 12 * Theme.scale(screen)
+                spacing: 4 * Theme.scale(screen)
                 Layout.fillWidth: true
 
                 // Album art container with circular spectrum overlay
                 Item {
                     id: albumArtContainer
-                    width: 96 * Theme.scale(screen)
-                    height: 96 * Theme.scale(screen) // enough for spectrum and art (will adjust if needed)
+                    // Container sized to the outline, so centering keeps left edge flush
+                    width: albumArtwork.width + 4 * Theme.scale(screen)
+                    height: albumArtwork.height + 4 * Theme.scale(screen)
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
 
                     // (Visualizer removed for this view as per request)
@@ -221,8 +235,9 @@ Rectangle {
                     // Album art image (square with slight rounding)
                     Rectangle {
                         id: albumArtwork
-                        width: 60 * Theme.scale(screen)
-                        height: 60 * Theme.scale(screen)
+                        // Cover at 200px (scaled)
+                        width: 200 * Theme.scale(screen)
+                        height: 200 * Theme.scale(screen)
                         anchors.centerIn: parent
                         radius: 8 * Theme.scale(screen)
                         color: Qt.darker(Theme.surface, 1.1)
@@ -238,8 +253,11 @@ Rectangle {
                             mipmap: true
                             cache: false
                             asynchronous: true
-                            sourceSize.width: 60 * Theme.scale(screen)
-                            sourceSize.height: 60 * Theme.scale(screen)
+                            // Request image at display pixel size for crisp rendering
+                            sourceSize: Qt.size(
+                                Math.round(width  * Screen.devicePixelRatio),
+                                Math.round(height * Screen.devicePixelRatio)
+                            )
                             source: (MusicManager.coverUrl || "")
                             visible: source && source.toString() !== ""
 
@@ -275,32 +293,38 @@ Rectangle {
                             visible: !albumArt.visible
                         }
                     }
-
-                    // Sharp square outline 1pt away from cover
-                    Rectangle {
-                        id: coverOutline
-                        anchors.centerIn: parent
-                        color: "transparent"
-                        radius: 0
-                        border.width: 1 * Theme.scale(screen)
-                        border.color: Theme.accentPrimary
-                        width: albumArtwork.width + 2 * (1 * Theme.scale(screen) + border.width)
-                        height: albumArtwork.height + 2 * (1 * Theme.scale(screen) + border.width)
-                        z: 0.5
+                    // Accent glow/shadow for better separation without explicit outline
+                    MultiEffect {
+                        id: coverGlow
+                        anchors.fill: albumArtwork
+                        source: ShaderEffectSource {
+                            sourceItem: albumArtwork
+                            // Keep original cover visible; draw glow above it
+                            hideSource: false
+                            recursive: true
+                            live: true
+                            smooth: true
+                        }
+                        shadowEnabled: true
+                        shadowColor: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.65)
+                        shadowBlur: 0.8
+                        shadowHorizontalOffset: 0
+                        shadowVerticalOffset: 0
+                        z: 0.4
                     }
                 }
 
                 // Track metadata
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 4 * Theme.scale(screen)
+                    spacing: 2 * Theme.scale(screen)
 
                     Text {
                         text: MusicManager.trackTitle
-                        color: Theme.textPrimary
+                        color: playerUI.musicTextColor
                         font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSizeSmall * Theme.scale(screen)
-                        font.bold: true
+                        font.pixelSize: playerUI.musicFontPx
+                        font.weight: playerUI.musicFontWeight
                         elide: Text.ElideRight
                         wrapMode: Text.Wrap
                         maximumLineCount: 2
@@ -309,18 +333,18 @@ Rectangle {
 
                     Text {
                         text: MusicManager.trackArtist
-                        color: Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.8)
+                        color: playerUI.musicTextColor
                         font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSizeCaption * Theme.scale(screen)
+                        font.pixelSize: playerUI.musicFontPx
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
 
                     Text {
                         text: MusicManager.trackAlbum
-                        color: Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.6)
+                        color: playerUI.musicTextColor
                         font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSizeCaption * Theme.scale(screen)
+                        font.pixelSize: playerUI.musicFontPx
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
