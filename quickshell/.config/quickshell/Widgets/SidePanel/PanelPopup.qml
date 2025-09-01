@@ -79,8 +79,8 @@ PanelWithOverlay {
             height: sidebarPopupRect.height - sidebarPopupRect.bottomPadding
             x: sidebarPopupRect.leftPadding + sidebarPopupRect.slideOffset
             y: 0
-            // Panel backdrop should be very dark/transparent, not colored
-            color: Qt.rgba(0, 0, 0, 0.9)
+            // Panel backdrop: almost black
+            color: Qt.rgba(0, 0, 0, 0.96)
             bottomLeftRadius: 20
             Behavior on x {
                 enabled: !sidebarPopupRect.isAnimating
