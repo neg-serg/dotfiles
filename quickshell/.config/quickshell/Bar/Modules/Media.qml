@@ -30,31 +30,12 @@ Item {
         height: parent.height
         spacing: 12
 
-        // --- Album art + overlay ---
+        // Album art (no overlay to keep new elongated spectrum clear)
         Item {
             id: albumArtContainer
             width: 24 * Theme.scale(Screen)
             height: 24 * Theme.scale(Screen)
             Layout.alignment: Qt.AlignVCenter
-
-            CircularSpectrum {
-                id: spectrum
-                values: MusicManager.cavaValues
-                anchors.centerIn: parent
-                visualizerType: "roundedSquare"
-                // Make bars more visible without covering the art
-                amplitudeScale: 0.8
-                minBarWidth: 3 * Theme.scale(Screen)
-                innerRadius: 14 * Theme.scale(Screen)
-                outerRadius: 26 * Theme.scale(Screen)
-                fillColor: Theme.accentPrimary
-                fillOpacity: 0.7
-                strokeColor: Theme.accentPrimary
-                strokeOpacity: 1.0
-                strokeWidth: 1 * Theme.scale(Screen)
-                // Render behind album art to avoid overlaying the image
-                z: 0
-            }
 
             Rectangle {
                 id: albumArtwork
@@ -63,7 +44,6 @@ Item {
                 anchors.centerIn: parent
                 color: Qt.darker(Theme.surface, 1.1)
                 border.color: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.3)
-                z: 1
                 clip: true
                 antialiasing: true
                 layer.enabled: true
@@ -121,23 +101,46 @@ Item {
             }
         }
 
-        // --- Track info + inline time (concatenated) ---
-        Text {
-            text: (MusicManager.trackArtist || MusicManager.trackTitle)
-                  ? [MusicManager.trackArtist, MusicManager.trackTitle]
-                        .filter(function(x){ return !!x; })
-                        .join(" - ")
-                    + " ["
-                    + fmtTime(MusicManager.currentPosition || 0)
-                    + "/" + fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0)) + "]"
-                  : ""
-            color: Theme.textPrimary
-            font.family: Theme.fontFamily
-            font.weight: Font.Medium
-            font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
-            elide: Text.ElideRight
-            Layout.maximumWidth: 1000
+        // Track info + elongated spectrum beneath
+        ColumnLayout {
             Layout.alignment: Qt.AlignVCenter
+            Layout.fillWidth: true
+            spacing: 2
+
+            Text {
+                text: (MusicManager.trackArtist || MusicManager.trackTitle)
+                      ? [MusicManager.trackArtist, MusicManager.trackTitle]
+                            .filter(function(x){ return !!x; })
+                            .join(" - ")
+                        + " ["
+                        + fmtTime(MusicManager.currentPosition || 0)
+                        + "/" + fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0)) + "]"
+                      : ""
+                color: Theme.textPrimary
+                font.family: Theme.fontFamily
+                font.weight: Font.Medium
+                font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
+                elide: Text.ElideRight
+                Layout.fillWidth: true
+                Layout.maximumWidth: 1000
+            }
+
+            // Elongated linear spectrum equalizer
+            LinearSpectrum {
+                id: linearSpectrum
+                values: MusicManager.cavaValues
+                Layout.fillWidth: true
+                Layout.preferredHeight: 10 * Theme.scale(Screen)
+                amplitudeScale: 1.0
+                barGap: 1 * Theme.scale(Screen)
+                minBarWidth: 2 * Theme.scale(Screen)
+                mirror: true
+                fillOpacity: 0.9
+                peakOpacity: 1.0
+                colorStart: Theme.accentSecondary
+                colorMid: Theme.accentPrimary
+                colorEnd: Theme.highlight
+            }
         }
     }
 }
