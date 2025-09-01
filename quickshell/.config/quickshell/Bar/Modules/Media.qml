@@ -181,7 +181,8 @@ Item {
                 }
                 // Separator color (dash and slash): almost as dark as brackets
                 // Use a slightly higher brightness factor than brackets
-                property real sepB: Math.min(1, (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25) * 1.1)
+                // Slightly lighter than brackets
+                property real sepB: Math.min(1, bracketB * 1.25)
                 property string sepColor: (
                     "rgba("
                     + Math.round(Theme.accentPrimary.r * sepB * 255) + ","
