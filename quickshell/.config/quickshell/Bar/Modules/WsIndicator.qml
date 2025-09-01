@@ -199,10 +199,13 @@ Item {
 
     // Detect terminal workspace (common PUA glyphs or name prefix)
     readonly property var _terminalIcons: ["\uf120", "\ue795", "\ue7a2"]
-    property bool isTerminalWs: (
-        (iconGlyph && _terminalIcons.indexOf(iconGlyph) !== -1) ||
-        ((restName || "").toLowerCase().indexOf("term") === 0)
-    )
+    property bool isTerminalWs: (function(){
+        const rn = (restName || "").toLowerCase().trim();
+        if (iconGlyph && _terminalIcons.indexOf(iconGlyph) !== -1) return true;
+        if (rn.startsWith("term")) return true;
+        if (rn.endsWith("term")) return true; // e.g., names like "dev-term"
+        return false;
+    })()
 
     // Fallback to workspace id if name is empty
     property string fallbackText: (wsId >= 0 ? String(wsId) : "?")
