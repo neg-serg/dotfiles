@@ -129,13 +129,13 @@ Item {
         }
     }
 
-    // "12.3K/4.5K" or "0"
+    // "12.3/4.5K" (single K suffix) or "0"
     function formatData(data) {
         if (data.rx_kib_s === 0 && data.tx_kib_s === 0) return "0"
-        return `${fmtKiBps(data.rx_kib_s)}/${fmtKiBps(data.tx_kib_s)}`
+        return `${fmtKiBps(data.rx_kib_s)}/${fmtKiBps(data.tx_kib_s)}K`
     }
 
-    function fmtKiBps(kib) { return kib.toFixed(1) + "K" }
+    function fmtKiBps(kib) { return kib.toFixed(1) }
 
     Component.onCompleted: {
         console.log("Starting network monitor:", Array.isArray(cmd) ? cmd.join(" ") : String(cmd))
