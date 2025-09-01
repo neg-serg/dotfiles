@@ -84,7 +84,7 @@ Singleton {
             // Slightly lower FPS and higher noise reduction for less jittery output
             property int  cavaFramerate: 18
             property bool cavaMonstercat: false
-            property int  cavaGravity: 80000
+            property int  cavaGravity: 150000
             property int  cavaNoiseReduction: 12
             property bool spectrumUseGradient: false
             property bool spectrumMirror: false
