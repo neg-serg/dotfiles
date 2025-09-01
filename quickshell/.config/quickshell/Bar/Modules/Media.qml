@@ -203,9 +203,9 @@ Item {
                     const bp = trackText.bracketPair();
                     // No extra space before bracket to minimize gap
                     return t + "<span style='color:" + trackText.sepColor + "'>" + bp.l + "</span>"
-                           + "<span style='font-size:" + timeSize + "px'>" + cur + "</span>"
+                           + "<span style='font-size:" + timeSize + "px; vertical-align: 0.15em'>" + cur + "</span>"
                            + "<span style='color:" + trackText.sepColor + "'>/</span>"
-                           + "<span style='font-size:" + timeSize + "px'>" + tot + "</span>"
+                           + "<span style='font-size:" + timeSize + "px; vertical-align: 0.15em'>" + tot + "</span>"
                            + "<span style='color:" + trackText.sepColor + "'>" + bp.r + "</span>";
                 })()
                 color: Theme.textPrimary
