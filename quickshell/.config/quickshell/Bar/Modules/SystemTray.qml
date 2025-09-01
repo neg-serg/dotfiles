@@ -131,6 +131,8 @@ Row {
         // Reduce rounding specifically for tray button (half of default 8)
         cornerRadius: 4
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
+        // Rotate to point towards tray content when expanded (left)
+        iconRotation: expanded ? 90 : 0
         // Derive accent from calendar's accent with low brightness
         property real ab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
         property color derivedAccent: Qt.rgba(

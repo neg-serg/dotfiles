@@ -9,6 +9,8 @@ MouseArea {
     property bool enabled: true
     property bool hovering: false
     property real size: 32
+    // Rotation for the icon glyph (degrees). Useful for directional toggles.
+    property real iconRotation: 0
     // Corner radius (allows per-usage override)
     property int cornerRadius: 8
     // Customizable colors
@@ -38,5 +40,8 @@ MouseArea {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         opacity: root.enabled ? 1.0 : 0.5
+        transformOrigin: Item.Center
+        rotation: root.iconRotation
+        Behavior on rotation { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
     }
 }
