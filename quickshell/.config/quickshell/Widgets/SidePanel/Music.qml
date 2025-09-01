@@ -122,13 +122,13 @@ Rectangle {
                 Layout.preferredHeight: playerUI.showCombo ? 40 * Theme.scale(screen) : 0
                 visible: playerUI.showCombo
                 height: visible ? implicitHeight : 0
-                model: uniquePlayers
+                model: playerUI.uniquePlayers
                 textRole: "identity"
                 currentIndex: 0
                 onActivated: (index) => {
                     try {
-                        if (uniquePlayers && uniquePlayers[index]) {
-                            MusicManager.selectedPlayerIndex = uniquePlayers[index].idx;
+                        if (playerUI.uniquePlayers && playerUI.uniquePlayers[index]) {
+                            MusicManager.selectedPlayerIndex = playerUI.uniquePlayers[index].idx;
                             MusicManager.updateCurrentPlayer();
                         }
                     } catch (e) { /* ignore */ }

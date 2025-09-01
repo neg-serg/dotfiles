@@ -71,8 +71,8 @@ Row {
                     visible: modelData
                     // Staggered reveal (train) from right to left
                     // Compute per-item progress based on actual revealed width of bg
-                    property int i: index
-                    property int n: (systemTray && systemTray.items ? systemTray.items.length : 0)
+                    property var i: (typeof index === 'number' ? index : 0)
+                    property var n: (systemTray && systemTray.items ? systemTray.items.length : 0)
                     property real w: 24 * Theme.scale(Screen)
                     property real span: (w + collapsedRow.spacing)
                     // How many item slots could fit into the currently revealed width (minus padding)
