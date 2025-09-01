@@ -189,7 +189,7 @@ Item {
                     const cur = fmtTime(MusicManager.currentPosition || 0);
                     const tot = fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
                     const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.75));
-                    return t + " &nbsp;<span style='color:" + trackText.sepColor + "'>[</span>"
+                    return t + " &#8201;<span style='color:" + trackText.sepColor + "'>[</span>"
                            + "<span style='font-size:" + timeSize + "px'>" + cur + "</span>"
                            + "<span style='color:" + trackText.sepColor + "'>/</span>"
                            + "<span style='font-size:" + timeSize + "px'>" + tot + "</span>"
