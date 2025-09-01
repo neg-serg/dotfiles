@@ -7,7 +7,8 @@ Item {
     property bool running: false
     property color color: "white"
     property int size: 16
-    property int strokeWidth: 2 * Theme.scale(Screen)
+    // Stroke width derived from size to avoid relying on Screen context
+    property int strokeWidth: Math.max(1, Math.round(size / 8))
     property int duration: 1000
     
     implicitWidth: size
