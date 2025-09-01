@@ -24,35 +24,6 @@ Row {
     property bool openGuard: false
     Timer { id: guardTimer; interval: 120; repeat: false; onTriggered: openGuard = false }
 
-    // Collapsed trigger button
-    IconButton {
-        id: collapsedButton
-        z: 1002
-        visible: collapsed
-        anchors.verticalCenter: parent.verticalCenter
-        // Keep compact size to match bar density
-        size: 24 * Theme.scale(Screen)
-        // Reduce rounding specifically for tray button (half of default 8)
-        cornerRadius: 4
-        icon: Settings.settings.collapsedTrayIcon || "expand_more"
-        // Derive accent from calendar's accent with low brightness
-        property real ab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
-        property color derivedAccent: Qt.rgba(
-            Theme.accentPrimary.r * ab,
-            Theme.accentPrimary.g * ab,
-            Theme.accentPrimary.b * ab,
-            1
-        )
-        accentColor: derivedAccent
-        // Neutral icon normally, readable light icon on hover (dark accent)
-        iconNormalColor: Theme.textPrimary
-        iconHoverColor: Theme.textPrimary
-        onClicked: {
-            expanded = !expanded;
-            if (expanded) { openGuard = true; guardTimer.restart(); }
-        }
-    }
-
     // Note: we purposely avoid a full overlay here to prevent immediate close issues in Row
 
     // Inline expanded content that participates in Row layout (shifts neighbors)
@@ -146,6 +117,35 @@ Row {
                     }
                 }
             }
+        }
+    }
+
+    // Collapsed trigger button (placed after inline box so it stays on the right when expanded)
+    IconButton {
+        id: collapsedButton
+        z: 1002
+        visible: collapsed
+        anchors.verticalCenter: parent.verticalCenter
+        // Keep compact size to match bar density
+        size: 24 * Theme.scale(Screen)
+        // Reduce rounding specifically for tray button (half of default 8)
+        cornerRadius: 4
+        icon: Settings.settings.collapsedTrayIcon || "expand_more"
+        // Derive accent from calendar's accent with low brightness
+        property real ab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
+        property color derivedAccent: Qt.rgba(
+            Theme.accentPrimary.r * ab,
+            Theme.accentPrimary.g * ab,
+            Theme.accentPrimary.b * ab,
+            1
+        )
+        accentColor: derivedAccent
+        // Neutral icon normally, readable light icon on hover (dark accent)
+        iconNormalColor: Theme.textPrimary
+        iconHoverColor: Theme.textPrimary
+        onClicked: {
+            expanded = !expanded;
+            if (expanded) { openGuard = true; guardTimer.restart(); }
         }
     }
 
