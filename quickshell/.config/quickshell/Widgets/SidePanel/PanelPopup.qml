@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -93,8 +94,10 @@ PanelWithOverlay {
 
         }
 
+        // Content layer
         Item {
             anchors.fill: mainRectangle
+            z: 1
             x: sidebarPopupRect.slideOffset
             Keys.onEscapePressed: sidebarPopupRect.hidePopup()
             ColumnLayout {
@@ -138,6 +141,28 @@ PanelWithOverlay {
                     easing.type: Easing.OutCubic
                 }
             }
+        }
+
+        // Kawase blur backdrop behind content (frosted glass look inside panel)
+        MultiEffect {
+            id: kawaseBlur
+            anchors.fill: mainRectangle
+            z: 0.5
+            source: ShaderEffectSource {
+                id: blurSrc
+                sourceItem: contentCol
+                recursive: true
+                hideSource: false
+                live: true
+                smooth: true
+            }
+            blurEnabled: true
+            blur: 0.6
+            saturation: 1.0
+            brightness: 1.0
+            contrast: 1.0
+            maskEnabled: true
+            maskSource: mainRectangle
         }
     }
 }
