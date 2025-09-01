@@ -179,14 +179,14 @@ Item {
                     s = (s === undefined || s === null) ? "" : String(s);
                     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 }
-                // Separator color (dash and slash): workspace blue, slightly darkened
-                property color sepBase: "#3b7bb3"
-                property real sepDarken: 0.85
+                // Separator color (dash and slash): almost as dark as brackets
+                // Use a slightly higher brightness factor than brackets
+                property real sepB: Math.min(1, (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25) * 1.1)
                 property string sepColor: (
                     "rgba("
-                    + Math.round(sepBase.r * sepDarken * 255) + ","
-                    + Math.round(sepBase.g * sepDarken * 255) + ","
-                    + Math.round(sepBase.b * sepDarken * 255) + ",1)"
+                    + Math.round(Theme.accentPrimary.r * sepB * 255) + ","
+                    + Math.round(Theme.accentPrimary.g * sepB * 255) + ","
+                    + Math.round(Theme.accentPrimary.b * sepB * 255) + ",1)"
                 )
                 // Bracket color only: dark accent derived from calendar/tray
                 property real bracketB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
@@ -213,7 +213,7 @@ Item {
                 }
                 text: (function(){
                     if (!trackText.titlePart) return "";
-                    const t = trackText.esc(trackText.titlePart).replace(/\s-\s/g, " <span style='color:" + trackText.sepColor + "'>-</span> ");
+                    const t = trackText.esc(trackText.titlePart).replace(/\s-\s/g, " <span style='color:" + trackText.sepColor + "; font-weight:bold'>-</span> ");
                     const cur = fmtTime(MusicManager.currentPosition || 0);
                     const tot = fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
                     const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.8));
@@ -222,7 +222,7 @@ Item {
                     return t
                            + " &#8201;<span style='color:" + trackText.bracketColor + "'>" + bp.l + "</span>"
                            + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1'>" + cur + "</span>"
-                           + "<span style='color:" + trackText.sepColor + "'>/</span>"
+                           + "<span style='color:" + trackText.sepColor + "; font-weight:bold'>/</span>"
                            + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1'>" + tot + "</span>"
                            + "<span style='color:" + trackText.bracketColor + "'>" + bp.r + "</span>";
                 })()
