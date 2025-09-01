@@ -183,17 +183,29 @@ Item {
                 property string titlePart: (MusicManager.trackArtist || MusicManager.trackTitle)
                     ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")
                     : ""
+                function bracketPair() {
+                    const s = (Settings.settings.timeBracketStyle || "tortoise").toLowerCase();
+                    switch (s) {
+                        case "lenticular":        return { l: "\u3016", r: "\u3017" }; // 〖 〗
+                        case "lenticular_black":  return { l: "\u3010", r: "\u3011" }; // 【 】
+                        case "angle":             return { l: "\u27E8", r: "\u27E9" }; // ⟨ ⟩
+                        case "square":            return { l: "[",    r: "]"     };
+                        case "tortoise":
+                        default:                   return { l: "\u3014", r: "\u3015" }; // 〔 〕
+                    }
+                }
                 text: (function(){
                     if (!trackText.titlePart) return "";
                     const t = trackText.esc(trackText.titlePart).replace(/\s-\s/g, " <span style='color:" + trackText.sepColor + "'>-</span> ");
                     const cur = fmtTime(MusicManager.currentPosition || 0);
                     const tot = fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
                     const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.75));
-                    return t + " &#8201;<span style='color:" + trackText.sepColor + "'>⟨</span>"
+                    const bp = trackText.bracketPair();
+                    return t + " &#8201;<span style='color:" + trackText.sepColor + "'>" + bp.l + "</span>"
                            + "<span style='font-size:" + timeSize + "px'>" + cur + "</span>"
                            + "<span style='color:" + trackText.sepColor + "'>/</span>"
                            + "<span style='font-size:" + timeSize + "px'>" + tot + "</span>"
-                           + "<span style='color:" + trackText.sepColor + "'>⟩</span>";
+                           + "<span style='color:" + trackText.sepColor + "'>" + bp.r + "</span>";
                 })()
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily

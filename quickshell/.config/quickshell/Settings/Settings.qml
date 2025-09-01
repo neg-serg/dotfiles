@@ -81,6 +81,11 @@ Singleton {
             property real spectrumOverlapFactor: 0.2  // how much overlaps upward from baseline (0..1 of font size)
             property real spectrumBarGap: 1.0         // gap between bars in px (scaled later)
 
+            // Media time brackets styling
+            // Options: "tortoise" (〔 〕), "lenticular" (〖 〗), "lenticular_black" (【 】),
+            //          "angle" (⟨ ⟩), "square" ([ ])
+            property string timeBracketStyle: "tortoise"
+
             // Monitor/Display Settings
             property string panelPosition: "top" // "top" or "bottom" panel location
             property var barMonitors: [] // Array of monitor names to show the bar on
