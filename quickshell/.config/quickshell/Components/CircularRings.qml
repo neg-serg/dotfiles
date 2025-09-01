@@ -20,6 +20,10 @@ Canvas {
     // Smoothing (exponential half-life decay)
     property real halfLifeMs: 260
     property int fps: 60
+    // Breathing modulation (applies to amplitudeScale)
+    property real breathSpeed: 1.1         // Hz
+    property real breathDepth: 0.25        // 0..1 fraction of amplitudeScale
+    property real breathPhase: 0
     property var smooth: []
     property double lastTs: 0
 
@@ -51,6 +55,8 @@ Canvas {
             const prev = smooth[i] || 0;
             smooth[i] = (v > prev) ? v : prev * k;
         }
+        // advance breathing phase
+        breathPhase += 2 * Math.PI * breathSpeed * (dt / 1000);
         requestPaint();
     }
 
@@ -77,11 +83,12 @@ Canvas {
         const cx = width / 2;
         const cy = height / 2;
         const bands = bandAverages(ringCount);
+        const breath = 1 + breathDepth * Math.sin(breathPhase);
 
         for (let r = 0; r < ringCount; r++) {
             const base = baseRadius + r * ringSpacing;
             const amp = bands[r] || 0;
-            const radius = base + amplitudeScale * amp;
+            const radius = base + amplitudeScale * breath * amp;
             ctx.beginPath();
             ctx.arc(cx, cy, Math.max(0, radius), 0, Math.PI * 2, false);
             const t = ringCount > 1 ? (r / (ringCount - 1)) : 1; // 0 inner -> 1 outer
@@ -92,4 +99,3 @@ Canvas {
         }
     }
 }
-
