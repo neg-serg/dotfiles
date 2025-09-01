@@ -136,6 +136,7 @@ Row {
                                     trayMenu.menu = modelData.menu;
                                     trayMenu.showAt(parent, menuX, menuY);
                                     trayOverlay.show();
+                                    try { trayOverlay.showOverlay = Settings.settings.dimPanels; } catch (e) {}
                                 }
                             }
                         }
@@ -173,7 +174,8 @@ Row {
         onClicked: {
             expanded = !expanded;
             if (expanded) { openGuard = true; guardTimer.restart(); }
-            if (expanded) trayOverlay.show(); else trayOverlay.dismiss();
+            if (expanded) { trayOverlay.show(); try { trayOverlay.showOverlay = false; } catch (e) {} }
+            else trayOverlay.dismiss();
         }
     }
 
@@ -263,6 +265,7 @@ Row {
                         // If menu is already visible, close it
                         if (trayMenu && trayMenu.visible) {
                             trayMenu.hideMenu();
+                            trayOverlay.dismiss();
                             return;
                         }
 
@@ -272,6 +275,8 @@ Row {
                             const menuY = height + 20 * Theme.scale(Screen);
                             trayMenu.menu = modelData.menu;
                             trayMenu.showAt(parent, menuX, menuY);
+                            trayOverlay.show();
+                            try { trayOverlay.showOverlay = Settings.settings.dimPanels; } catch (e) {}
                         } else
                         // console.log("No menu available for", modelData.id, "or trayMenu not set")
                         {}
