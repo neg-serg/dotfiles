@@ -181,8 +181,8 @@ Item {
                 }
                 // Separator color (dash and slash): almost as dark as brackets
                 // Use a slightly higher brightness factor than brackets
-                // ~175% lighter than brackets (clamped)
-                property real sepB: Math.min(1, bracketB * 2.75)
+                // 150% lighter than brackets (clamped)
+                property real sepB: Math.min(1, bracketB * 2.5)
                 property string sepColor: (
                     "rgba("
                     + Math.round(Theme.accentPrimary.r * sepB * 255) + ","
