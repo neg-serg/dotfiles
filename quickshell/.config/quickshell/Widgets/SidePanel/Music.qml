@@ -13,7 +13,15 @@ Rectangle {
     Rectangle {
         id: card
         anchors.fill: parent
-        color: Theme.surface
+        // Use bracket-like dark accent for card background
+        property real bracketB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
+        property real bracketLight: Math.min(1, bracketB * 1.5)
+        color: Qt.rgba(
+            Theme.accentPrimary.r * bracketLight,
+            Theme.accentPrimary.g * bracketLight,
+            Theme.accentPrimary.b * bracketLight,
+            1
+        )
         radius: 18 * Theme.scale(Screen)
 
         // Show fallback UI if no player is available

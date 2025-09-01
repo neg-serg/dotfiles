@@ -79,16 +79,8 @@ PanelWithOverlay {
             height: sidebarPopupRect.height - sidebarPopupRect.bottomPadding
             x: sidebarPopupRect.leftPadding + sidebarPopupRect.slideOffset
             y: 0
-            // Use the same dark accent as track brackets
-            property real bracketB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
-            property real bracketLight: Math.min(1, bracketB * 1.5)
-            property color bracketBg: Qt.rgba(
-                Theme.accentPrimary.r * bracketLight,
-                Theme.accentPrimary.g * bracketLight,
-                Theme.accentPrimary.b * bracketLight,
-                1
-            )
-            color: bracketBg
+            // Panel backdrop should be very dark/transparent, not colored
+            color: Qt.rgba(0, 0, 0, 0.9)
             bottomLeftRadius: 20
             Behavior on x {
                 enabled: !sidebarPopupRect.isAnimating
