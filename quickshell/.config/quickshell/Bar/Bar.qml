@@ -120,6 +120,7 @@ Scope {
                         SystemTray {
                             id: systemTrayModule
                             shell: rootScope.shell
+                            screen: modelData
                             // Avoid anchors inside Row (causes warnings); manual centering instead
                             y: (parent.height - height) / 2
                             trayMenu: externalTrayMenu

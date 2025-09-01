@@ -10,6 +10,8 @@ import qs.Components
 Row {
     id: root
     property var shell
+    // Screen for overlay placement (set from Bar/Bar.qml)
+    property var screen
     property var trayMenu
     spacing: 8
     Layout.alignment: Qt.AlignVCenter
@@ -25,6 +27,16 @@ Row {
     Timer { id: guardTimer; interval: 120; repeat: false; onTriggered: openGuard = false }
 
     // Note: we purposely avoid a full overlay here to prevent immediate close issues in Row
+    // Overlay to close tray on outside clicks (Hyprland): separate layer window
+    PanelWithOverlay {
+        id: trayOverlay
+        screen: root.screen
+        visible: false
+        // When overlay is dismissed by outside click, collapse tray
+        onVisibleChanged: {
+            if (!visible && root.expanded) root.expanded = false
+        }
+    }
 
     // Inline expanded content that participates in Row layout (shifts neighbors)
     Item {
@@ -107,10 +119,12 @@ Row {
                                 if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
                                 if (!modelData.onlyMenu) modelData.activate();
                                 expanded = false;
+                                trayOverlay.dismiss();
                             } else if (mouse.button === Qt.MiddleButton) {
                                 if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
                                 modelData.secondaryActivate && modelData.secondaryActivate();
                                 expanded = false;
+                                trayOverlay.dismiss();
                             } else if (mouse.button === Qt.RightButton) {
                                 if (trayMenu && trayMenu.visible) { trayMenu.hideMenu(); return; }
                                 if (modelData.hasMenu && modelData.menu && trayMenu) {
@@ -155,6 +169,7 @@ Row {
         onClicked: {
             expanded = !expanded;
             if (expanded) { openGuard = true; guardTimer.restart(); }
+            if (expanded) trayOverlay.show(); else trayOverlay.dismiss();
         }
     }
 
