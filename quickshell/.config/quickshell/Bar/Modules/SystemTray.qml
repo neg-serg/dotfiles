@@ -32,6 +32,8 @@ Row {
         id: trayOverlay
         screen: root.screen
         visible: false
+        showOverlay: false
+        overlayColor: showOverlay ? Qt.rgba(0, 0, 0, 0.5) : "transparent"
         // When overlay is dismissed by outside click, collapse tray
         onVisibleChanged: {
             if (!visible) {
@@ -136,7 +138,7 @@ Row {
                                     trayMenu.menu = modelData.menu;
                                     trayMenu.showAt(parent, menuX, menuY);
                                     trayOverlay.show();
-                                    try { trayOverlay.showOverlay = Settings.settings.dimPanels; } catch (e) {}
+                                    try { trayOverlay.showOverlay = true; } catch (e) {}
                                 }
                             }
                         }
