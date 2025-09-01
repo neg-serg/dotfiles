@@ -27,6 +27,7 @@ Row {
     // Collapsed trigger button
     IconButton {
         id: collapsedButton
+        z: 1002
         visible: collapsed
         anchors.verticalCenter: parent.verticalCenter
         size: 24 * Theme.scale(Screen)
@@ -39,7 +40,7 @@ Row {
         anchors.fill: parent
         color: "transparent"
         visible: collapsed && expanded
-        z: 999
+        z: 1000
         MouseArea { anchors.fill: parent; onClicked: expanded = false }
     }
 
@@ -47,18 +48,21 @@ Row {
     Rectangle {
         id: inlinePopup
         visible: collapsed && expanded
-        z: 1000
+        z: 1001
         radius: 8
         color: Theme.surfaceVariant
         border.color: Theme.outline
         border.width: 1
         anchors.top: collapsedButton.bottom
         anchors.topMargin: 6
+        width: collapsedRow.implicitWidth + 12
+        height: collapsedRow.implicitHeight + 12
         x: collapsedButton.x + collapsedButton.width/2 - inlinePopup.width/2
         Row {
             id: collapsedRow
-            anchors.margins: 6
-            anchors.fill: parent
+            anchors.left: parent.left
+            anchors.leftMargin: 6
+            anchors.verticalCenter: parent.verticalCenter
             spacing: 6
             Repeater {
                 model: systemTray.items

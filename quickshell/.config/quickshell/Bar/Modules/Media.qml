@@ -158,7 +158,7 @@ Item {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                height: Math.round(trackNameText.font.pixelSize * 1.15)
+                height: Math.round(trackText.font.pixelSize * 1.15)
                 radius: 4 * Theme.scale(Screen)
                 color: Qt.rgba(Theme.backgroundPrimary.r, Theme.backgroundPrimary.g, Theme.backgroundPrimary.b, 0.25)
                 z: 1
