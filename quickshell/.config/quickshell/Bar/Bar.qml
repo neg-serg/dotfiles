@@ -106,14 +106,6 @@ Scope {
                         anchors.right: barBackground.right
                         anchors.rightMargin: panel.sideMargin
                         spacing: panel.widgetSpacing
-                        SystemTray {
-                            id: systemTrayModule
-                            shell: rootScope.shell
-                            anchors.verticalCenter: parent.verticalCenter
-                            bar: panel
-                            trayMenu: externalTrayMenu
-                        }
-                        CustomTrayMenu { id: externalTrayMenu }
                         Media { anchors.verticalCenter: parent.verticalCenter }
                         PanelPopup { id: sidebarPopup; shell: rootScope.shell }
                         Button {
@@ -122,6 +114,14 @@ Scope {
                             screen: modelData
                             sidebarPopup: sidebarPopup
                         }
+                        SystemTray {
+                            id: systemTrayModule
+                            shell: rootScope.shell
+                            anchors.verticalCenter: parent.verticalCenter
+                            bar: panel
+                            trayMenu: externalTrayMenu
+                        }
+                        CustomTrayMenu { id: externalTrayMenu }
                         Volume {
                             id: widgetsVolume
                             shell: rootScope.shell
