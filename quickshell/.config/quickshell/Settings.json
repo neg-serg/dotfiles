@@ -1,6 +1,6 @@
 {
     "panelPosition": "bottom",
-    "dimPanels": false,
+    "dimPanels": true,
     "fontSizeMultiplier": 1.2,
     "showMediaInBar": true,
     "showSystemInfoInBar": true
