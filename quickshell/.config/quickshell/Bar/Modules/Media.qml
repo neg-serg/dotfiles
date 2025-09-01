@@ -9,6 +9,8 @@ import qs.Components
 
 Item {
     id: mediaControl
+    // Avoid layout cycles by providing an implicit width
+    implicitWidth: mediaRow.implicitWidth
     width: visible ? mediaRow.width : 0
     height: 36 * Theme.scale(Screen)
     visible: Settings.settings.showMediaInBar && MusicManager.currentPlayer
@@ -106,6 +108,8 @@ Item {
             id: trackContainer
             Layout.alignment: Qt.AlignVCenter
             Layout.fillWidth: true
+            // Provide implicit width so RowLayout can measure without parent width
+            implicitWidth: trackText.implicitWidth
             // keep container height to the text's height so row layout remains unchanged
             height: trackText.implicitHeight
 
@@ -148,6 +152,7 @@ Item {
                 font.weight: Font.Medium
                 font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
                 elide: Text.ElideRight
+                maximumLineCount: 1
                 z: 2
                 // subtle shadow for readability over spectrum
                 layer.enabled: true
