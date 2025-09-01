@@ -34,7 +34,10 @@ Row {
         visible: false
         // When overlay is dismissed by outside click, collapse tray
         onVisibleChanged: {
-            if (!visible && root.expanded) root.expanded = false
+            if (!visible) {
+                if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
+                if (root.expanded) root.expanded = false
+            }
         }
     }
 
@@ -126,12 +129,13 @@ Row {
                                 expanded = false;
                                 trayOverlay.dismiss();
                             } else if (mouse.button === Qt.RightButton) {
-                                if (trayMenu && trayMenu.visible) { trayMenu.hideMenu(); return; }
+                                if (trayMenu && trayMenu.visible) { trayMenu.hideMenu(); trayOverlay.dismiss(); return; }
                                 if (modelData.hasMenu && modelData.menu && trayMenu) {
                                     const menuX = (width / 2) - (trayMenu.width / 2);
                                     const menuY = height + 20 * Theme.scale(Screen);
                                     trayMenu.menu = modelData.menu;
                                     trayMenu.showAt(parent, menuX, menuY);
+                                    trayOverlay.show();
                                 }
                             }
                         }
@@ -170,6 +174,14 @@ Row {
             expanded = !expanded;
             if (expanded) { openGuard = true; guardTimer.restart(); }
             if (expanded) trayOverlay.show(); else trayOverlay.dismiss();
+        }
+    }
+
+    // If expanded state changes externally, keep overlay/menu state consistent
+    onExpandedChanged: {
+        if (!expanded) {
+            if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
+            trayOverlay.dismiss();
         }
     }
 
