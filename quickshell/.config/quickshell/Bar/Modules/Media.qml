@@ -209,7 +209,7 @@ Item {
                     // Left bracket
                     Text {
                         text: (MusicManager.trackArtist || MusicManager.trackTitle) ? "[" : ""
-                        color: Theme.accentPrimary
+                        color: Theme.accentSecondary
                         font.family: Theme.fontFamily
                         font.weight: Font.Medium
                         font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
@@ -234,7 +234,7 @@ Item {
                     // Right bracket
                     Text {
                         text: (MusicManager.trackArtist || MusicManager.trackTitle) ? "]" : ""
-                        color: Theme.accentPrimary
+                        color: Theme.accentSecondary
                         font.family: Theme.fontFamily
                         font.weight: Font.Medium
                         font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
