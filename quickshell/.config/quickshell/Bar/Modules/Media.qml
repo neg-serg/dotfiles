@@ -101,13 +101,40 @@ Item {
             }
         }
 
-        // Track info + elongated spectrum beneath
-        ColumnLayout {
+        // Track info at original position with spectrum behind
+        Item {
+            id: trackContainer
             Layout.alignment: Qt.AlignVCenter
             Layout.fillWidth: true
-            spacing: 2
+            // keep container height to the text's height so row layout remains unchanged
+            height: trackText.implicitHeight
 
+            // Linear spectrum rendered behind the text
+            LinearSpectrum {
+                id: linearSpectrum
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                height: Math.round(trackText.font.pixelSize * 0.7)
+                values: MusicManager.cavaValues
+                amplitudeScale: 1.0
+                barGap: 1 * Theme.scale(Screen)
+                minBarWidth: 2 * Theme.scale(Screen)
+                mirror: true
+                fillOpacity: 0.35
+                peakOpacity: 0.7
+                colorStart: Theme.accentSecondary
+                colorMid: Theme.accentPrimary
+                colorEnd: Theme.highlight
+                z: 0
+            }
+
+            // Text overlay with subtle shadow to dominate over graphics
             Text {
+                id: trackText
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
                 text: (MusicManager.trackArtist || MusicManager.trackTitle)
                       ? [MusicManager.trackArtist, MusicManager.trackTitle]
                             .filter(function(x){ return !!x; })
@@ -121,25 +148,17 @@ Item {
                 font.weight: Font.Medium
                 font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
                 elide: Text.ElideRight
-                Layout.fillWidth: true
-                Layout.maximumWidth: 1000
-            }
-
-            // Elongated linear spectrum equalizer
-            LinearSpectrum {
-                id: linearSpectrum
-                values: MusicManager.cavaValues
-                Layout.fillWidth: true
-                Layout.preferredHeight: 10 * Theme.scale(Screen)
-                amplitudeScale: 1.0
-                barGap: 1 * Theme.scale(Screen)
-                minBarWidth: 2 * Theme.scale(Screen)
-                mirror: true
-                fillOpacity: 0.9
-                peakOpacity: 1.0
-                colorStart: Theme.accentSecondary
-                colorMid: Theme.accentPrimary
-                colorEnd: Theme.highlight
+                z: 2
+                // subtle shadow for readability over spectrum
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    shadowEnabled: true
+                    shadowColor: Theme.shadow
+                    shadowOpacity: 0.9
+                    shadowHorizontalOffset: 0
+                    shadowVerticalOffset: 1
+                    shadowBlur: 0.8
+                }
             }
         }
     }
