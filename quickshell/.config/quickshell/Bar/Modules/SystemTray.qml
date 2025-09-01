@@ -33,7 +33,8 @@ Row {
         z: 1002
         visible: collapsed
         anchors.verticalCenter: parent.verticalCenter
-        size: 24 * Theme.scale(Screen)
+        // Match calendar button dimensions for identical visual weight
+        size: 32 * Theme.scale(Screen)
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
         // Match calendar styling: neutral icon, saturated blue hover background
         accentColor: Theme.accentPrimary
