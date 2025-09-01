@@ -62,7 +62,8 @@ Item {
         "browser":             "language",
         "web":                 "language",
         // explicit mappings for discovered submaps
-        "special":             "view_in_ar",
+        // Use Font Awesome cube glyph (PUA) for a clean transparent cube
+        "special":             "\uf1b2",
         "wallpaper":           "wallpaper",
     })
     
@@ -223,7 +224,8 @@ Item {
             text: submapIconName(root.submapName)
             color: Theme.accentPrimary
             renderType: Text.NativeRendering
-            font.family: "Material Symbols Outlined"
+            // Switch font family based on whether we render a PUA glyph (Font Awesome)
+            font.family: (text && text.length && isPUA(text.codePointAt(0))) ? "Font Awesome 6 Pro" : "Material Symbols Outlined"
             font.weight: Font.Medium
             font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
             // Align to label baseline like the workspace icon does,
