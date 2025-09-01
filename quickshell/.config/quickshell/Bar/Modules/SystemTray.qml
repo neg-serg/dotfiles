@@ -41,36 +41,23 @@ Row {
         }
     }
 
-    // Click-catcher to close expanded inline popup when clicking near
-    Rectangle {
-        anchors.fill: parent
-        color: "transparent"
-        visible: collapsed && expanded
-        z: 1000
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-            onClicked: {
-                if (openGuard) return; // ignore the opener click
-                expanded = false
-            }
-        }
-    }
+    // Note: we purposely avoid a full overlay here to prevent immediate close issues in Row
 
-    // Inline popup content under the trigger button
+    // Inline popup content under the trigger button (parented to bar to avoid Row layout)
     Rectangle {
         id: inlinePopup
         visible: collapsed && expanded
+        parent: bar
         z: 1001
         radius: 8
         color: Theme.surfaceVariant
         border.color: Theme.outline
         border.width: 1
-        anchors.top: collapsedButton.bottom
-        anchors.topMargin: 6
         width: collapsedRow.implicitWidth + 12
         height: collapsedRow.implicitHeight + 12
-        x: collapsedButton.x + collapsedButton.width/2 - inlinePopup.width/2
+        // Position relative to bar using global mapping
+        x: collapsedButton.mapToItem(bar, collapsedButton.width/2, collapsedButton.height).x - inlinePopup.width/2
+        y: collapsedButton.mapToItem(bar, collapsedButton.width/2, collapsedButton.height).y + 6
         Row {
             id: collapsedRow
             anchors.left: parent.left
