@@ -199,16 +199,15 @@ Item {
                     const t = trackText.esc(trackText.titlePart).replace(/\s-\s/g, " <span style='color:" + trackText.sepColor + "'>-</span> ");
                     const cur = fmtTime(MusicManager.currentPosition || 0);
                     const tot = fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
-                    const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.75));
-                    const bracketSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.92));
+                    const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.8));
                     const bp = trackText.bracketPair();
                     // No extra space before bracket to minimize gap; shrink bracket size; raise time via <sup>
                     return t
-                           + "<span style='color:" + trackText.sepColor + "; font-size:" + bracketSize + "px'>" + bp.l + "</span>"
-                           + "<span style='font-size:" + timeSize + "px'><sup>" + cur + "</sup></span>"
-                           + "<span style='color:" + trackText.sepColor + "; font-size:" + bracketSize + "px'>/</span>"
-                           + "<span style='font-size:" + timeSize + "px'><sup>" + tot + "</sup></span>"
-                           + "<span style='color:" + trackText.sepColor + "; font-size:" + bracketSize + "px'>" + bp.r + "</span>";
+                           + "<span style='color:" + trackText.sepColor + "'>" + bp.l + "</span>"
+                           + "<span style='font-size:" + timeSize + "px'>" + cur + "</span>"
+                           + "<span style='color:" + trackText.sepColor + "'>/</span>"
+                           + "<span style='font-size:" + timeSize + "px'>" + tot + "</span>"
+                           + "<span style='color:" + trackText.sepColor + "'>" + bp.r + "</span>";
                 })()
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
