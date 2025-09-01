@@ -184,7 +184,7 @@ Item {
                     ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")
                     : ""
                 function bracketPair() {
-                    const s = (Settings.settings.timeBracketStyle || "round").toLowerCase();
+                    const s = (Settings.settings.timeBracketStyle || "square").toLowerCase();
                     switch (s) {
                         // Small-form round parentheses for tighter spacing
                         case "round":              return { l: "\uFE59", r: "\uFE5A" }; // ﹙ ﹚
@@ -193,7 +193,7 @@ Item {
                         case "angle":             return { l: "\u27E8", r: "\u27E9" }; // ⟨ ⟩
                         case "square":            return { l: "[",    r: "]"     };
                         case "tortoise":          return { l: "\u3014", r: "\u3015" }; // 〔 〕
-                        default:                   return { l: "\uFE59", r: "\uFE5A" };
+                        default:                   return { l: "[",    r: "]"     };
                     }
                 }
                 text: (function(){
@@ -205,7 +205,7 @@ Item {
                     const bp = trackText.bracketPair();
                     // No extra space before bracket to minimize gap; shrink bracket size; raise time via <sup>
                     return t
-                           + "<span style='color:" + trackText.sepColor + "'>" + bp.l + "</span>"
+                           + " &#8201;<span style='color:" + trackText.sepColor + "'>" + bp.l + "</span>"
                            + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1'>" + cur + "</span>"
                            + "<span style='color:" + trackText.sepColor + "'>/</span>"
                            + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1'>" + tot + "</span>"
