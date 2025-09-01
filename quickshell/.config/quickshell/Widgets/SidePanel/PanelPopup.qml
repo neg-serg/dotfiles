@@ -18,9 +18,9 @@ PanelWithOverlay {
         Qt.callLater(function() { if (weather && weather.fetchCityWeather) weather.fetchCityWeather(); });
     }
 
-    Rectangle {
-        // Access the shell's SettingsWindow instead of creating a new one
-        id: sidebarPopupRect
+        Rectangle {
+            // Access the shell's SettingsWindow instead of creating a new one
+            id: sidebarPopupRect
         property real slideOffset: width
         property bool isAnimating: false
         property int leftPadding: 20 * Theme.scale(screen)
@@ -79,7 +79,16 @@ PanelWithOverlay {
             height: sidebarPopupRect.height - sidebarPopupRect.bottomPadding
             x: sidebarPopupRect.leftPadding + sidebarPopupRect.slideOffset
             y: 0
-            color: Theme.backgroundPrimary
+            // Use the same dark accent as track brackets
+            property real bracketB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
+            property real bracketLight: Math.min(1, bracketB * 1.5)
+            property color bracketBg: Qt.rgba(
+                Theme.accentPrimary.r * bracketLight,
+                Theme.accentPrimary.g * bracketLight,
+                Theme.accentPrimary.b * bracketLight,
+                1
+            )
+            color: bracketBg
             bottomLeftRadius: 20
             Behavior on x {
                 enabled: !sidebarPopupRect.isAnimating
