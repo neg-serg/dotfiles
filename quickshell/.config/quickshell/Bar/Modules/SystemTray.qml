@@ -78,9 +78,13 @@ Row {
         border.width: 1
         width: collapsedRow.implicitWidth + 12
         height: collapsedRow.implicitHeight + 12
-        // Position relative to bar using global mapping
-        x: collapsedButton.mapToItem(bar, collapsedButton.width/2, collapsedButton.height).x - inlinePopup.width/2
-        y: collapsedButton.mapToItem(bar, collapsedButton.width/2, collapsedButton.height).y + 6
+        // Position relative to bar using global mapping (guard if bar not ready)
+        x: (bar && bar.x !== undefined)
+             ? collapsedButton.mapToItem(bar, collapsedButton.width/2, collapsedButton.height).x - inlinePopup.width/2
+             : 0
+        y: (bar && bar.y !== undefined)
+             ? collapsedButton.mapToItem(bar, collapsedButton.width/2, collapsedButton.height).y + 6
+             : 0
         Row {
             id: collapsedRow
             anchors.left: parent.left
