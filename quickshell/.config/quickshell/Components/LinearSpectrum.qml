@@ -13,6 +13,8 @@ Item {
     property bool mirror: true               // draw above and below center
     property real fillOpacity: 0.85
     property real peakOpacity: 1.0
+    // Simpler look by default: no peak caps
+    property bool showPeaks: false
     // Coloring: default to a neutral/darker theme color (no gradient)
     property bool useGradient: false
     property color barColor: Theme.outline
@@ -53,11 +55,9 @@ Item {
             // Bar value and peak with simple decay
             property real v: (root.values[index] || 0) * root.amplitudeScale
             property real peak: 0
-            onVChanged: {
-                if (v > peak) peak = v;
-            }
+            onVChanged: if (root.showPeaks && v > peak) peak = v;
             Timer {
-                interval: 50; running: true; repeat: true
+                interval: 50; running: root.showPeaks; repeat: true
                 onTriggered: parent.peak = Math.max(0, parent.peak - 0.04)
             }
 
@@ -86,9 +86,9 @@ Item {
                 Behavior on height { SmoothedAnimation { duration: 100 } }
             }
 
-            // Peak indicator
+            // Peak indicator (optional)
             Rectangle {
-                visible: root.mirror
+                visible: root.showPeaks && root.mirror
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 height: 2
