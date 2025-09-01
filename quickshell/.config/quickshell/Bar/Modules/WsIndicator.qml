@@ -12,6 +12,103 @@ Item {
     // Public widget state
     property string wsName: "?"
     property int wsId: -1
+    // Hyprland keyboard submap name (shown to the left of workspace)
+    property string submapName: ""
+    // Fine-tune vertical alignment of submap icon (px; negative moves up)
+    property int submapBaselineAdjust: -5
+    // Live-discovered submaps from Hyprland (via hyprctl -j binds)
+    property var submapDynamicMap: ({})
+    // Map known submaps to clean, geometric Material Symbols
+    // Extend as you adopt new submaps.
+    readonly property var submapIconMap: ({
+        // movement / resizing
+        "move":                "open_with",
+        "moving":              "open_with",
+        "resize":              "open_in_full",
+        "swap":                "swap_horiz",
+        "swap_ws":             "swap_horiz",
+        // launching / apps
+        "launcher":            "apps",
+        "launch":              "apps",
+        // media / volume / brightness
+        "media":               "play_circle",
+        "volume":              "volume_up",
+        "brightness":          "brightness_6",
+        // windows / tiling / workspaces / monitors
+        "window":              "web_asset",
+        "windows":             "web_asset",
+        "tile":                "grid_on",
+        "tiling":              "grid_on",
+        "ws":                  "grid_view",
+        "workspace":           "grid_view",
+        "monitor":             "monitor",
+        "display":             "monitor",
+        // tools / system
+        "system":              "settings",
+        "tools":               "build_circle",
+        "gaps":                "crop_square",
+        // text / edit / select / clipboard
+        "select":              "select_all",
+        "edit":                "edit",
+        "copy":                "content_copy",
+        "paste":               "content_paste",
+        // terminals / code / search / screenshot
+        "terminal":            "terminal",
+        "shell":               "terminal",
+        "code":                "code",
+        "search":              "search",
+        "screenshot":          "screenshot",
+        // browsers
+        "browser":             "language",
+        "web":                 "language",
+        // explicit mappings for discovered submaps
+        "special":             "diamond",
+        "wallpaper":           "wallpaper",
+    })
+    
+    function geometricFallbackIcon(name) {
+        const shapes = [
+            "crop_square",                // square
+            "radio_button_unchecked",    // circle
+            "change_history",            // triangle
+            "hexagon",                    // hexagon
+            "pentagon",                   // pentagon
+            "diamond"                     // diamond
+        ];
+        let h = 0;
+        const s = (name || "").toLowerCase();
+        for (let i = 0; i < s.length; i++) h = (h * 33 + s.charCodeAt(i)) >>> 0;
+        return shapes[h % shapes.length];
+    }
+    function submapIconName(name) {
+        const key = (name || "").toLowerCase().trim();
+        // Dynamic mapping from discovered submaps
+        if (submapDynamicMap && submapDynamicMap[key]) return submapDynamicMap[key];
+        // Static mapping table
+        if (submapIconMap[key]) return submapIconMap[key];
+        // Heuristics for known patterns
+        if (/resiz/.test(key)) return "open_in_full";
+        if (/move|drag/.test(key)) return "open_with";
+        if (/swap/.test(key)) return "swap_horiz";
+        if (/launch|launcher/.test(key)) return "apps";
+        if (/media/.test(key)) return "play_circle";
+        if (/vol|audio|sound/.test(key)) return "volume_up";
+        if (/bright|light/.test(key)) return "brightness_6";
+        if (/(^|_)ws|work|desk|tile|grid/.test(key)) return "grid_view";
+        if (/mon|display|screen|output/.test(key)) return "monitor";
+        if (/term|shell|tty/.test(key)) return "terminal";
+        if (/code|dev/.test(key)) return "code";
+        if (/search|find/.test(key)) return "search";
+        if (/shot|screen.*shot|snap/.test(key)) return "screenshot";
+        if (/browser|web|http/.test(key)) return "language";
+        if (/select|sel/.test(key)) return "select_all";
+        if (/edit/.test(key)) return "edit";
+        if (/copy|yank/.test(key)) return "content_copy";
+        if (/paste/.test(key)) return "content_paste";
+        if (/sys|system|cfg|conf/.test(key)) return "settings";
+        if (/gap/.test(key)) return "crop_square";
+        return geometricFallbackIcon(key);
+    }
 
     // Accent palette (override if needed)
     property color iconColor: "#3b7bb3"
@@ -110,9 +207,31 @@ Item {
     // ---------------- UI ----------------
     Row {
         id: lineBox
-        spacing: iconGlyph.length ? iconSpacing : 0
+        // Use a small spacing regardless; individual items add their own padding
+        spacing: iconSpacing
         anchors.fill: parent
         // implicit sizes come from children
+
+        // Metrics to compute consistent baseline offsets across fonts
+        FontMetrics { id: fmIcon; font: icon.font }
+        FontMetrics { id: fmSub;  font: submapIcon.font }
+
+        // Submap icon aligned to the same baseline family as the workspace icon
+        Text {
+            id: submapIcon
+            visible: root.submapName && root.submapName.length > 0
+            text: submapIconName(root.submapName)
+            color: Theme.accentPrimary
+            renderType: Text.NativeRendering
+            font.family: "Material Symbols Outlined"
+            font.weight: Font.Medium
+            font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
+            // Align to label baseline like the workspace icon does,
+            // then compensate for font ascent differences + fine adjust
+            anchors.baseline: label.baseline
+            anchors.baselineOffset: Math.round(iconBaselineOffset + (fmIcon.ascent - fmSub.ascent) + submapBaselineAdjust)
+            padding: 4
+        }
 
         // Icon as separate Text with baseline alignment to the label
         Text {
@@ -191,6 +310,22 @@ Item {
                         let name = (parts[1] || "").trim();
                         if (name.startsWith("name:")) name = name.substring(5);
                         root.wsName = name;
+                    } else if (line.startsWith("submap>>")) {
+                        // Keyboard submap changed
+                        const name = line.substring(8).trim();
+                        if (!name || name === "default" || name === "reset") {
+                            root.submapName = "";
+                        } else {
+                            root.submapName = name;
+                        }
+                    } else if (line.startsWith("submapv2>>")) {
+                        // In case Hyprland emits v2 for submap as well: "submapv2>><name>"
+                        const name = line.substring(10).trim();
+                        if (!name || name === "default" || name === "reset") {
+                            root.submapName = "";
+                        } else {
+                            root.submapName = name;
+                        }
                     } else if (line.startsWith("focusedmon>>") || line.startsWith("focusedmonv2>>")) {
                         // Monitor focus changed — refresh current workspace via hyprctl
                         refreshOnce.start();
@@ -245,6 +380,42 @@ Item {
         onTriggered: getCurrentWS.running = true
     }
 
+    // Discover submaps used in binds and derive icon mapping
+    Process {
+        id: getBinds
+        command: ["bash", "-lc", "hyprctl -j binds"]
+        environment: hyprEnvOrNull()
+        stdout: StdioCollector {
+            waitForEnd: true
+            onStreamFinished: {
+                try {
+                    const arr = JSON.parse(text);
+                    const dyn = {};
+                    for (let i = 0; i < arr.length; i++) {
+                        const sub = (arr[i] && arr[i].submap) ? String(arr[i].submap) : "";
+                        const n = sub.toLowerCase().trim();
+                        if (!n || n === "default" || n === "reset") continue;
+                        // Assign via heuristics so it's stable across restarts
+                        dyn[n] = submapIconName(n);
+                    }
+                    submapDynamicMap = dyn;
+                    try {
+                        const keys = Object.keys(dyn);
+                        console.log("[WsIndicator] Discovered submaps:", keys.join(", "));
+                        const pairs = keys.map(k => k + "→" + dyn[k]);
+                        console.log("[WsIndicator] Icon mapping:", pairs.join(", "));
+                    } catch (_) {}
+                } catch (e) {
+                    console.error("binds parse error:", e);
+                }
+            }
+        }
+        stderr: StdioCollector { waitForEnd: true }
+    }
+
     // Initial sync at component creation
-    Component.onCompleted: getCurrentWS.running = true
+    Component.onCompleted: {
+        getCurrentWS.running = true;
+        getBinds.running = true;
+    }
 }
