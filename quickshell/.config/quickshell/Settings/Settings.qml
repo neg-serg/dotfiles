@@ -82,9 +82,9 @@ Singleton {
             property real spectrumBarGap: 1.0         // gap between bars in px (scaled later)
 
             // Media time brackets styling
-            // Options: "tortoise" (〔 〕), "lenticular" (〖 〗), "lenticular_black" (【 】),
+            // Options: "round" (( )), "tortoise" (〔 〕), "lenticular" (〖 〗), "lenticular_black" (【 】),
             //          "angle" (⟨ ⟩), "square" ([ ])
-            property string timeBracketStyle: "tortoise"
+            property string timeBracketStyle: "round"
 
             // Monitor/Display Settings
             property string panelPosition: "top" // "top" or "bottom" panel location

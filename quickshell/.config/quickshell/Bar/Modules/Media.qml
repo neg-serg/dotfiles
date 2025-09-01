@@ -184,14 +184,15 @@ Item {
                     ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")
                     : ""
                 function bracketPair() {
-                    const s = (Settings.settings.timeBracketStyle || "tortoise").toLowerCase();
+                    const s = (Settings.settings.timeBracketStyle || "round").toLowerCase();
                     switch (s) {
+                        case "round":              return { l: "(", r: ")" };
                         case "lenticular":        return { l: "\u3016", r: "\u3017" }; // 〖 〗
                         case "lenticular_black":  return { l: "\u3010", r: "\u3011" }; // 【 】
                         case "angle":             return { l: "\u27E8", r: "\u27E9" }; // ⟨ ⟩
                         case "square":            return { l: "[",    r: "]"     };
-                        case "tortoise":
-                        default:                   return { l: "\u3014", r: "\u3015" }; // 〔 〕
+                        case "tortoise":          return { l: "\u3014", r: "\u3015" }; // 〔 〕
+                        default:                   return { l: "(", r: ")" };
                     }
                 }
                 text: (function(){
