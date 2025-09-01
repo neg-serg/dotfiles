@@ -9,6 +9,13 @@ Item {
     property var shell
     property int volume: 0
     property bool firstChange: true
+    // Stub ioSelector to avoid reference errors if advanced UI isn't present
+    Item {
+        id: ioSelector
+        visible: false
+        function show() { visible = true }
+        function dismiss() { visible = false }
+    }
 
     width: pillIndicator.width
     height: pillIndicator.height

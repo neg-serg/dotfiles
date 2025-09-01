@@ -117,8 +117,10 @@ Scope {
                         SystemTray {
                             id: systemTrayModule
                             shell: rootScope.shell
-                            anchors.verticalCenter: parent.verticalCenter
-                            bar: panel
+                            // Avoid anchors inside Row (causes warnings); manual centering instead
+                            y: (parent.height - height) / 2
+                            // Provide a QQuickItem parent for popup positioning
+                            bar: barBackground
                             trayMenu: externalTrayMenu
                         }
                         CustomTrayMenu { id: externalTrayMenu }
