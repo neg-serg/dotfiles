@@ -62,9 +62,16 @@ Row {
         visible: collapsed && expanded
         parent: bar
         z: 1001
-        // Match calendar panel styling for consistency
+        // Dark blue popup background (derived from calendar accent, low brightness)
         radius: 12
-        color: Theme.backgroundPrimary
+        property real pab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
+        property color popupAccent: Qt.rgba(
+            Theme.accentPrimary.r * pab,
+            Theme.accentPrimary.g * pab,
+            Theme.accentPrimary.b * pab,
+            1
+        )
+        color: popupAccent
         border.color: Theme.backgroundTertiary
         border.width: 1
         width: collapsedRow.implicitWidth + 12
