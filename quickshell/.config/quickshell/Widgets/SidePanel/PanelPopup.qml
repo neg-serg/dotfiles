@@ -45,8 +45,10 @@ PanelWithOverlay {
             }
         }
 
-        width: 480 * Theme.scale(screen)
-        height: 660 * Theme.scale(screen)
+        // Make popup size follow content to reduce empty space
+        // Fallback to legacy sizes if content is not yet available
+        width: Math.round((contentCol ? (contentCol.implicitWidth + leftPadding) : (480 * Theme.scale(screen))))
+        height: Math.round((contentCol ? (contentCol.implicitHeight + bottomPadding) : (660 * Theme.scale(screen))))
         visible: parent.visible
         color: "transparent"
         anchors.bottom: parent.bottom
@@ -95,6 +97,7 @@ PanelWithOverlay {
             x: sidebarPopupRect.slideOffset
             Keys.onEscapePressed: sidebarPopupRect.hidePopup()
             ColumnLayout {
+                id: contentCol
                 anchors.fill: parent
                 spacing: 8 * Theme.scale(screen)
                 Weather {
