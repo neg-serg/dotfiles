@@ -11,7 +11,7 @@ Item {
     // Accent stripe options
     property bool  stripeEnabled: true
     // Darken accent strongly towards black to reduce brightness
-    property real  stripeBrightness: 0.3 // 0..1, lower = closer to black
+    property real  stripeBrightness: 0.4 // 0..1, lower = closer to black
     property color stripeColor: Qt.rgba(
         Theme.accentPrimary.r * stripeBrightness,
         Theme.accentPrimary.g * stripeBrightness,
