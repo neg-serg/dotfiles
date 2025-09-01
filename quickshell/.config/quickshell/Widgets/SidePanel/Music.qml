@@ -162,20 +162,19 @@ Rectangle {
                     height: 96 * Theme.scale(screen) // enough for spectrum and art (will adjust if needed)
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
 
-                    // Elliptic spectrum (dual curves with exponential half-life decay)
-                    EllipticSpectrum {
+                    // Circular rings (5 concentric circles with half-life decay)
+                    CircularRings {
                         id: spectrum
                         values: MusicManager.cavaValues
                         anchors.centerIn: parent
-                        rx: 42 * Theme.scale(screen)
-                        ry: 32 * Theme.scale(screen)
-                        amplitudeA: 0.45
-                        amplitudeB: 0.25
-                        lineWidthA: 2 * Theme.scale(screen)
-                        lineWidthB: 1.25 * Theme.scale(screen)
+                        ringCount: 5
+                        baseRadius: 34 * Theme.scale(screen)
+                        ringSpacing: 4 * Theme.scale(screen)
+                        amplitudeScale: 9 * Theme.scale(screen)
+                        lineWidth: 2 * Theme.scale(screen)
                         halfLifeMs: 260
-                        strokeA: Theme.accentPrimary
-                        strokeB: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.65)
+                        strokeColor: Theme.accentPrimary
+                        fadeInner: 0.55
                         z: -1
                     }
 
