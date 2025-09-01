@@ -140,7 +140,7 @@ Window {
             if (primaryScreen.desktopAvailableRect) return primaryScreen.desktopAvailableRect;
         }
 
-        console.warn("Could not determine screen geometry");
+        // Fallback silently; geometry will be synthesized from target position
         return null;
     }
 

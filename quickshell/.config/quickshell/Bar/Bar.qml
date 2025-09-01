@@ -7,7 +7,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import qs.Bar.Modules
 import qs.Components
-import "qs/Bar/Modules/WeatherButton.qml" as WB
+import "Modules" as LocalMods
 import qs.Helpers
 import qs.Services
 import qs.Settings
@@ -92,7 +92,7 @@ Scope {
                         DiagSep {}
                         NetworkUsage { id: net; anchors.verticalCenter: wsindicator.verticalCenter }
                         DiagSep {}
-                        WB.WeatherButton { anchors.verticalCenter: parent.verticalCenter }
+                        LocalMods.WeatherButton { anchors.verticalCenter: parent.verticalCenter }
                         // Rightmost separator of the left section: no accent stripe
                         DiagSep { stripeEnabled: false }
                     }

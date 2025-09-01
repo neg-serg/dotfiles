@@ -15,18 +15,16 @@ PanelWithOverlay {
     function hidePopup() { sidebarPopupRect.hidePopup(); }
     function show() { sidebarPopupRect.showAt(); }
     function dismiss() { sidebarPopupRect.hidePopup(); }
-    Component.onCompleted: { // Trigger initial weather loading when component is completed
-        // Load initial weather data after a short delay to ensure all components are ready
-        Qt.callLater(function() { if (weather && weather.fetchCityWeather) weather.fetchCityWeather(); });
-    }
+    // Weather prefetch removed; Weather is handled by WeatherButton now
 
         Rectangle {
             // Access the shell's SettingsWindow instead of creating a new one
             id: sidebarPopupRect
         property real slideOffset: width
         property bool isAnimating: false
-        property int leftPadding: 20 * Theme.scale(screen)
-        property int bottomPadding: 20 * Theme.scale(screen)
+        // Minimal margins around content
+        property int leftPadding: 4 * Theme.scale(screen)
+        property int bottomPadding: 4 * Theme.scale(screen)
         function showAt() {
             if (!sidebarPopup.visible) {
                 sidebarPopup.visible = true;
@@ -34,8 +32,6 @@ PanelWithOverlay {
                 slideAnim.from = width;
                 slideAnim.to = 0;
                 slideAnim.running = true;
-                if (weather)
-                    weather.startWeatherFetch();
             }
         }
 
@@ -47,10 +43,11 @@ PanelWithOverlay {
             }
         }
 
-        // Make popup size follow content to reduce empty space
-        // Fallback to legacy sizes if content is not yet available
-        width: Math.round((contentCol ? (contentCol.implicitWidth + leftPadding) : (480 * Theme.scale(screen))))
-        height: Math.round((contentCol ? (contentCol.implicitHeight + bottomPadding) : (660 * Theme.scale(screen))))
+        // Size panel close to music module size (compact, no excess space)
+        property real musicWidthPx: 420 * Theme.scale(screen)
+        property real musicHeightPx: 250 * Theme.scale(screen)
+        width: Math.round(musicWidthPx + leftPadding)
+        height: Math.round(musicHeightPx + bottomPadding)
         visible: parent.visible
         color: "transparent"
         anchors.bottom: parent.bottom
@@ -65,7 +62,6 @@ PanelWithOverlay {
             onStopped: {
                 if (sidebarPopupRect.slideOffset === sidebarPopupRect.width) {
                     sidebarPopup.visible = false;
-                    if (weather) weather.stopWeatherFetch();
                 }
                 sidebarPopupRect.isAnimating = false;
             }
@@ -105,33 +101,20 @@ PanelWithOverlay {
                 id: contentCol
                 anchors.fill: parent
                 spacing: 8 * Theme.scale(screen)
-                Weather {
-                    id: weather
-                    width: 420 * Theme.scale(screen)
-                    height: 180 * Theme.scale(screen)
-                    Layout.alignment: Qt.AlignHCenter
-                }
+                // Weather widget removed from this panel; available via WeatherButton popup
 
-                RowLayout { // Music and System Monitor row
+                RowLayout { // Music only
                     spacing: 8 * Theme.scale(screen)
-                    Layout.fillWidth: true
-                    // Stretch music module to panel edges
+                    Layout.fillWidth: false
+                    Layout.alignment: Qt.AlignHCenter
                     Music {
-                        Layout.fillWidth: true
-                        height: 250 * Theme.scale(screen)
+                        width: sidebarPopupRect.musicWidthPx
+                        height: sidebarPopupRect.musicHeightPx
                     }
                 }
 
-                RowLayout {
-                    spacing: 8 * Theme.scale(screen)
-                    Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignHCenter
-                }
-
-                Rectangle {
-                    height: 8 * Theme.scale(screen)
-                    color: "transparent"
-                }
+                // small spacer
+                Rectangle { height: 4 * Theme.scale(screen); color: "transparent" }
 
             }
 
