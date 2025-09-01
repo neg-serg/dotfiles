@@ -204,9 +204,9 @@ Item {
                     // No extra space before bracket to minimize gap; shrink bracket size; raise time via <sup>
                     return t
                            + "<span style='color:" + trackText.sepColor + "'>" + bp.l + "</span>"
-                           + "<span style='font-size:" + timeSize + "px'>" + cur + "</span>"
+                           + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1'>" + cur + "</span>"
                            + "<span style='color:" + trackText.sepColor + "'>/</span>"
-                           + "<span style='font-size:" + timeSize + "px'>" + tot + "</span>"
+                           + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1'>" + tot + "</span>"
                            + "<span style='color:" + trackText.sepColor + "'>" + bp.r + "</span>";
                 })()
                 color: Theme.textPrimary
