@@ -162,19 +162,17 @@ Rectangle {
                     height: 96 * Theme.scale(screen) // enough for spectrum and art (will adjust if needed)
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
 
-                    // Circular rings (5 concentric circles with half-life decay)
-                    CircularRings {
+                    // Single deformed square (8-point polygon) modulated by spectrum
+                    DeformedSquare {
                         id: spectrum
                         values: MusicManager.cavaValues
                         anchors.centerIn: parent
-                        ringCount: 5
-                        baseRadius: 34 * Theme.scale(screen)
-                        ringSpacing: 4 * Theme.scale(screen)
-                        amplitudeScale: 9 * Theme.scale(screen)
-                        lineWidth: 2 * Theme.scale(screen)
-                        halfLifeMs: 260
+                        half: 36 * Theme.scale(screen)
+                        offsetScale: 14 * Theme.scale(screen)
+                        lineWidth: 1.8 * Theme.scale(screen)
+                        halfLifeMs: 130
                         strokeColor: Theme.accentPrimary
-                        fadeInner: 0.55
+                        alpha: 1.0
                         z: -1
                     }
 
