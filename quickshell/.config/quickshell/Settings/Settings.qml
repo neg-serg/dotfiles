@@ -80,7 +80,7 @@ Singleton {
             // Reduced by one third from 128 -> ~86
             property int  cavaBars: 86
             // CAVA tuning (crisper, less smoothing/denoise)
-            property int  cavaFramerate: 60
+            property int  cavaFramerate: 30
             property bool cavaMonstercat: false
             property int  cavaGravity: 20000
             property int  cavaNoiseReduction: 5

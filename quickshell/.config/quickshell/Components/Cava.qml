@@ -10,7 +10,7 @@ Scope {
     property int count: 43
     // Pull defaults from settings for a crisper, less-smoothed look
     property int noiseReduction: (Settings.settings.cavaNoiseReduction !== undefined ? Settings.settings.cavaNoiseReduction : 5)
-    property int framerate:      (Settings.settings.cavaFramerate      !== undefined ? Settings.settings.cavaFramerate      : 60)
+    property int framerate:      (Settings.settings.cavaFramerate      !== undefined ? Settings.settings.cavaFramerate      : 30)
     property int gravity:        (Settings.settings.cavaGravity        !== undefined ? Settings.settings.cavaGravity        : 20000)
     property bool monstercat:    (Settings.settings.cavaMonstercat     !== undefined ? Settings.settings.cavaMonstercat     : false)
     property string channels: "mono"
