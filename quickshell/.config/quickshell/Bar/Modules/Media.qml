@@ -179,7 +179,14 @@ Item {
                     s = (s === undefined || s === null) ? "" : String(s);
                     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 }
-                property string sepColor: "#3b7bb3"
+                // Bracket/separator color: derived dark accent (same logic as tray)
+                property real sepB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
+                property string sepColor: (
+                    "rgba("
+                    + Math.round(Theme.accentPrimary.r * sepB * 255) + ","
+                    + Math.round(Theme.accentPrimary.g * sepB * 255) + ","
+                    + Math.round(Theme.accentPrimary.b * sepB * 255) + ",1)"
+                )
                 property string titlePart: (MusicManager.trackArtist || MusicManager.trackTitle)
                     ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")
                     : ""
