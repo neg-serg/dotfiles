@@ -108,21 +108,35 @@ Item {
             id: trackContainer
             Layout.alignment: Qt.AlignVCenter
             Layout.fillWidth: true
-            // Provide implicit width so RowLayout can measure without parent width
-            implicitWidth: titleText.implicitWidth + 8 * Theme.scale(Screen) + timeText.implicitWidth
+            // Provide implicit size from single combined text (old display)
+            implicitWidth: trackText.implicitWidth
             // keep container height to the text's height so row layout remains unchanged
-            height: titleText.implicitHeight
+            height: trackText.implicitHeight
+
+            // Hidden measurer for title (so spectrum width doesn't intrude into time)
+            Text {
+                id: titleMeasure
+                visible: false
+                text: (MusicManager.trackArtist || MusicManager.trackTitle)
+                      ? [MusicManager.trackArtist, MusicManager.trackTitle]
+                            .filter(function(x){ return !!x; })
+                            .join(" - ")
+                      : ""
+                font.family: Theme.fontFamily
+                font.weight: Font.Medium
+                font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
+            }
 
             // Linear spectrum rendered behind the text (bottom half only)
             LinearSpectrum {
                 id: linearSpectrum
                 anchors.left: parent.left
-                // Place the spectrum just below the title text, slightly overlapping upward
-                anchors.top: titleText.bottom
-                anchors.topMargin: -Math.round(titleText.font.pixelSize * Settings.settings.spectrumOverlapFactor)
-                height: Math.round(titleText.font.pixelSize * Settings.settings.spectrumHeightFactor)
-                // Limit spectrum width to the actual title text area (does not intrude into time)
-                width: Math.ceil(titleText.width)
+                // Place the spectrum just below the text, slightly overlapping upward
+                anchors.top: trackText.bottom
+                anchors.topMargin: -Math.round(trackText.font.pixelSize * Settings.settings.spectrumOverlapFactor)
+                height: Math.round(trackText.font.pixelSize * Settings.settings.spectrumHeightFactor)
+                // Limit spectrum width to the measured title text width
+                width: Math.ceil(titleMeasure.width)
                 values: MusicManager.cavaValues
                 amplitudeScale: 1.0
                 barGap: Settings.settings.spectrumBarGap * Theme.scale(Screen)
@@ -144,7 +158,7 @@ Item {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                height: Math.round(titleText.font.pixelSize * 1.15)
+                height: Math.round(trackNameText.font.pixelSize * 1.15)
                 radius: 4 * Theme.scale(Screen)
                 color: Qt.rgba(Theme.backgroundPrimary.r, Theme.backgroundPrimary.g, Theme.backgroundPrimary.b, 0.25)
                 z: 1
@@ -152,18 +166,32 @@ Item {
 
             // No separate top-half spectrum by default (can enable via settings)
 
-            // Title text (left)
+            // Combined text (artist - title [time]) with colored separators (old display)
             Text {
-                id: titleText
+                id: trackText
                 anchors.left: parent.left
-                anchors.right: timeText.left
-                anchors.rightMargin: 6
+                anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                text: (MusicManager.trackArtist || MusicManager.trackTitle)
-                      ? [MusicManager.trackArtist, MusicManager.trackTitle]
-                            .filter(function(x){ return !!x; })
-                            .join(" - ")
-                      : ""
+                textFormat: Text.RichText
+                renderType: Text.NativeRendering
+                // Build HTML with colored separators and escaped content
+                function esc(s) {
+                    s = (s === undefined || s === null) ? "" : String(s);
+                    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                }
+                property string sepColor: "#3b7bb3"
+                property string titlePart: (MusicManager.trackArtist || MusicManager.trackTitle)
+                    ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")
+                    : ""
+                text: (function(){
+                    if (!trackText.titlePart) return "";
+                    const t = trackText.esc(trackText.titlePart).replace(/\s-\s/g, " <span style='color:" + trackText.sepColor + "'>-</span> ");
+                    const cur = fmtTime(MusicManager.currentPosition || 0);
+                    const tot = fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
+                    return t + " &nbsp;<span style='color:" + trackText.sepColor + "'>[</span>" + cur +
+                           "<span style='color:" + trackText.sepColor + "'>/</span>" + tot +
+                           "<span style='color:" + trackText.sepColor + "'>]</span>";
+                })()
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
                 font.weight: Font.Medium
@@ -171,7 +199,6 @@ Item {
                 elide: Text.ElideRight
                 maximumLineCount: 1
                 z: 2
-                renderType: Text.NativeRendering
                 layer.enabled: true
                 layer.effect: MultiEffect {
                     shadowEnabled: true
@@ -183,66 +210,7 @@ Item {
                 }
             }
 
-            // Time text (right) with colored brackets
-            Item {
-                id: timeText
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                implicitWidth: timeRow.implicitWidth
-                implicitHeight: timeRow.implicitHeight
-                z: 2
-                layer.enabled: true
-                layer.effect: MultiEffect {
-                    shadowEnabled: true
-                    shadowColor: Theme.shadow
-                    shadowOpacity: 0.6
-                    shadowHorizontalOffset: 0
-                    shadowVerticalOffset: 1
-                    shadowBlur: 0.8
-                }
-
-                Row {
-                    id: timeRow
-                    anchors.centerIn: parent
-                    spacing: 0
-
-                    // Left bracket (match workspace icon color)
-                    Text {
-                        text: (MusicManager.trackArtist || MusicManager.trackTitle) ? "[" : ""
-                        color: "#3b7bb3"
-                        font.family: Theme.fontFamily
-                        font.weight: Font.Medium
-                        font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
-                        renderType: Text.NativeRendering
-                        maximumLineCount: 1
-                    }
-
-                    // Time content
-                    Text {
-                        text: (MusicManager.trackArtist || MusicManager.trackTitle)
-                              ? (fmtTime(MusicManager.currentPosition || 0)
-                                 + "/" + fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0)))
-                              : ""
-                        color: Theme.textPrimary
-                        font.family: Theme.fontFamily
-                        font.weight: Font.Medium
-                        font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
-                        renderType: Text.NativeRendering
-                        maximumLineCount: 1
-                    }
-
-                    // Right bracket (match workspace icon color)
-                    Text {
-                        text: (MusicManager.trackArtist || MusicManager.trackTitle) ? "]" : ""
-                        color: "#3b7bb3"
-                        font.family: Theme.fontFamily
-                        font.weight: Font.Medium
-                        font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
-                        renderType: Text.NativeRendering
-                        maximumLineCount: 1
-                    }
-                }
-            }
+            // (Time is embedded in trackText; no separate right block)
         }
     }
 }
