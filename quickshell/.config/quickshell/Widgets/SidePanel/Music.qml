@@ -205,8 +205,6 @@ Rectangle {
                 visible: playerUI.showSingleLabel
                 Layout.preferredHeight: visible ? (28 * Theme.scale(screen)) : 0
                 height: visible ? implicitHeight : 0
-                Layout.preferredHeight: visible ? 40 * Theme.scale(screen) : 0
-                height: visible ? implicitHeight : 0
                 text: playerUI.showSingleLabel ? playerUI.uniquePlayers[0].identity : ""
                 color: playerUI.musicTextColor
                 font.family: Theme.fontFamily
