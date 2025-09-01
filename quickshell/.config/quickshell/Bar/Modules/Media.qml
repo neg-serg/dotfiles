@@ -103,30 +103,26 @@ Item {
             }
         }
 
-        // Track info at original position with spectrum behind
+        // Track info at original position with spectrum below title only
         Item {
             id: trackContainer
             Layout.alignment: Qt.AlignVCenter
             Layout.fillWidth: true
             // Provide implicit width so RowLayout can measure without parent width
-            implicitWidth: trackText.implicitWidth
+            implicitWidth: titleText.implicitWidth + 8 * Theme.scale(Screen) + timeText.implicitWidth
             // keep container height to the text's height so row layout remains unchanged
-            height: trackText.implicitHeight
-            // Track progress (0..1) for dynamic spectrum width
-            property real progress: Math.max(0, Math.min(1,
-                (MusicManager.currentPosition || 0) / Math.max(1, MusicManager.mprisToMs(MusicManager.trackLength || 0))
-            ))
+            height: titleText.implicitHeight
 
             // Linear spectrum rendered behind the text
             LinearSpectrum {
                 id: linearSpectrum
                 anchors.left: parent.left
-                // Place the spectrum just below the text, slightly overlapping upward
-                anchors.top: trackText.bottom
-                anchors.topMargin: -Math.round(trackText.font.pixelSize * 0.2)
-                height: Math.round(trackText.font.pixelSize * 1.2)
-                // Width follows current track progress; keep a small minimum
-                width: Math.max(16 * Theme.scale(Screen), Math.round(parent.width * trackContainer.progress))
+                // Place the spectrum just below the title text, slightly overlapping upward
+                anchors.top: titleText.bottom
+                anchors.topMargin: -Math.round(titleText.font.pixelSize * 0.2)
+                height: Math.round(titleText.font.pixelSize * 1.2)
+                // Limit spectrum width to the actual title text area (does not intrude into time)
+                width: Math.ceil(titleText.width)
                 values: MusicManager.cavaValues
                 amplitudeScale: 1.0
                 barGap: 1 * Theme.scale(Screen)
@@ -146,25 +142,23 @@ Item {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                height: Math.round(trackText.font.pixelSize * 1.15)
+                height: Math.round(titleText.font.pixelSize * 1.15)
                 radius: 4 * Theme.scale(Screen)
                 color: Qt.rgba(Theme.backgroundPrimary.r, Theme.backgroundPrimary.g, Theme.backgroundPrimary.b, 0.25)
                 z: 1
             }
 
-            // Text overlay with outline to dominate over graphics
+            // Title text (left)
             Text {
-                id: trackText
+                id: titleText
                 anchors.left: parent.left
-                anchors.right: parent.right
+                anchors.right: timeText.left
+                anchors.rightMargin: 6
                 anchors.verticalCenter: parent.verticalCenter
                 text: (MusicManager.trackArtist || MusicManager.trackTitle)
                       ? [MusicManager.trackArtist, MusicManager.trackTitle]
                             .filter(function(x){ return !!x; })
                             .join(" - ")
-                        + " ["
-                        + fmtTime(MusicManager.currentPosition || 0)
-                        + "/" + fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0)) + "]"
                       : ""
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
@@ -174,7 +168,34 @@ Item {
                 maximumLineCount: 1
                 z: 2
                 renderType: Text.NativeRendering
-                // Restore subtle shadow without changing weight
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    shadowEnabled: true
+                    shadowColor: Theme.shadow
+                    shadowOpacity: 0.6
+                    shadowHorizontalOffset: 0
+                    shadowVerticalOffset: 1
+                    shadowBlur: 0.8
+                }
+            }
+
+            // Time text (right)
+            Text {
+                id: timeText
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                text: (MusicManager.trackArtist || MusicManager.trackTitle)
+                      ? ("[" + fmtTime(MusicManager.currentPosition || 0)
+                         + "/" + fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0)) + "]")
+                      : ""
+                color: Theme.textPrimary
+                font.family: Theme.fontFamily
+                font.weight: Font.Medium
+                font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
+                elide: Text.ElideRight
+                maximumLineCount: 1
+                z: 2
+                renderType: Text.NativeRendering
                 layer.enabled: true
                 layer.effect: MultiEffect {
                     shadowEnabled: true
