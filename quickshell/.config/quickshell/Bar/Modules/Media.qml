@@ -191,11 +191,13 @@ Item {
                 )
                 // Bracket color only: dark accent derived from calendar/tray
                 property real bracketB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
+                // Make brackets 1.5x lighter (clamped to 1.0)
+                property real bracketLight: Math.min(1, bracketB * 1.5)
                 property string bracketColor: (
                     "rgba("
-                    + Math.round(Theme.accentPrimary.r * bracketB * 255) + ","
-                    + Math.round(Theme.accentPrimary.g * bracketB * 255) + ","
-                    + Math.round(Theme.accentPrimary.b * bracketB * 255) + ",1)"
+                    + Math.round(Theme.accentPrimary.r * bracketLight * 255) + ","
+                    + Math.round(Theme.accentPrimary.g * bracketLight * 255) + ","
+                    + Math.round(Theme.accentPrimary.b * bracketLight * 255) + ",1)"
                 )
                 property string titlePart: (MusicManager.trackArtist || MusicManager.trackTitle)
                     ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")
