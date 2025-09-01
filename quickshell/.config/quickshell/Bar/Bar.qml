@@ -119,9 +119,6 @@ Scope {
                             shell: rootScope.shell
                             // Avoid anchors inside Row (causes warnings); manual centering instead
                             y: (parent.height - height) / 2
-                            // Provide overlay layer for popup positioning/stacking
-                            bar: barOverlay
-                            overlay: barOverlay
                             trayMenu: externalTrayMenu
                         }
                         CustomTrayMenu { id: externalTrayMenu }
@@ -132,13 +129,7 @@ Scope {
                         }
                     }
 
-                    // Overlay layer for popups (above rows)
-                    Item {
-                        id: barOverlay
-                        anchors.fill: barBackground
-                        z: 1000
-                        clip: false
-                    }
+                    // (Removed overlay layer; inline tray expansion handles layout and stacking)
                 }
             }
         }

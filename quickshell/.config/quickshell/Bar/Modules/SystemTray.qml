@@ -1,7 +1,5 @@
 import QtQuick
-import QtQuick.Window
 import QtQuick.Layouts
-import QtQuick.Controls
 import Quickshell
 import QtQuick.Effects
 import Quickshell.Services.SystemTray
@@ -11,9 +9,6 @@ import qs.Components
 
 Row {
     id: root
-    // 'bar' can be an overlay QQuickItem injected by Bar.qml
-    property var bar
-    property var overlay
     property var shell
     property var trayMenu
     spacing: 8
