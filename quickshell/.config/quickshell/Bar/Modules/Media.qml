@@ -186,13 +186,14 @@ Item {
                 function bracketPair() {
                     const s = (Settings.settings.timeBracketStyle || "round").toLowerCase();
                     switch (s) {
-                        case "round":              return { l: "(", r: ")" };
+                        // Small-form round parentheses for tighter spacing
+                        case "round":              return { l: "\uFE59", r: "\uFE5A" }; // ﹙ ﹚
                         case "lenticular":        return { l: "\u3016", r: "\u3017" }; // 〖 〗
                         case "lenticular_black":  return { l: "\u3010", r: "\u3011" }; // 【 】
                         case "angle":             return { l: "\u27E8", r: "\u27E9" }; // ⟨ ⟩
                         case "square":            return { l: "[",    r: "]"     };
                         case "tortoise":          return { l: "\u3014", r: "\u3015" }; // 〔 〕
-                        default:                   return { l: "(", r: ")" };
+                        default:                   return { l: "\uFE59", r: "\uFE5A" };
                     }
                 }
                 text: (function(){
