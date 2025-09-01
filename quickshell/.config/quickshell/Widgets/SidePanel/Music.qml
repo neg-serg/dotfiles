@@ -72,8 +72,12 @@ Rectangle {
             property var uniquePlayers: []
             function dedupePlayers() {
                 try {
-                    const list = MusicManager.getAvailablePlayers();
-                    const seen = {};
+                    const list = MusicManager.getAvailablePlayers() || [];
+                    function nameOf(p, i) {
+                        if (!p) return `Player ${i+1}`;
+                        return p.identity || p.name || p.id || `Player ${i+1}`;
+                    }
+                    const seen = Object.create(null);
                     const out = [];
                     for (let i = 0; i < list.length; i++) {
                         const p = list[i];
@@ -81,21 +85,18 @@ Rectangle {
                         const key = (p.identity || p.name || p.id || ("idx_"+i));
                         if (seen[key]) continue;
                         seen[key] = true;
-                        out.push(p);
+                        out.push({ identity: nameOf(p, i), idx: i });
                     }
                     uniquePlayers = out;
                     // Try to keep current selection in sync
                     if (MusicManager.currentPlayer) {
-                        const curKey = MusicManager.currentPlayer.identity || MusicManager.currentPlayer.name || MusicManager.currentPlayer.id;
+                        const curKey = (MusicManager.currentPlayer.identity || MusicManager.currentPlayer.name || MusicManager.currentPlayer.id);
                         let idx = 0;
                         for (let j = 0; j < uniquePlayers.length; j++) {
-                            const up = uniquePlayers[j];
-                            const upKey = (up && (up.identity || up.name || up.id));
-                            if (upKey === curKey) { idx = j; break; }
+                            const upName = uniquePlayers[j] && uniquePlayers[j].identity;
+                            if (upName === curKey) { idx = j; break; }
                         }
                         playerSelector.currentIndex = idx;
-                    } else if (uniquePlayers.length > 0) {
-                        playerSelector.currentIndex = 0;
                     }
                 } catch (e) {
                     // ignore
@@ -112,7 +113,15 @@ Rectangle {
                 model: uniquePlayers
                 textRole: "identity"
                 currentIndex: 0
-
+                onActivated: (index) => {
+                    try {
+                        if (uniquePlayers && uniquePlayers[index]) {
+                            MusicManager.selectedPlayerIndex = uniquePlayers[index].idx;
+                            MusicManager.updateCurrentPlayer();
+                        }
+                    } catch (e) { /* ignore */ }
+                }
+            
                 background: Rectangle {
                     implicitWidth: 120 * Theme.scale(screen)
                     implicitHeight: 40 * Theme.scale(screen)
@@ -181,10 +190,17 @@ Rectangle {
                     }
                 }
 
-                onActivated: {
-                    MusicManager.selectedPlayerIndex = index;
-                    MusicManager.updateCurrentPlayer();
-                }
+            // Single player label (when no need for ComboBox)
+            Text {
+                visible: uniquePlayers && uniquePlayers.length === 1
+                text: uniquePlayers && uniquePlayers.length === 1 ? uniquePlayers[0].identity : ""
+                color: Theme.textPrimary
+                font.family: Theme.fontFamily
+                font.pixelSize: 13 * Theme.scale(screen)
+                Layout.fillWidth: true
+                elide: Text.ElideRight
+            }
+
             }
 
             // Album art with spectrum visualizer
