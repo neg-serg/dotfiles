@@ -38,9 +38,7 @@ Singleton {
                     memoryUsageStr = data.mem + "G";
                     memoryUsagePerStr = data.memper + "%";
                     diskUsageStr = data.diskper + "%";
-                } catch (e) {
-                    console.error("Failed to parse zigstat output:", e);
-                }
+                } catch (e) { }
             }
         }
     }

@@ -9,18 +9,13 @@ Process {
     // Track background process state
     property bool isRunning: running
     
-    onStarted: {
-        console.log("[IdleInhibitor] Process started - idle inhibited")
-    }
+    onStarted: {}
     
-    onExited: function(exitCode, exitStatus) {
-        console.log("[IdleInhibitor] Process finished:", exitCode)
-    }
+    onExited: function(exitCode, exitStatus) {}
 
 
     function start() {
         if (!running) {
-            console.log("[IdleInhibitor] Starting idle inhibitor...")
             running = true
         }
     }
@@ -29,7 +24,6 @@ Process {
         if (running) {
             // Force stop the process by setting running to false
             running = false
-            console.log("[IdleInhibitor] Stopping idle inhibitor...")
         }
     }
     

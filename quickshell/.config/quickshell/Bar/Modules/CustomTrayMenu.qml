@@ -40,10 +40,7 @@ PopupWindow {
     }
 
     function showAt(item, x, y) {
-        if (!item) {
-            console.warn("CustomTrayMenu: anchorItem is undefined, won't show menu.");
-            return;
-        }
+        if (!item) { return; }
         anchorItem = item;
         anchorX = x;
         anchorY = y;

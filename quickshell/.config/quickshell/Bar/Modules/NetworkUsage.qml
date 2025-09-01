@@ -122,10 +122,10 @@ Item {
             if (typeof data.rx_kib_s === "number" && typeof data.tx_kib_s === "number") {
                 root.displayText = formatData(data)
             } else {
-                console.warn("Invalid payload:", line)
+                // ignore invalid line silently
             }
         } catch (e) {
-            console.warn("JSON parse error:", e, "Line:", line)
+            // ignore parse errors
         }
     }
 
@@ -137,7 +137,5 @@ Item {
 
     function fmtKiBps(kib) { return kib.toFixed(1) }
 
-    Component.onCompleted: {
-        console.log("Starting network monitor:", Array.isArray(cmd) ? cmd.join(" ") : String(cmd))
-    }
+    Component.onCompleted: {}
 }

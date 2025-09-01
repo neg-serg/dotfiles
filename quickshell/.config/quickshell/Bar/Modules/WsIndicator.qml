@@ -344,16 +344,9 @@ Item {
             }
         }
 
-        stderr: StdioCollector {
-            waitForEnd: false
-            onTextChanged: { if (text) console.error("socket2(stderr):", text); }
-        }
+        stderr: StdioCollector { waitForEnd: false }
 
-        onExited: {
-            console.warn("socket2 reader exited (code:", exitCode, "), restarting…");
-            eventMonitor.consumed = 0;
-            running = true;
-        }
+        onExited: { eventMonitor.consumed = 0; running = true }
 
         Component.onCompleted: running = true
     }
@@ -369,17 +362,10 @@ Item {
                     const obj = JSON.parse(text);
                     root.wsId = obj.id;
                     root.wsName = obj.name;
-                } catch (e) {
-                    console.error("activeworkspace parse error:", e, "Raw:", text);
-                }
+                } catch (e) { }
             }
         }
-        stderr: StdioCollector {
-            waitForEnd: true
-            onStreamFinished: {
-                if (text && text.length) console.error("hyprctl(activeworkspace) stderr:", text);
-            }
-        }
+        stderr: StdioCollector { waitForEnd: true }
         environment: hyprEnvOrNull()
     }
 
@@ -409,15 +395,8 @@ Item {
                         dyn[n] = submapIconName(n);
                     }
                     submapDynamicMap = dyn;
-                    try {
-                        const keys = Object.keys(dyn);
-                        console.log("[WsIndicator] Discovered submaps:", keys.join(", "));
-                        const pairs = keys.map(k => k + "→" + dyn[k]);
-                        console.log("[WsIndicator] Icon mapping:", pairs.join(", "));
-                    } catch (_) {}
-                } catch (e) {
-                    console.error("binds parse error:", e);
-                }
+                    try { const _ = Object.keys(dyn); } catch (_) {}
+                } catch (e) { }
             }
         }
         stderr: StdioCollector { waitForEnd: true }
