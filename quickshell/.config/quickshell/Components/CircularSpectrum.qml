@@ -18,6 +18,8 @@ Item {
     property color strokeColor: "#fff"
     property real  strokeOpacity: 0.5
     property int strokeWidth: 0 * Theme.scale(Screen)
+    // Minimum bar width (for clarity)
+    property real minBarWidth: 2 * Theme.scale(Screen)
     property var values: []
     // Cached angles for equal arc spacing on roundedSquare
     property var thetaMap: []
@@ -89,7 +91,7 @@ Item {
         Rectangle {
             property real value: root.values[index]
             property real angle: (index / root.values.length) * 360
-            width: Math.max(2 * Theme.scale(Screen), (root.innerRadius * 2 * Math.PI) / root.values.length - 4 * Theme.scale(Screen))
+            width: Math.max(root.minBarWidth, (root.innerRadius * 2 * Math.PI) / root.values.length - 4 * Theme.scale(Screen))
             height: root.visualizerType === "diamond"
                     ? value * 2 * root.amplitudeScale * (usableOuter - root.innerRadius)
                     : value * root.amplitudeScale * (usableOuter - root.innerRadius)

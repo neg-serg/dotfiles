@@ -42,12 +42,16 @@ Item {
                 values: MusicManager.cavaValues
                 anchors.centerIn: parent
                 visualizerType: "roundedSquare"
-                amplitudeScale: 0.5
+                // Make bars more visible without covering the art
+                amplitudeScale: 0.8
+                minBarWidth: 3 * Theme.scale(Screen)
                 innerRadius: 14 * Theme.scale(Screen)
                 outerRadius: 26 * Theme.scale(Screen)
                 fillColor: Theme.accentPrimary
+                fillOpacity: 0.7
                 strokeColor: Theme.accentPrimary
-                strokeWidth: 0
+                strokeOpacity: 1.0
+                strokeWidth: 1 * Theme.scale(Screen)
                 // Render behind album art to avoid overlaying the image
                 z: 0
             }
