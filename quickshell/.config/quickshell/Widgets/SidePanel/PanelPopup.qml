@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Effects
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -9,6 +8,8 @@ import qs.Settings
 
 PanelWithOverlay {
     id: sidebarPopup
+    // Give the side panel a namespace so Hyprland can apply blur rules
+    WlrLayershell.namespace: "quickshell-sidepanel"
     property var shell: null
     function showAt() { sidebarPopupRect.showAt(); }
     function hidePopup() { sidebarPopupRect.hidePopup(); }
@@ -143,26 +144,5 @@ PanelWithOverlay {
             }
         }
 
-        // Kawase blur backdrop behind content (frosted glass look inside panel)
-        MultiEffect {
-            id: kawaseBlur
-            anchors.fill: mainRectangle
-            z: 0.5
-            source: ShaderEffectSource {
-                id: blurSrc
-                sourceItem: contentCol
-                recursive: true
-                hideSource: false
-                live: true
-                smooth: true
-            }
-            blurEnabled: true
-            blur: 0.6
-            saturation: 1.0
-            brightness: 1.0
-            contrast: 1.0
-            maskEnabled: true
-            maskSource: mainRectangle
-        }
     }
 }
