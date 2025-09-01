@@ -162,19 +162,7 @@ Rectangle {
                     height: 96 * Theme.scale(screen) // enough for spectrum and art (will adjust if needed)
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
 
-                    // Single deformed square (8-point polygon) modulated by spectrum
-                    DeformedSquare {
-                        id: spectrum
-                        values: MusicManager.cavaValues
-                        anchors.centerIn: parent
-                        half: 36 * Theme.scale(screen)
-                        offsetScale: 14 * Theme.scale(screen)
-                        lineWidth: 1.8 * Theme.scale(screen)
-                        halfLifeMs: 130
-                        strokeColor: Theme.accentPrimary
-                        alpha: 1.0
-                        z: -1
-                    }
+                    // (Visualizer removed for this view as per request)
 
                     // Album art image (square with slight rounding)
                     Rectangle {
@@ -233,6 +221,19 @@ Rectangle {
                             visible: !albumArt.visible
                         }
                     }
+
+                    // Sharp square outline 1pt away from cover
+                    Rectangle {
+                        id: coverOutline
+                        anchors.centerIn: parent
+                        color: "transparent"
+                        radius: 0
+                        border.width: 1 * Theme.scale(screen)
+                        border.color: Theme.accentPrimary
+                        width: albumArtwork.width + 2 * (1 * Theme.scale(screen) + border.width)
+                        height: albumArtwork.height + 2 * (1 * Theme.scale(screen) + border.width)
+                        z: 0.5
+                    }
                 }
 
                 // Track metadata
@@ -272,168 +273,7 @@ Rectangle {
                 }
             }
 
-            // Progress bar
-            Rectangle {
-                id: progressBarBackground
-                width: parent.width
-                height: 6 * Theme.scale(screen)
-                radius: 3
-                color: Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.15)
-                Layout.fillWidth: true
-
-                property real progressRatio: {
-                    if (!MusicManager.currentPlayer || !MusicManager.isPlaying || MusicManager.trackLength <= 0) {
-                        return 0;
-                    }
-                    return Math.min(1, MusicManager.currentPosition / MusicManager.trackLength);
-                }
-
-                Rectangle {
-                    id: progressFill
-                    width: progressBarBackground.progressRatio * parent.width
-                    height: parent.height
-                    radius: parent.radius
-                    color: Theme.accentPrimary
-
-                    Behavior on width {
-                        NumberAnimation {
-                            duration: 200
-                        }
-                    }
-                }
-
-                // Interactive progress handle
-                Rectangle {
-                    id: progressHandle
-                    width: 12 * Theme.scale(screen)
-                    height: 12 * Theme.scale(screen)
-                    radius: width * 0.5
-                    color: Theme.accentPrimary
-                    border.color: Qt.lighter(Theme.accentPrimary, 1.3)
-                    border.width: 1 * Theme.scale(screen)
-
-                    x: Math.max(0, Math.min(parent.width - width, progressFill.width - width / 2))
-                    anchors.verticalCenter: parent.verticalCenter
-
-                    visible: MusicManager.trackLength > 0
-                    scale: progressMouseArea.containsMouse || progressMouseArea.pressed ? 1.2 : 1.0
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 150
-                        }
-                    }
-                }
-
-                // Mouse area for seeking
-                MouseArea {
-                    id: progressMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    enabled: MusicManager.trackLength > 0 && MusicManager.canSeek
-
-                    onClicked: function (mouse) {
-                        let ratio = mouse.x / width;
-                        MusicManager.seekByRatio(ratio);
-                    }
-
-                    onPositionChanged: function (mouse) {
-                        if (pressed) {
-                            let ratio = Math.max(0, Math.min(1, mouse.x / width));
-                            MusicManager.seekByRatio(ratio);
-                        }
-                    }
-                }
-            }
-
-            // Media controls
-            RowLayout {
-                spacing: 4 * Theme.scale(screen)
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignHCenter
-
-                // Previous button
-                Rectangle {
-                    width: 28 * Theme.scale(screen)
-                    height: 28 * Theme.scale(screen)
-                    radius: width * 0.5
-                    color: previousButton.containsMouse ? Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.2) : Qt.darker(Theme.surface, 1.1)
-                    border.color: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.3)
-                    border.width: 1 * Theme.scale(screen)
-
-                    MouseArea {
-                        id: previousButton
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        enabled: MusicManager.canGoPrevious
-                        onClicked: MusicManager.previous()
-                    }
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "skip_previous"
-                        font.family: "Material Symbols Outlined"
-                        font.pixelSize: Theme.fontSizeCaption * Theme.scale(screen)
-                        color: previousButton.enabled ? Theme.accentPrimary : Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.3)
-                    }
-                }
-
-                // Play/Pause button
-                Rectangle {
-                    width: 36 * Theme.scale(screen)
-                    height: 36 * Theme.scale(screen)
-                    radius: width * 0.5
-                    color: playButton.containsMouse ? Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.2) : Qt.darker(Theme.surface, 1.1)
-                    border.color: Theme.accentPrimary
-                    border.width: 2 * Theme.scale(screen)
-
-                    MouseArea {
-                        id: playButton
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        enabled: MusicManager.canPlay || MusicManager.canPause
-                        onClicked: MusicManager.playPause()
-                    }
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: MusicManager.isPlaying ? "pause" : "play_arrow"
-                        font.family: "Material Symbols Outlined"
-                        font.pixelSize: Theme.fontSizeBody * Theme.scale(screen)
-                        color: playButton.enabled ? Theme.accentPrimary : Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.3)
-                    }
-                }
-
-                // Next button
-                Rectangle {
-                    width: 28 * Theme.scale(screen)
-                    height: 28 * Theme.scale(screen)
-                    radius: width * 0.5
-                    color: nextButton.containsMouse ? Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.2) : Qt.darker(Theme.surface, 1.1)
-                    border.color: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.3)
-                    border.width: 1 * Theme.scale(screen)
-
-                    MouseArea {
-                        id: nextButton
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        enabled: MusicManager.canGoNext
-                        onClicked: MusicManager.next()
-                    }
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "skip_next"
-                        font.family: "Material Symbols Outlined"
-                        font.pixelSize: Theme.fontSizeCaption * Theme.scale(screen)
-                        color: nextButton.enabled ? Theme.accentPrimary : Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.3)
-                    }
-                }
-            }
+            // (Progress bar and media controls removed as requested)
         }
     }
 }
