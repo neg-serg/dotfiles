@@ -202,8 +202,7 @@ Item {
                 function bracketPair() {
                     const s = (Settings.settings.timeBracketStyle || "square").toLowerCase();
                     switch (s) {
-                        // Small-form round parentheses for tighter spacing
-                        case "round":              return { l: "\uFE59", r: "\uFE5A" }; // ﹙ ﹚
+                        case "round":              return { l: "(",    r: ")"     }; // standard parentheses
                         case "lenticular":        return { l: "\u3016", r: "\u3017" }; // 〖 〗
                         case "lenticular_black":  return { l: "\u3010", r: "\u3011" }; // 【 】
                         case "angle":             return { l: "\u27E8", r: "\u27E9" }; // ⟨ ⟩

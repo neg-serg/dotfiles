@@ -84,7 +84,7 @@ Singleton {
             // Media time brackets styling
             // Options: "round" (( )), "tortoise" (〔 〕), "lenticular" (〖 〗), "lenticular_black" (【 】),
             //          "angle" (⟨ ⟩), "square" ([ ])
-            property string timeBracketStyle: "square"
+            property string timeBracketStyle: "round"
 
             // Monitor/Display Settings
             property string panelPosition: "top" // "top" or "bottom" panel location
