@@ -197,6 +197,13 @@ Item {
     property string iconGlyph: leadingIcon(wsName)
     property string restName: restAfterLeadingIcon(wsName)
 
+    // Detect terminal workspace (common PUA glyphs or name prefix)
+    readonly property var _terminalIcons: ["\uf120", "\ue795", "\ue7a2"]
+    property bool isTerminalWs: (
+        (iconGlyph && _terminalIcons.indexOf(iconGlyph) !== -1) ||
+        ((restName || "").toLowerCase().indexOf("term") === 0)
+    )
+
     // Fallback to workspace id if name is empty
     property string fallbackText: (wsId >= 0 ? String(wsId) : "?")
 
@@ -249,7 +256,7 @@ Item {
             // Baseline alignment (tweak offset for pixel-perfect visual centering)
             anchors.baseline: label.baseline
             anchors.baselineOffset: iconBaselineOffset
-            padding: 1
+            padding: (root.isTerminalWs ? 0 : 1)
         }
 
         // Main text remains RichText with soft decoration
@@ -264,7 +271,7 @@ Item {
             color: Theme.textPrimary
             padding: 6
             // Reduce left padding to tighten gap next to icon
-            leftPadding: 2
+            leftPadding: (root.isTerminalWs ? 0 : 2)
 
             // Optional: lock line box so icon never affects line height
             // lineHeightMode: Text.FixedHeight
