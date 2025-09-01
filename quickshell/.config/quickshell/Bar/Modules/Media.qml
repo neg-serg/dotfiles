@@ -132,6 +132,7 @@ Item {
             // Linear spectrum rendered behind the text (bottom half only)
             LinearSpectrum {
                 id: linearSpectrum
+                visible: Settings.settings.showMediaVisualizer === true
                 anchors.left: parent.left
                 // Place the spectrum behind the text, raised further upward
                 anchors.top: trackText.bottom

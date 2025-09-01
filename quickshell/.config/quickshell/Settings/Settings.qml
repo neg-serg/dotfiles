@@ -132,6 +132,9 @@ Singleton {
             property real trayPopupDarkness: 0.65
             // Tray button accent brightness relative to calendar accent (0..1)
             property real trayAccentBrightness: 0.25
+
+            // Media visualizer (CAVA/LinearSpectrum) toggle
+            property bool showMediaVisualizer: false
         }
     }
 

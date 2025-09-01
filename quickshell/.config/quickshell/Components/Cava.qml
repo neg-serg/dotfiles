@@ -43,7 +43,7 @@ Scope {
         id: process
         property int index: 0
         stdinEnabled: true
-        running: MusicManager.isPlaying
+        running: (Settings.settings.showMediaVisualizer === true) && MusicManager.isPlaying
         command: ["cava", "-p", "/dev/stdin"]
         onExited: {
             stdinEnabled = true;
