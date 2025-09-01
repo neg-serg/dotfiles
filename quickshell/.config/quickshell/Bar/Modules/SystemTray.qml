@@ -29,8 +29,12 @@ Row {
     // Inline expanded content that participates in Row layout (shifts neighbors)
     Item {
         id: inlineBox
-        visible: collapsed && expanded
+        // Keep visible during close animation until width shrinks to 0
+        visible: collapsed && (expanded || openProgress > 0)
         anchors.verticalCenter: parent.verticalCenter
+        // Open progress 0..1 drives horizontal expansion
+        property real openProgress: 0
+        Behavior on openProgress { NumberAnimation { duration: 220; easing.type: Easing.OutCubic } }
         // Background behind inline tray icons
         property real pab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
         property color popupAccent: Qt.rgba(
@@ -47,14 +51,17 @@ Row {
             color: inlineBox.popupAccent
             border.color: Theme.backgroundTertiary
             border.width: 1
-            // Tighter padding around content
-            width: collapsedRow.implicitWidth + 6
+            // Horizontal expand from right to left
+            width: Math.max(0, Math.round((collapsedRow.implicitWidth + 6) * inlineBox.openProgress))
             height: collapsedRow.implicitHeight + 6
             anchors.verticalCenter: parent.verticalCenter
+            clip: true
         }
         Row {
             id: collapsedRow
-            anchors.centerIn: bg
+            // Align to the right edge so reveal expands leftwards
+            anchors.right: bg.right
+            anchors.verticalCenter: bg.verticalCenter
             spacing: 4
             Repeater {
                 model: systemTray.items
@@ -148,7 +155,13 @@ Row {
         onClicked: {
             expanded = !expanded;
             if (expanded) { openGuard = true; guardTimer.restart(); }
+            if (collapsed) inlineBox.openProgress = expanded ? 1 : 0;
         }
+    }
+
+    // Keep animation in sync if expanded changes from elsewhere (settings, etc.)
+    onExpandedChanged: {
+        if (collapsed) inlineBox.openProgress = expanded ? 1 : 0;
     }
 
     // Inline icons (visible only when not collapsed)
