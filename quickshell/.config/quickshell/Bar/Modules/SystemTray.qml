@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Window
 import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
@@ -28,7 +29,14 @@ Row {
         anchors.verticalCenter: parent.verticalCenter
         size: 24 * Theme.scale(Screen)
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
-        onClicked: collapsedPopup.visible ? collapsedPopup.close() : collapsedPopup.open()
+        onClicked: {
+            if (collapsedPopup.visible) { collapsedPopup.close(); return }
+            // Pre-position near button, then open
+            const pt = collapsedButton.mapToItem(null, collapsedButton.width/2, collapsedButton.height)
+            collapsedPopup.x = pt.x - collapsedPopup.implicitWidth/2
+            collapsedPopup.y = pt.y + 6
+            collapsedPopup.open()
+        }
     }
 
     Popup {
@@ -38,17 +46,18 @@ Row {
         visible: false
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent | Popup.CloseOnPressOutside
         padding: 6
+        transientParent: (root.Window && root.Window.window) ? root.Window.window : null
         background: Rectangle {
             radius: 8
             color: Theme.surfaceVariant
             border.color: Theme.outline
             border.width: 1
         }
-        // Position near the trigger button using global coords
+        // Re-center once sized
         onOpened: {
-            const pt = collapsedButton.mapToItem(null, collapsedButton.width/2, collapsedButton.height);
-            collapsedPopup.x = pt.x - collapsedPopup.width/2;
-            collapsedPopup.y = pt.y + 6;
+            const pt = collapsedButton.mapToItem(null, collapsedButton.width/2, collapsedButton.height)
+            collapsedPopup.x = pt.x - collapsedPopup.width/2
+            collapsedPopup.y = pt.y + 6
         }
 
         contentItem: Row {
