@@ -62,6 +62,7 @@ Rectangle {
 
         // Main player UI
         ColumnLayout {
+            id: playerUI
             anchors.fill: parent
             anchors.margins: 18 * Theme.scale(screen)
             spacing: 12 * Theme.scale(screen)
@@ -102,9 +103,9 @@ Rectangle {
                     // ignore
                 }
             }
-            Component.onCompleted: dedupePlayers()
-            Timer { interval: 2000; running: true; repeat: true; onTriggered: dedupePlayers() }
-            Connections { target: MusicManager; function onCurrentPlayerChanged() { dedupePlayers() } }
+            Component.onCompleted: playerUI.dedupePlayers()
+            Timer { interval: 2000; running: true; repeat: true; onTriggered: playerUI.dedupePlayers() }
+            Connections { target: MusicManager; function onCurrentPlayerChanged() { playerUI.dedupePlayers() } }
             ComboBox {
                 id: playerSelector
                 Layout.fillWidth: true
