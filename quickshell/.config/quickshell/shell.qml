@@ -1,13 +1,9 @@
 import Quickshell
-import Quickshell.Io
 import Quickshell.Services.Pipewire
-import Quickshell.Hyprland
 import QtQuick
 import QtCore
 import qs.Bar
 import qs.Bar.Modules
-import qs.Widgets
-import qs.Settings
 import qs.Helpers
 
 Scope {

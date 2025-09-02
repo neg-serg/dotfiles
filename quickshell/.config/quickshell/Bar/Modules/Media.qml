@@ -1,7 +1,7 @@
 import QtQuick 
 import QtQuick.Controls
 import QtQuick.Layouts
-import Quickshell.Widgets
+// Quickshell.Widgets not needed
 // (Io import removed)
 import QtQuick.Effects
 import qs.Settings

@@ -1,5 +1,4 @@
 pragma Singleton
-
 import Quickshell
 import QtQuick
 import qs.Settings

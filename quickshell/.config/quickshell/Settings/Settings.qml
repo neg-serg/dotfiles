@@ -2,7 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import qs.Services
+// import qs.Services
 
 Singleton {
     property string shellName: "quickshell"
@@ -26,14 +26,7 @@ Singleton {
         Component.onCompleted: function() {
             reload()
         }
-        onLoaded: function() {
-            Qt.callLater(function () {
-                try {
-                    if (typeof WallpaperManager !== 'undefined' && WallpaperManager.setCurrentWallpaper)
-                        WallpaperManager.setCurrentWallpaper(settings.currentWallpaper, true);
-                } catch (e) { /* ignore if service unavailable */ }
-            })
-        }
+        // onLoaded side-effects removed (no WallpaperManager integration)
         onLoadFailed: function(error) {
             settingAdapter = {}
             writeAdapter()
@@ -43,21 +36,10 @@ Singleton {
             property string weatherCity: "Moscow"
             property string profileImage: Quickshell.env("HOME") + "/.face"
             property bool useFahrenheit: false
-            property string wallpaperFolder: "~/pic/wl/"
-            property string currentWallpaper: ""
-            property string videoPath: "~/vid/"
-            property bool showSystemInfoInBar: false
+            // Wallpaper and video settings removed
             property bool showMediaInBar: false
             // Weather button in bar
             property bool showWeatherInBar: false
-            property bool useSWWW: false
-            property bool randomWallpaper: false
-            property bool useWallpaperTheme: false
-            property int wallpaperInterval: 300
-            property string wallpaperResize: "crop"
-            property int transitionFps: 60
-            property string transitionType: "random"
-            property real transitionDuration: 1.1
             property string visualizerType: "radial"
             property bool reverseDayMonth: false
             property bool use12HourClock: false
@@ -65,16 +47,7 @@ Singleton {
             property real fontSizeMultiplier: 1.0  // Font size multiplier (1.0 = normal, 1.2 = 20% larger, 0.8 = 20% smaller)
             property var pinnedExecs: [] // Added for AppLauncher pinned apps
 
-            property bool showDock: true
-            property bool dockExclusive: false
-            property bool wifiEnabled: false
-            property bool bluetoothEnabled: false
-            property int recordingFrameRate: 60
-            property string recordingQuality: "very_high"
-            property string recordingCodec: "h264"
-            property string audioCodec: "opus"
-            property bool showCursor: true
-            property string colorRange: "limited"
+            // Removed unused dock/recording/encoder settings
 
             // Media spectrum / CAVA visualization
             // Reduced by one third from 128 -> ~86
@@ -138,16 +111,5 @@ Singleton {
         }
     }
 
-    Connections {
-        target: settingAdapter
-        function onRandomWallpaperChanged() {
-            try { if (typeof WallpaperManager !== 'undefined' && WallpaperManager.toggleRandomWallpaper) WallpaperManager.toggleRandomWallpaper() } catch (e) {}
-        }
-        function onWallpaperIntervalChanged() {
-            try { if (typeof WallpaperManager !== 'undefined' && WallpaperManager.restartRandomWallpaperTimer) WallpaperManager.restartRandomWallpaperTimer() } catch (e) {}
-        }
-        function onWallpaperFolderChanged() {
-            try { if (typeof WallpaperManager !== 'undefined' && WallpaperManager.loadWallpapers) WallpaperManager.loadWallpapers() } catch (e) {}
-        }
-    }
+    // Removed wallpaper-related Connections hooks
 }

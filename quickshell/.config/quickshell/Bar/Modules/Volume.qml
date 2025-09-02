@@ -1,5 +1,4 @@
 import QtQuick
-import Quickshell
 import qs.Settings
 import qs.Components
 import qs.Bar.Modules

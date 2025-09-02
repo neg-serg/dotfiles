@@ -227,8 +227,11 @@ PanelWithOverlay {
             property var appModel: DesktopEntries.applications.values
             property var filteredApps: []
             property int selectedIndex: 0
-            property int targetY: (parent.height - height) / 2
-            y: appLauncherPanelRect.shouldBeVisible ? targetY : -height
+            // Bottom-docked animation: slide from offscreen bottom to bottom with small margin
+            property int bottomMargin: 16
+            property int targetY: Math.max(0, parent.height - height - bottomMargin)
+            property int offscreenYBottom: parent.height + 12
+            y: appLauncherPanelRect.shouldBeVisible ? targetY : offscreenYBottom
             Behavior on y {
                 NumberAnimation {
                     duration: 300

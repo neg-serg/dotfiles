@@ -2,8 +2,7 @@ import "../../Helpers/Holidays.js" as Holidays
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Quickshell
-import Quickshell.Wayland
+// Quickshell and Wayland imports not needed here
 import qs.Components
 import qs.Settings
 

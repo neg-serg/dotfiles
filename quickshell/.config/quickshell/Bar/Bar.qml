@@ -1,17 +1,13 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Io
 import Quickshell.Wayland
 import qs.Bar.Modules
 import qs.Components
 import "Modules" as LocalMods
-import qs.Helpers
 import qs.Services
 import qs.Settings
-import qs.Widgets
 import qs.Widgets.SidePanel
 
 Scope {
@@ -103,11 +99,7 @@ Scope {
                         DiagSep { stripeEnabled: false; visible: Settings.settings.showWeatherInBar === true }
                     }
 
-                    SystemInfo {
-                        anchors.horizontalCenter: barBackground.horizontalCenter
-                        anchors.verticalCenter: barBackground.verticalCenter
-                        visible: false
-                    }
+                    // SystemInfo removed from the bar; controlled via dedicated module
 
                     RowLayout {
                         id: rightWidgetsRow
@@ -160,7 +152,7 @@ Scope {
                     }
 
                     // Side panel popup lives outside layout (overlay window)
-                    PanelPopup { id: sidebarPopup; shell: rootScope.shell; panelMarginPx: rootScope.barHeight }
+                    PanelPopup { id: sidebarPopup; panelMarginPx: rootScope.barHeight }
 
                     // Hover hot-zone to reveal tray: to the right of music and volume (outside Row to avoid anchor warnings)
                     MouseArea {

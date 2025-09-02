@@ -7,19 +7,15 @@ import qs.Settings
 
 Singleton {
     id: root
-    readonly property int designScreenWidth: 3840 // Design screen width
-    // Automatic scaling based on screen width
+    // Removed unused designScreenWidth
+    // Per-monitor UI scaling (defaults to 1.0)
     function scale(currentScreen) {
-        return 1.0
-        // Per-monitor override from settings
         try {
             const overrides = Settings.settings.monitorScaleOverrides || {};
             if (currentScreen && currentScreen.name && overrides[currentScreen.name] !== undefined) {
                 return overrides[currentScreen.name];
             }
-        } catch (e) {
-            // ignore
-        }
+        } catch (e) { /* ignore */ }
         return 1.0;
     }
 
@@ -41,34 +37,35 @@ Singleton {
         }
         JsonAdapter {
             id: themeData
-            
+            // Defaults aligned with Theme.json; file values override these
+
             // Backgrounds
-            property string backgroundPrimary: "#0C0D11"
-            property string backgroundSecondary: "#151720"
-            property string backgroundTertiary: "#1D202B"
+            property string backgroundPrimary:  "#ef000000"
+            property string backgroundSecondary: "#12151F"
+            property string backgroundTertiary:  "#1B1F2B"
             // Surfaces & Elevation
-            property string surface: "#1A1C26"
-            property string surfaceVariant: "#2A2D3A"
+            property string surface:        "#181C25"
+            property string surfaceVariant: "#242A35"
             // Text Colors
-            property string textPrimary: "#CACEE2"
-            property string textSecondary: "#B7BBD0"
-            property string textDisabled: "#6B718A"
+            property string textPrimary:   "#CBD6E5"
+            property string textSecondary: "#AEB9C8"
+            property string textDisabled:  "#6B718A"
             // Accent Colors
-            property string accentPrimary: "#A8AEFF"
-            property string accentSecondary: "#9EA0FF"
-            property string accentTertiary: "#8EABFF"
+            property string accentPrimary:   "#006FCC"
+            property string accentSecondary: "#0077DB"
+            property string accentTertiary:  "#0064B8"
             // Error/Warning
-            property string error: "#FF6B81"
+            property string error:   "#FF6B81"
             property string warning: "#FFBB66"
             // Highlights & Focus
-            property string highlight: "#E3C2FF"
-            property string rippleEffect: "#F3DEFF"
+            property string highlight:    "#94E1F9"
+            property string rippleEffect: "#D6F3FF"
             // Additional Theme Properties
-            property string onAccent: "#1A1A1A"
-            property string outline: "#44485A"
+            property string onAccent: "#FFFFFF"
+            property string outline:  "#3B4C5C"
             // Shadows & Overlays
-            property string shadow: "#000000"
-            property string overlay: "#11121A"
+            property string shadow:  "#000000"
+            property string overlay: "#10141A"
         }
     }
     
