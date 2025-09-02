@@ -10,6 +10,10 @@ PanelWithOverlay {
     id: sidebarPopup
     // No global dimming for music info
     showOverlay: false
+    // Exposed from Bar: whether cursor is over the bar panel
+    property bool barHover: false
+    // Track last global pointer move timestamp while popup is visible
+    property real lastMoveTs: 0
     // Avoid any top/bottom margin shifts from global panel position to prevent initial jump
     topMargin: 0
     bottomMargin: 0
@@ -39,7 +43,7 @@ PanelWithOverlay {
                 slideOffset = 0;
                 showHeight = 0;
                 sidebarPopup.visible = true;
-                forceActiveFocus();
+                forceActiveFocus(); sidebarPopup.lastMoveTs = Date.now();
                 // Defer to let layout settle, then animate to full container height
                 Qt.callLater(() => {
                     showHeightAnim.from = 0;
@@ -67,7 +71,16 @@ PanelWithOverlay {
         color: "transparent"
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        MouseArea { anchors.fill: parent; } // Prevent closing when clicking in the panel bg
+        // Global hover tracker over the entire overlay to detect pointer idleness
+        MouseArea {
+            id: overlayHover
+            anchors.fill: parent
+            hoverEnabled: true
+            acceptedButtons: Qt.NoButton
+            propagateComposedEvents: true
+            z: 100000
+            onPositionChanged: sidebarPopup.lastMoveTs = Date.now()
+        }
         NumberAnimation {
             id: slideAnim
             target: sidebarPopupRect
@@ -125,6 +138,15 @@ PanelWithOverlay {
             // Fixed inside the sliding container
             x: 0
             Keys.onEscapePressed: sidebarPopupRect.hidePopup()
+            // Detect hover over the popup content to avoid auto-close while interacting
+            MouseArea {
+                id: panelHoverArea
+                anchors.fill: parent
+                hoverEnabled: true
+                acceptedButtons: Qt.NoButton
+                propagateComposedEvents: true
+                z: -1
+            }
             ColumnLayout {
                 id: contentCol
                 anchors.fill: parent
@@ -147,6 +169,20 @@ PanelWithOverlay {
             }
 
             // No extra animation here; the whole panel slides as one layer
+        }
+
+        // Auto-close when cursor is outside bar and popup, and idle for 0.5s
+        Timer {
+            id: autoCloseTimer
+            interval: 500
+            repeat: true
+            running: sidebarPopup.visible
+            onTriggered: {
+                if (!sidebarPopup.visible || sidebarPopupRect.isAnimating) return;
+                if (sidebarPopup.barHover) return;
+                if (panelHoverArea.containsMouse) return;
+                if (Date.now() - sidebarPopup.lastMoveTs >= 500) sidebarPopupRect.hidePopup();
+            }
         }
 
     }
