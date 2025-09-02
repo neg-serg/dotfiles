@@ -118,7 +118,12 @@ Scope {
                             id: mpdFlagsBar
                             Layout.alignment: Qt.AlignVCenter
                             // Enable only when media is visible and MPD-like player is active
-                            property bool _mediaVisible: (Settings.settings.showMediaInBar && MusicManager.currentPlayer && (MusicManager.isPlaying || (MusicManager.trackTitle && MusicManager.trackTitle.length > 0)))
+                            property bool _mediaVisible: (
+                                Settings.settings.showMediaInBar
+                                && MusicManager.currentPlayer
+                                && !MusicManager.isStopped
+                                && (MusicManager.isPlaying || MusicManager.isPaused || (MusicManager.trackTitle && MusicManager.trackTitle.length > 0))
+                            )
                             function _isMpd() {
                                 try {
                                     const p = MusicManager.currentPlayer; if (!p) return false;

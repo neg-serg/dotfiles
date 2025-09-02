@@ -20,7 +20,9 @@ Item {
     // Visible during Playing or Paused (hide when fully Stopped with no metadata).
     visible: Settings.settings.showMediaInBar
              && MusicManager.currentPlayer
+             && !MusicManager.isStopped
              && (MusicManager.isPlaying
+                 || MusicManager.isPaused
                  || (MusicManager.trackTitle && MusicManager.trackTitle.length > 0))
 
     // Exact text size to match the rest of the panel
