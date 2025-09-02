@@ -10,11 +10,16 @@ import qs.Components
 
 Item {
     id: mediaControl
+    // Optional: reference to the side panel popup to toggle on click
+    property var sidePanelPopup: null
     // Avoid layout cycles by providing an implicit width
     implicitWidth: mediaRow.implicitWidth
     width: visible ? mediaRow.width : 0
     height: 36 * Theme.scale(Screen)
     visible: Settings.settings.showMediaInBar && MusicManager.currentPlayer
+
+    // Exact text size to match the rest of the panel
+    property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
 
     // Fancy metadata disabled
 
@@ -113,7 +118,24 @@ Item {
             // Provide implicit size from single combined text (old display)
             implicitWidth: trackText.implicitWidth
             // keep container height to the text's height so row layout remains unchanged
-            height: trackText.implicitHeight
+            height: (trackText.text && trackText.text.length > 0) ? trackText.implicitHeight : 0
+
+            // Clicking the track opens the side panel (same as squares button)
+            MouseArea {
+                id: trackSidePanelClick
+                anchors.fill: parent
+                hoverEnabled: false
+                acceptedButtons: Qt.LeftButton
+                onClicked: {
+                    try {
+                        if (mediaControl.sidePanelPopup) {
+                            if (mediaControl.sidePanelPopup.visible) mediaControl.sidePanelPopup.hidePopup();
+                            else mediaControl.sidePanelPopup.showAt();
+                        }
+                    } catch (e) { /* ignore */ }
+                }
+                cursorShape: Qt.PointingHandCursor
+            }
 
             // Hidden measurer for title (so spectrum width doesn't intrude into time)
             Text {
@@ -122,7 +144,7 @@ Item {
                 text: (MusicManager.trackArtist || MusicManager.trackTitle)
                       ? [MusicManager.trackArtist, MusicManager.trackTitle]
                             .filter(function(x){ return !!x; })
-                            .join(" - ")
+                            .join(" — ")
                       : ""
                 font.family: Theme.fontFamily
                 font.weight: Font.Medium
@@ -132,7 +154,7 @@ Item {
             // Linear spectrum rendered behind the text (bottom half only)
             LinearSpectrum {
                 id: linearSpectrum
-                visible: Settings.settings.showMediaVisualizer === true
+                visible: Settings.settings.showMediaVisualizer === true && MusicManager.isPlaying && (trackText.text && trackText.text.length > 0)
                 anchors.left: parent.left
                 // Place the spectrum behind the text, raised further upward
                 anchors.top: trackText.bottom
@@ -179,6 +201,7 @@ Item {
                 radius: 4 * Theme.scale(Screen)
                 color: Qt.rgba(Theme.backgroundPrimary.r, Theme.backgroundPrimary.g, Theme.backgroundPrimary.b, 0.25)
                 z: 1
+                visible: trackText.text && trackText.text.length > 0
             }
 
             // No separate top-half spectrum by default (can enable via settings)
@@ -233,7 +256,8 @@ Item {
                 }
                 text: (function(){
                     if (!trackText.titlePart) return "";
-                    const t = trackText.esc(trackText.titlePart).replace(/\s-\s/g, " <span style='color:" + trackText.sepColor + "; font-weight:bold'>-</span> ");
+                    const t = trackText.esc(trackText.titlePart)
+                               .replace(/\s(?:-|–|—)\s/g, "&#8201;<span style='color:" + trackText.sepColor + "; font-weight:bold'>—</span>&#8201;");
                     const cur = fmtTime(MusicManager.currentPosition || 0);
                     const tot = fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
                     const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.8));
@@ -249,7 +273,7 @@ Item {
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
                 font.weight: Font.Medium
-                font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
+                font.pixelSize: mediaControl.musicTextPx
                 elide: Text.ElideRight
                 maximumLineCount: 1
                 z: 2

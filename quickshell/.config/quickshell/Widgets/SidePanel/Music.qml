@@ -10,28 +10,36 @@ import qs.Services
 Rectangle {
     id: musicCard
     color: "transparent"
+    implicitHeight: playerUI.implicitHeight
 
-    Rectangle {
-        id: card
-        anchors.fill: parent
-        // Almost-black with accent hue; reduce saturation by 50%
-        property real cardTint: 0.10
-        property real cardAlpha: 0.85 // 15% transparent
-        property real desat: 0.5
-        // Compute tinted base
-        property real baseR: Theme.accentPrimary.r * cardTint
-        property real baseG: Theme.accentPrimary.g * cardTint
-        property real baseB: Theme.accentPrimary.b * cardTint
-        // Luminance for neutral grey
-        property real lum: 0.2126 * baseR + 0.7152 * baseG + 0.0722 * baseB
-        // Mix towards luminance to reduce saturation
-        color: Qt.rgba(
-            baseR * desat + lum * (1 - desat),
-            baseG * desat + lum * (1 - desat),
-            baseB * desat + lum * (1 - desat),
-            cardAlpha
-        )
-        radius: 9 * Theme.scale(Screen)
+    // Format ms -> m:ss or h:mm:ss (same as bar media)
+    function fmtTime(ms) {
+        if (ms === undefined || ms < 0) return "0:00";
+        var s = Math.floor(ms / 1000);
+        var m = Math.floor(s / 60);
+        var h = Math.floor(m / 60);
+        s = s % 60; m = m % 60;
+        var mm = h > 0 ? (m < 10 ? "0"+m : ""+m) : ""+m;
+        var ss = s < 10 ? "0"+s : ""+s;
+        return h > 0 ? (h + ":" + mm + ":" + ss) : (mm + ":" + ss);
+    }
+
+        Rectangle {
+            id: card
+            anchors.fill: parent
+            // Almost-black with accent hue; reduce saturation by 50%
+            property real cardTint: 0.10
+            property real cardAlpha: 0.85 // 15% transparent
+            property real desat: 0.5
+            // Compute tinted base
+            property real baseR: Theme.accentPrimary.r * cardTint
+            property real baseG: Theme.accentPrimary.g * cardTint
+            property real baseB: Theme.accentPrimary.b * cardTint
+            // Luminance for neutral grey
+            property real lum: 0.2126 * baseR + 0.7152 * baseG + 0.0722 * baseB
+            // Mix towards luminance to reduce saturation
+            color: "#000000" // Solid black background for music
+            radius: 9 * Theme.scale(Screen)
 
         // Show fallback UI if no player is available
         Item {
@@ -55,7 +63,7 @@ Rectangle {
                     text: MusicManager.hasPlayer ? "No controllable player selected" : "No music player detected"
                     color: playerUI.musicTextColor
                     font.family: Theme.fontFamily
-                    font.pixelSize: playerUI.musicFontPx
+                    font.pixelSize: playerUI.musicTextPx
                     Layout.alignment: Qt.AlignHCenter
                 }
             }
@@ -65,12 +73,18 @@ Rectangle {
         ColumnLayout {
             id: playerUI
             anchors.fill: parent
-            anchors.margins: 18 * Theme.scale(screen)
+            anchors.leftMargin: 18 * Theme.scale(screen)
+            anchors.rightMargin: 18 * Theme.scale(screen)
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
             spacing: 4 * Theme.scale(screen)
             visible: !!MusicManager.currentPlayer
 
             // Unified typography for music widget
+            // Base size for icons and calculations (kept as-is)
             property int musicFontPx: Math.round(13 * Theme.scale(screen))
+            // Exact text size to match the rest of the panel
+            property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(screen))
             property color musicTextColor: Theme.textPrimary
             property int musicFontWeight: Font.Medium
 
@@ -148,7 +162,7 @@ Rectangle {
                     leftPadding: 6 * Theme.scale(screen)
                     rightPadding: playerSelector.indicator.width + playerSelector.spacing
                     text: playerSelector.displayText
-                    font.pixelSize: playerUI.musicFontPx
+                    font.pixelSize: playerUI.musicTextPx
                     color: playerUI.musicTextColor
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
@@ -191,7 +205,7 @@ Rectangle {
                     contentItem: Text {
                         text: modelData.identity
                         font.weight: playerUI.musicFontWeight
-                        font.pixelSize: playerUI.musicFontPx
+                        font.pixelSize: playerUI.musicTextPx
                         color: playerUI.musicTextColor
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideRight
@@ -211,7 +225,7 @@ Rectangle {
                 text: playerUI.showSingleLabel ? playerUI.uniquePlayers[0].identity : ""
                 color: playerUI.musicTextColor
                 font.family: Theme.fontFamily
-                font.pixelSize: playerUI.musicFontPx
+                font.pixelSize: playerUI.musicTextPx
                 Layout.fillWidth: true
                 elide: Text.ElideRight
             }
@@ -222,13 +236,15 @@ Rectangle {
             RowLayout {
                 spacing: 4 * Theme.scale(screen)
                 Layout.fillWidth: true
+                // Pull album art flush to card's left edge
+                Layout.leftMargin: -18 * Theme.scale(screen)
 
                 // Album art container with circular spectrum overlay
                 Item {
                     id: albumArtContainer
-                    // Container sized to the outline, so centering keeps left edge flush
-                    width: albumArtwork.width + 4 * Theme.scale(screen)
-                    height: albumArtwork.height + 4 * Theme.scale(screen)
+                    // Match exactly to artwork to avoid any extra left padding
+                    width: albumArtwork.width
+                    height: albumArtwork.height
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
 
                     // (Visualizer removed for this view as per request)
@@ -239,7 +255,7 @@ Rectangle {
                         // Cover at 200px (scaled)
                         width: 200 * Theme.scale(screen)
                         height: 200 * Theme.scale(screen)
-                        anchors.centerIn: parent
+                        anchors.fill: parent
                         radius: 8 * Theme.scale(screen)
                         color: Qt.darker(Theme.surface, 1.1)
                         border.color: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.3)
@@ -320,37 +336,536 @@ Rectangle {
                     Layout.fillWidth: true
                     spacing: 2 * Theme.scale(screen)
 
-                    Text {
-                        text: MusicManager.trackTitle
-                        color: playerUI.musicTextColor
-                        font.family: Theme.fontFamily
-                        font.pixelSize: playerUI.musicFontPx
-                        font.weight: playerUI.musicFontWeight
-                        elide: Text.ElideRight
-                        wrapMode: Text.Wrap
-                        maximumLineCount: 2
-                        Layout.fillWidth: true
-                    }
+                    // Title intentionally hidden per request
 
-                    Text {
-                        text: MusicManager.trackArtist
-                        color: playerUI.musicTextColor
-                        font.family: Theme.fontFamily
-                        font.pixelSize: playerUI.musicFontPx
-                        elide: Text.ElideRight
-                        Layout.fillWidth: true
-                    }
+                    // (Upper two lines moved into details block)
 
-                    Text {
-                        text: MusicManager.trackAlbum
-                        color: playerUI.musicTextColor
-                        font.family: Theme.fontFamily
-                        font.pixelSize: playerUI.musicFontPx
-                        elide: Text.ElideRight
+                    // Extra details block (time + player identity + metadata)
+                    Rectangle {
                         Layout.fillWidth: true
-                    }
+                        implicitHeight: detailsCol.implicitHeight
+                        // Match card background, no rounded corners, no border
+                        color: card.color
+                        radius: 0
+                        border.width: 0
+                        anchors.leftMargin: 0
+                        anchors.rightMargin: 0
 
-                    // Fancy metadata removed
+                        ColumnLayout {
+                            id: detailsCol
+                            anchors.fill: parent
+                            anchors.leftMargin: 6 * Theme.scale(screen)
+                            anchors.rightMargin: 6 * Theme.scale(screen)
+                            anchors.topMargin: 0
+                            anchors.bottomMargin: 0
+                            spacing: 4 * Theme.scale(screen)
+                            // (rollback) no special table-like layout properties
+
+                            // (reverted) no category-colored quality block here
+                            
+
+                            // Time intentionally hidden per request
+
+                            // Artist
+                            RowLayout {
+                                visible: !!MusicManager.trackArtist
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    // Artist icon
+                                    text: "person"
+                                    font.family: "Material Symbols Outlined"
+                                    color: "#004E4E"
+                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.05)
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackArtist
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    wrapMode: Text.NoWrap
+                                    elide: Text.ElideRight
+                                }
+                            }
+
+                            // Album artist (if different)
+                            RowLayout {
+                                visible: !!MusicManager.trackAlbumArtist && MusicManager.trackAlbumArtist !== MusicManager.trackArtist
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    // Album artist icon
+                                    text: "person"
+                                    font.family: "Material Symbols Outlined"
+                                    color: "#004E4E"
+                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.05)
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackAlbumArtist
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    wrapMode: Text.NoWrap
+                                    elide: Text.ElideRight
+                                }
+                            }
+
+                            // Album
+                            RowLayout {
+                                visible: !!MusicManager.trackAlbum
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    // Album icon
+                                    text: "album"
+                                    font.family: "Material Symbols Outlined"
+                                    color: "#004E4E"
+                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.05)
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackAlbum
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    wrapMode: Text.NoWrap
+                                    elide: Text.ElideRight
+                                }
+                            }
+
+                            // Player line removed by request
+
+                            // Genre (if available)
+                            RowLayout {
+                                visible: !!MusicManager.trackGenre
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    // Genre icon
+                                    text: "category"
+                                    font.family: "Material Symbols Outlined"
+                                    color: "#004E4E"
+                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
+                                    font.weight: Font.Bold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackGenre
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    wrapMode: Text.NoWrap
+                                    elide: Text.ElideRight
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
+
+                            // Year (hide when Date is present)
+                            RowLayout {
+                                visible: !!MusicManager.trackYear && !MusicManager.trackDateStr
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    // Year icon
+                                    text: "calendar_month"
+                                    font.family: "Material Symbols Outlined"
+                                    color: "#004E4E"
+                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
+                                    font.weight: Font.Bold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackYear
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    elide: Text.ElideRight
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
+
+                            // Label/Publisher (if available)
+                            RowLayout {
+                                visible: !!MusicManager.trackLabel
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    // Label/Publisher icon
+                                    text: "sell"
+                                    font.family: "Material Symbols Outlined"
+                                    color: "#004E4E"
+                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
+                                    font.weight: Font.Bold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackLabel
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    wrapMode: Text.NoWrap
+                                    elide: Text.ElideRight
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
+
+                            // Composer (if available)
+                            RowLayout {
+                                visible: !!MusicManager.trackComposer
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    // Composer icon
+                                    text: "piano"
+                                    font.family: "Material Symbols Outlined"
+                                    color: "#004E4E"
+                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
+                                    font.weight: Font.Bold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackComposer
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    wrapMode: Text.NoWrap
+                                    elide: Text.ElideRight
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
+
+                            // Codec (hidden; included in Quality)
+                            RowLayout {
+                                visible: false
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    text: "Codec"
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackCodecDetail || MusicManager.trackCodec
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    elide: Text.ElideRight
+                                }
+                            }
+
+                            // Quality summary (combined)
+                            RowLayout {
+                                visible: !!MusicManager.trackQualitySummary
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    // Quality icon
+                                    text: "high_quality"
+                                    font.family: "Material Symbols Outlined"
+                                    color: "#004E4E"
+                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
+                                    font.weight: Font.Bold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    // Color the middle dot with accent color; keep rest default
+                                    textFormat: Text.RichText
+                                    text: (function(){
+                                        const s = MusicManager.trackQualitySummary || "";
+                                        const c = `rgba(${Math.round(Theme.accentPrimary.r*255)},${Math.round(Theme.accentPrimary.g*255)},${Math.round(Theme.accentPrimary.b*255)},1)`;
+                                        return s.replace(/\u00B7/g, `<span style='color:${c}; font-weight:bold'>&#183;</span>`);
+                                    })()
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    wrapMode: Text.NoWrap
+                                    elide: Text.ElideRight
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
+
+                            // DSD rate (icon + value, consistent with other rows)
+                            RowLayout {
+                                visible: !!MusicManager.trackDsdRateStr
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    // DSD rate icon
+                                    text: "speed"
+                                    font.family: "Material Symbols Outlined"
+                                    color: "#004E4E"
+                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
+                                    font.weight: Font.Bold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackDsdRateStr
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    elide: Text.ElideRight
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
+
+                            // Bit depth (hidden; included in Quality)
+                            RowLayout {
+                                visible: false
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    text: "Bit depth"
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackBitDepthStr
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    elide: Text.ElideRight
+                                }
+                            }
+
+                            // Channels (hidden; included in Quality)
+                            RowLayout {
+                                visible: false
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    text: "Channels"
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackChannelsStr
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    elide: Text.ElideRight
+                                }
+                            }
+
+                            // Channel layout (hide when Quality is shown)
+                            RowLayout {
+                                visible: !!MusicManager.trackChannelLayout && !MusicManager.trackQualitySummary
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    text: "Layout"
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: (detailsCol && detailsCol.textWeight !== undefined) ? detailsCol.textWeight : Font.DemiBold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackChannelLayout
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: (detailsCol && detailsCol.textWeight !== undefined) ? detailsCol.textWeight : Font.DemiBold
+                                    elide: Text.ElideRight
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
+
+                            // Bitrate (hidden; included in Quality)
+                            RowLayout {
+                                visible: false
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    text: "Bitrate"
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackBitrateStr
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    elide: Text.ElideRight
+                                }
+                            }
+
+                            // Track/Disc numbers (hidden by request)
+                            RowLayout {
+                                visible: false
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    text: "Track"
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackNumberStr
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    elide: Text.ElideRight
+                                }
+                            }
+                            RowLayout {
+                                visible: false
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    text: "Disc"
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackDiscNumberStr
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    elide: Text.ElideRight
+                                }
+                            }
+
+                            // Path (if available)
+                            // Path hidden by request
+                            // Row removed
+
+                            // Container hidden by request
+                            // Row removed
+
+                            // Size intentionally hidden per request
+
+                            // Date (if available)
+                            RowLayout {
+                                visible: !!MusicManager.trackDateStr
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    // Date icon
+                                    text: "calendar_month"
+                                    font.family: "Material Symbols Outlined"
+                                    color: "#004E4E"
+                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
+                                    font.weight: Font.Bold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackDateStr
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
+
+                            // Encoder (if available)
+                            RowLayout {
+                                visible: !!MusicManager.trackEncoder
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    text: "Encoder"
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackEncoder
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
+
+                            // ReplayGain (if available)
+                            RowLayout {
+                                visible: !!MusicManager.trackRgTrackStr
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    text: "RG track"
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackRgTrackStr
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
+                            RowLayout {
+                                visible: !!MusicManager.trackRgAlbumStr
+                                Layout.fillWidth: true
+                                spacing: 6 * Theme.scale(screen)
+                                Text {
+                                    text: "RG album"
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: MusicManager.trackRgAlbumStr
+                                    color: playerUI.musicTextColor
+                                    font.family: Theme.fontFamily
+                                    font.pixelSize: playerUI.musicTextPx
+                                    font.weight: Font.DemiBold
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
