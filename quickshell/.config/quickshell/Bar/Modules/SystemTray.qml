@@ -9,6 +9,48 @@ import qs.Components
 
 Row {
     id: root
+    // Track whether pointer is anywhere over the bar panel
+    property bool panelHover: false
+    // Track whether pointer is in external hot zone (from Bar)
+    property bool hotHover: false
+    // Keep tray open for a while after menu close (long hold)
+    property bool holdOpen: false
+    // Short hold after leaving hot zone without interacting
+    property bool shortHoldActive: false
+
+    // Long hold timer (menu close): keep for 2.5 seconds
+    Timer {
+        id: longHoldTimer
+        interval: 2500
+        repeat: false
+        onTriggered: {
+            root.holdOpen = false;
+            root.expanded = false;
+        }
+    }
+    // Short hold timer (hover leave): keep for 1.5 seconds
+    Timer {
+        id: shortHoldTimer
+        interval: 1500
+        repeat: false
+        onTriggered: { root.shortHoldActive = false; if (!root.panelHover && !root.hotHover && !root.holdOpen) root.expanded = false }
+    }
+
+    onHotHoverChanged: {
+        if (hotHover) {
+            // entering hot zone: ensure open and cancel short hold
+            shortHoldTimer.stop();
+            shortHoldActive = false;
+            expanded = true;
+        } else {
+            // leaving hot zone: start short hold if not on panel and not menu/long-hold
+            const menuOpen = trayMenu && trayMenu.visible;
+            if (!panelHover && !menuOpen && !holdOpen) {
+                shortHoldActive = true;
+                shortHoldTimer.restart();
+            }
+        }
+    }
     property var shell
     // Screen for overlay placement (set from Bar/Bar.qml)
     property var screen
@@ -44,12 +86,17 @@ Row {
             if (!visible) {
                 if (trayMenu && trayMenu.visible) trayMenu.hideMenu();
                 if (root.expanded) {
-                    // Start delayed collapse only for outside-click dismiss
-                    if (!root.programmaticOverlayDismiss) {
-                        collapseDelayTimer.restart();
+                    // Do not collapse if we are holding open or hovering hot zone/panel or menu is visible
+                    if (root.holdOpen || root.hotHover || root.panelHover || (trayMenu && trayMenu.visible)) {
+                        // keep open
                     } else {
-                        if (collapseDelayTimer.running) collapseDelayTimer.stop();
-                        root.expanded = false;
+                        // Start delayed collapse only for outside-click dismiss
+                        if (!root.programmaticOverlayDismiss) {
+                            collapseDelayTimer.restart();
+                        } else {
+                            if (collapseDelayTimer.running) collapseDelayTimer.stop();
+                            root.expanded = false;
+                        }
                     }
                 }
             }
@@ -60,22 +107,15 @@ Row {
     Item {
         id: inlineBox
         // Show only when expanded (no animation)
-        visible: collapsed && expanded
+        visible: expanded
         anchors.verticalCenter: parent.verticalCenter
-        // Background behind inline tray icons
-        property real pab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
-        property color popupAccent: Qt.rgba(
-            Theme.accentPrimary.r * pab,
-            Theme.accentPrimary.g * pab,
-            Theme.accentPrimary.b * pab,
-            1
-        )
+        // Background behind inline tray icons (match bar background)
         width: bg.width
         height: bg.height
         Rectangle {
             id: bg
             radius: 0
-            color: inlineBox.popupAccent
+            color: Theme.backgroundPrimary
             border.color: "transparent"
             border.width: 0
             // No animated width — show full content immediately
@@ -83,6 +123,19 @@ Row {
             height: collapsedRow.implicitHeight + 6
             anchors.verticalCenter: parent.verticalCenter
             clip: true
+        }
+
+        // Hover area over the inline box to keep it open while cursor is inside
+        MouseArea {
+            id: inlineHoverArea
+            anchors.fill: bg
+            z: 999
+            hoverEnabled: true
+            acceptedButtons: Qt.NoButton
+            onEntered: expanded = true
+            onExited: {
+                if (!root.panelHover && !root.hotHover && !root.holdOpen && !root.shortHoldActive) expanded = false
+            }
         }
         Row {
             id: collapsedRow
@@ -93,26 +146,33 @@ Row {
             Repeater {
                 model: systemTray.items
                 delegate: Item {
-                    width: 24 * Theme.scale(Screen)
-                    height: 24 * Theme.scale(Screen)
+                    width: Math.round(24 * Theme.scale(Screen))
+                    height: Math.round(24 * Theme.scale(Screen))
                     visible: modelData
                     // No per-icon animation; show immediately
                     opacity: 1
                     x: 0
                     Rectangle {
                         anchors.centerIn: parent
-                        width: 16 * Theme.scale(Screen)
-                        height: 16 * Theme.scale(Screen)
+                        width: Math.round(16 * Theme.scale(Screen))
+                        height: Math.round(16 * Theme.scale(Screen))
                         radius: 6
                         color: "transparent"
                         clip: true
                         IconImage {
                             anchors.centerIn: parent
-                            width: 16 * Theme.scale(Screen)
-                            height: 16 * Theme.scale(Screen)
+                            width: Math.round(16 * Theme.scale(Screen))
+                            height: Math.round(16 * Theme.scale(Screen))
                             smooth: false
+                            // route mipmap to underlying image backer
+                            backer.mipmap: false
                             asynchronous: true
                             backer.fillMode: Image.PreserveAspectFit
+                            // Request a device-pixel-aligned source size for crisp rendering
+                            backer.sourceSize: Qt.size(
+                                Math.round(width  * Screen.devicePixelRatio),
+                                Math.round(height * Screen.devicePixelRatio)
+                            )
                             source: {
                                 let icon = modelData?.icon || "";
                                 if (!icon) return "";
@@ -124,6 +184,15 @@ Row {
                                 return icon;
                             }
                             opacity: status === Image.Ready ? 1 : 0
+                            // Apply grayscale when the tray overlay is visible
+                            layer.enabled: trayOverlay.visible
+                            layer.smooth: false
+                            layer.samples: 1
+                            layer.effect: MultiEffect {
+                                saturation: 0.0
+                                brightness: 0.0
+                                contrast: 1.0
+                            }
                         }
                     }
                     MouseArea {
@@ -161,11 +230,13 @@ Row {
         }
     }
 
+    // External hover hot-zone is added in Bar/Bar.qml (to be right of media/volume)
+
     // Collapsed trigger button (placed after inline box so it stays on the right when expanded)
     IconButton {
         id: collapsedButton
         z: 1002
-        visible: collapsed
+        visible: false // hidden; tray reveals by hover in bottom-right hot zone
         anchors.verticalCenter: parent.verticalCenter
         // Keep compact size to match bar density
         size: 24 * Theme.scale(Screen)
@@ -202,14 +273,34 @@ Row {
         }
     }
 
+    // React to menu visibility to enforce hold-open behavior
+    Connections {
+        target: trayMenu
+        function onVisibleChanged() {
+            if (!trayMenu) return;
+            if (trayMenu.visible) {
+                // While menu is open, keep tray expanded and prevent auto-collapse
+                root.expanded = true;
+                root.holdOpen = true;
+                longHoldTimer.stop();
+                shortHoldTimer.stop();
+                root.shortHoldActive = false;
+            } else {
+                // After menu closes, keep open for the same timeout
+                root.holdOpen = true;
+                longHoldTimer.restart();
+            }
+        }
+    }
 
-    // Inline icons (visible only when not collapsed)
+
+    // Inline icons (disabled: we show tray only via hover hot zone)
     Repeater {
-        // Hide inline icons when collapsed
-        model: collapsed ? 0 : systemTray.items
+        // Disabled always to avoid duplicate inline tray; use inlineBox above
+        model: 0
         delegate: Item {
-            width: 24 * Theme.scale(Screen)
-            height: 24 * Theme.scale(Screen)
+            width: Math.round(24 * Theme.scale(Screen))
+            height: Math.round(24 * Theme.scale(Screen))
 
             visible: modelData
             property bool isHovered: trayMouseArea.containsMouse
@@ -218,8 +309,8 @@ Row {
 
             Rectangle {
                 anchors.centerIn: parent
-                width: 16 * Theme.scale(Screen)
-                height: 16 * Theme.scale(Screen)
+                width: Math.round(16 * Theme.scale(Screen))
+                height: Math.round(16 * Theme.scale(Screen))
                 radius: 6
                 color: "transparent"
                 clip: true
@@ -227,11 +318,16 @@ Row {
                 IconImage {
                     id: trayIcon
                     anchors.centerIn: parent
-                    width: 16 * Theme.scale(Screen)
-                    height: 16 * Theme.scale(Screen)
+                    width: Math.round(16 * Theme.scale(Screen))
+                    height: Math.round(16 * Theme.scale(Screen))
                     smooth: false
+                    backer.mipmap: false
                     asynchronous: true
                     backer.fillMode: Image.PreserveAspectFit
+                    backer.sourceSize: Qt.size(
+                        Math.round(width  * Screen.devicePixelRatio),
+                        Math.round(height * Screen.devicePixelRatio)
+                    )
                     source: {
                         let icon = modelData?.icon || "";
                         if (!icon)
@@ -246,6 +342,15 @@ Row {
                     }
                     opacity: status === Image.Ready ? 1 : 0
                     Component.onCompleted: {}
+                    // Apply grayscale when the tray overlay is visible
+                    layer.enabled: trayOverlay.visible
+                    layer.smooth: false
+                    layer.samples: 1
+                    layer.effect: MultiEffect {
+                        saturation: 0.0
+                        brightness: 0.0
+                        contrast: 1.0
+                    }
                 }
             }
 

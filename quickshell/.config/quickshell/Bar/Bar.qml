@@ -70,6 +70,8 @@ Scope {
                         anchors.left: parent.left
                     }
 
+                    // Hot zone visual removed; area is invisible
+
                     // Keep rootScope.barHeight in sync with actual bar height
                     Component.onCompleted: rootScope.barHeight = barBackground.height
                     Connections {
@@ -91,13 +93,13 @@ Scope {
                         KeyboardLayoutHypr { id: kbIndicator; anchors.verticalCenter: wsindicator.verticalCenter; /* deviceMatch: "dygma-defy-keyboard" */ }
                         DiagSep {}
                         NetworkUsage { id: net; anchors.verticalCenter: wsindicator.verticalCenter }
-                        DiagSep {}
+                        DiagSep { visible: Settings.settings.showWeatherInBar === true }
                         LocalMods.WeatherButton {
                             anchors.verticalCenter: parent.verticalCenter
                             visible: Settings.settings.showWeatherInBar === true
                         }
-                        // Rightmost separator of the left section: no accent stripe
-                        DiagSep { stripeEnabled: false }
+                        // Rightmost separator of the left section: show only if weather is visible
+                        DiagSep { stripeEnabled: false; visible: Settings.settings.showWeatherInBar === true }
                     }
 
                     SystemInfo {
@@ -112,14 +114,13 @@ Scope {
                         anchors.right: barBackground.right
                         anchors.rightMargin: panel.sideMargin
                         spacing: panel.widgetSpacing
-                        Media { anchors.verticalCenter: parent.verticalCenter }
-                        PanelPopup { id: sidebarPopup; shell: rootScope.shell }
-                        Button {
-                            barBackground: barBackground
+                        Media {
                             anchors.verticalCenter: parent.verticalCenter
-                            screen: modelData
-                            sidebarPopup: sidebarPopup
+                            // Pass the side panel reference so clicking the track toggles it
+                            sidePanelPopup: sidebarPopup
                         }
+                        PanelPopup { id: sidebarPopup; shell: rootScope.shell }
+                        // Side panel button removed; track click toggles sidebarPopup
                         SystemTray {
                             id: systemTrayModule
                             shell: rootScope.shell
@@ -134,6 +135,55 @@ Scope {
                             shell: rootScope.shell
                             anchors.verticalCenter: parent.verticalCenter
                         }
+
+                    }
+
+                    // Hover hot-zone to reveal tray: to the right of music and volume (outside Row to avoid anchor warnings)
+                    MouseArea {
+                        id: trayHotZone
+                        anchors.right: barBackground.right
+                        anchors.bottom: barBackground.bottom
+                        // 4x narrower, 2x lower (half height)
+                        width: Math.round(16 * panel.s)
+                        height: Math.round(9 * panel.s)
+                        // Shift left by 115% of its own width (previous position)
+                        anchors.rightMargin: Math.round(width * 1.15)
+                        anchors.bottomMargin: 0
+                        hoverEnabled: true
+                        acceptedButtons: Qt.NoButton
+                        // Place above generic bar hover tracker so it receives hover reliably
+                        z: 10001
+                        onEntered: {
+                            systemTrayModule.hotHover = true
+                            systemTrayModule.expanded = true
+                        }
+                        onExited: {
+                            systemTrayModule.hotHover = false
+                            // Do not collapse here; allow staying open while on panel
+                        }
+                        cursorShape: Qt.ArrowCursor
+                        // No visual here; drawn by trayHotZoneVisual below content
+                    }
+
+                    // Bar-wide hover tracker to keep tray open while cursor is anywhere on the bar
+                    MouseArea {
+                        id: barHoverTracker
+                        anchors.fill: barBackground
+                        hoverEnabled: true
+                        acceptedButtons: Qt.NoButton
+                        propagateComposedEvents: true
+                        z: 10000
+                        onEntered: systemTrayModule.panelHover = true
+                            onExited: {
+                                systemTrayModule.panelHover = false
+                                const menuOpen = systemTrayModule.trayMenu && systemTrayModule.trayMenu.visible
+                                if (!systemTrayModule.hotHover && !systemTrayModule.holdOpen && !systemTrayModule.shortHoldActive && !menuOpen) {
+                                    systemTrayModule.expanded = false
+                                }
+                            }
+                        visible: true
+                        // fully transparent tracker
+                        Rectangle { visible: false }
                     }
 
                     // (Removed overlay layer; inline tray expansion handles layout and stacking)
