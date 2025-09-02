@@ -29,7 +29,7 @@ macro index,pager X "|$XDG_CONFIG_HOME/mutt/scripts/mimedump"
 macro index gw '<sync-mailbox><enter-command>source $XDG_CONFIG_HOME/mutt/profiles/home.mutt<enter><change-folder>=gmail/inbox<enter>'
 macro index gW '<sync-mailbox><enter-command>source $XDG_CONFIG_HOME/mutt/profiles/work.mutt<enter><change-folder>=work/inbox<enter>'
 
-macro attach I "<save-entry><kill-line>~/dw/<enter>
+macro attach I "<save-entry><kill-line>~/dw/<enter>" "save attachment to ~/dw"
 
 bind index < vfolder-window-backward
 bind index > vfolder-window-forward
@@ -38,7 +38,7 @@ bind index,pager b change-vfolder
 macro index H "|bogofilter -n\ns="      "Learn as ham and save"
 macro pager H "|bogofilter -n\ns="      "Learn as ham and save"
 
-macro index,pager,pager	<f5> '<enter-command> set my_status="Reloaded configuration"; source ~/.mutt/muttrc; set ?my_status<enter>'	"reload muttrc"
+macro index,pager,pager	<f5> '<enter-command> set my_status="Reloaded configuration"; source $XDG_CONFIG_HOME/mutt/muttrc; set ?my_status<enter>'	"reload muttrc"
 
 macro pager W "|urlscan 2> /dev/null\n"
 macro index \w "\
