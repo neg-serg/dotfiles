@@ -39,8 +39,9 @@ Item {
         x: (iconCircle.x + iconCircle.width / 2) - width
         opacity: showPill ? 1 : 0
         color: pillColor
-        topLeftRadius: pillHeight / 2
-        bottomLeftRadius: pillHeight / 2
+        // Halve the rounding of the pill corners
+        topLeftRadius: pillHeight / 4
+        bottomLeftRadius: pillHeight / 4
         anchors.verticalCenter: parent.verticalCenter
 
         Text {

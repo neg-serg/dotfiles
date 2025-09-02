@@ -26,10 +26,10 @@ Item {
     width: visible ? pillIndicator.width : 0
     height: visible ? pillIndicator.height : 0
 
-    // Hide the pill after 5s when volume sits exactly at 100%
+    // Hide the pill after ~800ms when volume sits exactly at 100%
     Timer {
         id: fullHideTimer
-        interval: 7000
+        interval: 800
         repeat: false
         onTriggered: {
             if (volumeDisplay.volume === 100) {
@@ -62,7 +62,8 @@ Item {
             : (volume === 0 ? "volume_off" : (volume < 30 ? "volume_down" : "volume_up"))
         text: volume + "%"
 
-        pillColor: Theme.surfaceVariant
+        // Black pill background as requested
+        pillColor: "#000000"
         iconCircleColor: getVolumeColor()
         iconTextColor: Theme.backgroundPrimary
         textColor: Theme.textPrimary

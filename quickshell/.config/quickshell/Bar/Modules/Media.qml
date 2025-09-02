@@ -14,9 +14,14 @@ Item {
     property var sidePanelPopup: null
     // Avoid layout cycles by providing an implicit width
     implicitWidth: mediaRow.implicitWidth
-    width: visible ? mediaRow.width : 0
+    // Let parent RowLayout control width; implicit guides natural size
     height: 36 * Theme.scale(Screen)
-    visible: Settings.settings.showMediaInBar && MusicManager.currentPlayer
+    // Show when enabled and there is an active player with content.
+    // Visible during Playing or Paused (hide when fully Stopped with no metadata).
+    visible: Settings.settings.showMediaInBar
+             && MusicManager.currentPlayer
+             && (MusicManager.isPlaying
+                 || (MusicManager.trackTitle && MusicManager.trackTitle.length > 0))
 
     // Exact text size to match the rest of the panel
     property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
@@ -115,10 +120,34 @@ Item {
             id: trackContainer
             Layout.alignment: Qt.AlignVCenter
             Layout.fillWidth: true
-            // Provide implicit size from single combined text (old display)
+            // Fill row height immediately to avoid post-start drift when text metrics settle
+            Layout.fillHeight: true
+            // Keep implicit sizes tied to content for layout, but do not bind height to text
             implicitWidth: trackText.implicitWidth
-            // keep container height to the text's height so row layout remains unchanged
-            height: (trackText.text && trackText.text.length > 0) ? trackText.implicitHeight : 0
+            implicitHeight: mediaControl.height
+
+            // Show MPD flags on the right when MPD is the selected, playing backend
+            function _isMpdPlayer() {
+                try {
+                    const p = MusicManager.currentPlayer;
+                    if (!p) return false;
+                    const idStr = String((p.service || p.busName || "")).toLowerCase();
+                    const nameStr = String(p.name || "").toLowerCase();
+                    const identStr = String(p.identity || "").toLowerCase();
+                    const isMpdLike = /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(idStr)
+                                   || /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(nameStr)
+                                   || /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(identStr);
+                    const isPlayerctld = /(playerctld)/.test(idStr) || /(playerctld)/.test(nameStr) || /(playerctld)/.test(identStr);
+                    if (isMpdLike) return true;
+                    // Fallback: if playerctld is selected but mpd reports playing/paused, treat as MPD
+                    if (isPlayerctld && mpdFlags.mpdState && mpdFlags.mpdState !== "stopped") return true;
+                    return false;
+                } catch (e) { return false; }
+            }
+
+            // Debug logging removed
+
+            // (MPD flags moved to Bar/Bar.qml as a separate section)
 
             // Hover-to-open with dwell; click also opens
             MouseArea {
@@ -186,8 +215,8 @@ Item {
                 id: linearSpectrum
                 visible: Settings.settings.showMediaVisualizer === true && MusicManager.isPlaying && (trackText.text && trackText.text.length > 0)
                 anchors.left: parent.left
-                // Place the spectrum behind the text, raised further upward
-                anchors.top: trackText.bottom
+                // Place the spectrum behind the text area, slightly raised into it
+                anchors.top: textFrame.bottom
                 // Use active profile overrides if present
                 anchors.topMargin: -Math.round(trackText.font.pixelSize * (
                     (Settings.settings.visualizerProfiles
@@ -221,100 +250,107 @@ Item {
                 z: -1
             }
 
-            // Dim the spectrum area under text for readability
-            Rectangle {
-                id: textBackdrop
+            // Clip text to avoid overlap with flags; frame reserves space up to mpdSlot
+            Item {
+                id: textFrame
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                height: Math.round(trackText.font.pixelSize * 1.15)
-                radius: 4 * Theme.scale(Screen)
-                color: Qt.rgba(Theme.backgroundPrimary.r, Theme.backgroundPrimary.g, Theme.backgroundPrimary.b, 0.25)
-                z: 1
-                visible: trackText.text && trackText.text.length > 0
-            }
+                anchors.rightMargin: 0
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                clip: true
 
-            // No separate top-half spectrum by default (can enable via settings)
+                // Backdrop under text removed to avoid darkening the title area
 
-            // Combined text (artist - title [time]) with colored separators (old display)
-            Text {
-                id: trackText
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                textFormat: Text.RichText
-                renderType: Text.NativeRendering
-                // Build HTML with colored separators and escaped content
-                function esc(s) {
-                    s = (s === undefined || s === null) ? "" : String(s);
-                    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                }
-                // Separator color (dash and slash): almost as dark as brackets
-                // Use a slightly higher brightness factor than brackets
-                // 165% lighter than brackets (clamped)
-                property real sepB: Math.min(1, bracketB * 2.65)
-                property string sepColor: (
-                    "rgba("
-                    + Math.round(Theme.accentPrimary.r * sepB * 255) + ","
-                    + Math.round(Theme.accentPrimary.g * sepB * 255) + ","
-                    + Math.round(Theme.accentPrimary.b * sepB * 255) + ",1)"
-                )
-                // Bracket color only: dark accent derived from calendar/tray
-                property real bracketB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
-                // Make brackets 1.5x lighter (clamped to 1.0)
-                property real bracketLight: Math.min(1, bracketB * 1.5)
-                property string bracketColor: (
-                    "rgba("
-                    + Math.round(Theme.accentPrimary.r * bracketLight * 255) + ","
-                    + Math.round(Theme.accentPrimary.g * bracketLight * 255) + ","
-                    + Math.round(Theme.accentPrimary.b * bracketLight * 255) + ",1)"
-                )
-                property string titlePart: (MusicManager.trackArtist || MusicManager.trackTitle)
-                    ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")
-                    : ""
-                function bracketPair() {
-                    const s = (Settings.settings.timeBracketStyle || "square").toLowerCase();
-                    switch (s) {
-                        case "round":              return { l: "(",    r: ")"     }; // standard parentheses
-                        case "lenticular":        return { l: "\u3016", r: "\u3017" }; // 〖 〗
-                        case "lenticular_black":  return { l: "\u3010", r: "\u3011" }; // 【 】
-                        case "angle":             return { l: "\u27E8", r: "\u27E9" }; // ⟨ ⟩
-                        case "square":            return { l: "[",    r: "]"     };
-                        case "tortoise":          return { l: "\u3014", r: "\u3015" }; // 〔 〕
-                        default:                   return { l: "[",    r: "]"     };
+                // Single rich text line: title + [cur/tot] inline; clipped by frame
+                Text {
+                    id: trackText
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    textFormat: Text.RichText
+                    renderType: Text.NativeRendering
+                    wrapMode: Text.NoWrap
+                    // Build HTML with colored separators and escaped content
+                    function esc(s) {
+                        s = (s === undefined || s === null) ? "" : String(s);
+                        return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     }
-                }
-                text: (function(){
-                    if (!trackText.titlePart) return "";
-                    const t = trackText.esc(trackText.titlePart)
-                               .replace(/\s(?:-|–|—)\s/g, "&#8201;<span style='color:" + trackText.sepColor + "; font-weight:bold'>—</span>&#8201;");
-                    const cur = fmtTime(MusicManager.currentPosition || 0);
-                    const tot = fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
-                    const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.8));
-                    const bp = trackText.bracketPair();
-                    // No extra space before bracket to minimize gap; shrink bracket size; raise time via <sup>
-                    return t
-                           + " &#8201;<span style='color:" + trackText.bracketColor + "'>" + bp.l + "</span>"
-                           + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1'>" + cur + "</span>"
-                           + "<span style='color:" + trackText.sepColor + "; font-weight:bold'>/</span>"
-                           + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1'>" + tot + "</span>"
-                           + "<span style='color:" + trackText.bracketColor + "'>" + bp.r + "</span>";
-                })()
-                color: Theme.textPrimary
-                font.family: Theme.fontFamily
-                font.weight: Font.Medium
-                font.pixelSize: mediaControl.musicTextPx
-                elide: Text.ElideRight
-                maximumLineCount: 1
-                z: 2
-                layer.enabled: true
-                layer.effect: MultiEffect {
-                    shadowEnabled: true
-                    shadowColor: Theme.shadow
-                    shadowOpacity: 0.6
-                    shadowHorizontalOffset: 0
-                    shadowVerticalOffset: 1
-                    shadowBlur: 0.8
+                    // Separator color (dash and slash): almost as dark as brackets
+                    // Use a slightly higher brightness factor than brackets
+                    // 165% lighter than brackets (clamped)
+                    property real sepB: Math.min(1, bracketB * 2.65)
+                    property string sepColor: (
+                        "rgba(" 
+                        + Math.round(Theme.accentPrimary.r * sepB * 255) + ","
+                        + Math.round(Theme.accentPrimary.g * sepB * 255) + ","
+                        + Math.round(Theme.accentPrimary.b * sepB * 255) + ",1)"
+                    )
+                    // Bracket color only: dark accent derived from calendar/tray
+                    property real bracketB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
+                    // Make brackets 1.5x lighter (clamped to 1.0)
+                    property real bracketLight: Math.min(1, bracketB * 1.5)
+                    property string bracketColor: (
+                        "rgba(" 
+                        + Math.round(Theme.accentPrimary.r * bracketLight * 255) + ","
+                        + Math.round(Theme.accentPrimary.g * bracketLight * 255) + ","
+                        + Math.round(Theme.accentPrimary.b * bracketLight * 255) + ",1)"
+                    )
+                    // Time color: dim and desaturate when paused
+                    property string timeColor: (function(){
+                        var c = MusicManager.isPlaying ? Theme.textPrimary : Theme.textSecondary;
+                        var a = MusicManager.isPlaying ? 1.0 : 0.8;
+                        return (
+                            "rgba(" + Math.round(c.r * 255) + ","
+                                     + Math.round(c.g * 255) + ","
+                                     + Math.round(c.b * 255) + "," + a + ")"
+                        );
+                    })()
+                    property string titlePart: (MusicManager.trackArtist || MusicManager.trackTitle)
+                        ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")
+                        : ""
+                    function bracketPair() {
+                        const s = (Settings.settings.timeBracketStyle || "square").toLowerCase();
+                        switch (s) {
+                            case "round":              return { l: "(",    r: ")"     };
+                            case "lenticular":        return { l: "\u3016", r: "\u3017" };
+                            case "lenticular_black":  return { l: "\u3010", r: "\u3011" };
+                            case "angle":             return { l: "\u27E8", r: "\u27E9" };
+                            case "square":            return { l: "[",    r: "]"     };
+                            case "tortoise":          return { l: "\u3014", r: "\u3015" };
+                            default:                   return { l: "[",    r: "]"     };
+                        }
+                    }
+                    text: (function(){
+                        if (!trackText.titlePart) return "";
+                        const t = trackText.esc(trackText.titlePart)
+                                   .replace(/\s(?:-|–|—)\s/g, "&#8201;<span style='color:" + trackText.sepColor + "; font-weight:bold'>—</span>&#8201;");
+                        const cur = fmtTime(MusicManager.currentPosition || 0);
+                        const tot = fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
+                        const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.8));
+                        const bp = trackText.bracketPair();
+                        return t
+                               + " &#8201;<span style='color:" + trackText.bracketColor + "'>" + bp.l + "</span>"
+                               + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + cur + "</span>"
+                               + "<span style='color:" + trackText.sepColor + "; font-weight:bold'>/</span>"
+                               + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + tot + "</span>"
+                               + "<span style='color:" + trackText.bracketColor + "'>" + bp.r + "</span>";
+                    })()
+                    color: Theme.textPrimary
+                    font.family: Theme.fontFamily
+                    font.weight: Font.Medium
+                    font.pixelSize: mediaControl.musicTextPx
+                    maximumLineCount: 1
+                    z: 2
+                    layer.enabled: true
+                    layer.effect: MultiEffect {
+                        shadowEnabled: true
+                        shadowColor: Theme.shadow
+                        shadowOpacity: 0.6
+                        shadowHorizontalOffset: 0
+                        shadowVerticalOffset: 1
+                        shadowBlur: 0.8
+                    }
                 }
             }
 

@@ -73,8 +73,8 @@ Rectangle {
         ColumnLayout {
             id: playerUI
             anchors.fill: parent
-            anchors.leftMargin: 18 * Theme.scale(screen)
-            anchors.rightMargin: 18 * Theme.scale(screen)
+            anchors.leftMargin: 0
+            anchors.rightMargin: 0
             anchors.topMargin: 0
             anchors.bottomMargin: 0
             spacing: 4 * Theme.scale(screen)
@@ -93,8 +93,9 @@ Rectangle {
             // Player selector
             // Build a de-duplicated list of players by identity/id
             property var uniquePlayers: []
-            readonly property bool showCombo: uniquePlayers && uniquePlayers.length > 1
-            readonly property bool showSingleLabel: uniquePlayers && uniquePlayers.length === 1
+            // Keep header area hidden to prevent layout jumps on player discovery
+            readonly property bool showCombo: false
+            readonly property bool showSingleLabel: false
             function dedupePlayers() {
                 try {
                     const list = MusicManager.getAvailablePlayers() || [];
@@ -247,22 +248,22 @@ Rectangle {
 
                     // (Visualizer removed for this view as per request)
 
-                    // Album art image (square with slight rounding)
+                    // Album art image (square with slight rounding) — no outer fill/border
                     Rectangle {
                         id: albumArtwork
-                        // Cover at 200px (scaled)
-                        width: 200 * Theme.scale(screen)
-                        height: 200 * Theme.scale(screen)
-                        anchors.fill: parent
-                        radius: 8 * Theme.scale(screen)
-                        color: Qt.darker(Theme.surface, 1.1)
-                        border.color: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.3)
-                        border.width: 1 * Theme.scale(screen)
+                            // Cover at 200px (scaled)
+                            width: 200 * Theme.scale(screen)
+                            height: 200 * Theme.scale(screen)
+                            anchors.fill: parent
+                            radius: 8 * Theme.scale(screen)
+                            color: "transparent"
+                            border.color: "transparent"
+                            border.width: 0
 
                         Image {
                             id: albumArt
                             anchors.fill: parent
-                            anchors.margins: 2 * Theme.scale(screen)
+                            anchors.margins: 0
                             fillMode: Image.PreserveAspectCrop
                             smooth: true
                             mipmap: true
