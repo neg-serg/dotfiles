@@ -116,19 +116,12 @@ Singleton {
     function previous() { if (currentPlayer && currentPlayer.canGoPrevious) currentPlayer.previous(); }
 
     function seek(position) {
-        // Avoid writing Player.Position via Properties.Set (many players reject it)
+        // Use relative Seek only; avoid SetPosition and any Position property writes
         try {
-            if (currentPlayer && currentPlayer.canSeek) {
+            if (currentPlayer && currentPlayer.canSeek && typeof currentPlayer.seek === 'function') {
                 var targetMs = Math.max(0, Math.round(position));
-                // Prefer absolute SetPosition if exposed, otherwise relative Seek
-                if (typeof currentPlayer.setPosition === 'function') {
-                    var tid = (currentPlayer.trackId || (currentPlayer.metadata && currentPlayer.metadata['mpris:trackid'])) || null;
-                    if (tid !== null) currentPlayer.setPosition(tid, targetMs);
-                } else if (typeof currentPlayer.seek === 'function') {
-                    var curMs = mprisToMs(currentPlayer.position);
-                    var deltaMs = targetMs - curMs;
-                    currentPlayer.seek(deltaMs);
-                }
+                var deltaMs = targetMs - Math.max(0, Math.round(currentPosition));
+                currentPlayer.seek(deltaMs);
                 currentPosition = targetMs;
             }
         } catch (e) { /* ignore */ }
