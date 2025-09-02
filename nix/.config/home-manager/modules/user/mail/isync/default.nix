@@ -4,7 +4,16 @@
   programs.mbsync.enable = true;
 
   # Optional: ensure the binary is present even if HM changes defaults
-  home.packages = [ pkgs.isync ];
+  # Also provide a non-blocking trigger to start sync in background
+  home.packages = [
+    pkgs.isync
+    (pkgs.writeShellScriptBin "sync-mail" ''
+      #!/usr/bin/env bash
+      set -euo pipefail
+      # Fire-and-forget start of the mbsync systemd unit
+      exec systemctl --user start --no-block mbsync-gmail.service
+    '')
+  ];
 
   # Create base maildir on activation (mbsync can also create, but this avoids first-run hiccups)
   home.activation.createMaildirs = {
@@ -28,8 +37,11 @@
       Wants = [ "network-online.target" ];
     };
     Service = {
-      Type = "oneshot";
-      ExecStart = ''${pkgs.isync}/bin/mbsync -Va -c "$HOME/.config/isync/mbsyncrc"'';
+      # Use simple so `systemctl start` doesn't block the caller
+      Type = "simple";
+      # First full sync can take a long time; keep generous timeout
+      TimeoutStartSec = "30min";
+      ExecStart = ''${pkgs.isync}/bin/mbsync -Va -c %h/.config/isync/mbsyncrc'';
     };
   };
   systemd.user.timers."mbsync-gmail" = {
