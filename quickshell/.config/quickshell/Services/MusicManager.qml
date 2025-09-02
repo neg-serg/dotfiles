@@ -116,10 +116,22 @@ Singleton {
     function previous() { if (currentPlayer && currentPlayer.canGoPrevious) currentPlayer.previous(); }
 
     function seek(position) {
-        if (currentPlayer && currentPlayer.canSeek) {
-            currentPlayer.position = position;      // backend units are fine
-            currentPosition = position;             // UI uses ms; we normalize at render if needed
-        }
+        // Avoid writing Player.Position via Properties.Set (many players reject it)
+        try {
+            if (currentPlayer && currentPlayer.canSeek) {
+                var targetMs = Math.max(0, Math.round(position));
+                // Prefer absolute SetPosition if exposed, otherwise relative Seek
+                if (typeof currentPlayer.setPosition === 'function') {
+                    var tid = (currentPlayer.trackId || (currentPlayer.metadata && currentPlayer.metadata['mpris:trackid'])) || null;
+                    if (tid !== null) currentPlayer.setPosition(tid, targetMs);
+                } else if (typeof currentPlayer.seek === 'function') {
+                    var curMs = mprisToMs(currentPlayer.position);
+                    var deltaMs = targetMs - curMs;
+                    currentPlayer.seek(deltaMs);
+                }
+                currentPosition = targetMs;
+            }
+        } catch (e) { /* ignore */ }
     }
 
     // --- Metadata helpers -------------------------------------------------
@@ -567,11 +579,12 @@ Singleton {
 
     // Seek by ratio (0..1)
     function seekByRatio(ratio) {
-        if (currentPlayer && currentPlayer.canSeek && currentPlayer.length > 0) {
-            let seekPos = ratio * currentPlayer.length;
-            currentPlayer.position = seekPos;
-            currentPosition = mprisToMs(seekPos);
-        }
+        try {
+            if (currentPlayer && currentPlayer.canSeek && currentPlayer.length > 0) {
+                var seekPos = Math.max(0, Math.round(ratio * currentPlayer.length));
+                seek(seekPos);
+            }
+        } catch (e) { /* ignore */ }
     }
 
     // --- File introspection (ffprobe/mediainfo) ----------------------------
