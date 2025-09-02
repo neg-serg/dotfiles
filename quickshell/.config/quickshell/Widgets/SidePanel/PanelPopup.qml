@@ -24,16 +24,17 @@ PanelWithOverlay {
             id: sidebarPopupRect
         property real slideOffset: width
         property bool isAnimating: false
-        // Minimal margins around content
-        property int leftPadding: 4 * Theme.scale(screen)
-        property int bottomPadding: 4 * Theme.scale(screen)
+        // No extra margins: stick to the panel edges
+        property int leftPadding: 0
+        property int bottomPadding: 0
         function showAt() {
             if (!sidebarPopup.visible) {
+                // Show instantly without slide animation
+                sidebarPopupRect.isAnimating = true; // disable Behavior on x
+                slideOffset = 0;
                 sidebarPopup.visible = true;
                 forceActiveFocus();
-                slideAnim.from = width;
-                slideAnim.to = 0;
-                slideAnim.running = true;
+                sidebarPopupRect.isAnimating = false;
             }
         }
 
@@ -45,8 +46,8 @@ PanelWithOverlay {
             }
         }
 
-        // Size panel close to calendar height to avoid truncation
-        property real musicWidthPx: 420 * Theme.scale(screen)
+        // Double width, keep height similar to calendar; no top/bottom padding
+        property real musicWidthPx: 840 * Theme.scale(screen)
         property real musicHeightPx: 380 * Theme.scale(screen)
         width: Math.round(musicWidthPx + leftPadding)
         height: Math.round(musicHeightPx + bottomPadding)

@@ -308,25 +308,7 @@ Rectangle {
                             visible: !albumArt.visible
                         }
                     }
-                    // Accent glow/shadow for better separation without explicit outline
-                    MultiEffect {
-                        id: coverGlow
-                        anchors.fill: albumArtwork
-                        source: ShaderEffectSource {
-                            sourceItem: albumArtwork
-                            // Keep original cover visible; draw glow above it
-                            hideSource: false
-                            recursive: true
-                            live: true
-                            smooth: true
-                        }
-                        shadowEnabled: true
-                        shadowColor: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.65)
-                        shadowBlur: 0.8
-                        shadowHorizontalOffset: 0
-                        shadowVerticalOffset: 0
-                        z: 0.4
-                    }
+                    // Remove outer glow to avoid any perceived black edge
                 }
 
                 // Track metadata
