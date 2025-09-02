@@ -1,6 +1,6 @@
 bind editor <Tab> complete-query
 bind editor ^T complete
-bind editor <space> noop 
+bind editor <space> noop
 
 bind index g noop
 bind pager g noop
@@ -26,8 +26,7 @@ bind attach,browser,pager,index ZZ exit
 
 macro index,pager X "|$XDG_CONFIG_HOME/mutt/scripts/mimedump"
 
-macro index gw '<sync-mailbox><enter-command>source $XDG_CONFIG_HOME/mutt/profiles/home.mutt<enter><change-folder>=gmail/inbox<enter>'
-macro index gW '<sync-mailbox><enter-command>source $XDG_CONFIG_HOME/mutt/profiles/work.mutt<enter><change-folder>=work/inbox<enter>'
+macro index gw '<sync-mailbox><enter-command>source $XDG_CONFIG_HOME/mutt/profiles/home.mutt<enter><change-folder>=gmail/INBOX<enter>'
 
 macro attach I "<save-entry><kill-line>~/dw/<enter>" "save attachment to ~/dw"
 
@@ -38,7 +37,7 @@ bind index,pager b change-vfolder
 macro index H "|bogofilter -n\ns="      "Learn as ham and save"
 macro pager H "|bogofilter -n\ns="      "Learn as ham and save"
 
-macro index,pager,pager	<f5> '<enter-command> set my_status="Reloaded configuration"; source $XDG_CONFIG_HOME/mutt/muttrc; set ?my_status<enter>'	"reload muttrc"
+macro index,pager	<f5> '<enter-command> set my_status="Reloaded configuration"; source $XDG_CONFIG_HOME/mutt/muttrc; set ?my_status<enter>'	"reload muttrc"
 
 macro pager W "|urlscan 2> /dev/null\n"
 macro index \w "\

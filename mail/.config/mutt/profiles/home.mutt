@@ -1,16 +1,16 @@
 set from = "serg.zorg@gmail.com"
 set realname = "Sergey Miroshnichenko"
-set spoolfile = "+gmail/inbox"
+set spoolfile = "+gmail/INBOX"
 
 set header_cache="$XDG_CONFIG_HOME/mutt/home.gmail/hcache"
 set certificate_file="$XDG_CONFIG_HOME/mutt/home.gmail/certificates"
 set message_cachedir="$XDG_CONFIG_HOME/mutt/home.gmail/cache"
-set signature = $XDG_CONFIG_HOME/mutt/signatures/work
+set signature = $XDG_CONFIG_HOME/mutt/signatures/home
 
-set mbox = "+gmail/All Mail"
-set postponed = "+gmail/Drafts"
-set record = "+gmail/Sent"
-set trash = "+gmail/Trash"
+set mbox = "+gmail/[Gmail]/All Mail"
+set postponed = "+gmail/[Gmail]/Drafts"
+set record = "+gmail/[Gmail]/Sent Mail"
+set trash = "+gmail/[Gmail]/Trash"
 
 set move=no # gmail does that
 set sendmail="/usr/bin/msmtp -a gmail"
@@ -20,20 +20,16 @@ folder-hook imaps://imap.gmail.com 'set trash="=[Gmail]/Trash"'
 
 macro index o "<shell-escape>mbsync gmail<enter>" "run mbsync to sync mail for this account"
 macro index,pager A \
- "<save-message>+gmail/All Mail<enter>"  \
+ "<save-message>+gmail/[Gmail]/All Mail<enter>"  \
  "move message to the archive"
 macro index,pager I \
- "<save-message>+gmail/inbox<enter>"  \
+ "<save-message>+gmail/INBOX<enter>"  \
  "move message to the inbox"
 
 macro index ? '<change-vfolder>notmuch://?query=tag:gmail-inbox and NOT tag:archive and '
 
-macro index S "|bogofilter -s\ns=gmail/Spam"  "Learn as spam and save to junk"
-macro pager S "|bogofilter -s\ns=gmail/Spam"  "Learn as spam and save to junk"
+macro index S "|bogofilter -s\ns=gmail/[Gmail]/Spam"  "Learn as spam and save to junk"
+macro pager S "|bogofilter -s\ns=gmail/[Gmail]/Spam"  "Learn as spam and save to junk"
 
-set nm_default_uri = "notmuch:///home/neg/.local/mail/"
-virtual-mailboxes \
-        "gmail" "notmuch://?query=tag:gmail-inbox"\
-        "work" "notmuch://?query=tag:work-inbox"
 
 # vim: ft=muttrc syntax=neomuttrc
