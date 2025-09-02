@@ -35,9 +35,6 @@ PanelWithOverlay {
             }
         }
 
-    }
-}
-
         function hidePopup() {
             if (sidebarPopup.visible) {
                 slideAnim.from = 0;
@@ -129,3 +126,7 @@ PanelWithOverlay {
                 }
             }
         }
+
+    }
+}
+
