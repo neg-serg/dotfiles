@@ -102,7 +102,8 @@ Singleton {
         let np = findActivePlayer();
         if (np !== currentPlayer) {
             currentPlayer = np;
-            currentPosition = currentPlayer ? mprisToMs(currentPlayer.position) : 0;
+            // Avoid querying Player.Position (some backends don't support it)
+            currentPosition = 0;
         }
     }
 
@@ -930,22 +931,15 @@ Singleton {
                 return;
             }
 
-            var backendPosMs = mprisToMs(currentPlayer.position);
-            var lengthMs     = mprisToMs(currentPlayer.length);
-
-            // If backend provides a moving value — trust it
-            if (backendPosMs > 0 && backendPosMs !== currentPosition) {
-                currentPosition = backendPosMs;
-                return;
-            }
+            // Avoid reading Player.Position every tick to prevent DBus warnings
+            var lengthMs = mprisToMs(currentPlayer.length);
 
             // Otherwise tick locally while playing
             if (currentPlayer.isPlaying) {
                 var next = currentPosition + interval; // interval is ms
                 currentPosition = (lengthMs > 0) ? Math.min(next, lengthMs) : next;
             } else {
-                // paused/stopped: lazy-sync from backend if it differs
-                if (backendPosMs !== currentPosition) currentPosition = backendPosMs;
+                // paused/stopped: keep last known position
             }
         }
     }
@@ -955,7 +949,6 @@ Singleton {
     // Subscribe to currentPlayer change notifications (if any)
     Connections {
         target: currentPlayer
-        function onPositionChanged() { manager.currentPosition = manager.mprisToMs(currentPlayer.position); }
         function onIsPlayingChanged() { /* Timer is unconditional; nothing to do */ }
         function onLengthChanged() { /* no-op */ }
     }
