@@ -18,7 +18,7 @@ set flag_chars = "      "
 
 set hidden_tags = "unread,draft,flagged,passed,replied,attachment,signed,encrypted"
 tag-transforms "replied" "↻ "  \
-               "encrytpted" "" \
+               "encrypted" "" \
                "signed" "" \
                "attachment" "" \
 

@@ -1,84 +1,89 @@
 set shell="/bin/zsh"
-set charset=utf-8 # Local charset
+set charset=utf-8                      # Local charset
 set send_charset="utf-8"
 set use_from=yes
 set attribution="On %d, %n wrote:"
 set editor="nvim +':set textwidth=0' +':set wrapmargin=0' +':set wrap'"
-set folder="~/.local/mail"           # mail folder
-set markers=no                       # don't put '+' at the beginning of wrapped lines
-set delete=yes                       # purge deleted messages without asking
-set copy=ask-no                      # ask to save a copy of outgoing message?
-set postpone=ask-no                  # ask to postpone message if i want to
-set print=ask-yes                    # ask for printing message if i want to
-set record=ask-no                    # ask to save sent message into 'sent' mailbox
-set include=yes                      # include the message in replies (reply quoting)
-set quit=yes                         # Do you REALLY want to exit mutt? :)
-set recall=ask-yes                   # ask for working with unsent messages
-unset confirmappend                  # prompt for confirm when appending message to ex. mbox
-set allow_8bit                       # encoding
-set check_new                        # search for new messages
-set abort_nosubject=no               # Abort, if message has no subject
-set attach_split                     # do not merge attaches into one file?
-set fast_reply                       # do not asr For:, To:, Subj:, then replying
-set fcc_attach                       # keep attaches then doing Fcc:
-set followup_to                      # add Mail-Followup-To header, for maillists
-unset metoo                          # do not send reply to myself when replyin' to group
-unset reply_self                     # do not reply myself after all
-unset read_only                      # I wanna r/w access to my mailboxes
-unset collapse_unread                # do not collapse threads with new mail
-unset mark_old                       # unread old messages are still unread after quitting
-set suspend                          # allow Ctrl-Z to shutdown mutt
-set beep=no                          # fuckin' noizy pc-speaker
-set sleep_time = 0                   # Speed up folders switch
-set forward_decode                   # Decode when forwarding
-set beep_new=no                      # Do not use some kind of beep
-set askcc=no                         # ask for cc when creating new message?
-set markers=no                       # don't put '+' at the beginning of wrapped lines
-set wait_key=no                      # shut up, mutt
-unset print_command                  # do not use print
-set forward_format="Fwd: %s"         # simple forward format
-set help                             # enable keybindings help
-set implicit_autoview                # try to understand MIME types
+set folder="~/.local/mail"            # Mail root folder
 
-set mailcap_path="~/.config/mutt/mailcap" # see MIME types in mailcap database
-set mailcap_sanitize=yes             # remove mailcap ugly chars
+set delete=yes                         # Purge deleted messages without asking
+set copy=ask-no                        # Save a copy of outgoing message?
+set postpone=ask-no                    # Postpone unsent message?
+set print=ask-yes                      # Confirm printing
+set include=yes                        # Include message in replies (quoting)
+set quit=yes                           # Confirm exit
+set recall=ask-yes                     # Confirm working with unsent messages
+unset confirmappend                    # Don't prompt when appending to mbox
+set allow_8bit                         # Allow 8-bit transfer-encoding
+set check_new                          # Check for new mail
+set abort_nosubject=no                 # Don't abort on empty subject
+set attach_split                       # Store attachments separately
+set fast_reply                         # Skip To/Cc/Subject when replying
+set fcc_attach                         # Keep attachments with Fcc
+set followup_to                        # Add Mail-Followup-To for lists
+unset metoo                            # Don't CC myself on group-reply
+unset reply_self                       # Don't reply to self
+unset read_only                        # Read/write access to mailboxes
+unset collapse_unread                  # Don't collapse threads with new mail
+unset mark_old                         # Unread old messages stay unread
+set suspend                            # Allow Ctrl-Z
+set beep=no                            # No beeps
+set sleep_time=0                       # Speed up folder switches
+set forward_decode                     # Decode when forwarding
+set beep_new=no                        # No beep for new mail
+set askcc=no                           # Don't ask for Cc on compose
+unset markers                          # No '+' for wrapped lines
+set wait_key=no                        # Less prompts
+unset print_command                    # Disable printing command
+set forward_format="Fwd: %s"           # Simple forward format
+set help                               # Show keybindings help
+set implicit_autoview                  # Use mailcap for MIME types
 
-set menu_scroll                      # enable menu scrolling
-set narrow_tree                      # To make deep threads to fit on the screen
-set user_agent=no                    # let them take fake useragent from my_hdr above
-set signature="~/.config/mutt/scripts/signature"
+set mailcap_path="~/.config/mutt/mailcap" # Use local mailcap database
+set mailcap_sanitize=yes               # Sanitize mailcap
+
+set menu_scroll                        # Menu scrolling
+set narrow_tree                        # Compact thread tree
+set user_agent=no                      # Hide real User-Agent
 
 set pager=builtin
-set pager_stop                       # don't show the next msg after current
-set pager_index_lines=20             # number of index lines to show
-set pager_context=3                  # number of context lines to show
-set pager_stop                       # don't go to next message automatically
-set menu_scroll                      # scroll in menus
-set tilde                            # show tildes like in vim
-unset markers                        # no ugly plus signs
+set pager_stop                         # Don't auto-open next message
+set pager_index_lines=20               # Index lines to show above pager
+set pager_context=3                    # Context lines in pager
+set tilde                              # Show tildes like in vim
 
-set sort_aux=reverse-last-date-received  # like gmail
-set uncollapse_jump                  # don't collapse on an unread message
+set sort_aux=reverse-last-date-received  # Gmail-like sorting
+set uncollapse_jump                    # Don't collapse on unread
 
-set ssl_force_tls = yes
+set ssl_force_tls=yes
 set mail_check=10
 set timeout=10
-set auto_tag = yes
-set pgp_autosign = no
+set auto_tag=yes
+set pgp_autosign=no
 set imap_keepalive=300
 set imap_check_subscribed
 set query_command="notmuch-addrlookup --mutt '%s'"
 
+# Let profiles control these
 unset spoolfile
 unset record
 unset signature
 
 set reply_regexp="^(([Rr][Ee]?(\[[0-9]+\])?: *)?(\[[^]]+\] *)?)*"
-set quote_regexp = "^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
+set quote_regexp="^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
 
 unlists *
 unsubscribe *
 
+# Sync mailbox timers
 timeout-hook 'exec sync-mailbox'
+
+# notmuch defaults and virtual mailboxes (shared across profiles)
+set nm_default_uri = "notmuch:///home/neg/.local/mail/"
+virtual-mailboxes \
+  "gmail"   "notmuch://?query=tag:gmail-inbox" \
+  "Archive" "notmuch://?query=tag:archive" \
+  "Spam"    "notmuch://?query=tag:spam" \
+  "Trash"   "notmuch://?query=tag:trash"
 
 # vim: ft=muttrc syntax=neomuttrc
