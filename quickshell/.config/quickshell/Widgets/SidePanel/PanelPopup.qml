@@ -53,9 +53,9 @@ PanelWithOverlay {
             }
         }
 
-        // Size panel to music implicit size (no extra top/bottom)
+        // Use stable, precomputed size to avoid initial reflow/flicker
         property real musicWidthPx: 720 * Theme.scale(screen)
-        property real musicHeightPx: musicWidget ? musicWidget.implicitHeight : 0
+        property real musicHeightPx: 250 * Theme.scale(screen)
         width: Math.round(musicWidthPx + leftPadding)
         height: Math.round(musicHeightPx + bottomPadding)
         visible: parent.visible
