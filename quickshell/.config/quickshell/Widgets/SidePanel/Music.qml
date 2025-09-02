@@ -236,8 +236,6 @@ Rectangle {
             RowLayout {
                 spacing: 4 * Theme.scale(screen)
                 Layout.fillWidth: true
-                // Pull album art flush to card's left edge
-                Layout.leftMargin: -18 * Theme.scale(screen)
 
                 // Album art container with circular spectrum overlay
                 Item {

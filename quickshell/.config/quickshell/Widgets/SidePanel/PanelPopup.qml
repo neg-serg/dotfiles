@@ -32,25 +32,16 @@ PanelWithOverlay {
         property real slideOffset: width
         property int  showDuration: 220
         property bool isAnimating: false
-        // Bottom-up reveal by animating visible height (px)
-        property real showHeight: 0
         // Minimal margins around content (no vertical padding by request)
         property int leftPadding: 4 * Theme.scale(screen)
         property int bottomPadding: 0
         function showAt() {
             if (!sidebarPopup.visible) {
-                // Show immediately in final horizontal position; reveal by height from bottom
+                // Show immediately in final horizontal position (no vertical animation)
                 slideOffset = 0;
-                showHeight = 0;
                 sidebarPopup.visible = true;
-                forceActiveFocus(); sidebarPopup.lastMoveTs = Date.now();
-                // Defer to let layout settle, then animate to full container height
-                Qt.callLater(() => {
-                    showHeightAnim.from = 0;
-                    showHeightAnim.to = sidebarPopupRect.height;
-                    showHeightAnim.duration = sidebarPopupRect.showDuration;
-                    showHeightAnim.restart();
-                });
+                forceActiveFocus();
+                sidebarPopup.lastMoveTs = Date.now();
             }
         }
 
@@ -100,16 +91,7 @@ PanelWithOverlay {
             }
         }
 
-        NumberAnimation {
-            id: showHeightAnim
-            target: sidebarPopupRect
-            property: "showHeight"
-            duration: sidebarPopupRect.showDuration
-            from: 0
-            to: 0
-            easing.type: Easing.OutCubic
-            running: false
-        }
+        // No vertical show animation; only horizontal slide used on hide
 
         Rectangle {
             id: mainRectangle
@@ -126,8 +108,8 @@ PanelWithOverlay {
             layer.smooth: true
             clip: true
             opacity: 1
-            // Bottom-up reveal by animating height from 0..full while anchored to bottom
-            height: Math.max(0, sidebarPopupRect.showHeight - sidebarPopupRect.bottomPadding)
+            // Fixed full height; anchored to bottom for stable appearance
+            height: sidebarPopupRect.height - sidebarPopupRect.bottomPadding
 
         }
 
@@ -166,6 +148,7 @@ PanelWithOverlay {
 
                 // small spacer removed by request
 
+                }
             }
 
             // No extra animation here; the whole panel slides as one layer
