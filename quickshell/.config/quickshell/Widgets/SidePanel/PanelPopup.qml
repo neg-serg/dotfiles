@@ -97,7 +97,8 @@ PanelWithOverlay {
             width: sidebarPopupRect.width - sidebarPopupRect.leftPadding
             height: sidebarPopupRect.height - sidebarPopupRect.bottomPadding
             x: sidebarPopupRect.leftPadding + sidebarPopupRect.slideOffset
-            y: 0
+            // Attach to bottom so panel grows/appears from bottom edge upward
+            anchors.bottom: parent.bottom
             // Panel backdrop: very transparent black
             color: Qt.rgba(0, 0, 0, 0.10)
             bottomLeftRadius: 20
