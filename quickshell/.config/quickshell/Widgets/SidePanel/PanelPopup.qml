@@ -99,7 +99,6 @@ PanelWithOverlay {
             id: mainRectangle
             // anchors.top: sidebarPopupRect.top
             width: sidebarPopupRect.width - sidebarPopupRect.leftPadding
-            height: sidebarPopupRect.height - sidebarPopupRect.bottomPadding
             x: sidebarPopupRect.leftPadding + sidebarPopupRect.slideOffset
             // Attach to bottom so panel grows/appears from bottom edge upward
             anchors.bottom: parent.bottom
