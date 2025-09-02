@@ -10,6 +10,9 @@ PanelWithOverlay {
     id: sidebarPopup
     // No global dimming for music info
     showOverlay: false
+    // Avoid any top/bottom margin shifts from global panel position to prevent initial jump
+    topMargin: 0
+    bottomMargin: 0
     // Give the side panel a namespace so Hyprland can apply blur rules
     WlrLayershell.namespace: "quickshell-sidepanel"
     property var shell: null
