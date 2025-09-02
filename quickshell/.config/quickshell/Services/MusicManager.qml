@@ -70,7 +70,6 @@ Singleton {
     property string trackContainer:      _computeContainer()
     property string trackFileSizeStr:    _computeFileSizeStr()
     property string trackChannelLayout:  _computeChannelLayout()
-    property string trackEncoder:        _computeEncoder()
     property string trackQualitySummary: _computeQualitySummary()
     
 
@@ -884,13 +883,7 @@ Singleton {
         return "";
     }
 
-    function _computeEncoder() {
-        // ffprobe/mediainfo tags
-        try { if (fileAudioMeta && fileAudioMeta.encoder) return String(fileAudioMeta.encoder); } catch (e) {}
-        var v = _playerProp(["encoder","xesam:encoder","xesam:EncodedBy"]);
-        var s = _toFlatString(v);
-        return s || "";
-    }
+    // Encoder intentionally omitted from public API
 
     function _computeQualitySummary() {
         // Example: "FLAC·44.1k·16·2" or "MP3·320 kbps·44.1k·16·2"
