@@ -8,6 +8,8 @@ import qs.Settings
 
 PanelWithOverlay {
     id: sidebarPopup
+    // Do not dim background for music popup
+    showOverlay: false
     // Give the side panel a namespace so Hyprland can apply blur rules
     WlrLayershell.namespace: "quickshell-sidepanel"
     property var shell: null
@@ -43,9 +45,9 @@ PanelWithOverlay {
             }
         }
 
-        // Size panel close to music module size (compact, no excess space)
+        // Size panel close to calendar height to avoid truncation
         property real musicWidthPx: 420 * Theme.scale(screen)
-        property real musicHeightPx: 250 * Theme.scale(screen)
+        property real musicHeightPx: 380 * Theme.scale(screen)
         width: Math.round(musicWidthPx + leftPadding)
         height: Math.round(musicHeightPx + bottomPadding)
         visible: parent.visible
@@ -129,4 +131,3 @@ PanelWithOverlay {
 
     }
 }
-
