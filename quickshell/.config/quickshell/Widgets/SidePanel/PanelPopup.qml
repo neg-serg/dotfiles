@@ -53,9 +53,9 @@ PanelWithOverlay {
             }
         }
 
-        // Size based on content, with safe minimum to avoid 0-height on first frame
-        property real musicWidthPx: 720 * Theme.scale(screen)
-        property real musicHeightPx: musicWidget ? Math.max(250 * Theme.scale(screen), musicWidget.implicitHeight) : 250 * Theme.scale(screen)
+        // Use fixed size (like calendar) to avoid reflow that can shift content
+        property real musicWidthPx: 420 * Theme.scale(screen)
+        property real musicHeightPx: 380 * Theme.scale(screen)
         width: Math.round(musicWidthPx + leftPadding)
         height: Math.round(musicHeightPx + bottomPadding)
         visible: parent.visible
