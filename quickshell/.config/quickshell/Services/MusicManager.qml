@@ -33,7 +33,10 @@ Singleton {
     property real currentPosition: 0                 // ms (kept in UI units)
     property int  selectedPlayerIndex: 0
 
+    // Playback state helpers
     property bool   isPlaying:      currentPlayer ? currentPlayer.isPlaying : false
+    property bool   isPaused:       currentPlayer ? (currentPlayer.playbackState === MprisPlaybackState.Paused) : false
+    property bool   isStopped:      currentPlayer ? (currentPlayer.playbackState === MprisPlaybackState.Stopped) : true
     property string trackTitle:     currentPlayer ? (currentPlayer.trackTitle  || "") : ""
     property string trackArtist:    currentPlayer ? (currentPlayer.trackArtist || "") : ""
     property string trackAlbum:     currentPlayer ? (currentPlayer.trackAlbum  || "") : ""
@@ -101,8 +104,15 @@ Singleton {
         let np = findActivePlayer();
         if (np !== currentPlayer) {
             currentPlayer = np;
-            // Avoid querying Player.Position (some backends don't support it)
-            currentPosition = 0;
+            // Initialize position from player if supported; else reset
+            try {
+                if (currentPlayer && currentPlayer.positionSupported) {
+                    // Mpris position is in seconds (qreal); convert to ms
+                    currentPosition = mprisToMs(currentPlayer.position);
+                    // Hint the backend to refresh the cached position
+                    currentPlayer.positionChanged();
+                } else currentPosition = 0;
+            } catch (e) { currentPosition = 0; }
         }
     }
 
@@ -112,6 +122,7 @@ Singleton {
     }
     function play()     { if (currentPlayer && currentPlayer.canPlay)       currentPlayer.play(); }
     function pause()    { if (currentPlayer && currentPlayer.canPause)      currentPlayer.pause(); }
+    function stop()     { if (currentPlayer && typeof currentPlayer.stop === 'function') currentPlayer.stop(); }
     function next()     { if (currentPlayer && currentPlayer.canGoNext)     currentPlayer.next(); }
     function previous() { if (currentPlayer && currentPlayer.canGoPrevious) currentPlayer.previous(); }
 
@@ -121,7 +132,8 @@ Singleton {
             if (currentPlayer && currentPlayer.canSeek && typeof currentPlayer.seek === 'function') {
                 var targetMs = Math.max(0, Math.round(position));
                 var deltaMs = targetMs - Math.max(0, Math.round(currentPosition));
-                currentPlayer.seek(deltaMs);
+                // Quickshell MPRIS seek expects seconds; convert ms -> s
+                currentPlayer.seek(deltaMs / 1000.0);
                 currentPosition = targetMs;
             }
         } catch (e) { /* ignore */ }
@@ -574,8 +586,9 @@ Singleton {
     function seekByRatio(ratio) {
         try {
             if (currentPlayer && currentPlayer.canSeek && currentPlayer.length > 0) {
-                var seekPos = Math.max(0, Math.round(ratio * currentPlayer.length));
-                seek(seekPos);
+                // currentPlayer.length is in seconds; convert to ms
+                var targetMs = Math.max(0, Math.round(ratio * currentPlayer.length * 1000));
+                seek(targetMs);
             }
         } catch (e) { /* ignore */ }
     }
@@ -904,29 +917,24 @@ Singleton {
         return parts.filter(function(p){ return p && String(p).length > 0; }).join(" ");
     }
 
-    // --- Keep time ticking even if backend doesn't push updates -----------
+    // --- Poll MPRIS position properly (seconds) and convert to ms ---------
     Timer {
-        id: positionTimer
+        id: positionPoller
         interval: 1000
         repeat: true
-        running: true   // always ticking; guarded inside
-
+        running: !!currentPlayer
         onTriggered: {
-            if (!currentPlayer) {
-                if (currentPosition !== 0) currentPosition = 0;
-                return;
-            }
-
-            // Avoid reading Player.Position every tick to prevent DBus warnings
-            var lengthMs = mprisToMs(currentPlayer.length);
-
-            // Otherwise tick locally while playing
-            if (currentPlayer.isPlaying) {
-                var next = currentPosition + interval; // interval is ms
-                currentPosition = (lengthMs > 0) ? Math.min(next, lengthMs) : next;
-            } else {
-                // paused/stopped: keep last known position
-            }
+            if (!currentPlayer) { currentPosition = 0; return; }
+            try {
+                // Only refresh from backend when the player can report position
+                if (currentPlayer.positionSupported) {
+                    // Hint Quickshell to refresh the value; see docs
+                    currentPlayer.positionChanged();
+                    var posMs = mprisToMs(currentPlayer.position);
+                    var lenMs = mprisToMs(currentPlayer.length);
+                    currentPosition = (lenMs > 0) ? Math.min(posMs, lenMs) : posMs;
+                }
+            } catch (e) { /* ignore */ }
         }
     }
 
@@ -935,8 +943,22 @@ Singleton {
     // Subscribe to currentPlayer change notifications (if any)
     Connections {
         target: currentPlayer
-        function onIsPlayingChanged() { /* Timer is unconditional; nothing to do */ }
+        function onIsPlayingChanged() { /* no-op */ }
         function onLengthChanged() { /* no-op */ }
+        function onPositionChanged() {
+            try {
+                if (currentPlayer && currentPlayer.positionSupported) {
+                    var posMs = mprisToMs(currentPlayer.position);
+                    var lenMs = mprisToMs(currentPlayer.length);
+                    currentPosition = (lenMs > 0) ? Math.min(posMs, lenMs) : posMs;
+                }
+            } catch (e) { /* ignore */ }
+        }
+        function onPlaybackStateChanged() {
+            if (!currentPlayer) { currentPosition = 0; return; }
+            // Reset position on full stop
+            if (currentPlayer.playbackState === MprisPlaybackState.Stopped) currentPosition = 0;
+        }
     }
 
     // React to MPRIS players list changes
