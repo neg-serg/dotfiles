@@ -58,7 +58,6 @@ set tilde                            # show tildes like in vim
 unset markers                        # no ugly plus signs
 
 set sort_aux=reverse-last-date-received  # like gmail
-set sort_re
 set uncollapse_jump                  # don't collapse on an unread message
 
 set ssl_force_tls = yes

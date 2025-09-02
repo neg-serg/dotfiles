@@ -7,7 +7,7 @@ set certificate_file="$XDG_CONFIG_HOME/mutt/home.gmail/certificates"
 set message_cachedir="$XDG_CONFIG_HOME/mutt/home.gmail/cache"
 set signature = $XDG_CONFIG_HOME/mutt/signatures/work
 
-set mbox = "+gmail/All Mail
+set mbox = "+gmail/All Mail"
 set postponed = "+gmail/Drafts"
 set record = "+gmail/Sent"
 set trash = "+gmail/Trash"
