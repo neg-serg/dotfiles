@@ -9,6 +9,7 @@ with {
 }; {
   imports = [
     ./accounts
+    ./isync
     ./imapnotify
     ./khal # better calendar
     ./msmtp

@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import qs.Settings
 import qs.Components
 import qs.Bar.Modules
@@ -22,8 +23,18 @@ Item {
     }
 
     // Collapse size when hidden so it doesn't leave a gap
+    // RowLayout relies on implicit sizes, so override them too
     width: visible ? pillIndicator.width : 0
     height: visible ? pillIndicator.height : 0
+    implicitWidth: visible ? pillIndicator.width : 0
+    implicitHeight: visible ? pillIndicator.height : 0
+    // Hint RowLayout to use these collapsed sizes
+    Layout.preferredWidth: implicitWidth
+    Layout.preferredHeight: implicitHeight
+    Layout.minimumWidth: implicitWidth
+    Layout.minimumHeight: implicitHeight
+    Layout.maximumWidth: implicitWidth
+    Layout.maximumHeight: implicitHeight
 
     // Hide the pill after ~800ms when volume sits exactly at 100%
     Timer {
@@ -95,30 +106,38 @@ Item {
     Connections {
         target: shell ?? null
         function onVolumeChanged() {
-            if (shell) {
-                const clampedVolume = Math.max(0, Math.min(200, shell.volume));
-                if (clampedVolume !== volume) {
-                    volume = clampedVolume;
-                    // Ensure module is visible on any change
-                    if (!volumeDisplay.visible) volumeDisplay.visible = true;
-                    pillIndicator.text = volume + "%";
-                    pillIndicator.icon = shell.defaultAudioSink && shell.defaultAudioSink.audio && shell.defaultAudioSink.audio.muted
-                        ? "volume_off"
-                        : (volume === 0 ? "volume_off" : (volume < 30 ? "volume_down" : "volume_up"));
+            if (!shell) return;
+            const clampedVolume = Math.max(0, Math.min(200, shell.volume));
+            if (clampedVolume === volume) return;
 
-                    if (firstChange) {
-                        firstChange = false
-                    }
-                    else {
-                        pillIndicator.show();
-                        // Handle auto-hide at exactly 100%
-                        if (volume === 100) {
-                            fullHideTimer.restart();
-                        } else if (fullHideTimer.running) {
-                            fullHideTimer.stop();
-                        }
-                    }
+            volume = clampedVolume;
+
+            // Update pill content/icon from current state
+            pillIndicator.text = volume + "%";
+            pillIndicator.icon = shell.defaultAudioSink && shell.defaultAudioSink.audio && shell.defaultAudioSink.audio.muted
+                ? "volume_off"
+                : (volume === 0 ? "volume_off" : (volume < 30 ? "volume_down" : "volume_up"));
+
+            const atHundred = (volume === 100);
+
+            // First change: don't flash the pill if we're exactly at 100%
+            // to allow the module to remain hidden; otherwise reveal it.
+            if (firstChange) {
+                firstChange = false;
+                if (!atHundred) {
+                    if (!volumeDisplay.visible) volumeDisplay.visible = true;
+                    pillIndicator.show();
                 }
+            } else {
+                if (!volumeDisplay.visible) volumeDisplay.visible = true;
+                pillIndicator.show();
+            }
+
+            // Schedule/stop full hide depending on current value, even on first change.
+            if (atHundred) {
+                fullHideTimer.restart();
+            } else if (fullHideTimer.running) {
+                fullHideTimer.stop();
             }
         }
     }
