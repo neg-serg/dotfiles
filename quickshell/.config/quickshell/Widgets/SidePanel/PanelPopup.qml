@@ -68,8 +68,8 @@ PanelWithOverlay {
             onStopped: {
                 if (sidebarPopupRect.slideOffset === sidebarPopupRect.width) {
                     sidebarPopup.visible = false;
-                    // Reset scale for next show
-                    sidebarPopupRect.showScale = 0;
+                    // Reset reveal for next show
+                    sidebarPopupRect.revealHeight = 0;
                 }
                 sidebarPopupRect.isAnimating = false;
             }
