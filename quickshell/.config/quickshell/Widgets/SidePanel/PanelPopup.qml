@@ -25,19 +25,25 @@ PanelWithOverlay {
         property real slideOffset: width
         property int  showDuration: 220
         property bool isAnimating: false
-        // Bottom-up scale for show animation (0..1)
-        property real showScale: 1
+        // Bottom-up reveal by animating visible height (px)
+        property real showHeight: 0
         // Minimal margins around content (no vertical padding by request)
         property int leftPadding: 4 * Theme.scale(screen)
         property int bottomPadding: 0
         function showAt() {
             if (!sidebarPopup.visible) {
-                // Show immediately in final horizontal position; reveal by scaling from bottom
+                // Show immediately in final horizontal position; reveal by height from bottom
                 slideOffset = 0;
-                showScale = 0;
+                showHeight = 0;
                 sidebarPopup.visible = true;
                 forceActiveFocus();
-                Qt.callLater(() => { scaleAnim.from = 0; scaleAnim.to = 1; scaleAnim.duration = sidebarPopupRect.showDuration; scaleAnim.restart(); });
+                // Defer to let layout settle, then animate to full container height
+                Qt.callLater(() => {
+                    showHeightAnim.from = 0;
+                    showHeightAnim.to = sidebarPopupRect.height;
+                    showHeightAnim.duration = sidebarPopupRect.showDuration;
+                    showHeightAnim.restart();
+                });
             }
         }
 
@@ -69,7 +75,7 @@ PanelWithOverlay {
                 if (sidebarPopupRect.slideOffset === sidebarPopupRect.width) {
                     sidebarPopup.visible = false;
                     // Reset reveal for next show
-                    sidebarPopupRect.revealHeight = 0;
+                    sidebarPopupRect.showHeight = 0;
                 }
                 sidebarPopupRect.isAnimating = false;
             }
@@ -79,12 +85,12 @@ PanelWithOverlay {
         }
 
         NumberAnimation {
-            id: scaleAnim
+            id: showHeightAnim
             target: sidebarPopupRect
-            property: "showScale"
+            property: "showHeight"
             duration: sidebarPopupRect.showDuration
             from: 0
-            to: 1
+            to: 0
             easing.type: Easing.OutCubic
             running: false
         }
@@ -105,8 +111,8 @@ PanelWithOverlay {
             layer.smooth: true
             clip: true
             opacity: 1
-            // Bottom-up reveal by scaling from bottom edge
-            transform: Scale { xScale: 1; yScale: Math.max(0.0001, sidebarPopupRect.showScale); origin.y: mainRectangle.height }
+            // Bottom-up reveal by animating height from 0..full while anchored to bottom
+            height: Math.max(0, sidebarPopupRect.showHeight - sidebarPopupRect.bottomPadding)
 
         }
 
