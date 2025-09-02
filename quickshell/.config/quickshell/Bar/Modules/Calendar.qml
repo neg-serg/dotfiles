@@ -9,6 +9,8 @@ import qs.Settings
 
 PanelWithOverlay {
     id: calendarOverlay
+    // Disable dim overlay on activation
+    showOverlay: false
 
     Rectangle {
         color: Theme.backgroundPrimary
@@ -192,12 +194,7 @@ PanelWithOverlay {
                         delay: 100
                     }
 
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: 150
-                        }
-
-                    }
+                    // Remove hover color animation for instant response
 
                 }
 

@@ -5,7 +5,6 @@ import qs.Components
 Rectangle {
     id: clockWidget
     property var screen: (typeof modelData !== 'undefined' ? modelData : null)
-    property var showTooltip: false
     width: textItem.paintedWidth
     height: textItem.paintedHeight
     color: "transparent"
@@ -23,9 +22,7 @@ Rectangle {
     MouseArea {
         id: clockMouseArea
         anchors.fill: parent
-        hoverEnabled: true
-        onEntered: showTooltip = true
-        onExited: showTooltip = false
+        hoverEnabled: false
         cursorShape: Qt.PointingHandCursor
         onClicked: function() {
             calendar.visible = !calendar.visible
@@ -38,12 +35,5 @@ Rectangle {
         visible: false
     }
 
-    StyledTooltip {
-        id: dateTooltip
-        text: Time.dateString
-        positionAbove: false
-        tooltipVisible: showTooltip && !calendar.visible
-        targetItem: clockWidget
-        delay: 200
-    }
+    // Tooltip removed as requested
 }
