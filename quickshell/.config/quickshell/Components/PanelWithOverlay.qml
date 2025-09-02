@@ -8,9 +8,9 @@ PanelWindow {
     property bool showOverlay: Settings.settings.dimPanels
     property int topMargin: 36 * Theme.scale(screen)
     property int bottomMargin: 36 * Theme.scale(screen)
-    // Respect global panel position setting ("top" or "bottom").
-    // Previously used a non-existent Settings.settings.barPosition, causing wrong margins.
-    property string barPosition: Settings.settings.panelPosition || "bottom"
+    // Panel is fixed at bottom; no configurable position.
+    // Provide a default namespace for Hyprland layer rules; instances can override.
+    WlrLayershell.namespace: "quickshell"
     property color overlayColor: showOverlay ? Theme.overlay : "transparent"
     
     function dismiss() {
@@ -31,8 +31,9 @@ PanelWindow {
     anchors.left: true
     anchors.right: true
     anchors.bottom: true
-    margins.top: barPosition === "top" ? topMargin : 0
-    margins.bottom: barPosition === "bottom" ? bottomMargin : 0
+    // Always respect bottom margin (panel at bottom)
+    margins.top: 0
+    margins.bottom: bottomMargin
 
     MouseArea {
         anchors.fill: parent

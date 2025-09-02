@@ -119,7 +119,7 @@ Singleton {
             property string timeBracketStyle: "round"
 
             // Monitor/Display Settings
-            property string panelPosition: "top" // "top" or "bottom" panel location
+            // Panel is fixed at bottom; remove configurable position
             property var barMonitors: [] // Array of monitor names to show the bar on
             property var dockMonitors: [] // Array of monitor names to show the dock on
             property var monitorScaleOverrides: {} // Map of monitor name -> scale override (e.g., 0.8..2.0). When set, Theme.scale() returns this value

@@ -36,23 +36,14 @@ Scope {
                 : Math.round(defaultAudioSink.audio.volume * 100);
         }
     }
-    // Mirror panel when positioned at the bottom (guard settings availability)
-    function mirrorIfBottom() {
-        try {
-            if (Settings.settings && Settings.settings.panelPosition === "bottom") {
-                windowMirror.mirror(bar.barHeight);
-            }
-        } catch (e) { /* ignore until settings load */ }
-    }
+    // Window mirroring removed; Hyprland exclusive zones handle panel space
 
     Component.onCompleted: {
         Quickshell.shell = root;
-        mirrorIfBottom();
     }
 
     // Overview {}
     Bar { id: bar; shell: root; }
-    WindowMirror { id: windowMirror } // Helper to mirror window positions when the panel is at the bottom
     // Remove noisy Connections with unknown signals; we can re-evaluate on demand or via UI events
 
     Applauncher {
