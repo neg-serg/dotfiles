@@ -150,6 +150,8 @@ PanelWithOverlay {
                 // small spacer removed by request
 
             }
+            // Close revealClip item explicitly to ensure proper nesting
+            }
 
             // No extra animation here; the whole panel slides as one layer
         }
