@@ -9,6 +9,11 @@ Item {
     property var shell
     property int volume: 0
     property bool firstChange: true
+    visible: false
+    // Pleasant endpoint colors: raspberry (low) -> spruce green (high)
+    // You can tweak these to your taste
+    property color volLowColor: "#D62E6E"   // raspberry
+    property color volHighColor: "#0E6B4D"  // spruce green
     // Stub ioSelector to avoid reference errors if advanced UI isn't present
     Item {
         id: ioSelector
@@ -17,25 +22,37 @@ Item {
         function dismiss() { visible = false }
     }
 
-    width: pillIndicator.width
-    height: pillIndicator.height
+    // Collapse size when hidden so it doesn't leave a gap
+    width: visible ? pillIndicator.width : 0
+    height: visible ? pillIndicator.height : 0
+
+    // Hide the pill after 5s when volume sits exactly at 100%
+    Timer {
+        id: fullHideTimer
+        interval: 7000
+        repeat: false
+        onTriggered: {
+            if (volumeDisplay.volume === 100) {
+                // Hide the entire volume icon when exactly at 100%
+                volumeDisplay.visible = false;
+            }
+        }
+    }
 
     function getVolumeColor() {
-        if (volume <= 100) return Theme.accentPrimary;
-        // Calculate interpolation factor (0 at 100%, 1 at 200%)
-        var factor = (volume - 100) / 100;
-        // Blend between accent and warning colors
+        // Gradient from volLowColor at 0% to volHighColor at 100% (clamped)
+        var t = Math.max(0, Math.min(1, volume / 100.0));
         return Qt.rgba(
-            Theme.accentPrimary.r + (Theme.warning.r - Theme.accentPrimary.r) * factor,
-            Theme.accentPrimary.g + (Theme.warning.g - Theme.accentPrimary.g) * factor,
-            Theme.accentPrimary.b + (Theme.warning.b - Theme.accentPrimary.b) * factor,
+            volLowColor.r + (volHighColor.r - volLowColor.r) * t,
+            volLowColor.g + (volHighColor.g - volLowColor.g) * t,
+            volLowColor.b + (volHighColor.b - volLowColor.b) * t,
             1
         );
     }
 
     function getIconColor() {
-        if (volume <= 100) return Theme.textPrimary;
-        return getVolumeColor(); // Only use warning blend when >100%
+        // Use the same gradient for the collapsed icon as well
+        return getVolumeColor();
     }
 
     PillIndicator {
@@ -82,6 +99,8 @@ Item {
                 const clampedVolume = Math.max(0, Math.min(200, shell.volume));
                 if (clampedVolume !== volume) {
                     volume = clampedVolume;
+                    // Ensure module is visible on any change
+                    if (!volumeDisplay.visible) volumeDisplay.visible = true;
                     pillIndicator.text = volume + "%";
                     pillIndicator.icon = shell.defaultAudioSink && shell.defaultAudioSink.audio && shell.defaultAudioSink.audio.muted
                         ? "volume_off"
@@ -92,6 +111,12 @@ Item {
                     }
                     else {
                         pillIndicator.show();
+                        // Handle auto-hide at exactly 100%
+                        if (volume === 100) {
+                            fullHideTimer.restart();
+                        } else if (fullHideTimer.running) {
+                            fullHideTimer.stop();
+                        }
                     }
                 }
             }
@@ -101,6 +126,8 @@ Item {
     Component.onCompleted: {
         if (shell && shell.volume !== undefined) {
             volume = Math.max(0, Math.min(200, shell.volume));
+            // If we start at exactly 100%, schedule auto-hide by default
+            if (volume === 100) fullHideTimer.restart();
         }
     }
 
