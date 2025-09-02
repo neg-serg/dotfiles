@@ -33,10 +33,11 @@ Scope {
                     id: panel
                     screen: modelData
                     color: "transparent"
+                    // Namespace for Hyprland layerrules
+                    WlrLayershell.namespace: "quickshell-bar"
 
-                    // --- Placement / visibility as in your original ---
-                    anchors.top:    Settings.settings.panelPosition === "top"
-                    anchors.bottom: Settings.settings.panelPosition === "bottom"
+                    // --- Placement / visibility: bar is fixed at bottom ---
+                    anchors.bottom: true
                     anchors.left:   true
                     anchors.right:  true
                     visible: Settings.settings.barMonitors.includes(modelData.name)
@@ -108,35 +109,58 @@ Scope {
                         visible: false
                     }
 
-                    Row {
+                    RowLayout {
                         id: rightWidgetsRow
                         anchors.verticalCenter: barBackground.verticalCenter
                         anchors.right: barBackground.right
                         anchors.rightMargin: panel.sideMargin
                         spacing: panel.widgetSpacing
                         Media {
-                            anchors.verticalCenter: parent.verticalCenter
+                            Layout.alignment: Qt.AlignVCenter
+                            Layout.fillWidth: true
                             // Pass the side panel reference so clicking the track toggles it
                             sidePanelPopup: sidebarPopup
                         }
-                        PanelPopup { id: sidebarPopup; shell: rootScope.shell }
+                        // MPD flags as a dedicated section to the right of media
+                        LocalMods.MpdFlags {
+                            id: mpdFlagsBar
+                            Layout.alignment: Qt.AlignVCenter
+                            // Enable only when media is visible and MPD-like player is active
+                            property bool _mediaVisible: (Settings.settings.showMediaInBar && MusicManager.currentPlayer && (MusicManager.isPlaying || (MusicManager.trackTitle && MusicManager.trackTitle.length > 0)))
+                            function _isMpd() {
+                                try {
+                                    const p = MusicManager.currentPlayer; if (!p) return false;
+                                    const idStr = String((p.service || p.busName || "")).toLowerCase();
+                                    const nameStr = String(p.name || "").toLowerCase();
+                                    const identStr = String(p.identity || "").toLowerCase();
+                                    return /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(idStr)
+                                        || /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(nameStr)
+                                        || /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(identStr);
+                                } catch (e) { return false; }
+                            }
+                            enabled: _mediaVisible && _isMpd()
+                            iconPx: Math.round(Theme.fontSizeSmall * Theme.scale(panel.screen) * 0.95)
+                            iconColor: Theme.textPrimary
+                        }
                         // Side panel button removed; track click toggles sidebarPopup
                         SystemTray {
                             id: systemTrayModule
                             shell: rootScope.shell
                             screen: modelData
-                            // Avoid anchors inside Row (causes warnings); manual centering instead
-                            y: (parent.height - height) / 2
+                            Layout.alignment: Qt.AlignVCenter
                             trayMenu: externalTrayMenu
                         }
                         CustomTrayMenu { id: externalTrayMenu }
                         Volume {
                             id: widgetsVolume
                             shell: rootScope.shell
-                            anchors.verticalCenter: parent.verticalCenter
+                            Layout.alignment: Qt.AlignVCenter
                         }
 
                     }
+
+                    // Side panel popup lives outside layout (overlay window)
+                    PanelPopup { id: sidebarPopup; shell: rootScope.shell; panelMarginPx: rootScope.barHeight }
 
                     // Hover hot-zone to reveal tray: to the right of music and volume (outside Row to avoid anchor warnings)
                     MouseArea {
