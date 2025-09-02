@@ -8,15 +8,6 @@ import qs.Settings
 
 PanelWithOverlay {
     id: sidebarPopup
-    // No global dimming for music info
-    showOverlay: false
-    // Exposed from Bar: whether cursor is over the bar panel
-    property bool barHover: false
-    // Track last global pointer move timestamp while popup is visible
-    property real lastMoveTs: 0
-    // Avoid any top/bottom margin shifts from global panel position to prevent initial jump
-    topMargin: 0
-    bottomMargin: 0
     // Give the side panel a namespace so Hyprland can apply blur rules
     WlrLayershell.namespace: "quickshell-sidepanel"
     property var shell: null
@@ -30,48 +21,38 @@ PanelWithOverlay {
             // Access the shell's SettingsWindow instead of creating a new one
             id: sidebarPopupRect
         property real slideOffset: width
-        property int  showDuration: 220
         property bool isAnimating: false
-        // Minimal margins around content (no vertical padding by request)
+        // Minimal margins around content
         property int leftPadding: 4 * Theme.scale(screen)
-        property int bottomPadding: 0
+        property int bottomPadding: 4 * Theme.scale(screen)
         function showAt() {
             if (!sidebarPopup.visible) {
-                // Show immediately in final horizontal position (no vertical animation)
-                slideOffset = 0;
                 sidebarPopup.visible = true;
                 forceActiveFocus();
-                sidebarPopup.lastMoveTs = Date.now();
+                slideAnim.from = width;
+                slideAnim.to = 0;
+                slideAnim.running = true;
             }
         }
 
         function hidePopup() {
             if (sidebarPopup.visible) {
-                slideAnim.from = slideOffset;
+                slideAnim.from = 0;
                 slideAnim.to = width;
                 slideAnim.running = true;
             }
         }
 
-        // Use fixed size (like calendar) to avoid reflow that can shift content
+        // Size panel close to music module size (compact, no excess space)
         property real musicWidthPx: 420 * Theme.scale(screen)
-        property real musicHeightPx: 380 * Theme.scale(screen)
+        property real musicHeightPx: 250 * Theme.scale(screen)
         width: Math.round(musicWidthPx + leftPadding)
         height: Math.round(musicHeightPx + bottomPadding)
         visible: parent.visible
         color: "transparent"
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        // Global hover tracker over the entire overlay to detect pointer idleness
-        MouseArea {
-            id: overlayHover
-            anchors.fill: parent
-            hoverEnabled: true
-            acceptedButtons: Qt.NoButton
-            propagateComposedEvents: true
-            z: 100000
-            onPositionChanged: sidebarPopup.lastMoveTs = Date.now()
-        }
+        MouseArea { anchors.fill: parent; } // Prevent closing when clicking in the panel bg
         NumberAnimation {
             id: slideAnim
             target: sidebarPopupRect
@@ -89,25 +70,24 @@ PanelWithOverlay {
             }
         }
 
-        // No vertical show animation; only horizontal slide used on hide
-
         Rectangle {
             id: mainRectangle
             // anchors.top: sidebarPopupRect.top
             width: sidebarPopupRect.width - sidebarPopupRect.leftPadding
+            height: sidebarPopupRect.height - sidebarPopupRect.bottomPadding
             x: sidebarPopupRect.leftPadding + sidebarPopupRect.slideOffset
-            // Attach to bottom so panel grows/appears from bottom edge upward
-            anchors.bottom: parent.bottom
+            y: 0
             // Panel backdrop: very transparent black
             color: Qt.rgba(0, 0, 0, 0.10)
             bottomLeftRadius: 20
-            // Cache layer to avoid re-rendering chunks while sliding
-            layer.enabled: true
-            layer.smooth: true
-            clip: true
-            opacity: 1
-            // Fixed full height; anchored to bottom for stable appearance
-            height: sidebarPopupRect.height - sidebarPopupRect.bottomPadding
+            Behavior on x {
+                enabled: !sidebarPopupRect.isAnimating
+                NumberAnimation {
+                    duration: 300
+                    easing.type: Easing.OutCubic
+                }
+
+            }
 
         }
 
@@ -115,18 +95,8 @@ PanelWithOverlay {
         Item {
             anchors.fill: mainRectangle
             z: 1
-            // Fixed inside the sliding container
-            x: 0
+            x: sidebarPopupRect.slideOffset
             Keys.onEscapePressed: sidebarPopupRect.hidePopup()
-            // Detect hover over the popup content to avoid auto-close while interacting
-            MouseArea {
-                id: panelHoverArea
-                anchors.fill: parent
-                hoverEnabled: true
-                acceptedButtons: Qt.NoButton
-                propagateComposedEvents: true
-                z: -1
-            }
             ColumnLayout {
                 id: contentCol
                 anchors.fill: parent
@@ -138,32 +108,21 @@ PanelWithOverlay {
                     Layout.fillWidth: false
                     Layout.alignment: Qt.AlignHCenter
                     Music {
-                        id: musicWidget
                         width: sidebarPopupRect.musicWidthPx
-                        // Height from implicit size to avoid extra top/bottom padding
+                        height: sidebarPopupRect.musicHeightPx
                     }
                 }
 
-                // small spacer removed by request
+                // small spacer
+                Rectangle { height: 4 * Theme.scale(screen); color: "transparent" }
 
+            }
+
+            Behavior on x {
+                enabled: !sidebarPopupRect.isAnimating
+                NumberAnimation {
+                    duration: 300
+                    easing.type: Easing.OutCubic
                 }
             }
-            
-            // No extra animation hooks inside this content layer
-
-        // Auto-close when cursor is outside bar and popup, and idle for 0.5s
-        Timer {
-            id: autoCloseTimer
-            interval: 500
-            repeat: true
-            running: sidebarPopup.visible
-            onTriggered: {
-                if (!sidebarPopup.visible || sidebarPopupRect.isAnimating) return;
-                if (sidebarPopup.barHover) return;
-                if (panelHoverArea.containsMouse) return;
-                if (Date.now() - sidebarPopup.lastMoveTs >= 500) sidebarPopupRect.hidePopup();
-            }
         }
-
-    }
-}

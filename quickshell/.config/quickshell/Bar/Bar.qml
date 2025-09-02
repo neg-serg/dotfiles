@@ -119,7 +119,7 @@ Scope {
                             // Pass the side panel reference so clicking the track toggles it
                             sidePanelPopup: sidebarPopup
                         }
-                        PanelPopup { id: sidebarPopup; shell: rootScope.shell; barHover: barHoverTracker.containsMouse }
+                        PanelPopup { id: sidebarPopup; shell: rootScope.shell }
                         // Side panel button removed; track click toggles sidebarPopup
                         SystemTray {
                             id: systemTrayModule
