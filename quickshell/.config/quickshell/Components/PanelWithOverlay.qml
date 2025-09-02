@@ -8,7 +8,9 @@ PanelWindow {
     property bool showOverlay: Settings.settings.dimPanels
     property int topMargin: 36 * Theme.scale(screen)
     property int bottomMargin: 36 * Theme.scale(screen)
-    property string barPosition: Settings.settings.barPosition || "bottom"
+    // Respect global panel position setting ("top" or "bottom").
+    // Previously used a non-existent Settings.settings.barPosition, causing wrong margins.
+    property string barPosition: Settings.settings.panelPosition || "bottom"
     property color overlayColor: showOverlay ? Theme.overlay : "transparent"
     
     function dismiss() {
