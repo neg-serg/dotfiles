@@ -25,23 +25,22 @@ PanelWithOverlay {
         property real slideOffset: width
         property int  showDuration: 220
         property bool isAnimating: false
+        // Bottom-up reveal height for show animation
+        property real revealHeight: 0
         // Minimal margins around content (no vertical padding by request)
         property int leftPadding: 4 * Theme.scale(screen)
         property int bottomPadding: 0
         function showAt() {
             if (!sidebarPopup.visible) {
-                // Pre-position off-screen and fade-in to avoid top flicker
-                slideOffset = width;
-                mainRectangle.opacity = 0;
+                // Show immediately in final horizontal position; reveal vertically from bottom
+                slideOffset = 0;
+                revealHeight = 0;
                 sidebarPopup.visible = true;
                 forceActiveFocus();
-                Qt.callLater(() => {
-                    slideAnim.from = width;
-                    slideAnim.to = 0;
-                    slideAnim.duration = sidebarPopupRect.showDuration;
-                    slideAnim.running = true;
-                    fadeInAnim.running = true;
-                });
+                revealAnim.from = 0;
+                revealAnim.to = mainRectangle.height;
+                revealAnim.duration = sidebarPopupRect.showDuration;
+                revealAnim.restart();
             }
         }
 
@@ -81,12 +80,12 @@ PanelWithOverlay {
         }
 
         NumberAnimation {
-            id: fadeInAnim
-            target: mainRectangle
-            property: "opacity"
+            id: revealAnim
+            target: sidebarPopupRect
+            property: "revealHeight"
             duration: sidebarPopupRect.showDuration
             from: 0
-            to: 1
+            to: 0
             easing.type: Easing.OutCubic
             running: false
         }
@@ -117,10 +116,20 @@ PanelWithOverlay {
             // Fixed inside the sliding container
             x: 0
             Keys.onEscapePressed: sidebarPopupRect.hidePopup()
-            ColumnLayout {
-                id: contentCol
-                anchors.fill: parent
-                spacing: 8 * Theme.scale(screen)
+            // Clip that reveals bottom-up on show
+            Item {
+                id: revealClip
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                height: Math.max(0, Math.min(parent.height, sidebarPopupRect.revealHeight))
+                clip: true
+                ColumnLayout {
+                    id: contentCol
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    spacing: 8 * Theme.scale(screen)
                 // Weather widget removed from this panel; available via WeatherButton popup
 
                 RowLayout { // Music only
