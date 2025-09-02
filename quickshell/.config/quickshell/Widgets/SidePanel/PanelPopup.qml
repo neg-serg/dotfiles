@@ -37,10 +37,13 @@ PanelWithOverlay {
                 revealHeight = 0;
                 sidebarPopup.visible = true;
                 forceActiveFocus();
-                revealAnim.from = 0;
-                revealAnim.to = mainRectangle.height;
-                revealAnim.duration = sidebarPopupRect.showDuration;
-                revealAnim.restart();
+                // Defer until layout settles to get correct target height
+                Qt.callLater(() => {
+                    revealAnim.from = 0;
+                    revealAnim.to = mainRectangle.height;
+                    revealAnim.duration = sidebarPopupRect.showDuration;
+                    revealAnim.restart();
+                });
             }
         }
 
@@ -52,9 +55,9 @@ PanelWithOverlay {
             }
         }
 
-        // Use stable, precomputed size to avoid initial reflow/flicker
+        // Size based on content, with safe minimum to avoid 0-height on first frame
         property real musicWidthPx: 720 * Theme.scale(screen)
-        property real musicHeightPx: 250 * Theme.scale(screen)
+        property real musicHeightPx: musicWidget ? Math.max(250 * Theme.scale(screen), musicWidget.implicitHeight) : 250 * Theme.scale(screen)
         width: Math.round(musicWidthPx + leftPadding)
         height: Math.round(musicHeightPx + bottomPadding)
         visible: parent.visible
@@ -71,6 +74,8 @@ PanelWithOverlay {
             onStopped: {
                 if (sidebarPopupRect.slideOffset === sidebarPopupRect.width) {
                     sidebarPopup.visible = false;
+                    // Reset reveal for next show
+                    sidebarPopupRect.revealHeight = 0;
                 }
                 sidebarPopupRect.isAnimating = false;
             }
@@ -124,15 +129,11 @@ PanelWithOverlay {
                 anchors.bottom: parent.bottom
                 height: Math.max(0, Math.min(parent.height, sidebarPopupRect.revealHeight))
                 clip: true
-                // Flip vertically so height growth reveals from bottom; re-flip content back
-                transform: Scale { yScale: -1; origin.y: revealClip.height / 2 }
                 ColumnLayout {
                     id: contentCol
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
-                    // Reverse flip to keep content upright
-                    transform: Scale { yScale: -1; origin.y: 0 }
                     spacing: 8 * Theme.scale(screen)
                 // Weather widget removed from this panel; available via WeatherButton popup
 
