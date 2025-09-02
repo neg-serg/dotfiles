@@ -38,9 +38,7 @@ PanelWindow {
     }
 
     Behavior on color {
-        ColorAnimation {
-            duration: 350
-            easing.type: Easing.InOutCubic
-        }
+        enabled: showOverlay
+        ColorAnimation { duration: 200; easing.type: Easing.InOutCubic }
     }
 }

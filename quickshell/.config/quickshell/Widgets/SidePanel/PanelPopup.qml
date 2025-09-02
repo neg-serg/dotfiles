@@ -8,6 +8,8 @@ import qs.Settings
 
 PanelWithOverlay {
     id: sidebarPopup
+    // No global dimming for music info
+    showOverlay: false
     // Give the side panel a namespace so Hyprland can apply blur rules
     WlrLayershell.namespace: "quickshell-sidepanel"
     property var shell: null

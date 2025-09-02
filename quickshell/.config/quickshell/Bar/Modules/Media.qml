@@ -120,12 +120,42 @@ Item {
             // keep container height to the text's height so row layout remains unchanged
             height: (trackText.text && trackText.text.length > 0) ? trackText.implicitHeight : 0
 
-            // Clicking the track opens the side panel (same as squares button)
+            // Hover-to-open with dwell; click also opens
             MouseArea {
                 id: trackSidePanelClick
                 anchors.fill: parent
-                hoverEnabled: false
+                hoverEnabled: true
                 acceptedButtons: Qt.LeftButton
+                property real _lastMoveTs: 0
+                property bool _armed: false
+                onEntered: {
+                    _lastMoveTs = Date.now();
+                    _armed = true;
+                    hoverOpenTimer.restart();
+                }
+                onExited: {
+                    _armed = false;
+                    if (hoverOpenTimer.running) hoverOpenTimer.stop();
+                }
+                onPositionChanged: {
+                    _lastMoveTs = Date.now();
+                    if (!hoverOpenTimer.running) hoverOpenTimer.restart();
+                }
+                Timer {
+                    id: hoverOpenTimer
+                    interval: 320
+                    repeat: false
+                    onTriggered: {
+                        try {
+                            if (!trackSidePanelClick._armed) return;
+                            const stillMs = Date.now() - trackSidePanelClick._lastMoveTs;
+                            if (stillMs < 180) { restart(); return; }
+                            if (mediaControl.sidePanelPopup && trackText.text && trackText.text.length > 0) {
+                                mediaControl.sidePanelPopup.showAt();
+                            }
+                        } catch (e) { /* ignore */ }
+                    }
+                }
                 onClicked: {
                     try {
                         if (mediaControl.sidePanelPopup) {
