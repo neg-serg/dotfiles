@@ -21,31 +21,39 @@ PanelWithOverlay {
             // Access the shell's SettingsWindow instead of creating a new one
             id: sidebarPopupRect
         property real slideOffset: width
+        property int  showDuration: 220
         property bool isAnimating: false
-        // Minimal margins around content
+        // Minimal margins around content (no vertical padding by request)
         property int leftPadding: 4 * Theme.scale(screen)
-        property int bottomPadding: 4 * Theme.scale(screen)
+        property int bottomPadding: 0
         function showAt() {
             if (!sidebarPopup.visible) {
+                // Pre-position off-screen and fade-in to avoid top flicker
+                slideOffset = width;
+                mainRectangle.opacity = 0;
                 sidebarPopup.visible = true;
                 forceActiveFocus();
-                slideAnim.from = width;
-                slideAnim.to = 0;
-                slideAnim.running = true;
+                Qt.callLater(() => {
+                    slideAnim.from = width;
+                    slideAnim.to = 0;
+                    slideAnim.duration = sidebarPopupRect.showDuration;
+                    slideAnim.running = true;
+                    fadeInAnim.running = true;
+                });
             }
         }
 
         function hidePopup() {
             if (sidebarPopup.visible) {
-                slideAnim.from = 0;
+                slideAnim.from = slideOffset;
                 slideAnim.to = width;
                 slideAnim.running = true;
             }
         }
 
-        // Size panel close to music module size (compact, no excess space)
-        property real musicWidthPx: 420 * Theme.scale(screen)
-        property real musicHeightPx: 250 * Theme.scale(screen)
+        // Size panel to music implicit size (no extra top/bottom)
+        property real musicWidthPx: 720 * Theme.scale(screen)
+        property real musicHeightPx: musicWidget ? musicWidget.implicitHeight : 0
         width: Math.round(musicWidthPx + leftPadding)
         height: Math.round(musicHeightPx + bottomPadding)
         visible: parent.visible
@@ -70,6 +78,17 @@ PanelWithOverlay {
             }
         }
 
+        NumberAnimation {
+            id: fadeInAnim
+            target: mainRectangle
+            property: "opacity"
+            duration: sidebarPopupRect.showDuration
+            from: 0
+            to: 1
+            easing.type: Easing.OutCubic
+            running: false
+        }
+
         Rectangle {
             id: mainRectangle
             // anchors.top: sidebarPopupRect.top
@@ -80,14 +99,11 @@ PanelWithOverlay {
             // Panel backdrop: very transparent black
             color: Qt.rgba(0, 0, 0, 0.10)
             bottomLeftRadius: 20
-            Behavior on x {
-                enabled: !sidebarPopupRect.isAnimating
-                NumberAnimation {
-                    duration: 300
-                    easing.type: Easing.OutCubic
-                }
-
-            }
+            // Cache layer to avoid re-rendering chunks while sliding
+            layer.enabled: true
+            layer.smooth: true
+            clip: true
+            opacity: 1
 
         }
 
@@ -95,7 +111,8 @@ PanelWithOverlay {
         Item {
             anchors.fill: mainRectangle
             z: 1
-            x: sidebarPopupRect.slideOffset
+            // Fixed inside the sliding container
+            x: 0
             Keys.onEscapePressed: sidebarPopupRect.hidePopup()
             ColumnLayout {
                 id: contentCol
@@ -108,23 +125,17 @@ PanelWithOverlay {
                     Layout.fillWidth: false
                     Layout.alignment: Qt.AlignHCenter
                     Music {
+                        id: musicWidget
                         width: sidebarPopupRect.musicWidthPx
-                        height: sidebarPopupRect.musicHeightPx
+                        // Height from implicit size to avoid extra top/bottom padding
                     }
                 }
 
-                // small spacer
-                Rectangle { height: 4 * Theme.scale(screen); color: "transparent" }
+                // small spacer removed by request
 
             }
 
-            Behavior on x {
-                enabled: !sidebarPopupRect.isAnimating
-                NumberAnimation {
-                    duration: 300
-                    easing.type: Easing.OutCubic
-                }
-            }
+            // No extra animation here; the whole panel slides as one layer
         }
 
     }
