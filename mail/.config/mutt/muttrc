@@ -5,5 +5,4 @@ source $XDG_CONFIG_HOME/mutt/12-headers.mutt
 
 source $XDG_CONFIG_HOME/mutt/themes/neg.mutt
 source $XDG_CONFIG_HOME/mutt/14-pretty.mutt
-
-source "$XDG_CONFIG_HOME/mutt/profiles/work.mutt"
+source "$XDG_CONFIG_HOME/mutt/profiles/home.mutt"
