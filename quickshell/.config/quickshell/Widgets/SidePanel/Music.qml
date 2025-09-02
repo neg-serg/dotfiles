@@ -795,29 +795,7 @@ Rectangle {
                                 }
                             }
 
-                            // Encoder (if available)
-                            RowLayout {
-                                visible: !!MusicManager.trackEncoder
-                                Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
-                                Text {
-                                    text: "Encoder"
-                                    color: playerUI.musicTextColor
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: playerUI.musicTextPx
-                                    font.weight: Font.DemiBold
-                                    Layout.alignment: Qt.AlignVCenter
-                                }
-                                Text {
-                                    Layout.fillWidth: true
-                                    text: MusicManager.trackEncoder
-                                    color: playerUI.musicTextColor
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: playerUI.musicTextPx
-                                    font.weight: Font.DemiBold
-                                    Layout.alignment: Qt.AlignVCenter
-                                }
-                            }
+                            // Encoder row removed by request
 
                             // ReplayGain (if available)
                             RowLayout {
