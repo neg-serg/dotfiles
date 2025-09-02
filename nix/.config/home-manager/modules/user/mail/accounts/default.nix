@@ -1,6 +1,6 @@
 {...}: {
   accounts.email.accounts."gmail" = {
-    passwordCommand = "pass show imapnotify-google";
+    passwordCommand = "pass show mail/gmail/serg.zorg@gmail.com/mbsync-app";
     userName = "serg.zorg@gmail.com";
     realName = "Sergey Miroshnichenko";
     address = "serg.zorg@gmail.com";

@@ -2,10 +2,10 @@
 IMAPAccount gmail
 Host imap.gmail.com
 User serg.zorg@gmail.com
-PassCmd "pass show google/neomutt"
+PassCmd "pass show mail/gmail/serg.zorg@gmail.com/mbsync-app"
 AuthMechs LOGIN
 SSLType IMAPS
-CertificateFile /etc/ssl/certs/ca-certificates.crt
+CertificateFile /etc/ssl/certs/ca-bundle.crt
 
 IMAPStore gmail-remote
 Account gmail
@@ -13,12 +13,15 @@ Account gmail
 MaildirStore gmail-local
 Subfolders Verbatim
 Path ~/.local/mail/gmail/
-Inbox ~/.local/mail/gmail/inbox/
+Inbox ~/.local/mail/gmail/INBOX/
 
 Channel gmail
 Far :gmail-remote:
 Near :gmail-local:
-Patterns * # Or include everything
-Create Both # Automatically create missing mailboxes, both locally and on the server
-Expunge Both # Sync the movement of messages between folders and deletions, add after making sure the sync works
-SyncState * # Save the synchronization state files in the relevant directory
+Patterns "INBOX" "[Gmail]/Sent Mail" "[Gmail]/Drafts"
+# Download-only to avoid uploading local changes to Gmail
+Sync Pull
+# Create/expunge only locally (Near) to prevent remote changes
+Create Near
+Expunge Near
+SyncState *
