@@ -81,8 +81,6 @@ PanelWithOverlay {
             onStopped: {
                 if (sidebarPopupRect.slideOffset === sidebarPopupRect.width) {
                     sidebarPopup.visible = false;
-                    // Reset reveal for next show
-                    sidebarPopupRect.showHeight = 0;
                 }
                 sidebarPopupRect.isAnimating = false;
             }
@@ -150,9 +148,8 @@ PanelWithOverlay {
 
                 }
             }
-
-            // No extra animation here; the whole panel slides as one layer
-        }
+            
+            // No extra animation hooks inside this content layer
 
         // Auto-close when cursor is outside bar and popup, and idle for 0.5s
         Timer {
