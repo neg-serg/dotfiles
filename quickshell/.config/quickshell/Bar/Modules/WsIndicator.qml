@@ -147,7 +147,7 @@ Item {
     // Character classifiers
     function isPUA(cp) { return cp >= 0xE000 && cp <= 0xF8FF; }          // Private Use Area (icon fonts)
     function isOldItalic(cp){ return cp >= 0x10300 && cp <= 0x1034F; }   // Old Italic block (e.g., 𐌰)
-    function isSeparatorChar(ch){ return [":","·","|","/","-"].indexOf(ch) !== -1; }
+    function isSeparatorChar(ch){ return [":","·","|","/","-"] .indexOf(ch) !== -1; }
 
     // Wrap one char into colored span by category
     function spanForChar(ch) {
@@ -159,7 +159,10 @@ Item {
             return "<span style='color:" + gothicColor + "'>" + htmlEscape(ch) + "</span>";
         }
         if (isSeparatorChar(ch)) {
-            return "<span style='color:" + separatorColor + "'>" + htmlEscape(ch) + "</span>";
+            // Replace centered dot with a plain space; keep others as-is (no blue tint)
+            if (ch === "·") return " ";
+            // For other separators, just echo the character without special coloring
+            return htmlEscape(ch);
         }
         return htmlEscape(ch);
     }

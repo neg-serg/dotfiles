@@ -879,7 +879,7 @@ Singleton {
     // Encoder intentionally omitted from public API
 
     function _computeQualitySummary() {
-        // Example: "FLAC·44.1k·16·2" or "MP3·320 kbps·44.1k·16·2"
+        // Example: "FLAC 44.1k 16 2" or "MP3 320 kbps 44.1k 16 2"
         var parts = [];
         var codec = trackCodec ? String(trackCodec).toUpperCase() : "";
         // Expand DSD to DSD64/128/etc when possible
@@ -901,7 +901,7 @@ Singleton {
         if (!isDsd && trackSampleRateStr) parts.push(trackSampleRateStr);
         if (trackBitDepthStr) parts.push(trackBitDepthStr);
         if (trackChannelsStr) parts.push(trackChannelsStr);
-        return parts.join("\u00B7");
+        return parts.filter(function(p){ return p && String(p).length > 0; }).join(" ");
     }
 
     // --- Keep time ticking even if backend doesn't push updates -----------
