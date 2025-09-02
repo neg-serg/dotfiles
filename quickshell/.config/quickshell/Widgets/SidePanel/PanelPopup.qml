@@ -124,11 +124,15 @@ PanelWithOverlay {
                 anchors.bottom: parent.bottom
                 height: Math.max(0, Math.min(parent.height, sidebarPopupRect.revealHeight))
                 clip: true
+                // Flip vertically so height growth reveals from bottom; re-flip content back
+                transform: Scale { yScale: -1; origin.y: revealClip.height / 2 }
                 ColumnLayout {
                     id: contentCol
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
+                    // Reverse flip to keep content upright
+                    transform: Scale { yScale: -1; origin.y: 0 }
                     spacing: 8 * Theme.scale(screen)
                 // Weather widget removed from this panel; available via WeatherButton popup
 
