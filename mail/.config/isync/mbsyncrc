@@ -18,7 +18,7 @@ Inbox ~/.local/mail/gmail/INBOX/
 Channel gmail
 Far :gmail-remote:
 Near :gmail-local:
-Patterns "INBOX" "[Gmail]/Sent Mail" "[Gmail]/Drafts"
+Patterns "INBOX" "[Gmail]/Sent Mail" "[Gmail]/Drafts" "[Gmail]/All Mail"
 # Download-only to avoid uploading local changes to Gmail
 Sync Pull
 # Create/expunge only locally (Near) to prevent remote changes

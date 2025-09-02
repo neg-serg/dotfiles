@@ -16,6 +16,7 @@
       mkdir -p "$base/INBOX/cur" "$base/INBOX/new" "$base/INBOX/tmp"
       mkdir -p "$base/[Gmail]/Sent Mail/cur" "$base/[Gmail]/Sent Mail/new" "$base/[Gmail]/Sent Mail/tmp" || true
       mkdir -p "$base/[Gmail]/Drafts/cur" "$base/[Gmail]/Drafts/new" "$base/[Gmail]/Drafts/tmp" || true
+      mkdir -p "$base/[Gmail]/All Mail/cur" "$base/[Gmail]/All Mail/new" "$base/[Gmail]/All Mail/tmp" || true
     '';
   };
 
