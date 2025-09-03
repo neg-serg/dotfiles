@@ -157,7 +157,7 @@ Scope {
                     }
 
                     // Music popup lives outside layout (overlay window)
-                    MusicPopup { id: sidebarPopup; panelMarginPx: rootScope.barHeight }
+                    MusicPopup { id: sidebarPopup; barMarginPx: rootScope.barHeight }
 
                     // Hover hot-zone to reveal tray: to the right of music and volume (outside Row to avoid anchor warnings)
                     MouseArea {

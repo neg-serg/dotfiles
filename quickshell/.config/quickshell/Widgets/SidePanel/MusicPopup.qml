@@ -6,8 +6,14 @@ import qs.Settings
 
 Item {
     id: sidebarPopup
-    // external offset from bar height
-    property int panelMarginPx: 0
+    // External offset from bar height (renamed)
+    // New name
+    property int barMarginPx: 0
+    // Backwards-compat alias (kept temporarily)
+    // Keeps two-way sync to support old configs assigning panelMarginPx
+    property int panelMarginPx: barMarginPx
+    onPanelMarginPxChanged: { if (panelMarginPx !== barMarginPx) barMarginPx = panelMarginPx }
+    onBarMarginPxChanged: { if (barMarginPx !== panelMarginPx) panelMarginPx = barMarginPx }
     // keep external API
     function showAt() { toast.showAt(); }
     function hidePopup() { toast.hidePopup(); }
