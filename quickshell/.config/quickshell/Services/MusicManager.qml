@@ -909,12 +909,19 @@ Singleton {
             if (/(FLAC|ALAC|PCM|WAV|AIFF|DSD|APE|WV)/.test(c)) return false;
             return true;
         })(codec);
-        if (lossy && trackBitrateStr) parts.push(trackBitrateStr);
+        if (lossy && trackBitrateStr) {
+            var br = String(trackBitrateStr).trim();
+            // Extract numeric part and drop "kbps" suffix
+            var mBr = br.match(/(\d+(?:\.\d+)?)/);
+            if (mBr) br = mBr[1];
+            parts.push(br);
+        }
         // For DSD, omit sample rate since DSDxx already implies it
         if (!isDsd && trackSampleRateStr) parts.push(trackSampleRateStr);
-        if (trackBitDepthStr) parts.push(trackBitDepthStr);
-        if (trackChannelsStr) parts.push(trackChannelsStr);
-        return parts.filter(function(p){ return p && String(p).length > 0; }).join(" ");
+        // Omit defaults: 16-bit depth and Stereo (2 channels)
+        if (trackBitDepthStr && String(trackBitDepthStr) !== "16") parts.push(trackBitDepthStr);
+        if (trackChannelsStr && String(trackChannelsStr) !== "2") parts.push(trackChannelsStr);
+        return parts.filter(function(p){ return p && String(p).length > 0; }).join("/");
     }
 
     // --- Poll MPRIS position properly (seconds) and convert to ms ---------
