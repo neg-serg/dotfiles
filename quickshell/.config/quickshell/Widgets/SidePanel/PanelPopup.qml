@@ -22,10 +22,10 @@ Item {
 
         // Sizing similar to previous layer popup
         property real computedHeightPx: -1
-        property real musicWidthPx: 840 * Theme.scale(screen)
+        property real musicWidthPx: 840 * Theme.scale(toast.screen ? toast.screen : Screen)
         property real musicHeightPx: (musicWidget && musicWidget.implicitHeight > 0)
                                      ? Math.round(musicWidget.implicitHeight)
-                                     : Math.round(250 * Theme.scale(screen))
+                                     : Math.round(250 * Theme.scale(toast.screen ? toast.screen : Screen))
         width: Math.round(musicWidthPx)
         height: Math.round(((computedHeightPx >= 0) ? computedHeightPx : musicHeightPx))
 
@@ -38,9 +38,10 @@ Item {
         function _computePositions() {
             const scr = toast.screen ? toast.screen : Screen;
             const g = scr && scr.geometry ? scr.geometry : Qt.rect(0, 0, Screen.width, Screen.height);
-            const margin = Math.round(4 * Theme.scale(screen));
+            const margin = Math.round(4 * Theme.scale(toast.screen ? toast.screen : Screen));
             targetX = Math.max(g.x, g.x + g.width - toast.width - margin);
-            targetY = Math.max(g.y, g.y + g.height - toast.height - sidebarPopup.panelMarginPx - margin);
+            // Shift higher: subtract 8x the bar height instead of 1x
+            targetY = 0;
             offX = g.x + g.width + margin + toast.width; // fully off to the right
         }
 
@@ -52,7 +53,7 @@ Item {
 
         function showAt() {
             if (computedHeightPx < 0) {
-                var ih = (musicWidget && musicWidget.implicitHeight > 0) ? musicWidget.implicitHeight : (250 * Theme.scale(screen));
+                var ih = (musicWidget && musicWidget.implicitHeight > 0) ? musicWidget.implicitHeight : (250 * Theme.scale(toast.screen ? toast.screen : Screen));
                 computedHeightPx = Math.round(ih);
             }
             _computePositions();
@@ -87,7 +88,7 @@ Item {
                 anchors.fill: parent
                 spacing: 0
                 RowLayout {
-                    spacing: 8 * Theme.scale(screen)
+                    spacing: 8 * Theme.scale(toast.screen ? toast.screen : Screen)
                     Layout.fillWidth: false
                     Layout.alignment: Qt.AlignHCenter
                     Music {

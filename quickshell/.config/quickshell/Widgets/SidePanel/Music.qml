@@ -11,7 +11,8 @@ import qs.Services
 Rectangle {
     id: musicCard
     // Inherit the containing Window's screen when available; fallback to global Screen
-    property var screen: (window && window.screen) ? window.screen : Screen
+    // Use attached Window.window to avoid 'window is not defined' in some contexts
+    property var screen: (Window.window && Window.window.screen) ? Window.window.screen : Screen
     color: "transparent"
     implicitHeight: playerUI.implicitHeight
 
