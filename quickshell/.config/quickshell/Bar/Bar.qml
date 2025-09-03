@@ -71,11 +71,9 @@ Scope {
 
                     // Hot zone visual removed; area is invisible
 
-                    // Keep rootScope.barHeight in sync with actual bar height and init track/cover keys
+                    // Keep rootScope.barHeight in sync with actual bar height
                     Component.onCompleted: {
                         rootScope.barHeight = barBackground.height
-                        panel._lastTrackKey = _trackKey()
-                        panel._lastCoverUrl = String(MusicManager.coverUrl || "")
                     }
                     Connections {
                         target: barBackground
@@ -170,45 +168,25 @@ Scope {
                         panelEdge: "bottom"
                     }
 
-                    // Auto-show music popup on track change
-                    // Build a composite key to detect actual track changes across metadata
-                    property string _lastTrackKey: ""
-                    property string _lastCoverUrl: ""
-                    function _trackKey() {
-                        try {
-                            const t = String(MusicManager.trackTitle || "");
-                            const a = String(MusicManager.trackArtist || "");
-                            const al= String(MusicManager.trackAlbum || "");
-                            const lenMs = MusicManager.mprisToMs ? MusicManager.mprisToMs(MusicManager.trackLength || 0) : (MusicManager.trackLength || 0);
-                            return [a, t, al, String(lenMs || 0)].join("|");
-                        } catch (e) { return ""; }
-                    }
-                    function _maybeShowOnTrackChange() {
+                    // Auto-show popup when album name changes (and is present)
+                    // Store last-shown album here (no binding!)
+                    property string _lastAlbum: ""
+                    function _maybeShowOnAlbumChange() {
                         try {
                             if (!panel.visible) return;
-                            if (!MusicManager.isPlaying) return;
-                            const key = _trackKey();
-                            if (!key || key === panel._lastTrackKey) return;
-                            const cover = String(MusicManager.coverUrl || "");
-                            // Do not show if cover art did not change
-                            if (cover === panel._lastCoverUrl) {
-                                panel._lastTrackKey = key;
-                                panel._lastCoverUrl = cover;
-                                return;
+                            if (MusicManager.isStopped) return;
+                            const album = String(MusicManager.trackAlbum || "");
+                            if (!album || album.length === 0) return; // require album present
+                            if (album !== panel._lastAlbum) {
+                                if (MusicManager.trackTitle || MusicManager.trackArtist) sidebarPopup.showAt();
+                                panel._lastAlbum = album;
                             }
-                            panel._lastTrackKey = key;
-                            panel._lastCoverUrl = cover;
-                            if (MusicManager.trackTitle || MusicManager.trackArtist) sidebarPopup.showAt();
                         } catch (e) { /* ignore */ }
                     }
                     // removed: merged into the Component.onCompleted above
                     Connections {
                         target: MusicManager
-                        // React when metadata that identifies the track changes
-                        function onTrackTitleChanged()  { panel._maybeShowOnTrackChange(); }
-                        function onTrackArtistChanged() { panel._maybeShowOnTrackChange(); }
-                        function onTrackAlbumChanged()  { panel._maybeShowOnTrackChange(); }
-                        function onTrackLengthChanged() { panel._maybeShowOnTrackChange(); }
+                        function onTrackAlbumChanged()  { panel._maybeShowOnAlbumChange(); }
                     }
 
                     // Hover hot-zone to reveal tray: to the right of music and volume (outside Row to avoid anchor warnings)
