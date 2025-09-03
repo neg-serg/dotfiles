@@ -18,9 +18,7 @@ Item {
         visible: false
         flags: Qt.FramelessWindowHint | Qt.ToolTip | Qt.WindowStaysOnTopHint | Qt.WindowTransparentForInput
 
-        // Horizontal offset of the popup from the screen's left edge
-        // Positive values move the window to the right.
-        property int horizontalOffsetPx: 400
+        // Horizontal position is computed to align at right edge
 
         // Sizing similar to previous layer popup
         property real computedHeightPx: -1
@@ -59,10 +57,8 @@ Item {
             }
             _computePositions();
             y = targetY;
-            // Place window horizontally with a fixed offset from the left edge
-            var scr = toast.screen ? toast.screen : Screen;
-            var g = (scr && scr.geometry) ? scr.geometry : Qt.rect(0, 0, Screen.width, Screen.height);
-            x = g.x + horizontalOffsetPx;
+            // Align popup with the right edge of the screen
+            x = targetX;
             if (!visible) {
                 visible = true;
                 slideX = toast.width; // start off-screen to the right
