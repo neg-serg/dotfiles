@@ -14,7 +14,7 @@ Item {
     property int panelMarginPx: barMarginPx
     onPanelMarginPxChanged: { if (panelMarginPx !== barMarginPx) barMarginPx = panelMarginPx }
     onBarMarginPxChanged: { if (barMarginPx !== panelMarginPx) panelMarginPx = barMarginPx }
-    // keep external API
+    // Public API for toggling
     function showAt() { toast.showAt(); }
     function hidePopup() { toast.hidePopup(); }
 
@@ -26,12 +26,15 @@ Item {
 
         // Horizontal position is computed to align at right edge
 
-        // Sizing similar to previous layer popup
+        // Sizing for the music popup container (configurable via Settings)
         property real computedHeightPx: -1
-        property real musicWidthPx: 840 * Theme.scale(toast.screen ? toast.screen : Screen)
+        // Logical base values from Settings, scaled per-screen
+        property real musicWidthPx: Settings.settings.musicPopupWidth * Theme.scale(toast.screen ? toast.screen : Screen)
         property real musicHeightPx: (musicWidget && musicWidget.implicitHeight > 0)
                                      ? Math.round(musicWidget.implicitHeight)
-                                     : Math.round(250 * Theme.scale(toast.screen ? toast.screen : Screen))
+                                     : Math.round(Settings.settings.musicPopupHeight * Theme.scale(toast.screen ? toast.screen : Screen))
+        // Inner padding around content
+        property int contentPaddingPx: Math.round(Settings.settings.musicPopupPadding * Theme.scale(toast.screen ? toast.screen : Screen))
         width: Math.round(musicWidthPx)
         height: Math.round(((computedHeightPx >= 0) ? computedHeightPx : musicHeightPx))
 
@@ -59,7 +62,9 @@ Item {
 
         function showAt() {
             if (computedHeightPx < 0) {
-                var ih = (musicWidget && musicWidget.implicitHeight > 0) ? musicWidget.implicitHeight : (250 * Theme.scale(toast.screen ? toast.screen : Screen));
+                var ih = (musicWidget && musicWidget.implicitHeight > 0)
+                    ? musicWidget.implicitHeight
+                    : (Settings.settings.musicPopupHeight * Theme.scale(toast.screen ? toast.screen : Screen));
                 computedHeightPx = Math.round(ih);
             }
             _computePositions();
@@ -86,12 +91,13 @@ Item {
             slide.start();
         }
 
-        // Content (includes cover)
+        // Content (music widget)
         Item {
             anchors.fill: parent
             transform: Translate { x: toast.slideX }
             ColumnLayout {
                 anchors.fill: parent
+                anchors.margins: toast.contentPaddingPx
                 spacing: 0
                 RowLayout {
                     spacing: 8 * Theme.scale(toast.screen ? toast.screen : Screen)

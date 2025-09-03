@@ -108,6 +108,12 @@ Singleton {
 
             // Media visualizer (CAVA/LinearSpectrum) toggle
             property bool showMediaVisualizer: false
+
+            // Music popup configuration
+            // Base logical sizes; scaled per-screen in MusicPopup
+            property int  musicPopupWidth: 840     // logical px, scaled
+            property int  musicPopupHeight: 250    // logical px, scaled (used when content height unknown)
+            property int  musicPopupPadding: 12    // logical px, scaled (inner content padding)
         }
     }
 
