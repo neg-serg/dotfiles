@@ -71,8 +71,11 @@ Scope {
 
                     // Hot zone visual removed; area is invisible
 
-                    // Keep rootScope.barHeight in sync with actual bar height
-                    Component.onCompleted: rootScope.barHeight = barBackground.height
+                    // Keep rootScope.barHeight in sync with actual bar height and init track key
+                    Component.onCompleted: {
+                        rootScope.barHeight = barBackground.height
+                        panel._lastTrackKey = _trackKey()
+                    }
                     Connections {
                         target: barBackground
                         function onHeightChanged() { rootScope.barHeight = barBackground.height }
@@ -164,6 +167,40 @@ Scope {
                         barMarginPx: rootScope.barHeight
                         anchorWindow: panel
                         panelEdge: "bottom"
+                    }
+
+                    // Auto-show music popup on track change
+                    // Build a composite key to detect actual track changes across metadata
+                    property string _lastTrackKey: ""
+                    function _trackKey() {
+                        try {
+                            const t = String(MusicManager.trackTitle || "");
+                            const a = String(MusicManager.trackArtist || "");
+                            const al= String(MusicManager.trackAlbum || "");
+                            const lenMs = MusicManager.mprisToMs ? MusicManager.mprisToMs(MusicManager.trackLength || 0) : (MusicManager.trackLength || 0);
+                            return [a, t, al, String(lenMs || 0)].join("|");
+                        } catch (e) { return ""; }
+                    }
+                    function _maybeShowOnTrackChange() {
+                        try {
+                            if (!panel.visible) return;
+                            if (!MusicManager.isPlaying) return;
+                            const key = _trackKey();
+                            if (!key || key === panel._lastTrackKey) return;
+                            panel._lastTrackKey = key;
+                            if (MusicManager.trackTitle || MusicManager.trackArtist) {
+                                sidebarPopup.showAt();
+                            }
+                        } catch (e) { /* ignore */ }
+                    }
+                    // removed: merged into the Component.onCompleted above
+                    Connections {
+                        target: MusicManager
+                        // React when metadata that identifies the track changes
+                        function onTrackTitleChanged()  { panel._maybeShowOnTrackChange(); }
+                        function onTrackArtistChanged() { panel._maybeShowOnTrackChange(); }
+                        function onTrackAlbumChanged()  { panel._maybeShowOnTrackChange(); }
+                        function onTrackLengthChanged() { panel._maybeShowOnTrackChange(); }
                     }
 
                     // Hover hot-zone to reveal tray: to the right of music and volume (outside Row to avoid anchor warnings)
