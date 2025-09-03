@@ -10,8 +10,8 @@ import qs.Services
 
 Rectangle {
     id: musicCard
-    // Provide a default 'screen' reference for Theme.scale(screen) usages
-    property var screen: Screen
+    // Inherit the containing Window's screen when available; fallback to global Screen
+    property var screen: (window && window.screen) ? window.screen : Screen
     color: "transparent"
     implicitHeight: playerUI.implicitHeight
 
