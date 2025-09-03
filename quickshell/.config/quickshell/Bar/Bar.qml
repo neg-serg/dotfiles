@@ -29,6 +29,8 @@ Scope {
                     id: panel
                     screen: modelData
                     color: "transparent"
+                    // Track if mouse is currently over the panel area
+                    property bool panelHovering: false
                     // Namespace for Hyprland layerrules
                     WlrLayershell.namespace: "quickshell-bar"
 
@@ -199,9 +201,10 @@ Scope {
                         acceptedButtons: Qt.NoButton
                         propagateComposedEvents: true
                         z: 10000
-                        onEntered: systemTrayModule.panelHover = true
+                        onEntered: { systemTrayModule.panelHover = true; panel.panelHovering = true }
                             onExited: {
                                 systemTrayModule.panelHover = false
+                                panel.panelHovering = false
                                 const menuOpen = systemTrayModule.trayMenu && systemTrayModule.trayMenu.visible
                                 if (!systemTrayModule.hotHover && !systemTrayModule.holdOpen && !systemTrayModule.shortHoldActive && !menuOpen) {
                                     systemTrayModule.expanded = false

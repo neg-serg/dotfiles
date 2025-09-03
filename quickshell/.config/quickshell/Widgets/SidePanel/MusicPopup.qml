@@ -30,6 +30,59 @@ Item {
         color: "transparent"
         visible: false
 
+        // --- Auto-hide with pause on hover/focus and while cursor is on panel
+        property int autoHideTotalMs: 4000
+        property int _autoHideRemainingMs: autoHideTotalMs
+        property double _autoHideStartedAtMs: 0
+        Timer {
+            id: autoHideTimer
+            interval: toast._autoHideRemainingMs
+            repeat: false
+            onTriggered: {
+                if (!toast._hiding && toast.visible) {
+                    // Do not hide if cursor is currently on the panel
+                    if (!(sidebarPopup.anchorWindow && sidebarPopup.anchorWindow.panelHovering === true)) {
+                        toast.hidePopup();
+                    } else {
+                        // Stay armed to resume when cursor leaves the panel
+                        toast._pauseAutoHide();
+                    }
+                }
+            }
+        }
+        function _startAutoHide(ms) {
+            toast._autoHideRemainingMs = (ms !== undefined && ms !== null) ? ms : toast.autoHideTotalMs;
+            toast._autoHideStartedAtMs = Date.now();
+            autoHideTimer.interval = toast._autoHideRemainingMs;
+            autoHideTimer.restart();
+        }
+        function _pauseAutoHide() {
+            if (!autoHideTimer.running) return;
+            const elapsed = Math.max(0, Date.now() - toast._autoHideStartedAtMs);
+            toast._autoHideRemainingMs = Math.max(0, toast._autoHideRemainingMs - elapsed);
+            autoHideTimer.stop();
+        }
+        function _resumeAutoHide() {
+            if (toast._autoHideRemainingMs <= 0) { toast.hidePopup(); return; }
+            toast._autoHideStartedAtMs = Date.now();
+            autoHideTimer.interval = toast._autoHideRemainingMs;
+            autoHideTimer.restart();
+        }
+        function _cancelAutoHide() {
+            autoHideTimer.stop();
+            toast._autoHideRemainingMs = toast.autoHideTotalMs;
+        }
+        onVisibleChanged: {
+            if (visible) {
+                toast._startAutoHide();
+                if (sidebarPopup.anchorWindow && sidebarPopup.anchorWindow.panelHovering === true) {
+                    toast._pauseAutoHide();
+                }
+            } else {
+                toast._cancelAutoHide();
+            }
+        }
+
         // --- Sizing (scaled by per-screen factor)
         property real computedHeightPx: -1
         property real musicWidthPx: Settings.settings.musicPopupWidth * Theme.scale(Screen)
@@ -103,6 +156,11 @@ Item {
             ignoreUnknownSignals: true
             function onWidthChanged()  { toast.anchor.updateAnchor(); }
             function onHeightChanged() { toast.anchor.updateAnchor(); }
+            function onPanelHoveringChanged() {
+                if (!sidebarPopup.anchorWindow) return;
+                if (sidebarPopup.anchorWindow.panelHovering) toast._pauseAutoHide();
+                else toast._resumeAutoHide();
+            }
         }
 
         // --- Public control
@@ -136,10 +194,25 @@ Item {
         }
 
         // --- Content
-        Item {
+        FocusScope {
             anchors.fill: parent
             // Horizontal slide only; window position handles vertical offset
             transform: Translate { x: toast.slideX }
+
+            // Pause auto-hide while pointer is over popup; resume on exit
+            HoverHandler {
+                id: hover
+                onActiveChanged: {
+                    if (active) toast._pauseAutoHide();
+                    else toast._resumeAutoHide();
+                }
+            }
+
+            // Pause while any descendant within this scope has active focus (keyboard interaction)
+            onActiveFocusChanged: {
+                if (activeFocus) toast._pauseAutoHide();
+                else toast._resumeAutoHide();
+            }
 
             ColumnLayout {
                 anchors.fill: parent
