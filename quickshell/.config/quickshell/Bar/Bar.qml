@@ -71,10 +71,11 @@ Scope {
 
                     // Hot zone visual removed; area is invisible
 
-                    // Keep rootScope.barHeight in sync with actual bar height and init track key
+                    // Keep rootScope.barHeight in sync with actual bar height and init track/cover keys
                     Component.onCompleted: {
                         rootScope.barHeight = barBackground.height
                         panel._lastTrackKey = _trackKey()
+                        panel._lastCoverUrl = String(MusicManager.coverUrl || "")
                     }
                     Connections {
                         target: barBackground
@@ -172,6 +173,7 @@ Scope {
                     // Auto-show music popup on track change
                     // Build a composite key to detect actual track changes across metadata
                     property string _lastTrackKey: ""
+                    property string _lastCoverUrl: ""
                     function _trackKey() {
                         try {
                             const t = String(MusicManager.trackTitle || "");
@@ -187,10 +189,16 @@ Scope {
                             if (!MusicManager.isPlaying) return;
                             const key = _trackKey();
                             if (!key || key === panel._lastTrackKey) return;
-                            panel._lastTrackKey = key;
-                            if (MusicManager.trackTitle || MusicManager.trackArtist) {
-                                sidebarPopup.showAt();
+                            const cover = String(MusicManager.coverUrl || "");
+                            // Do not show if cover art did not change
+                            if (cover === panel._lastCoverUrl) {
+                                panel._lastTrackKey = key;
+                                panel._lastCoverUrl = cover;
+                                return;
                             }
+                            panel._lastTrackKey = key;
+                            panel._lastCoverUrl = cover;
+                            if (MusicManager.trackTitle || MusicManager.trackArtist) sidebarPopup.showAt();
                         } catch (e) { /* ignore */ }
                     }
                     // removed: merged into the Component.onCompleted above
