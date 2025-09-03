@@ -1,6 +1,7 @@
 
 import QtQuick
 import qs.Components
+import Quickshell.Wayland
 import qs.Settings
 import qs.Widgets.SidePanel
 
@@ -39,6 +40,7 @@ Item {
     PanelWithOverlay {
         id: weatherOverlay
         visible: false
+        WlrLayershell.namespace: "sideleft-weather"
         onVisibleChanged: {
             if (visible) {
                 try { weather.startWeatherFetch(); } catch (e) {}

@@ -10,7 +10,7 @@ PanelWithOverlay {
     topMargin: 0
     bottomMargin: 0
     property int panelMarginPx: 0
-    WlrLayershell.namespace: "quickshell-sidepanel"
+    WlrLayershell.namespace: "sideright-music"
     function showAt() { sidebarPopupRect.showAt(); }
     function hidePopup() { sidebarPopupRect.hidePopup(); }
     
@@ -53,6 +53,7 @@ PanelWithOverlay {
             anchors.bottom: parent.bottom
             anchors.rightMargin: 4 * Theme.scale(screen)
             anchors.bottomMargin: sidebarPopup.panelMarginPx
+            
 
         }
 
@@ -77,6 +78,8 @@ PanelWithOverlay {
 
             }
         }
+
+        
 
     }
 
