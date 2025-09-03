@@ -38,8 +38,8 @@ Item {
                                      : Math.round(Settings.settings.musicPopupHeight * Theme.scale(Screen))
         property int  contentPaddingPx: Math.round(Settings.settings.musicPopupPadding * Theme.scale(Screen))
 
-        width:  Math.round(musicWidthPx)
-        height: Math.round((computedHeightPx >= 0) ? computedHeightPx : musicHeightPx)
+        implicitWidth:  Math.round(musicWidthPx)
+        implicitHeight: Math.round((computedHeightPx >= 0) ? computedHeightPx : musicHeightPx)
 
         // --- Slide animation (animate inner content, not the window)
         property bool _hiding: false
@@ -69,7 +69,7 @@ Item {
 
                 // Align to the right edge of the panel window
                 const px = sidebarPopup.anchorWindow
-                         ? (sidebarPopup.anchorWindow.width - toast.width - outer)
+                         ? (sidebarPopup.anchorWindow.width - toast.implicitWidth - outer)
                          : 0;
 
                 // Vertical offset depending on panel edge
@@ -81,7 +81,7 @@ Item {
                     break;
                 case "bottom":
                     // Panel at bottom → popup above it
-                    py = -toast.height - outer;
+                    py = -toast.implicitHeight - outer;
                     break;
                 case "left":
                     py = outer;
@@ -100,10 +100,9 @@ Item {
         // Keep anchor in sync with panel window changes
         Connections {
             target: sidebarPopup.anchorWindow
+            ignoreUnknownSignals: true
             function onWidthChanged()  { toast.anchor.updateAnchor(); }
             function onHeightChanged() { toast.anchor.updateAnchor(); }
-            function onXChanged()      { toast.anchor.updateAnchor(); }
-            function onYChanged()      { toast.anchor.updateAnchor(); }
         }
 
         // --- Public control
@@ -119,7 +118,7 @@ Item {
 
             if (!visible) {
                 visible = true;
-                slideX = toast.width; // start fully to the right
+                slideX = toast.implicitWidth; // start fully to the right
             }
             slide.stop();
             _hiding = false;
@@ -132,7 +131,7 @@ Item {
             slide.stop();
             _hiding = true;
             slide.from = slideX;
-            slide.to   = toast.width;
+            slide.to   = toast.implicitWidth;
             slide.start();
         }
 
