@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
+import QtQuick.Window 2.15
 // (Io import removed)
 import qs.Settings
 import qs.Components
@@ -9,6 +10,8 @@ import qs.Services
 
 Rectangle {
     id: musicCard
+    // Provide a default 'screen' reference for Theme.scale(screen) usages
+    property var screen: Screen
     color: "transparent"
     implicitHeight: playerUI.implicitHeight
 
