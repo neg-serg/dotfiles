@@ -8,8 +8,6 @@ PanelWindow {
     property bool showOverlay: Settings.settings.dimPanels
     property int topMargin: 36 * Theme.scale(screen)
     property int bottomMargin: 36 * Theme.scale(screen)
-    // Panel is fixed at bottom; no configurable position.
-    // Provide a default namespace for Hyprland layer rules; instances can override.
     WlrLayershell.namespace: "quickshell"
     property color overlayColor: showOverlay ? Theme.overlay : "transparent"
     
@@ -31,7 +29,6 @@ PanelWindow {
     anchors.left: true
     anchors.right: true
     anchors.bottom: true
-    // Always respect bottom margin (panel at bottom)
     margins.top: 0
     margins.bottom: bottomMargin
 

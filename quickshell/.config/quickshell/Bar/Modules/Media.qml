@@ -10,14 +10,9 @@ import qs.Components
 
 Item {
     id: mediaControl
-    // Optional: reference to the side panel popup to toggle on click
     property var sidePanelPopup: null
-    // Avoid layout cycles by providing an implicit width
     implicitWidth: mediaRow.implicitWidth
-    // Let parent RowLayout control width; implicit guides natural size
     height: 36 * Theme.scale(Screen)
-    // Show when enabled and there is an active player with content.
-    // Visible during Playing or Paused (hide when fully Stopped with no metadata).
     visible: Settings.settings.showMediaInBar
              && MusicManager.currentPlayer
              && !MusicManager.isStopped
@@ -25,12 +20,9 @@ Item {
                  || MusicManager.isPaused
                  || (MusicManager.trackTitle && MusicManager.trackTitle.length > 0))
 
-    // Exact text size to match the rest of the panel
     property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
 
-    // Fancy metadata disabled
-
-    // Format ms -> m:ss or h:mm:ss
+    // Format ms -> m:ss или h:mm:ss
     function fmtTime(ms) {
         if (ms === undefined || ms < 0) return "0:00";
         var s = Math.floor(ms / 1000);
@@ -46,7 +38,6 @@ Item {
         height: parent.height
         spacing: 12
 
-        // Album art (no overlay to keep new elongated spectrum clear)
         Item {
             id: albumArtContainer
             width: 24 * Theme.scale(Screen)
@@ -117,7 +108,7 @@ Item {
             }
         }
 
-        // Track info at original position with spectrum below title only
+        
         Item {
             id: trackContainer
             Layout.alignment: Qt.AlignVCenter
