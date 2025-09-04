@@ -129,8 +129,25 @@ Item {
         }
 
         // Derive rules: explicit array wins; otherwise use preset
+        const _allowedRules = ["mpdPlaying","anyPlaying","mpdRecent","recent","manual","first"];
+        function _sanitizeRules(arr) {
+            var out = [];
+            try {
+                if (!arr || !arr.length) return out;
+                for (var i = 0; i < arr.length; i++) {
+                    var r = String(arr[i]);
+                    if (_allowedRules.indexOf(r) === -1) {
+                        try { console.warn('[MusicPlayers] Unknown rule in playerSelectionPriority:', r); } catch (e2) {}
+                        continue;
+                    }
+                    if (out.indexOf(r) === -1) out.push(r);
+                }
+            } catch (e) {}
+            return out;
+        }
         function presetRules(name) {
-            switch (String(name || "default")) {
+            var n = String(name || "default");
+            switch (n) {
             case "manualFirst":
                 return ["manual", "anyPlaying", "recent", "first"]; // honor manual, then any playing, then recents
             case "playingFirst":
@@ -139,11 +156,23 @@ Item {
                 return ["mpdPlaying", "anyPlaying", "mpdRecent", "recent", "manual", "first"]; // default with explicit mpd bias
             case "default":
             default:
+                if (n !== "default") {
+                    try { console.warn('[MusicPlayers] Unknown playerSelectionPreset:', n, '; using default'); } catch (e1) {}
+                }
                 return ["mpdPlaying", "anyPlaying", "mpdRecent", "recent", "manual", "first"]; // sane default
             }
         }
         let cfg = (Settings.settings && Settings.settings.playerSelectionPriority) || null;
-        let rules = (cfg && cfg.length > 0) ? cfg : presetRules(Settings.settings && Settings.settings.playerSelectionPreset);
+        let rules = [];
+        if (cfg && cfg.length > 0) {
+            rules = _sanitizeRules(cfg);
+            if (!rules.length) {
+                try { console.warn('[MusicPlayers] playerSelectionPriority contained no valid rules; falling back to preset'); } catch (e3) {}
+                rules = presetRules(Settings.settings && Settings.settings.playerSelectionPreset);
+            }
+        } else {
+            rules = presetRules(Settings.settings && Settings.settings.playerSelectionPreset);
+        }
         for (let r = 0; r < rules.length; r++) {
             let candidate = pick(rules[r]);
             if (candidate) return candidate;
