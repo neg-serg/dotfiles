@@ -35,6 +35,9 @@ Item {
 
     // Internal state for file introspection
     property bool introspectAudioEnabled: true
+    // Debounce state
+    property string _lastPath: ""
+    property string _pendingPath: ""
     property var  fileAudioMeta: ({})   // { codec, codecLong, profile, sampleFormat, sampleRate, bitrateKbps, channels, bitDepth, tags:{}, fileSizeBytes, container, channelLayout, encoder }
     function _resetFileMeta() { fileAudioMeta = ({}) }
 
@@ -127,7 +130,29 @@ Item {
 
     // --- File path + introspection
     function _pathFromUrl(u) { if (!u) return ""; var s = String(u); if (s.startsWith("file://")) { try { return decodeURIComponent(s.replace(/^file:\/\//, "")); } catch (e) { return s.replace(/^file:\/\//, ""); } } if (s.startsWith("/")) return s; return ""; }
-    function introspectCurrentTrack() { if (!introspectAudioEnabled) return; const p = _pathFromUrl(trackUrlStr); if (!p) { _resetFileMeta(); return; } ffprobeProcess.targetPath = p; ffprobeProcess.running = true; }
+    function _isBusy() {
+        try { return ffprobeProcess.running || mediainfoProcess.running || soxinfoProcess.running; } catch (e) { return false; }
+    }
+    function _startIntrospection(p) {
+        _lastPath = p;
+        _pendingPath = "";
+        ffprobeProcess.targetPath = p;
+        ffprobeProcess.running = true;
+    }
+    function _processChainFinished() {
+        // If a new path was queued while busy, start it now
+        if (_pendingPath && _pendingPath !== _lastPath) {
+            _startIntrospection(_pendingPath);
+        }
+    }
+    function introspectCurrentTrack() {
+        if (!introspectAudioEnabled) return;
+        const p = _pathFromUrl(trackUrlStr);
+        if (!p) { _resetFileMeta(); _lastPath = ""; _pendingPath = ""; return; }
+        if (p === _lastPath) return; // no change
+        if (_isBusy()) { _pendingPath = p; return; }
+        _startIntrospection(p);
+    }
     onTrackUrlStrChanged: introspectCurrentTrack()
 
     // Processes: ffprobe → mediainfo → sox --i
@@ -141,7 +166,7 @@ Item {
                 try {
                     const obj = JSON.parse(String(ffprobeStdout.text));
                     const meta = _parseFfprobe(obj);
-                    if (meta) { fileAudioMeta = meta; return; }
+                    if (meta) { fileAudioMeta = meta; _processChainFinished(); return; }
                 } catch (e) { }
             }
             mediainfoProcess.targetPath = targetPath;
@@ -158,7 +183,7 @@ Item {
                 try {
                     const obj = JSON.parse(String(mediainfoStdout.text));
                     const meta = _parseMediainfo(obj);
-                    if (meta) { fileAudioMeta = meta; return; }
+                    if (meta) { fileAudioMeta = meta; _processChainFinished(); return; }
                 } catch (e) { }
             }
             soxinfoProcess.targetPath = targetPath;
@@ -174,9 +199,10 @@ Item {
             if (code === 0) {
                 const text = String(soxinfoStdout.text || "");
                 const meta = _parseSoxInfo(text);
-                if (meta) { fileAudioMeta = meta; return; }
+                if (meta) { fileAudioMeta = meta; _processChainFinished(); return; }
             }
             _resetFileMeta();
+            _processChainFinished();
         }
     }
 
