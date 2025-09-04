@@ -1,6 +1,19 @@
 // Minimal shared HTTP helper for JSON GET with optional headers
 // Usage from QML JS: Qt.include("Http.js"); httpGetJson(url, timeoutMs, onSuccess, onError, userAgent)
 
+function _coerceUA(ua) {
+    try {
+        var s = (ua === undefined || ua === null) ? '' : String(ua).trim();
+        return s ? s : 'Quickshell';
+    } catch (e) { return 'Quickshell'; }
+}
+
+function _hostOf(u) {
+    try { return (new URL(u)).host || ''; } catch (e) {}
+    try { var m = String(u).match(/^https?:\/\/([^\/#?]+)/i); return m ? m[1] : ''; } catch (e2) {}
+    return '';
+}
+
 function httpGetJson(url, timeoutMs, success, fail, userAgent) {
     try {
         var xhr = new XMLHttpRequest();
@@ -9,9 +22,20 @@ function httpGetJson(url, timeoutMs, success, fail, userAgent) {
         try {
             if (xhr.setRequestHeader) {
                 try { xhr.setRequestHeader('Accept', 'application/json'); } catch (e1) {}
-                if (userAgent) { try { xhr.setRequestHeader('User-Agent', String(userAgent)); } catch (e2) {} }
+                var _ua = _coerceUA(userAgent);
+                try { xhr.setRequestHeader('User-Agent', _ua); } catch (e2) {}
             }
         } catch (e) { /* ignore header setting failures */ }
+        // Advisory: some APIs (e.g., Nominatim) require UA with contact info
+        try {
+            var host = _hostOf(url).toLowerCase();
+            if (host.indexOf('nominatim.openstreetmap.org') !== -1) {
+                var uastr = String(userAgent || '').trim();
+                if (!uastr || /^quickshell$/i.test(uastr)) {
+                    try { console.warn('[Http] Consider setting Settings.userAgent with contact for Nominatim'); } catch (_e) {}
+                }
+            }
+        } catch (e4) {}
         xhr.onreadystatechange = function() {
             if (xhr.readyState !== XMLHttpRequest.DONE) return;
             var status = xhr.status;
@@ -37,4 +61,3 @@ function httpGetJson(url, timeoutMs, success, fail, userAgent) {
         fail && fail({ type: "exception", message: String(e) });
     }
 }
-
