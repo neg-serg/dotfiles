@@ -26,6 +26,7 @@
       vd-lavc-threads = "12";
       vo = "gpu-next";
       gpu-context = "wayland";
+      gpu-api = "opengl";
       #--[ Debanding ]-------------------------------------------
       deband-grain = 48; # dynamic grain: set to "0" if using the static grain shader
       deband-iterations = 4; # deband steps
@@ -33,9 +34,9 @@
 
       deband = true; # enabled by default
       #--[ Interpolation ]---------------------------------------
-      video-sync = "display-resample";
+      video-sync = "audio";
 
-      interpolation = true;
+      interpolation = false;
       #--[Color]-------------------------------------------------
       # icc-profile-auto = true;
       # see https://github.com/mpv-player/mpv/wiki/Video-output---shader-stage-diagram
@@ -54,7 +55,7 @@
       linear-downscaling = false;
       scale = "ewa_lanczos";
 
-      temporal-dither = "yes";
+      temporal-dither = "no";
       # Chroma subsampling means that chroma information is encoded at lower resolution than luma
       # In MPV, chroma is upscaled to luma resolution (video size) and then the converted RGB is upscaled to target resolution (screen size)
       # For detailed analysis of upscaler/downscaler quality, see https://artoriuz.github.io/blog/mpv_upscaling.html
