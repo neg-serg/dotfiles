@@ -45,7 +45,7 @@ Item {
                         toast.hidePopup();
                     } else {
                         // Stay armed to resume when cursor leaves the panel
-                        toast._pauseAutoHide();
+                        toast.pauseAutoHide();
                     }
                 }
             }
@@ -158,8 +158,8 @@ Item {
             function onHeightChanged() { toast.anchor.updateAnchor(); }
             function onPanelHoveringChanged() {
                 if (!sidebarPopup.anchorWindow) return;
-                if (sidebarPopup.anchorWindow.panelHovering) toast._pauseAutoHide();
-                else toast._resumeAutoHide();
+                if (sidebarPopup.anchorWindow.panelHovering) toast.pauseAutoHide();
+                else toast.resumeAutoHide();
             }
         }
 
@@ -203,15 +203,15 @@ Item {
             HoverHandler {
                 id: hover
                 onActiveChanged: {
-                    if (active) toast._pauseAutoHide();
-                    else toast._resumeAutoHide();
+                    if (active) toast.pauseAutoHide();
+                    else toast.resumeAutoHide();
                 }
             }
 
             // Pause while any descendant within this scope has active focus (keyboard interaction)
             onActiveFocusChanged: {
-                if (activeFocus) toast._pauseAutoHide();
-                else toast._resumeAutoHide();
+                if (activeFocus) toast.pauseAutoHide();
+                else toast.resumeAutoHide();
             }
 
             ColumnLayout {
