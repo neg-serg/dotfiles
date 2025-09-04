@@ -93,7 +93,19 @@ Scope {
                         DiagSep {}
                         KeyboardLayoutHypr { id: kbIndicator; anchors.verticalCenter: wsindicator.verticalCenter; /* deviceMatch: "dygma-defy-keyboard" */ }
                         DiagSep {}
-                        NetworkUsage { id: net; anchors.verticalCenter: wsindicator.verticalCenter }
+                        // Tighter cluster: VPN + Network usage
+                        Row {
+                            id: netCluster
+                            anchors.verticalCenter: wsindicator.verticalCenter
+                            spacing: Math.round(6 * panel.s)
+                            LocalMods.VpnAmneziaIndicator {
+                                id: amneziaVpn
+                                // Icon only
+                                showLabel: false
+                                iconRounded: true
+                            }
+                            NetworkUsage { id: net }
+                        }
                         DiagSep { visible: Settings.settings.showWeatherInBar === true }
                         LocalMods.WeatherButton {
                             anchors.verticalCenter: parent.verticalCenter
