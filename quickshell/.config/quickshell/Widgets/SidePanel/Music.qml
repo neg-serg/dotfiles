@@ -33,7 +33,7 @@ Rectangle {
             property real lum: 0.2126 * baseR + 0.7152 * baseG + 0.0722 * baseB
             // Mix towards luminance to reduce saturation
             color: "#000000" // Solid black background for music
-            radius: 9 * Theme.scale(Screen)
+            radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
 
         // Show fallback UI if no player is available
         Item {
@@ -43,7 +43,7 @@ Rectangle {
 
             ColumnLayout {
                 anchors.centerIn: parent
-                spacing: 16 * Theme.scale(screen)
+                spacing: Math.round(Theme.sidePanelSpacing * 1.33 * Theme.scale(screen))
 
                 Text {
                     text: "music_note"
@@ -71,7 +71,7 @@ Rectangle {
             anchors.rightMargin: 0
             anchors.topMargin: 0
             anchors.bottomMargin: 0
-            spacing: 4 * Theme.scale(screen)
+            spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
             visible: !!MusicManager.currentPlayer
 
             // Unified typography for music widget
@@ -150,7 +150,7 @@ Rectangle {
                     color: card.color
                     border.color: "transparent"
                     border.width: 0
-                    radius: 9 * Theme.scale(Screen)
+                    radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
                 }
 
                 contentItem: Text {
@@ -191,7 +191,7 @@ Rectangle {
                         color: card.color
                         border.color: "transparent"
                         border.width: 0
-                        radius: 9 * Theme.scale(Screen)
+                        radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
                     }
                 }
 
@@ -246,10 +246,10 @@ Rectangle {
                     Rectangle {
                         id: albumArtwork
                             // Cover at 200px (scaled)
-                            width: 200 * Theme.scale(screen)
-                            height: 200 * Theme.scale(screen)
+                            width: Math.round(Theme.sidePanelAlbumArtSize * Theme.scale(screen))
+                            height: Math.round(Theme.sidePanelAlbumArtSize * Theme.scale(screen))
                             anchors.fill: parent
-                            radius: 8 * Theme.scale(screen)
+                            radius: Math.round(Theme.cornerRadius * Theme.scale(screen))
                             color: "transparent"
                             border.color: "transparent"
                             border.width: 0
@@ -281,7 +281,7 @@ Rectangle {
                             Rectangle {
                                 width: albumArt.width
                                 height: albumArt.height
-                                radius: 8 * Theme.scale(screen)
+                                radius: Math.round(Theme.cornerRadius * Theme.scale(screen))
                             }
                         }
 
@@ -301,7 +301,7 @@ Rectangle {
                 // Track metadata
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 2 * Theme.scale(screen)
+                    spacing: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(screen))
 
                     // Title intentionally hidden per request
 
@@ -325,7 +325,7 @@ Rectangle {
                             anchors.rightMargin: 6 * Theme.scale(screen)
                             anchors.topMargin: 0
                             anchors.bottomMargin: 0
-                            spacing: 4 * Theme.scale(screen)
+                            spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
                             // (rollback) no special table-like layout properties
 
                             // (reverted) no category-colored quality block here
@@ -337,7 +337,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackArtist
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                            spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 MaterialIcon {
                                     // Artist icon
                                     icon: "person"
@@ -360,7 +360,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackAlbumArtist && MusicManager.trackAlbumArtist !== MusicManager.trackArtist
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 MaterialIcon {
                                     // Album artist icon
                                     icon: "person"
@@ -383,7 +383,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackAlbum
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 MaterialIcon {
                                     // Album icon
                                     icon: "album"
@@ -408,7 +408,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackGenre
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 MaterialIcon {
                                     // Genre icon
                                     icon: "category"
@@ -433,7 +433,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackYear && !MusicManager.trackDateStr
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 MaterialIcon {
                                     // Year icon
                                     icon: "calendar_month"
@@ -457,7 +457,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackLabel
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 MaterialIcon {
                                     // Label/Publisher icon
                                     icon: "sell"
@@ -482,7 +482,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackComposer
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 MaterialIcon {
                                     // Composer icon
                                     icon: "piano"
@@ -507,7 +507,7 @@ Rectangle {
                             RowLayout {
                                 visible: false
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 Text {
                                     text: "Codec"
                                     color: playerUI.musicTextColor
@@ -529,7 +529,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackQualitySummary
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 MaterialIcon {
                                     // Quality icon
                                     icon: "high_quality"
@@ -560,7 +560,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackDsdRateStr
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 MaterialIcon {
                                     // DSD rate icon
                                     icon: "speed"
@@ -584,7 +584,7 @@ Rectangle {
                             RowLayout {
                                 visible: false
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 Text {
                                     text: "Bit depth"
                                     color: playerUI.musicTextColor

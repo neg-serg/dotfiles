@@ -1,4 +1,4 @@
-import QtQuick 
+import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import qs.Settings
@@ -7,8 +7,8 @@ import "../../Helpers/Weather.js" as WeatherHelper
  
 Rectangle {
     id: weatherRoot
-    width: 440 * Theme.scale(Screen)
-    height: 180 * Theme.scale(Screen)
+    width: Math.round(Theme.sidePanelWeatherWidth * Theme.scale(Screen))
+    height: Math.round(Theme.sidePanelWeatherHeight * Theme.scale(Screen))
     color: "transparent"
     anchors.horizontalCenterOffset: -2
  
@@ -100,21 +100,21 @@ Rectangle {
             baseB * desat + lum * (1 - desat),
             cardAlpha
         )
-        radius: 9 * Theme.scale(Screen)
+        radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
  
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 18 * Theme.scale(Screen)
-            spacing: 12 * Theme.scale(Screen)
+            spacing: Math.round(Theme.sidePanelSpacing * Theme.scale(Screen))
  
  
             RowLayout {
-                spacing: 12 * Theme.scale(Screen)
+                spacing: Math.round(Theme.sidePanelSpacing * Theme.scale(Screen))
                 Layout.fillWidth: true
  
  
                 RowLayout {
-                    spacing: 12 * Theme.scale(Screen)
+                    spacing: Math.round(Theme.sidePanelSpacing * Theme.scale(Screen))
                     Layout.preferredWidth: 140 * Theme.scale(Screen)
  
  
@@ -122,7 +122,7 @@ Rectangle {
                         id: loadingSpinner
                         running: isLoading
                         color: Theme.accentPrimary
-                        size: 28 * Theme.scale(Screen)
+                        size: Math.round(Theme.uiIconSizeLarge * Theme.scale(Screen))
                         Layout.alignment: Qt.AlignVCenter
                         visible: isLoading
                     }
@@ -131,15 +131,15 @@ Rectangle {
                         id: weatherIcon
                         visible: !isLoading
                         icon: weatherData && weatherData.current_weather ? materialSymbolForCode(weatherData.current_weather.weathercode) : "cloud"
-                        size: 28 * Theme.scale(Screen)
+                        size: Math.round(Theme.uiIconSizeLarge * Theme.scale(Screen))
                         color: Theme.accentPrimary
                         Layout.alignment: Qt.AlignVCenter
                     }
  
                     ColumnLayout {
-                        spacing: 2 * Theme.scale(Screen)
+                        spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(Screen))
                         RowLayout {
-                            spacing: 4 * Theme.scale(Screen)
+                            spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(Screen))
                             Text {
                                 text: city
                                 font.family: Theme.fontFamily

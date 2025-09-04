@@ -13,7 +13,7 @@ PanelWithOverlay {
 
     Rectangle {
         color: Theme.backgroundPrimary
-        radius: 12
+        radius: Theme.cornerRadiusLarge
         border.color: Theme.backgroundTertiary
         border.width: 1
         width: 340
@@ -132,7 +132,7 @@ PanelWithOverlay {
 
                     width: 32
                     height: 32
-                    radius: 8
+                radius: Theme.cornerRadius
                     color: {
                         if (model.today)
                             return Theme.accentPrimary;
@@ -148,7 +148,7 @@ PanelWithOverlay {
                         visible: isHoliday
                         width: 4
                         height: 4
-                        radius: 4
+                        radius: Theme.cornerRadiusSmall
                         color: Theme.accentTertiary
                         anchors.top: parent.top
                         anchors.right: parent.right

@@ -491,7 +491,7 @@ PanelWithOverlay {
                     Layout.preferredWidth: 200
                     Layout.fillHeight: true
                     color: Theme.surface
-                    radius: 20
+                    radius: Theme.panelOverlayRadius
                     visible: false
 
                     Rectangle {
@@ -521,7 +521,7 @@ PanelWithOverlay {
                     Rectangle {
                         id: searchBar
                         color: Theme.surfaceVariant
-                        radius: 20
+                        radius: Theme.panelOverlayRadius
                         height: 48
                         Layout.fillWidth: true
                         border.color: searchField.activeFocus ? Theme.accentPrimary : Theme.outline
@@ -589,7 +589,7 @@ PanelWithOverlay {
             
                     Rectangle {
                         color: Theme.surface
-                        radius: 20
+                        radius: Theme.panelOverlayRadius
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         clip: true
@@ -614,7 +614,7 @@ PanelWithOverlay {
                                     color: (hovered || isSelected)
                                         ? Theme.accentPrimary
                                         : (appLauncherPanel.isPinned(modelData) ? Theme.surfaceVariant : "transparent")
-                                    radius: 12
+                                    radius: Theme.cornerRadiusLarge
                                     border.color: appLauncherPanel.isPinned(modelData)
                                         ? "transparent"
                                         : (hovered || isSelected ? Theme.accentPrimary : "transparent")

@@ -61,4 +61,15 @@
   "panelVolumeFullHideMs": 800,
   "panelVolumeLowColor":  "#D62E6E",
   "panelVolumeHighColor": "#0E6B4D"
+,
+  "sidePanelCornerRadius": 9,
+  "sidePanelSpacing": 12,
+  "sidePanelSpacingTight": 6,
+  "sidePanelSpacingSmall": 4,
+  "sidePanelAlbumArtSize": 200,
+  "sidePanelWeatherWidth": 440,
+  "sidePanelWeatherHeight": 180,
+  "uiIconSizeLarge": 28,
+  "panelOverlayRadius": 20,
+  "cornerRadiusLarge": 12
 }

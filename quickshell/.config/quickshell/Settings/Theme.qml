@@ -125,6 +125,20 @@ Singleton {
             // Volume gradient endpoint colors
             property string panelVolumeLowColor:  "#D62E6E"  // raspberry
             property string panelVolumeHighColor: "#0E6B4D"  // spruce green
+
+            // Side panel defaults (logical)
+            property int  sidePanelCornerRadius: 9
+            property int  sidePanelSpacing: 12
+            property int  sidePanelSpacingTight: 6
+            property int  sidePanelSpacingSmall: 4
+            property int  sidePanelAlbumArtSize: 200
+            property int  sidePanelWeatherWidth: 440
+            property int  sidePanelWeatherHeight: 180
+            property int  uiIconSizeLarge: 28
+
+            // Overlay panels
+            property int  panelOverlayRadius: 20
+            property int  cornerRadiusLarge: 12
         }
     }
     
@@ -206,4 +220,16 @@ Singleton {
     property int panelVolumeFullHideMs: themeData.panelVolumeFullHideMs
     property color panelVolumeLowColor: themeData.panelVolumeLowColor
     property color panelVolumeHighColor: themeData.panelVolumeHighColor
+    // Side panel exports
+    property int sidePanelCornerRadius: themeData.sidePanelCornerRadius
+    property int sidePanelSpacing: themeData.sidePanelSpacing
+    property int sidePanelSpacingTight: themeData.sidePanelSpacingTight
+    property int sidePanelSpacingSmall: themeData.sidePanelSpacingSmall
+    property int sidePanelAlbumArtSize: themeData.sidePanelAlbumArtSize
+    property int sidePanelWeatherWidth: themeData.sidePanelWeatherWidth
+    property int sidePanelWeatherHeight: themeData.sidePanelWeatherHeight
+    property int uiIconSizeLarge: themeData.uiIconSizeLarge
+    // Overlay radius and larger corner
+    property int panelOverlayRadius: themeData.panelOverlayRadius
+    property int cornerRadiusLarge: themeData.cornerRadiusLarge
 }
