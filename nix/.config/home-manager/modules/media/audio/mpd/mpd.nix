@@ -10,7 +10,7 @@ with {
 }; {
   home.packages = with pkgs; [
     inori # alternative cli mpd client
-    pkgs.neg.rmpc # alternative tui client with album cover
+    rmpc  # alternative tui client with album cover
   ];
 
   services.mpd = {
