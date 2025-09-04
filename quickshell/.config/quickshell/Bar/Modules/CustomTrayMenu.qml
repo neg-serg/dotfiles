@@ -8,8 +8,8 @@ import qs.Components
 
     PopupWindow {
         id: trayMenu
-        implicitWidth: 180
-        implicitHeight: Math.max(40, listView.contentHeight + 12)
+        implicitWidth: Theme.panelMenuWidth
+        implicitHeight: Math.max(40, listView.contentHeight + Theme.panelMenuHeightExtra)
         visible: false
         color: "transparent"
 
@@ -20,7 +20,7 @@ import qs.Components
 
     anchor.item: anchorItem ? anchorItem : null
     anchor.rect.x: anchorX
-    anchor.rect.y: anchorY - 4
+    anchor.rect.y: anchorY - Theme.panelMenuAnchorYOffset
 
     // Recursive function to destroy all open submenus in delegate tree, safely avoiding infinite recursion
     function destroySubmenusRecursively(item) {
@@ -65,22 +65,22 @@ import qs.Components
         menu: trayMenu.menu;
     }
 
-    // Base background: compact, no border, no radius
+    // Base background: compact; radius configured by Theme
     Rectangle {
         id: bg;
         anchors.fill: parent;
         color: Theme.backgroundPrimary || "#222";
         border.color: "transparent";
         border.width: 0;
-        radius: 0;
+        radius: Theme.panelMenuRadius;
         z: 0;
     }
 
     ListView {
         id: listView;
         anchors.fill: parent;
-        anchors.margins: 4;
-        spacing: 2;
+        anchors.margins: Theme.panelMenuPadding;
+        spacing: Theme.panelMenuItemSpacing;
         interactive: false;
         enabled: trayMenu.visible;
         clip: true;
@@ -103,7 +103,7 @@ import qs.Components
             required property var modelData;
 
             width: listView.width;
-            height: (modelData?.isSeparator) ? 6 : 26;
+            height: (modelData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight;
             color: "transparent";
             radius: 0;
 
@@ -111,7 +111,7 @@ import qs.Components
 
             Rectangle {
                 anchors.centerIn: parent;
-                width: parent.width - 20;
+                width: parent.width - (Theme.panelMenuDividerMargin * 2);
                 height: 1;
                 color: Qt.darker(Theme.backgroundPrimary || "#222", 1.4);
                 visible: modelData?.isSeparator ?? false;
@@ -309,7 +309,7 @@ import qs.Components
                 menu: subMenu.menu;
             }
 
-            // Submenu background: no border, no radius, compact
+    // Submenu background: compact; radius configured by Theme
             Rectangle {
                 id: bg;
                 anchors.fill: parent;
@@ -323,8 +323,8 @@ import qs.Components
             ListView {
                 id: listView;
                 anchors.fill: parent;
-                anchors.margins: 4;
-                spacing: 2;
+                anchors.margins: Theme.panelMenuPadding;
+                spacing: Theme.panelMenuItemSpacing;
                 interactive: false;
                 enabled: subMenu.visible;
                 clip: true;
@@ -341,7 +341,7 @@ import qs.Components
                     required property var modelData;
 
                     width: listView.width;
-                    height: (modelData?.isSeparator) ? 6 : 26;
+                    height: (modelData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight;
                     color: "transparent";
                     radius: 0;
 
@@ -349,7 +349,7 @@ import qs.Components
 
                     Rectangle {
                         anchors.centerIn: parent;
-                        width: parent.width - 20;
+                        width: parent.width - (Theme.panelMenuDividerMargin * 2);
                         height: 1;
                         color: Qt.darker(Theme.surfaceVariant || "#222", 1.4);
                         visible: modelData?.isSeparator ?? false;
@@ -359,7 +359,7 @@ import qs.Components
                         id: bg;
                         anchors.fill: parent;
                         color: mouseArea.containsMouse ? _hoverColor : "transparent";
-                        radius: 0;
+                        radius: Theme.panelMenuRadius;
                         visible: !(modelData?.isSeparator ?? false);
                         property color hoverTextColor: mouseArea.containsMouse ? Theme.textPrimary : Theme.textPrimary;
 
@@ -367,7 +367,7 @@ import qs.Components
                             anchors.fill: parent;
                             anchors.leftMargin: 6;
                             anchors.rightMargin: 6;
-                            spacing: 4;
+                            spacing: Theme.panelMenuItemSpacing;
 
                             Text {
                                 Layout.fillWidth: true;
@@ -381,8 +381,8 @@ import qs.Components
                             }
 
                             Image {
-                                Layout.preferredWidth: 16;
-                                Layout.preferredHeight: 16;
+                                Layout.preferredWidth: Theme.panelMenuIconSize;
+                                Layout.preferredHeight: Theme.panelMenuIconSize;
                                 source: modelData?.icon ?? "";
                                 visible: (modelData?.icon ?? "") !== "";
                                 fillMode: Image.PreserveAspectFit;
@@ -390,7 +390,7 @@ import qs.Components
 
                             MaterialIcon {
                                 icon: modelData?.hasChildren ? "chevron_right" : ""
-                                size: Math.round(15 * Theme.scale(screen))
+                                size: Math.round(Theme.panelMenuChevronSize * Theme.scale(screen))
                                 visible: modelData?.hasChildren ?? false
                                 color: Theme.textPrimary
                             }
@@ -430,8 +430,8 @@ import qs.Components
                                         entry.subMenu = null;
                                     }
                                     var globalPos = entry.mapToGlobal(0, 0);
-                                    var submenuWidth = 180;
-                                    var gap = 12;
+                                    var submenuWidth = Theme.panelSubmenuWidth;
+                                    var gap = Theme.panelSubmenuGap;
                                     var openLeft = (globalPos.x + entry.width + submenuWidth > Screen.width);
                                     var anchorX = openLeft ? -submenuWidth - gap : entry.width + gap;
 

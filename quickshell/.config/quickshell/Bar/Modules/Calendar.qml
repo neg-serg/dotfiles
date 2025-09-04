@@ -15,13 +15,13 @@ PanelWithOverlay {
         color: Theme.backgroundPrimary
         radius: Theme.cornerRadiusLarge
         border.color: Theme.backgroundTertiary
-        border.width: 1
-        width: 340
-        height: 380
+        border.width: Theme.calendarBorderWidth
+        width: Theme.calendarWidth
+        height: Theme.calendarHeight
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        anchors.bottomMargin: 4
-        anchors.rightMargin: 4
+        anchors.bottomMargin: Theme.calendarPopupMargin
+        anchors.rightMargin: Theme.calendarPopupMargin
 
         // Prevent closing when clicking in the panel bg
         MouseArea {
@@ -30,7 +30,7 @@ PanelWithOverlay {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 16
+            anchors.margins: Theme.uiMarginMedium
             spacing: Theme.calendarRowSpacing
 
             // Month/Year header with navigation
@@ -83,7 +83,7 @@ PanelWithOverlay {
                     font.family: Theme.fontFamily
                     font.bold: true
                     horizontalAlignment: Text.AlignHCenter
-                    width: 32
+                    width: Theme.calendarCellSize
                 }
 
             }
@@ -130,8 +130,8 @@ PanelWithOverlay {
                     })
                     property bool isHoliday: holidayInfo.length > 0
 
-                    width: 32
-                    height: 32
+                    width: Theme.calendarCellSize
+                    height: Theme.calendarCellSize
                 radius: Theme.cornerRadius
                     color: {
                         if (model.today)
@@ -146,14 +146,14 @@ PanelWithOverlay {
                     // Holiday dot indicator
                     Rectangle {
                         visible: isHoliday
-                        width: 4
-                        height: 4
+                        width: Theme.calendarHolidayDotSize
+                        height: Theme.calendarHolidayDotSize
                         radius: Theme.cornerRadiusSmall
                         color: Theme.accentTertiary
                         anchors.top: parent.top
                         anchors.right: parent.right
-                        anchors.topMargin: 4
-                        anchors.rightMargin: 4
+                        anchors.topMargin: Theme.calendarPopupMargin
+                        anchors.rightMargin: Theme.calendarPopupMargin
                         z: 2
                     }
 

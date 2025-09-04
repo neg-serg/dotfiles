@@ -22,7 +22,8 @@ PanelWithOverlay {
     }
     Timer {
         id: clipboardTimer
-        interval: 1000
+        interval: (typeof Theme !== 'undefined' && Theme.applauncherClipboardPollMs !== undefined)
+                  ? Theme.applauncherClipboardPollMs : 1000
         repeat: true
         running: appLauncherPanel.visible && searchField.text.startsWith(">clip")
         onTriggered: {
@@ -482,13 +483,13 @@ PanelWithOverlay {
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: 32
-                spacing: 18
+                anchors.margins: Theme.uiMarginLarge
+                spacing: Theme.uiSpacingLarge
 
         
                 Rectangle {
                     id: previewPanel
-                    Layout.preferredWidth: 200
+                    Layout.preferredWidth: Math.round(200 * Theme.scale(Screen))
                     Layout.fillHeight: true
                     color: Theme.surface
                     radius: Theme.panelOverlayRadius
@@ -496,7 +497,7 @@ PanelWithOverlay {
 
                     Rectangle {
                         anchors.fill: parent
-                        anchors.margins: 16
+                    anchors.margins: Theme.uiMarginMedium
                         color: "transparent"
                         clip: true
 
@@ -515,14 +516,14 @@ PanelWithOverlay {
                 ColumnLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    spacing: 18
+                    spacing: Theme.uiSpacingLarge
 
             
                     Rectangle {
                         id: searchBar
                         color: Theme.surfaceVariant
                         radius: Theme.panelOverlayRadius
-                        height: 48
+                        height: Theme.uiControlHeight
                         Layout.fillWidth: true
                         border.color: searchField.activeFocus ? Theme.accentPrimary : Theme.outline
                         border.width: searchField.activeFocus ? 2 : 1
@@ -531,9 +532,9 @@ PanelWithOverlay {
                             anchors.left: parent.left
                             anchors.right: parent.right
                             anchors.verticalCenter: parent.verticalCenter
-                            anchors.leftMargin: 14
-                            anchors.rightMargin: 14
-                            spacing: 10
+                            anchors.leftMargin: Theme.uiPaddingMedium
+                            anchors.rightMargin: Theme.uiPaddingMedium
+                            spacing: Theme.uiSpacingSmall
 
                             MaterialIcon {
                                 icon: "search"
@@ -599,7 +600,7 @@ PanelWithOverlay {
                             id: appList
                             anchors.fill: parent
                             anchors.margins: parent.innerPadding
-                            spacing: 2
+                        spacing: Theme.uiSpacingXSmall
                             model: root.filteredApps
                             currentIndex: root.selectedIndex
                             delegate: Item {
@@ -641,13 +642,13 @@ PanelWithOverlay {
 
                                 RowLayout {
                                     anchors.fill: parent
-                                    anchors.leftMargin: 10
-                                    anchors.rightMargin: 10
-                                    spacing: 10
+                                    anchors.leftMargin: Theme.uiSpacingSmall
+                                    anchors.rightMargin: Theme.uiSpacingSmall
+                                    spacing: Theme.uiSpacingSmall
 
                                     Item {
-                                        width: 28
-                                        height: 28
+                                        width: Math.round(Theme.panelIconSize * Theme.scale(Screen))
+                                        height: Math.round(Theme.panelIconSize * Theme.scale(Screen))
                                         property bool iconLoaded: !modelData.isCalculator && !modelData.isClipboard && !modelData.isCommand && iconImg.status === Image.Ready && iconImg.source !== "" && iconImg.status !== Image.Error
                                         
                                         Image {
@@ -700,7 +701,7 @@ PanelWithOverlay {
 
                                     ColumnLayout {
                                         Layout.fillWidth: true
-                                        spacing: 1
+                                        spacing: Theme.uiGapTiny
 
                                         Text {
                                             text: modelData.name
@@ -741,11 +742,11 @@ PanelWithOverlay {
                                         color: (hovered || isSelected)
                                             ? Theme.onAccent
                                             : (appLauncherPanel.isPinned(modelData) ? Theme.textPrimary : Theme.textSecondary)
-                                        Layout.rightMargin: 8
+                                        Layout.rightMargin: Theme.panelRowSpacingSmall
                                     }
 
             
-                                    Item { width: 8; height: 1 }
+                                    Item { width: Theme.panelRowSpacingSmall; height: Theme.uiGapTiny }
                                 }
 
                                 Rectangle {
@@ -789,7 +790,7 @@ PanelWithOverlay {
                                     anchors.left: parent.left
                                     anchors.right: parent.right
                                     anchors.bottom: parent.bottom
-                                    height: 1
+                                    height: Theme.tooltipBorderWidth
                                     color: Theme.outline
                                     opacity: index === appList.count - 1 ? 0 : 0.10
                                 }
@@ -797,7 +798,7 @@ PanelWithOverlay {
         
                                 Item {
                                     id: pinArea
-                                    width: 28; height: 28
+                                    width: Math.round(Theme.panelIconSize * Theme.scale(Screen)); height: Math.round(Theme.panelIconSize * Theme.scale(Screen))
                                     z: 100
                                     anchors.right: parent.right
                                     anchors.verticalCenter: parent.verticalCenter

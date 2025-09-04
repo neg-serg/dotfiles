@@ -356,7 +356,7 @@ Row {
                 positionAbove: false
                 tooltipVisible: false
                 targetItem: trayIcon
-                delay: 200
+                delay: Theme.tooltipDelayMs
             }
 
             Component.onDestruction:
