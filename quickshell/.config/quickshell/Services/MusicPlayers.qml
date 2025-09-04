@@ -39,7 +39,8 @@ Item {
 
     Component.onCompleted: updateCurrentPlayer()
 
-    Connections {
+    // Keep as property to avoid default property assumptions
+    property var _mprisConn: Connections {
         target: Mpris.players
         function onValuesChanged() { root.updateCurrentPlayer(); }
     }
