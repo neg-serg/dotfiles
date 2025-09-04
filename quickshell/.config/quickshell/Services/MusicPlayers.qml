@@ -14,14 +14,14 @@ Item {
     // LIFO of last active players by id (most recent first)
     property var _lastActiveStack: []
 
-    function _playerId(p) {
+    function playerId(p) {
         try {
             if (!p) return "";
             return String(p.service || p.busName || p.name || p.identity || "");
         } catch (e) { return ""; }
     }
 
-    function _isPlayerMpd(p) {
+    function isPlayerMpd(p) {
         try {
             if (!p) return false;
             var idStr    = String((p.service || p.busName || "")).toLowerCase();
@@ -32,7 +32,7 @@ Item {
         } catch (e) { return false; }
     }
 
-    function _touchActive(p) {
+    function touchActive(p) {
         try {
             var id = _playerId(p);
             if (!id) return;
@@ -45,7 +45,7 @@ Item {
         } catch (e) {}
     }
 
-    function _pruneStack() {
+    function pruneStack() {
         try {
             var avail = getAvailablePlayers();
             var ids = {};
@@ -74,28 +74,28 @@ Item {
 
         // Fast map from id -> player
         let byId = {};
-        for (let i = 0; i < avail.length; i++) byId[_playerId(avail[i])] = avail[i];
+        for (let i = 0; i < avail.length; i++) byId[playerId(avail[i])] = avail[i];
 
         // Priority: MPD-like > others
         // 1) Most-recent MPD that is currently playing
         for (let k = 0; k < _lastActiveStack.length; k++) {
             let p = byId[_lastActiveStack[k]];
-            if (p && p.isPlaying && _isPlayerMpd(p)) return p;
+            if (p && p.isPlaying && isPlayerMpd(p)) return p;
         }
         // 2) Most-recent non-MPD that is currently playing
         for (let k1 = 0; k1 < _lastActiveStack.length; k1++) {
             let p1 = byId[_lastActiveStack[k1]];
-            if (p1 && p1.isPlaying && !_isPlayerMpd(p1)) return p1;
+            if (p1 && p1.isPlaying && !isPlayerMpd(p1)) return p1;
         }
         // 3) Most-recent MPD available
         for (let k2 = 0; k2 < _lastActiveStack.length; k2++) {
             let p2 = byId[_lastActiveStack[k2]];
-            if (p2 && _isPlayerMpd(p2)) return p2;
+            if (p2 && isPlayerMpd(p2)) return p2;
         }
         // 4) Most-recent non-MPD available
         for (let k3 = 0; k3 < _lastActiveStack.length; k3++) {
             let p3 = byId[_lastActiveStack[k3]];
-            if (p3 && !_isPlayerMpd(p3)) return p3;
+            if (p3 && !isPlayerMpd(p3)) return p3;
         }
         // 5) Otherwise, respect selected index if in range
         if (selectedPlayerIndex < avail.length) return avail[selectedPlayerIndex];
@@ -119,7 +119,7 @@ Item {
         Connections {
             target: Mpris.players
             ignoreUnknownSignals: true
-            function onValuesChanged() { root._pruneStack(); root.updateCurrentPlayer() }
+            function onValuesChanged() { root.pruneStack(); root.updateCurrentPlayer() }
         },
         // Track playback state changes per player to maintain LIFO order
         Instantiator {
@@ -128,8 +128,8 @@ Item {
             delegate: Connections {
                 target: modelData
                 ignoreUnknownSignals: true
-                function onPlaybackStateChanged() { root._touchActive(target); root.updateCurrentPlayer(); }
-                function onIsPlayingChanged()     { if (target && target.isPlaying) { root._touchActive(target); root.updateCurrentPlayer(); } }
+                function onPlaybackStateChanged() { root.touchActive(target); root.updateCurrentPlayer(); }
+                function onIsPlayingChanged()     { if (target && target.isPlaying) { root.touchActive(target); root.updateCurrentPlayer(); } }
             }
         }
     ]

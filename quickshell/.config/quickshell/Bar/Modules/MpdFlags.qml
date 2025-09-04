@@ -28,7 +28,7 @@ Item {
     height: implicitHeight
     visible: enabled && activeFlags.length > 0
 
-    function _parseStatus(text) {
+    function parseStatus(text) {
         try {
             const s = String(text || "");
             // Prefer JSON output (rmpc); fallback to human text (mpc)
@@ -87,7 +87,7 @@ Item {
         } catch (e) { }
     }
 
-    function _isMpd() {
+    function isMpd() {
         try {
             const p = MusicManager.currentPlayer;
             if (!p) return false;
@@ -102,7 +102,7 @@ Item {
         command: ["bash", "-lc", cmd + " 2>/dev/null || true"]
         stdout: StdioCollector {
             waitForEnd: true
-            onStreamFinished: { root._parseStatus(text) }
+            onStreamFinished: { root.parseStatus(text) }
         }
     }
 

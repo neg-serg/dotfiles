@@ -18,9 +18,9 @@ Item {
     // Stepping/limits
     property int step: 5
 
-    function _roundToStep(v) { return Math.round(v / step) * step }
+    function roundToStep(v) { return Math.round(v / step) * step }
 
-    function _syncFromSink() {
+    function syncFromSink() {
         if (_audio) {
             muted = _audio.muted
             volume = _audio.muted ? 0 : Math.round((_audio.volume || 0) * 100)
@@ -33,7 +33,7 @@ Item {
     // Set absolute volume in percent (0..100), quantized to `step`
     function setVolume(vol) {
         var clamped = Math.max(0, Math.min(100, Math.round(vol)))
-        var stepped = _roundToStep(clamped)
+        var stepped = roundToStep(clamped)
         if (_audio) {
             _audio.volume = stepped / 100.0
             if (_audio.muted && stepped > 0) _audio.muted = false
@@ -52,12 +52,12 @@ Item {
     // Keep in sync with the PipeWire sink
     Connections {
         target: _audio
-        function onVolumeChanged() { root._syncFromSink() }
-        function onMutedChanged()  { root._syncFromSink() }
+        function onVolumeChanged() { root.syncFromSink() }
+        function onMutedChanged()  { root.syncFromSink() }
     }
 
     // Track sink object swap
     PwObjectTracker { objects: [Pipewire.defaultAudioSink] }
 
-    Component.onCompleted: _syncFromSink()
+    Component.onCompleted: syncFromSink()
 }

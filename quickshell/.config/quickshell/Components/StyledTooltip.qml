@@ -17,7 +17,7 @@ Window {
     // Static timer instance
     property Timer _timer: Timer {
         interval: tooltipWindow.delay
-        onTriggered: tooltipWindow._showNow()
+        onTriggered: tooltipWindow.showNow()
     }
 
     // Scaling parameters with safe fallbacks
@@ -31,15 +31,15 @@ Window {
             if (delay > 0) {
                 _timer.restart();
             } else {
-                _showNow();
+                showNow();
             }
         } else {
-            _hideNow();
+            hideNow();
         }
     }
 
     // Unified size calculation
-    function _updateSize() {
+    function updateSize() {
         if (!tooltipText) return;
 
         var contentWidth = tooltipText.implicitWidth + 2 * padding;
@@ -48,14 +48,14 @@ Window {
         height = Math.max(minSize, contentHeight);
     }
 
-    function _showNow() {
+    function showNow() {
         // Validate target before showing
         if (!targetItem || !targetItem.visible) {
             _hideNow();
             return;
         }
 
-        _updateSize();
+        updateSize();
 
         // Get safe screen geometry
         var screenGeometry = getScreenGeometry();
@@ -158,7 +158,7 @@ Window {
         );
     }
 
-    function _hideNow() {
+    function hideNow() {
         visible = false;
         _timer.stop();
     }
@@ -168,11 +168,11 @@ Window {
         target: tooltipWindow.targetItem
         ignoreUnknownSignals: true
 
-        function onXChanged() { if (visible) _showNow(); }
-        function onYChanged() { if (visible) _showNow(); }
-        function onWidthChanged() { if (visible) _showNow(); }
-        function onHeightChanged() { if (visible) _showNow(); }
-        function onVisibleChanged() { if (!targetItem.visible) _hideNow(); }
+        function onXChanged() { if (visible) showNow(); }
+        function onYChanged() { if (visible) showNow(); }
+        function onWidthChanged() { if (visible) showNow(); }
+        function onHeightChanged() { if (visible) showNow(); }
+        function onVisibleChanged() { if (!targetItem.visible) hideNow(); }
         function onDestroyed() {
             tooltipWindow.targetItem = null;
             tooltipWindow.tooltipVisible = false;
@@ -215,10 +215,10 @@ Window {
 
     // Update when text changes
     onTextChanged: {
-        _updateSize();
-        if (visible) _showNow();
+        updateSize();
+        if (visible) showNow();
     }
 
     // Handle screen changes
-    onScreenChanged: if (visible) Qt.callLater(_showNow)
+    onScreenChanged: if (visible) Qt.callLater(showNow)
 }

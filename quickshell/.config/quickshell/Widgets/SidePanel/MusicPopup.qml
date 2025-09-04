@@ -50,36 +50,36 @@ Item {
                 }
             }
         }
-        function _startAutoHide(ms) {
+        function startAutoHide(ms) {
             toast._autoHideRemainingMs = (ms !== undefined && ms !== null) ? ms : toast.autoHideTotalMs;
             toast._autoHideStartedAtMs = Date.now();
             autoHideTimer.interval = toast._autoHideRemainingMs;
             autoHideTimer.restart();
         }
-        function _pauseAutoHide() {
+        function pauseAutoHide() {
             if (!autoHideTimer.running) return;
             const elapsed = Math.max(0, Date.now() - toast._autoHideStartedAtMs);
             toast._autoHideRemainingMs = Math.max(0, toast._autoHideRemainingMs - elapsed);
             autoHideTimer.stop();
         }
-        function _resumeAutoHide() {
+        function resumeAutoHide() {
             if (toast._autoHideRemainingMs <= 0) { toast.hidePopup(); return; }
             toast._autoHideStartedAtMs = Date.now();
             autoHideTimer.interval = toast._autoHideRemainingMs;
             autoHideTimer.restart();
         }
-        function _cancelAutoHide() {
+        function cancelAutoHide() {
             autoHideTimer.stop();
             toast._autoHideRemainingMs = toast.autoHideTotalMs;
         }
         onVisibleChanged: {
             if (visible) {
-                toast._startAutoHide();
+                toast.startAutoHide();
                 if (sidebarPopup.anchorWindow && sidebarPopup.anchorWindow.panelHovering === true) {
-                    toast._pauseAutoHide();
+                    toast.pauseAutoHide();
                 }
             } else {
-                toast._cancelAutoHide();
+                toast.cancelAutoHide();
             }
         }
 

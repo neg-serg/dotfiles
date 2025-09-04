@@ -172,7 +172,7 @@ Scope {
                     // Auto-show popup when album name changes (and is present)
                     // Store last-shown album here (no binding!)
                     property string _lastAlbum: ""
-                    function _maybeShowOnAlbumChange() {
+                    function maybeShowOnAlbumChange() {
                         try {
                             if (!panel.visible) return;
                             if (MusicManager.isStopped) return;
@@ -187,7 +187,7 @@ Scope {
                     // removed: merged into the Component.onCompleted above
                     Connections {
                         target: MusicManager
-                        function onTrackAlbumChanged()  { panel._maybeShowOnAlbumChange(); }
+                        function onTrackAlbumChanged()  { panel.maybeShowOnAlbumChange(); }
                     }
 
                     // Hover hot-zone to reveal tray: to the right of music and volume (outside Row to avoid anchor warnings)
