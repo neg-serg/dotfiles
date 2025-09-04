@@ -110,7 +110,7 @@ Singleton {
     // _fmtKbps/_fmtKHz/_fmtMHz removed (now in MusicMeta)
 
     // Parse a variety of kHz/Hz string formats to Hz number (approximate)
-    function _parseRateToHz(val) {
+    function parseRateToHz(val) {
         if (val === undefined || val === null || val === "") return NaN;
         var s = String(val).trim();
         // Accept like "44.1k", "44.1 kHz", "44100", "2822.4k"
@@ -123,13 +123,13 @@ Singleton {
         return NaN;
     }
 
-    function _computeDsdVariant(codec, sampleRateStr) {
+    function computeDsdVariant(codec, sampleRateStr) {
         try {
             if (!codec) return "";
             var c = String(codec).toUpperCase();
             if (c.indexOf('DSD') === -1) return "";
             // Try to detect DSD multiple from sample rate
-            var hz = _parseRateToHz(sampleRateStr || trackSampleRateStr || "");
+            var hz = parseRateToHz(sampleRateStr || trackSampleRateStr || "");
             if (!isNaN(hz) && hz > 0) {
                 var base = 44100; // DSD multiples of 44.1k
                 var ratio = hz / base;
@@ -161,7 +161,7 @@ Singleton {
 
     // _computeDsdRateStr removed
 
-    function _computeBitrateStr() {
+    function computeBitrateStr() {
         var v = _playerProp(["bitrate", "audioBitrate", "xesam:audioBitrate", "xesam:bitrate", "mpris:bitrate", "mpd:bitrate"]);
         var s = _fmtKbps(v);
         if (s) return s;
@@ -179,7 +179,7 @@ Singleton {
         return "";
     }
 
-    function _computeSampleRateStr() {
+    function computeSampleRateStr() {
         var v = _playerProp(["sampleRate", "samplerate", "audioSampleRate", "xesam:audioSampleRate", "xesam:samplerate", "mpd:sampleRate"]);
         var s = _fmtKHz(v);
         if (s) return s;
@@ -198,11 +198,11 @@ Singleton {
 
     // _computeCodec removed
 
-    function _computeCodecDetail() {
+    function computeCodecDetail() {
         try {
             var parts = [];
             var base = trackCodec;
-            if (!base && fileAudioMeta && fileAudioMeta.codec) base = _prettyCodecName(fileAudioMeta.codec);
+            if (!base && fileAudioMeta && fileAudioMeta.codec) base = prettyCodecName(fileAudioMeta.codec);
             if (!base && fileAudioMeta && fileAudioMeta.container) base = String(fileAudioMeta.container).toUpperCase();
             if (base) parts.push(base);
             if (fileAudioMeta && fileAudioMeta.profile) parts.push(fileAudioMeta.profile);
@@ -217,7 +217,7 @@ Singleton {
         } catch (e) { return trackCodec; }
     }
 
-    function _computeChannelsStr() {
+    function computeChannelsStr() {
         var v = _playerProp(["channels","channelCount","xesam:channels","audioChannels","mpd:channels"]);
         var s = _toFlatString(v);
         if (s) {
@@ -253,7 +253,7 @@ Singleton {
         return "";
     }
 
-    function _computeBitDepthStr() {
+    function computeBitDepthStr() {
         var v = _playerProp(["bitDepth","bitsPerSample","xesam:bitDepth","audioBitDepth","mpd:bitDepth"]);
         var s = _toFlatString(v);
         if (s) {
@@ -277,7 +277,7 @@ Singleton {
         return "";
     }
 
-    function _computeTrackNumberStr() {
+    function computeTrackNumberStr() {
         var v = _playerProp(["trackNumber","xesam:trackNumber"]);
         var s = _toFlatString(v);
         if (s) return String(s);
@@ -285,7 +285,7 @@ Singleton {
         return "";
     }
 
-    function _computeDiscNumberStr() {
+    function computeDiscNumberStr() {
         var v = _playerProp(["discNumber","xesam:discNumber"]);
         var s = _toFlatString(v);
         if (s) return String(s);
@@ -293,7 +293,7 @@ Singleton {
         return "";
     }
 
-    function _computeAlbumArtist() {
+    function computeAlbumArtist() {
         var v = _playerProp(["albumArtist","xesam:albumArtist"]);
         var s = _toFlatString(v);
         if (s) return s;
@@ -301,7 +301,7 @@ Singleton {
         return "";
     }
 
-    function _computeComposer() {
+    function computeComposer() {
         var v = _playerProp(["composer","xesam:composer"]);
         var s = _toFlatString(v);
         if (s) return s;
@@ -309,7 +309,7 @@ Singleton {
         return "";
     }
 
-    function _computeUrlStr() {
+    function computeUrlStr() {
         var v = _playerProp(["url","xesam:url"]);
         var s = _toFlatString(v);
         if (!s) return "";
@@ -322,7 +322,7 @@ Singleton {
         return s;
     }
 
-    function _computeRgTrackStr() {
+    function computeRgTrackStr() {
         // Various forms: replaygain_track_gain, rg_track_gain, xesam:replayGainTrack
         var v = _playerProp([
             "replaygain_track_gain","rg_track_gain","replaygain_track","replayGainTrack","xesam:replaygain_track_gain","xesam:replayGainTrack"
@@ -339,7 +339,7 @@ Singleton {
         return "";
     }
 
-    function _computeRgAlbumStr() {
+    function computeRgAlbumStr() {
         var v = _playerProp([
             "replaygain_album_gain","rg_album_gain","replaygain_album","replayGainAlbum","xesam:replaygain_album_gain","xesam:replayGainAlbum"
         ]);
@@ -371,9 +371,9 @@ Singleton {
     // Parsed from tools
     property var  fileAudioMeta: ({})   // { codec, codecLong, profile, sampleFormat, sampleRate, bitrateKbps, channels, bitDepth, tags:{}, fileSizeBytes, container, channelLayout, encoder }
 
-    function _resetFileMeta() { fileAudioMeta = ({}) }
+    function resetFileMeta() { fileAudioMeta = ({}) }
 
-    function _pathFromUrl(u) {
+    function pathFromUrl(u) {
         if (!u) return "";
         var s = String(u);
         if (s.startsWith("file://")) {
@@ -450,7 +450,7 @@ Singleton {
         }
     }
 
-    function _parseFfprobe(obj) {
+    function parseFfprobe(obj) {
         if (!obj) return null;
         let audio = null;
         try {
@@ -496,7 +496,7 @@ Singleton {
         return out;
     }
 
-    function _parseMediainfo(obj) {
+    function parseMediainfo(obj) {
         try {
             const tracks = obj && obj.media && obj.media.track ? obj.media.track : [];
             let a = null, g = null;
@@ -539,7 +539,7 @@ Singleton {
         }
     }
 
-    function _parseSoxInfo(text) {
+    function parseSoxInfo(text) {
         try {
             const out = { codec: "", sampleRate: "", bitrateKbps: "", channels: "", bitDepth: "", tags: {}, fileSizeBytes: 0, container: "", channelLayout: "", encoder: "" };
             const lines = String(text).split(/\r?\n/);
@@ -605,7 +605,7 @@ Singleton {
         } catch (e) { return null; }
     }
 
-    function _prettyCodecName(s) {
+    function prettyCodecName(s) {
         if (!s) return "";
         var v = String(s).toLowerCase();
         if (v.startsWith('pcm_')) {
@@ -630,7 +630,7 @@ Singleton {
 
     
 
-    function _computeDateStr() {
+    function computeDateStr() {
         var v = _playerProp(["date","xesam:contentCreated","xesam:date","xesam:contentcreated"]);
         var s = _toFlatString(v);
         if (s) return s;
@@ -638,12 +638,12 @@ Singleton {
         return "";
     }
 
-    function _computeContainer() {
+    function computeContainer() {
         try { if (fileAudioMeta && fileAudioMeta.container) return String(fileAudioMeta.container).toUpperCase(); } catch (e) {}
         return "";
     }
 
-    function _fmtBytes(n) {
+    function fmtBytes(n) {
         var num = Number(n);
         if (isNaN(num) || num <= 0) return "";
         var units = ["B", "KB", "MB", "GB", "TB"]; var i = 0;
@@ -652,19 +652,19 @@ Singleton {
         return num.toFixed(fixed) + " " + units[i];
     }
 
-    function _computeFileSizeStr() {
-        try { if (fileAudioMeta && fileAudioMeta.fileSizeBytes) return _fmtBytes(fileAudioMeta.fileSizeBytes); } catch (e) {}
+    function computeFileSizeStr() {
+        try { if (fileAudioMeta && fileAudioMeta.fileSizeBytes) return fmtBytes(fileAudioMeta.fileSizeBytes); } catch (e) {}
         return "";
     }
 
-    function _computeChannelLayout() {
+    function computeChannelLayout() {
         try { if (fileAudioMeta && fileAudioMeta.channelLayout) return String(fileAudioMeta.channelLayout); } catch (e) {}
         return "";
     }
 
     // Encoder intentionally omitted from public API
 
-    function _computeQualitySummary() {
+    function computeQualitySummary() {
         // Example: "FLAC 44.1k 16 2" or "MP3 320 kbps 44.1k 16 2"
         var parts = [];
         var codec = trackCodec ? String(trackCodec).toUpperCase() : "";
