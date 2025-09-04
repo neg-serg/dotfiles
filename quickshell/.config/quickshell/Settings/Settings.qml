@@ -34,6 +34,9 @@ Singleton {
         JsonAdapter {
             id: settingAdapter
             property string weatherCity: "Moscow"
+            // Optional User-Agent for external APIs (e.g., Nominatim, Open-Meteo)
+            // Set to something like: "Quickshell/1.0 (contact: name@example.com)"
+            property string userAgent: "Quickshell"
             property string profileImage: Quickshell.env("HOME") + "/.face"
             property bool useFahrenheit: false
             // Wallpaper and video settings removed

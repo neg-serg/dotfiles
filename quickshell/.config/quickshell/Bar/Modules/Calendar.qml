@@ -97,7 +97,7 @@ PanelWithOverlay {
                 function updateHolidays() {
                     Holidays.getHolidaysForMonth(calendar.year, calendar.month, function(holidays) {
                         calendar.holidays = holidays;
-                    });
+                    }, null, { userAgent: Settings.settings.userAgent });
                 }
 
                 Layout.fillWidth: true

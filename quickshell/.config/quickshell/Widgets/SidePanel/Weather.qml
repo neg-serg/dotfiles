@@ -65,7 +65,8 @@ Rectangle {
             function(err) {
                 errorString = err;
                 isLoading = false;
-            }
+            },
+            { userAgent: Settings.settings.userAgent }
         );
     }
  

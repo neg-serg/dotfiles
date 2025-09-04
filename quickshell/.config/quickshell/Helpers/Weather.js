@@ -1,6 +1,8 @@
 // In-memory caches with TTL
 var _geoCache = {}; // key: cityLower -> { value: {lat, lon}, expiry: ts, errorUntil?: ts }
 var _weatherCache = {}; // key: cityLower -> { value: weatherObject, expiry: ts, errorUntil?: ts }
+// Shared HTTP helper
+try { Qt.include("Http.js"); } catch (e) { }
 
 // Defaults (can be overridden via options argument)
 var DEFAULTS = {
@@ -134,6 +136,32 @@ function fetchCoordinates(city, callback, errorCallback, options) {
         count: 1
     });
 
+    // Prefer shared httpGetJson with User-Agent if available
+    var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
+    if (typeof httpGetJson === 'function') {
+        httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
+            try {
+                if (geoData && geoData.results && geoData.results.length > 0) {
+                    var lat = geoData.results[0].latitude;
+                    var lon = geoData.results[0].longitude;
+                    writeCacheSuccess(_geoCache, key, { lat: lat, lon: lon }, cfg.geocodeTtlMs);
+                    callback(lat, lon);
+                } else {
+                    writeCacheError(_geoCache, key, cfg.errorTtlMs);
+                    errorCallback && errorCallback("City not found");
+                }
+            } catch (e) {
+                writeCacheError(_geoCache, key, cfg.errorTtlMs);
+                errorCallback && errorCallback("Failed to parse geocoding data");
+            }
+        }, function(err) {
+            if (err && (err.status === 429 || (err.status >= 500 && err.status <= 599))) {
+                writeCacheError(_geoCache, key, cfg.errorTtlMs);
+            }
+            errorCallback && errorCallback("Geocoding error: " + (err.status || err.type || "unknown"));
+        }, _ua);
+        return;
+    }
     xhrGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
         try {
             if (geoData && geoData.results && geoData.results.length > 0) {
@@ -190,6 +218,18 @@ function fetchWeather(latitude, longitude, callback, errorCallback, options) {
         timezone: "auto"
     });
 
+    if (typeof httpGetJson === 'function') {
+        httpGetJson(url, cfg.timeoutMs, function(weatherData) {
+            if (cacheKey) writeCacheSuccess(_weatherCache, cacheKey, weatherData, cfg.weatherTtlMs);
+            callback(weatherData);
+        }, function(err) {
+            if (cacheKey && err && (err.status === 429 || (err.status >= 500 && err.status <= 599))) {
+                writeCacheError(_weatherCache, cacheKey, cfg.errorTtlMs);
+            }
+            errorCallback && errorCallback("Weather fetch error: " + (err.status || err.type || "unknown"));
+        }, _ua);
+        return;
+    }
     xhrGetJson(url, cfg.timeoutMs, function(weatherData) {
         if (cacheKey) writeCacheSuccess(_weatherCache, cacheKey, weatherData, cfg.weatherTtlMs);
         callback(weatherData);
