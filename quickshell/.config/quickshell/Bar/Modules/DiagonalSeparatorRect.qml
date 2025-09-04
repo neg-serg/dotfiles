@@ -30,16 +30,19 @@ Item {
     Rectangle {
         id: line
         width: Math.round(thickness * Theme.scale(panel.screen))
-        height: Math.hypot(root.width, root.height) - inset*2
+        // Snap height to whole pixels to avoid subpixel blur when rotated
+        height: Math.round(Math.hypot(root.width, root.height) - inset*2)
         radius: 0
         // Apply alpha in color so children (accent stripe) are not faded
         color: Qt.rgba(root.color.r, root.color.g, root.color.b, root.alpha)
         anchors.centerIn: parent
         anchors.verticalCenter: parent.verticalCenter
         rotation: angleDeg
-        antialiasing: true
+        transformOrigin: Item.Center
+        // Make edges crisper by avoiding smoothing/antialiasing on rotated texture
+        antialiasing: false
         layer.enabled: true
-        layer.smooth: true
+        layer.smooth: false
 
         // Accent stripe along one edge of the diagonal line
         Rectangle {
@@ -52,7 +55,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: root.stripeOnRight ? undefined : parent.left
             anchors.right: root.stripeOnRight ? parent.right : undefined
-            antialiasing: true
+            antialiasing: false
         }
     }
 }
