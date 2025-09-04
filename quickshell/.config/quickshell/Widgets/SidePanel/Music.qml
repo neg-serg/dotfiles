@@ -254,20 +254,12 @@ Rectangle {
                             border.color: "transparent"
                             border.width: 0
 
-                        Image {
+                        HiDpiImage {
                             id: albumArt
                             anchors.fill: parent
                             anchors.margins: 0
                             fillMode: Image.PreserveAspectCrop
-                            smooth: true
-                            mipmap: true
                             cache: false
-                            asynchronous: true
-                            // Request image at display pixel size for crisp rendering
-                            sourceSize: Qt.size(
-                                Math.round(width  * Screen.devicePixelRatio),
-                                Math.round(height * Screen.devicePixelRatio)
-                            )
                             source: (MusicManager.coverUrl || "")
                             visible: source && source.toString() !== ""
 

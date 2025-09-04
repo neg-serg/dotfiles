@@ -48,18 +48,11 @@ Item {
                 layer.smooth: true
                 layer.samples: 4
 
-                Image {
+                HiDpiImage {
                     id: cover
                     anchors.fill: parent
                     source: MusicManager.coverUrl
-                    smooth: true
-                    mipmap: true
-                    sourceSize: Qt.size(
-                        Math.round(width  * Screen.devicePixelRatio),
-                        Math.round(height * Screen.devicePixelRatio)
-                    )
                     fillMode: Image.PreserveAspectCrop
-                    cache: true
                     visible: status === Image.Ready
                 }
 
