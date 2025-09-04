@@ -20,7 +20,30 @@ Singleton {
     }
 
     function applyOpacity(color, opacity) {
-        return color.replace("#", "#" + opacity);
+        try {
+            const c = String(color);
+            const op = String(opacity);
+
+            // Validate opacity as 2-digit hex
+            if (!/^[0-9a-fA-F]{2}$/.test(op)) {
+                return c; // fallback: leave as-is
+            }
+
+            // Accept only #RRGGBB or #AARRGGBB; otherwise fallback
+            if (/^#[0-9a-fA-F]{6}$/.test(c)) {
+                // Insert alpha prefix to make #AARRGGBB
+                return "#" + op + c.slice(1);
+            }
+            if (/^#[0-9a-fA-F]{8}$/.test(c)) {
+                // Replace existing leading alpha (assumes #AARRGGBB)
+                return "#" + op + c.slice(3);
+            }
+
+            // Fallback: return original color unchanged
+            return c;
+        } catch (e) {
+            return color; // conservative fallback
+        }
     }
     
     // FileView to load theme data from JSON file
