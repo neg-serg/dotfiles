@@ -10,10 +10,9 @@ Item {
     property int volume: 0
     property bool firstChange: true
     visible: false
-    // Pleasant endpoint colors: raspberry (low) -> spruce green (high)
-    // You can tweak these to your taste
-    property color volLowColor: "#D62E6E"   // raspberry
-    property color volHighColor: "#0E6B4D"  // spruce green
+    // Pleasant endpoint colors from Theme
+    property color volLowColor: Theme.panelVolumeLowColor
+    property color volHighColor: Theme.panelVolumeHighColor
     // Stub ioSelector to avoid reference errors if advanced UI isn't present
     Item {
         id: ioSelector
@@ -72,8 +71,7 @@ Item {
             : (volume === 0 ? "volume_off" : (volume < 30 ? "volume_down" : "volume_up"))
         text: volume + "%"
 
-        // Black pill background as requested
-        pillColor: "#000000"
+        pillColor: Theme.panelPillBackground
         iconCircleColor: getVolumeColor()
         iconTextColor: Theme.backgroundPrimary
         textColor: Theme.textPrimary

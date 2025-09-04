@@ -87,6 +87,8 @@ Singleton {
 
             // Typical bar module preferred height (logical)
             property int panelModuleHeight: 36
+            // Generic menu Y offset from anchor (logical)
+            property int panelMenuYOffset: 20
 
             // Corners
             property int cornerRadius: 8
@@ -101,6 +103,8 @@ Singleton {
             property int panelPillPaddingH: 14
             property int panelPillShowDelayMs: 500
             property int panelPillAutoHidePauseMs: 2500
+            // Pill background (used by modules like Volume)
+            property string panelPillBackground: "#000000"
 
             // Animation timings
             property int panelAnimStdMs: 250
@@ -118,6 +122,9 @@ Singleton {
 
             // Volume module behavior (ms)
             property int panelVolumeFullHideMs: 800
+            // Volume gradient endpoint colors
+            property string panelVolumeLowColor:  "#D62E6E"  // raspberry
+            property string panelVolumeHighColor: "#0E6B4D"  // spruce green
         }
     }
     
@@ -171,6 +178,7 @@ Singleton {
     property int panelHotzoneHeight: themeData.panelHotzoneHeight
     property real panelHotzoneRightShift: themeData.panelHotzoneRightShift
     property int panelModuleHeight: themeData.panelModuleHeight
+    property int panelMenuYOffset: themeData.panelMenuYOffset
     // Corners
     property int cornerRadius: themeData.cornerRadius
     property int cornerRadiusSmall: themeData.cornerRadiusSmall
@@ -182,6 +190,7 @@ Singleton {
     property int panelPillPaddingH: themeData.panelPillPaddingH
     property int panelPillShowDelayMs: themeData.panelPillShowDelayMs
     property int panelPillAutoHidePauseMs: themeData.panelPillAutoHidePauseMs
+    property color panelPillBackground: themeData.panelPillBackground
     // Animation timings
     property int panelAnimStdMs: themeData.panelAnimStdMs
     property int panelAnimFastMs: themeData.panelAnimFastMs
@@ -195,4 +204,6 @@ Singleton {
     property int panelRowSpacingSmall: themeData.panelRowSpacingSmall
     // Volume behavior
     property int panelVolumeFullHideMs: themeData.panelVolumeFullHideMs
+    property color panelVolumeLowColor: themeData.panelVolumeLowColor
+    property color panelVolumeHighColor: themeData.panelVolumeHighColor
 }

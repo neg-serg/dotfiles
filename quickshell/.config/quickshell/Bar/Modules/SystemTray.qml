@@ -156,7 +156,7 @@ Row {
                         anchors.centerIn: parent
                         width: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
                         height: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
-                        radius: 6
+                        radius: Theme.cornerRadiusSmall
                         color: "transparent"
                         clip: true
                         TrayIcon {
@@ -189,7 +189,7 @@ Row {
                                 if (trayMenu && trayMenu.visible) { trayMenu.hideMenu(); root.dismissOverlayNow(); return; }
                                 if (modelData.hasMenu && modelData.menu && trayMenu) {
                                     const menuX = (width / 2) - (trayMenu.width / 2);
-                                    const menuY = height + 20 * Theme.scale(Screen);
+                                    const menuY = height + Math.round(Theme.panelMenuYOffset * Theme.scale(Screen));
                                     trayMenu.menu = modelData.menu;
                                     trayMenu.showAt(parent, menuX, menuY);
                                     trayOverlay.show();
@@ -272,8 +272,8 @@ Row {
         // Disabled always to avoid duplicate inline tray; use inlineBox above
         model: 0
         delegate: Item {
-            width: Math.round(24 * Theme.scale(Screen))
-            height: Math.round(24 * Theme.scale(Screen))
+            width: Math.round(Theme.panelIconSize * Theme.scale(Screen))
+            height: Math.round(Theme.panelIconSize * Theme.scale(Screen))
 
             visible: modelData
             property bool isHovered: trayMouseArea.containsMouse
@@ -282,16 +282,16 @@ Row {
 
             Rectangle {
                 anchors.centerIn: parent
-                width: Math.round(16 * Theme.scale(Screen))
-                height: Math.round(16 * Theme.scale(Screen))
-                radius: 6
+                width: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
+                height: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
+                radius: Theme.cornerRadiusSmall
                 color: "transparent"
                 clip: true
 
                 TrayIcon {
                     id: trayIcon
                     anchors.centerIn: parent
-                    size: Math.round(16 * Theme.scale(Screen))
+                    size: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
                     source: modelData?.icon || ""
                     grayscale: trayOverlay.visible
                     opacity: ready ? 1 : 0
@@ -336,7 +336,7 @@ Row {
                         if (modelData.hasMenu && modelData.menu && trayMenu) {
                             // Anchor the menu to the tray icon item (parent) and position it below the icon
                             const menuX = (width / 2) - (trayMenu.width / 2);
-                            const menuY = height + 20 * Theme.scale(Screen);
+                            const menuY = height + Math.round(Theme.panelMenuYOffset * Theme.scale(Screen));
                             trayMenu.menu = modelData.menu;
                             trayMenu.showAt(parent, menuX, menuY);
                             trayOverlay.show();
