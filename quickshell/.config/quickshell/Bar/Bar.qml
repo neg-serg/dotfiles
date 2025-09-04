@@ -128,18 +128,7 @@ Scope {
                                 && !MusicManager.isStopped
                                 && (MusicManager.isPlaying || MusicManager.isPaused || (MusicManager.trackTitle && MusicManager.trackTitle.length > 0))
                             )
-                            function _isMpd() {
-                                try {
-                                    const p = MusicManager.currentPlayer; if (!p) return false;
-                                    const idStr = String((p.service || p.busName || "")).toLowerCase();
-                                    const nameStr = String(p.name || "").toLowerCase();
-                                    const identStr = String(p.identity || "").toLowerCase();
-                                    return /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(idStr)
-                                        || /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(nameStr)
-                                        || /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(identStr);
-                                } catch (e) { return false; }
-                            }
-                            enabled: _mediaVisible && _isMpd()
+                            enabled: _mediaVisible && MusicManager.isCurrentMpdPlayer()
                             iconPx: Math.round(Theme.fontSizeSmall * Theme.scale(panel.screen) * 0.95)
                             iconColor: Theme.textPrimary
                         }

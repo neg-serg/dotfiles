@@ -110,24 +110,7 @@ Item {
             implicitWidth: trackText.implicitWidth
             implicitHeight: mediaControl.height
 
-            // Show MPD flags on the right when MPD is the selected, playing backend
-            function _isMpdPlayer() {
-                try {
-                    const p = MusicManager.currentPlayer;
-                    if (!p) return false;
-                    const idStr = String((p.service || p.busName || "")).toLowerCase();
-                    const nameStr = String(p.name || "").toLowerCase();
-                    const identStr = String(p.identity || "").toLowerCase();
-                    const isMpdLike = /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(idStr)
-                                   || /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(nameStr)
-                                   || /(mpd|mpdris|mopidy|music\s*player\s*daemon)/.test(identStr);
-                    const isPlayerctld = /(playerctld)/.test(idStr) || /(playerctld)/.test(nameStr) || /(playerctld)/.test(identStr);
-                    if (isMpdLike) return true;
-                    // Fallback: if playerctld is selected but mpd reports playing/paused, treat as MPD
-                    if (isPlayerctld && mpdFlags.mpdState && mpdFlags.mpdState !== "stopped") return true;
-                    return false;
-                } catch (e) { return false; }
-            }
+            // (MPD detection centralized in MusicManager)
 
             // Debug logging removed
 

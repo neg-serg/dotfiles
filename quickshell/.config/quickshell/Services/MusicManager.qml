@@ -29,6 +29,20 @@ Singleton {
     }
 
     // --- Public API --------------------------------------------------------
+    // Identify whether a player is MPD-like (mpd/mpdris/mopidy)
+    function isPlayerMpd(player) {
+        try {
+            var p = player || currentPlayer;
+            if (!p) return false;
+            var idStr    = String((p.service || p.busName || "")).toLowerCase();
+            var nameStr  = String(p.name || "").toLowerCase();
+            var identStr = String(p.identity || "").toLowerCase();
+            var re = /(mpd|mpdris|mopidy|music\s*player\s*daemon)/;
+            return re.test(idStr) || re.test(nameStr) || re.test(identStr);
+        } catch (e) { return false; }
+    }
+
+    function isCurrentMpdPlayer() { return isPlayerMpd(currentPlayer); }
     property var  currentPlayer: null
     property real currentPosition: 0                 // ms (kept in UI units)
     property int  selectedPlayerIndex: 0
