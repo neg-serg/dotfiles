@@ -1,4 +1,5 @@
 import QtQuick
+import QtQml
 import Quickshell.Services.Mpris
 
 // Non-visual helper that tracks available MPRIS players and exposes currentPlayer

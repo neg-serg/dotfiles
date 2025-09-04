@@ -1,4 +1,5 @@
 import QtQuick
+import QtQml
 
 // Non-visual helper for tracking and seeking playback position
 Item {
