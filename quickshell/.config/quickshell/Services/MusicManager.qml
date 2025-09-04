@@ -89,33 +89,22 @@ Singleton {
     }
     function play()     { if (currentPlayer && currentPlayer.canPlay)       currentPlayer.play(); }
     function pause()    { if (currentPlayer && currentPlayer.canPause)      currentPlayer.pause(); }
+    function stop()     { if (currentPlayer && typeof currentPlayer.stop === "function") currentPlayer.stop(); }
+    function next()     { if (currentPlayer && currentPlayer.canGoNext)     currentPlayer.next(); }
+    function previous() { if (currentPlayer && currentPlayer.canGoPrevious) currentPlayer.previous(); }
 
+    function seek(posMs) { position.seek(posMs); }
 
-
-
-    // --- File introspection (ffprobe/mediainfo) ----------------------------
-    // Parsed from tools
-
-    function resetFileMeta() { fileAudioMeta = ({}) }
-
-    function pathFromUrl(u) {
-        if (!u) return "";
-        var s = String(u);
-        if (s.startsWith("file://")) {
-            try { return decodeURIComponent(s.replace(/^file:\/\//, "")); } catch (e) { return s.replace(/^file:\/\//, ""); }
-        }
-        // If it's already a local path
-        if (s.startsWith("/")) return s;
-        return "";
-            // Fallback to mediainfo
-            mediainfoProcess.targetPath = targetPath;
-            mediainfoProcess.running = true;
-        }
-    }
-            // Fallback to sox info
-            soxinfoProcess.targetPath = targetPath;
-            soxinfoProcess.running = true;
-        }
+    // Audio spectrum (bars count from settings)
+    // Prefer active profile bars, then settings, then fallback
+    Cava {
+        id: cava
+        count: (
+            Settings.settings.visualizerProfiles
+            && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile]
+            && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].cavaBars
+        ) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].cavaBars
+          : ((Settings.settings.cavaBars && Settings.settings.cavaBars > 0) ? Settings.settings.cavaBars : 86)
     }
     property alias cavaValues: cava.values
 }
