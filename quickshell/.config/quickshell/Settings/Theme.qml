@@ -274,7 +274,7 @@ Singleton {
     property int fontSizeCaption: Math.round(12 * fontSizeMultiplier)    // Captions and fine print
 
     // Panel metrics (logical)
-    property int panelHeight: themeData.panelHeight
+    property int panelHeight: Math.max(16, Math.min(64, themeData.panelHeight))
     property int panelSideMargin: themeData.panelSideMargin
     property int panelWidgetSpacing: themeData.panelWidgetSpacing
     property int panelSepOvershoot: themeData.panelSepOvershoot
@@ -283,9 +283,9 @@ Singleton {
     property int panelIconSizeSmall: themeData.panelIconSizeSmall
     property int panelGlyphSize: themeData.panelGlyphSize
     // Panel hot-zone
-    property int panelHotzoneWidth: themeData.panelHotzoneWidth
-    property int panelHotzoneHeight: themeData.panelHotzoneHeight
-    property real panelHotzoneRightShift: themeData.panelHotzoneRightShift
+    property int panelHotzoneWidth: Math.max(4, Math.min(64, themeData.panelHotzoneWidth))
+    property int panelHotzoneHeight: Math.max(2, Math.min(64, themeData.panelHotzoneHeight))
+    property real panelHotzoneRightShift: Math.max(0.5, Math.min(3.0, themeData.panelHotzoneRightShift))
     property int panelModuleHeight: themeData.panelModuleHeight
     property int panelMenuYOffset: themeData.panelMenuYOffset
     // Corners
@@ -348,16 +348,16 @@ Singleton {
     property real panelHoverOpacity: themeData.panelHoverOpacity
     property int  panelHoverFadeMs: themeData.panelHoverFadeMs
     // Panel menu metrics
-    property int  panelMenuWidth: themeData.panelMenuWidth
+    property int  panelMenuWidth: Math.max(100, Math.min(600, themeData.panelMenuWidth))
     property int  panelSubmenuWidth: themeData.panelSubmenuWidth
-    property int  panelMenuPadding: themeData.panelMenuPadding
-    property int  panelMenuItemSpacing: themeData.panelMenuItemSpacing
-    property int  panelMenuItemHeight: themeData.panelMenuItemHeight
-    property int  panelMenuSeparatorHeight: themeData.panelMenuSeparatorHeight
-    property int  panelMenuDividerMargin: themeData.panelMenuDividerMargin
-    property int  panelMenuRadius: themeData.panelMenuRadius
-    property int  panelMenuHeightExtra: themeData.panelMenuHeightExtra
-    property int  panelMenuAnchorYOffset: themeData.panelMenuAnchorYOffset
+    property int  panelMenuPadding: Math.max(0, Math.min(32, themeData.panelMenuPadding))
+    property int  panelMenuItemSpacing: Math.max(0, Math.min(16, themeData.panelMenuItemSpacing))
+    property int  panelMenuItemHeight: Math.max(16, Math.min(64, themeData.panelMenuItemHeight))
+    property int  panelMenuSeparatorHeight: Math.max(1, Math.min(16, themeData.panelMenuSeparatorHeight))
+    property int  panelMenuDividerMargin: Math.max(0, Math.min(32, themeData.panelMenuDividerMargin))
+    property int  panelMenuRadius: Math.max(0, Math.min(32, themeData.panelMenuRadius))
+    property int  panelMenuHeightExtra: Math.max(0, Math.min(64, themeData.panelMenuHeightExtra))
+    property int  panelMenuAnchorYOffset: Math.max(-20, Math.min(100, themeData.panelMenuAnchorYOffset))
     property int  panelSubmenuGap: themeData.panelSubmenuGap
     property int  panelMenuChevronSize: themeData.panelMenuChevronSize
     property int  panelMenuIconSize: themeData.panelMenuIconSize
@@ -374,19 +374,19 @@ Singleton {
     property int panelOverlayRadius: themeData.panelOverlayRadius
     property int cornerRadiusLarge: themeData.cornerRadiusLarge
     // Generic UI spacings/margins
-    property int uiMarginLarge: themeData.uiMarginLarge
-    property int uiMarginMedium: themeData.uiMarginMedium
-    property int uiPaddingMedium: themeData.uiPaddingMedium
-    property int uiSpacingLarge: themeData.uiSpacingLarge
-    property int uiSpacingSmall: themeData.uiSpacingSmall
-    property int uiSpacingXSmall: themeData.uiSpacingXSmall
+    property int uiMarginLarge: Math.max(0, Math.min(128, themeData.uiMarginLarge))
+    property int uiMarginMedium: Math.max(0, Math.min(64, themeData.uiMarginMedium))
+    property int uiPaddingMedium: Math.max(0, Math.min(64, themeData.uiPaddingMedium))
+    property int uiSpacingLarge: Math.max(0, Math.min(64, themeData.uiSpacingLarge))
+    property int uiSpacingSmall: Math.max(0, Math.min(32, themeData.uiSpacingSmall))
+    property int uiSpacingXSmall: Math.max(0, Math.min(16, themeData.uiSpacingXSmall))
     property int uiGapTiny: themeData.uiGapTiny
     property int uiControlHeight: themeData.uiControlHeight
     // Calendar popup sizing
-    property int calendarWidth: themeData.calendarWidth
-    property int calendarHeight: themeData.calendarHeight
-    property int calendarPopupMargin: themeData.calendarPopupMargin
+    property int calendarWidth: Math.max(200, Math.min(800, themeData.calendarWidth))
+    property int calendarHeight: Math.max(200, Math.min(800, themeData.calendarHeight))
+    property int calendarPopupMargin: Math.max(0, Math.min(32, themeData.calendarPopupMargin))
     property int calendarBorderWidth: themeData.calendarBorderWidth
-    property int calendarCellSize: themeData.calendarCellSize
+    property int calendarCellSize: Math.max(16, Math.min(64, themeData.calendarCellSize))
     property int calendarHolidayDotSize: themeData.calendarHolidayDotSize
 }
