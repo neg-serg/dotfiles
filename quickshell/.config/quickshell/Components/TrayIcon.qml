@@ -1,7 +1,8 @@
 import QtQuick
 import QtQuick.Effects
 import Quickshell.Widgets
-import "../Helpers/Url.js" as url
+// QML requires import qualifiers to start with an uppercase letter
+import "../Helpers/Url.js" as Url
 
 // TrayIcon — wrapper for system tray icons with HiDPI sizing and optional grayscale
 Item {
@@ -35,13 +36,13 @@ Item {
         var query = icon.slice(qIndex);
 
         // Parse via shared helper
-        var params = url.parseQuery(query);
+        var params = Url.parseQuery(query);
 
         var path = params["path"];
         if (path && path.length > 0) {
             var fileName = base.substring(base.lastIndexOf("/") + 1);
             // Build file URL via helper
-            return url.buildFileUrl(path, fileName);
+            return Url.buildFileUrl(path, fileName);
         }
 
         // Fallback: return original icon (including query)
