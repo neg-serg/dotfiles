@@ -27,6 +27,10 @@ Item {
     // Colors
     property color onColor:  useTheme ? Theme.accentPrimary : "#4CAF50"
     property color offColor: useTheme ? Theme.textDisabled  : "#6B718A"
+    // Accent derived from Theme; desaturated for subtle look
+    property real  desaturateAmount: 0.45   // 0..1, higher = less saturated
+    property color accentBase: Theme.accentSecondary
+    property color accentColor: desaturateColor(accentBase, desaturateAmount)
 
     // Internal state
     property bool connected: false
@@ -107,6 +111,25 @@ Item {
         }
     }
 
+    // --- Color helpers ---
+    function mixColor(a, b, t) {
+        // a,b: colors; t in [0,1]
+        return Qt.rgba(
+            a.r * (1 - t) + b.r * t,
+            a.g * (1 - t) + b.g * t,
+            a.b * (1 - t) + b.b * t,
+            a.a * (1 - t) + b.a * t
+        )
+    }
+    function grayOf(c) {
+        const y = 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b
+        return Qt.rgba(y, y, y, c.a)
+    }
+    function desaturateColor(c, amount) {
+        amount = Math.max(0, Math.min(1, amount || 0))
+        return mixColor(c, grayOf(c), amount)
+    }
+
     function checkInterfaces(arr) {
         if (!Array.isArray(arr)) { root.connected = false; root.matchedIf = ""; return }
         let found = false
@@ -130,9 +153,9 @@ Item {
     property real  disconnectedOpacity: 0.45
     opacity: hovered ? 1.0 : (connected ? connectedOpacity : disconnectedOpacity)
     function iconColor() {
-        if (hovered) return root.connected ? root.onColor : root.offColor
-        if (muted) return root.connected ? Theme.textPrimary : root.offColor
-        return root.connected ? root.onColor : root.offColor
+        if (!connected) return offColor
+        // Use workspace accent blue when connected (subtle); hover only affects opacity
+        return accentColor
     }
 
     MouseArea {
