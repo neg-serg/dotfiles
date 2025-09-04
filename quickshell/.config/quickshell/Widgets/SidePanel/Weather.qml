@@ -127,13 +127,11 @@ Rectangle {
                         visible: isLoading
                     }
 
-                    Text {
+                    MaterialIcon {
                         id: weatherIcon
                         visible: !isLoading
-                        text: weatherData && weatherData.current_weather ? materialSymbolForCode(weatherData.current_weather.weathercode) : "cloud"
-                        font.family: "Material Symbols Outlined"
-                        font.pixelSize: 28 * Theme.scale(Screen)
-                        verticalAlignment: Text.AlignVCenter
+                        icon: weatherData && weatherData.current_weather ? materialSymbolForCode(weatherData.current_weather.weathercode) : "cloud"
+                        size: 28 * Theme.scale(Screen)
                         color: Theme.accentPrimary
                         Layout.alignment: Qt.AlignVCenter
                     }
@@ -203,13 +201,10 @@ Rectangle {
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }
-                        Text {
- 
-                            text: materialSymbolForCode(weatherData.daily.weathercode[index])
-                            font.family: "Material Symbols Outlined"
-                            font.pixelSize: 22 * Theme.scale(Screen)
+                        MaterialIcon {
+                            icon: materialSymbolForCode(weatherData.daily.weathercode[index])
+                            size: 22 * Theme.scale(Screen)
                             color: Theme.accentPrimary
-                            horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }
                         Text {

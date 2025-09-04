@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Settings
+import qs.Components
 
 Item {
     id: buttonRoot
@@ -39,11 +40,11 @@ Item {
         visible: (isActive ? 0.18 : hoverOpacity) > 0.01
     }
 
-    Text {
+    MaterialIcon {
         id: iconText
-        text: "dashboard"
-        font.family: isActive ? "Material Symbols Rounded" : "Material Symbols Outlined"
-        font.pixelSize: 16 * Theme.scale(screen)
+        icon: "dashboard"
+        rounded: isActive
+        size: 16 * Theme.scale(screen)
         color: sidebarPopup.visible ? Theme.accentPrimary : Theme.textPrimary
         anchors.centerIn: parent
         z: 1

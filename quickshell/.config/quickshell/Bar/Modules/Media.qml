@@ -63,12 +63,11 @@ Item {
                     visible: status === Image.Ready
                 }
 
-                Text {
+                MaterialIcon {
                     id: fallbackIcon
                     anchors.centerIn: parent
-                    text: "music_note"
-                    font.family: "Material Symbols Outlined"
-                    font.pixelSize: 14 * Theme.scale(Screen)
+                    icon: "music_note"
+                    size: 14 * Theme.scale(Screen)
                     color: Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.4)
                     visible: !cover.visible
                 }
@@ -79,11 +78,10 @@ Item {
                     color: Qt.rgba(0, 0, 0, 0.5)
                     visible: playButton.containsMouse
                     z: 2
-                    Text {
+                    MaterialIcon {
                         anchors.centerIn: parent
-                        text: MusicManager.isPlaying ? "pause" : "play_arrow"
-                        font.family: "Material Symbols Outlined"
-                        font.pixelSize: 14 * Theme.scale(Screen)
+                        icon: MusicManager.isPlaying ? "pause" : "play_arrow"
+                        size: 14 * Theme.scale(Screen)
                         color: "white"
                     }
                 }
