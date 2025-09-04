@@ -66,6 +66,13 @@ Singleton {
             // Shadows & Overlays
             property string shadow:  "#000000"
             property string overlay: "#10141A"
+
+            // Panel metrics (logical px; scaled per-screen via Theme.scale(screen))
+            property int panelHeight: 28
+            property int panelSideMargin: 18
+            property int panelWidgetSpacing: 12
+            // Separator overshoot is typically unscaled to preserve look
+            property int panelSepOvershoot: 60
         }
     }
     
@@ -104,4 +111,10 @@ Singleton {
     property int fontSizeBody: Math.round(16 * fontSizeMultiplier)       // Body text and general content
     property int fontSizeSmall: Math.round(14 * fontSizeMultiplier)      // Small text like clock, labels
     property int fontSizeCaption: Math.round(12 * fontSizeMultiplier)    // Captions and fine print
+
+    // Panel metrics (logical)
+    property int panelHeight: themeData.panelHeight
+    property int panelSideMargin: themeData.panelSideMargin
+    property int panelWidgetSpacing: themeData.panelWidgetSpacing
+    property int panelSepOvershoot: themeData.panelSepOvershoot
 }

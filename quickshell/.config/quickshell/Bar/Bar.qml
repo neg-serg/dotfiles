@@ -47,12 +47,13 @@ Scope {
                     // ---------- Lifted/shared properties ----------
                     // UI scale for this screen
                     property real s: Theme.scale(panel.screen)
-                    // Bar metrics
-                    property int  barHeightPx: Math.round(28 * s)
-                    property int  sideMargin:  Math.round(18 * s)
-                    property int  widgetSpacing: Math.round(12 * s)
-                    property int  sepOvershoot: 60 // Separator overshoot (kept unscaled to preserve look)
-                    property color barBgColor: Theme.backgroundPrimary // Colors
+                    // Bar metrics (logical values from Theme scaled per-screen)
+                    property int  barHeightPx:   Math.round(Theme.panelHeight * s)
+                    property int  sideMargin:    Math.round(Theme.panelSideMargin * s)
+                    property int  widgetSpacing: Math.round(Theme.panelWidgetSpacing * s)
+                    // Separator overshoot kept unscaled by design
+                    property int  sepOvershoot:  Theme.panelSepOvershoot
+                    property color barBgColor:   Theme.backgroundPrimary // Colors
 
                     // Inline component for repeated diagonal separator
                     component DiagSep: DiagonalSeparatorRect {
