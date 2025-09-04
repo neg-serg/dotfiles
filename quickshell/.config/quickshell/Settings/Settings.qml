@@ -38,6 +38,8 @@ Singleton {
             // Set to something like: "Quickshell/1.0 (contact: name@example.com)"
             property string userAgent: "Quickshell"
             property string profileImage: Quickshell.env("HOME") + "/.face"
+            // Debug toggles
+            property bool debugNetwork: false
             property bool useFahrenheit: false
             // Wallpaper and video settings removed
             property bool showMediaInBar: false

@@ -104,7 +104,9 @@ function fetchCoordinates(city, callback, errorCallback, options) {
     // Use shared httpGetJson with User-Agent
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
     if (typeof httpGetJson === 'function') {
-        httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
+        var dbg = !!(options && options.debug);
+    if (dbg) try { console.debug('[Weather] GET', geoUrl); } catch (e) {}
+    httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
             try {
                 if (geoData && geoData.results && geoData.results.length > 0) {
                     var lat = geoData.results[0].latitude;
@@ -127,6 +129,8 @@ function fetchCoordinates(city, callback, errorCallback, options) {
         }, _ua);
         return;
     }
+    var dbg = !!(options && options.debug);
+    if (dbg) try { console.debug('[Weather] GET', geoUrl); } catch (e) {}
     httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
         try {
             if (geoData && geoData.results && geoData.results.length > 0) {
@@ -185,6 +189,7 @@ function fetchWeather(latitude, longitude, callback, errorCallback, options) {
         timezone: "auto"
     });
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
+    if (dbg) try { console.debug('[Weather] GET', url); } catch (e) {}
     httpGetJson(url, cfg.timeoutMs, function(weatherData) {
         if (cacheKey) writeCacheSuccess(_weatherCache, cacheKey, weatherData, cfg.weatherTtlMs);
         callback(weatherData);

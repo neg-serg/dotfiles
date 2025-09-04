@@ -66,7 +66,7 @@ Rectangle {
                 errorString = err;
                 isLoading = false;
             },
-            { userAgent: Settings.settings.userAgent }
+            { userAgent: Settings.settings.userAgent, debug: Settings.settings.debugNetwork }
         );
     }
  

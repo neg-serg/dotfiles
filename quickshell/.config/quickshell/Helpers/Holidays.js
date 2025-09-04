@@ -109,6 +109,8 @@ function getCountryCode(callback, errorCallback, options) {
         }, _ua);
         return;
     }
+    var dbg = !!(options && options.debug);
+    if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
     httpGetJson(url, cfg.timeoutMs, function(response) {
         try {
             _countryCode = (response && response[0] && response[0].address && response[0].address.country_code) ? response[0].address.country_code : "US";
@@ -167,6 +169,7 @@ function getHolidays(year, countryCode, callback, errorCallback, options) {
         }, _ua);
         return;
     }
+    if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
     httpGetJson(url, cfg.timeoutMs, function(list) {
         try {
             var augmented = filterHolidaysByRegion(list || []);
