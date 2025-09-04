@@ -143,8 +143,10 @@ function fetchCoordinates(city, callback, errorCallback, options) {
             errorCallback && errorCallback("Failed to parse geocoding data");
         }
     }, function(err) {
-        if (err && (err.status === 429 || (err.status >= 500 && err.status <= 599))) {
-            writeCacheError(_geoCache, key, cfg.errorTtlMs);
+        if (err) {
+            var backoff = (err.retryAfter && err.retryAfter > 0) ? err.retryAfter : 0;
+            if (!backoff && (err.status === 429 || (err.status >= 500 && err.status <= 599))) backoff = cfg.errorTtlMs;
+            if (backoff) writeCacheError(_geoCache, key, backoff);
         }
         errorCallback && errorCallback("Geocoding error: " + (err.status || err.type || "unknown"));
     });
@@ -182,28 +184,18 @@ function fetchWeather(latitude, longitude, callback, errorCallback, options) {
         daily: "temperature_2m_max,temperature_2m_min,weathercode",
         timezone: "auto"
     });
-
-    if (typeof httpGetJson === 'function') {
-        httpGetJson(url, cfg.timeoutMs, function(weatherData) {
-            if (cacheKey) writeCacheSuccess(_weatherCache, cacheKey, weatherData, cfg.weatherTtlMs);
-            callback(weatherData);
-        }, function(err) {
-            if (cacheKey && err && (err.status === 429 || (err.status >= 500 && err.status <= 599))) {
-                writeCacheError(_weatherCache, cacheKey, cfg.errorTtlMs);
-            }
-            errorCallback && errorCallback("Weather fetch error: " + (err.status || err.type || "unknown"));
-        }, _ua);
-        return;
-    }
+    var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
     httpGetJson(url, cfg.timeoutMs, function(weatherData) {
         if (cacheKey) writeCacheSuccess(_weatherCache, cacheKey, weatherData, cfg.weatherTtlMs);
         callback(weatherData);
     }, function(err) {
-        if (cacheKey && err && (err.status === 429 || (err.status >= 500 && err.status <= 599))) {
-            writeCacheError(_weatherCache, cacheKey, cfg.errorTtlMs);
+        if (cacheKey && err) {
+            var backoff = (err.retryAfter && err.retryAfter > 0) ? err.retryAfter : 0;
+            if (!backoff && (err.status === 429 || (err.status >= 500 && err.status <= 599))) backoff = cfg.errorTtlMs;
+            if (backoff) writeCacheError(_weatherCache, cacheKey, backoff);
         }
         errorCallback && errorCallback("Weather fetch error: " + (err.status || err.type || "unknown"));
-    });
+    }, _ua);
 }
 
 function fetchCityWeather(city, callback, errorCallback, options) {

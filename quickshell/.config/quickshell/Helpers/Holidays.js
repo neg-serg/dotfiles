@@ -120,6 +120,12 @@ function getCountryCode(callback, errorCallback, options) {
             errorCallback && errorCallback("Failed to parse location data");
         }
     }, function(err) {
+        // Back off location lookup if Retry-After or server error
+        if (err) {
+            var backoff = (err.retryAfter && err.retryAfter > 0) ? err.retryAfter : 0;
+            if (!backoff && (err.status === 429 || (err.status >= 500 && err.status <= 599))) backoff = cfg.errorTtlMs;
+            if (backoff > 0) _locationExpiry = now() + backoff;
+        }
         errorCallback && errorCallback("Location lookup error: " + (err.status || err.type || "unknown"));
     }, _ua);
 }
@@ -170,8 +176,10 @@ function getHolidays(year, countryCode, callback, errorCallback, options) {
             errorCallback && errorCallback("Failed to process holidays");
         }
     }, function(err) {
-        if (err && (err.status === 429 || (err.status >= 500 && err.status <= 599))) {
-            writeCacheError(_holidaysCache, cacheKey, cfg.errorTtlMs);
+        if (err) {
+            var backoff = (err.retryAfter && err.retryAfter > 0) ? err.retryAfter : 0;
+            if (!backoff && (err.status === 429 || (err.status >= 500 && err.status <= 599))) backoff = cfg.errorTtlMs;
+            if (backoff > 0) writeCacheError(_holidaysCache, cacheKey, backoff);
         }
         errorCallback && errorCallback("Holidays fetch error: " + (err.status || err.type || "unknown"));
     }, _ua);
