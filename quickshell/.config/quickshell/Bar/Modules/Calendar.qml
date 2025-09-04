@@ -190,7 +190,7 @@ PanelWithOverlay {
                         text: ""
                         tooltipVisible: false
                         targetItem: null
-                        delay: 100
+                        delay: Theme.tooltipDelayMs
                     }
 
                     // Remove hover color animation for instant response

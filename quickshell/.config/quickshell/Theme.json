@@ -39,6 +39,12 @@
   "cornerRadiusSmall": 4,
 
   "tooltipDelayMs": 1500,
+  "tooltipMinSize": 20,
+  "tooltipMargin": 12,
+  "tooltipPadding": 8,
+  "tooltipBorderWidth": 1,
+  "tooltipRadius": 2,
+  "tooltipFontPx": 14,
 
   "panelPillBackground": "#000000",
   "panelPillHeight": 22,
@@ -49,6 +55,9 @@
 
   "panelAnimStdMs": 250,
   "panelAnimFastMs": 200,
+  "sidePanelPopupSlideMs": 220,
+  "sidePanelPopupAutoHideMs": 4000,
+  "sidePanelPopupOuterMargin": 4,
 
   "panelTrayLongHoldMs": 2500,
   "panelTrayShortHoldMs": 1500,
@@ -62,6 +71,23 @@
   "panelVolumeLowColor":  "#D62E6E",
   "panelVolumeHighColor": "#0E6B4D"
 ,
+  "panelHoverOpacity": 0.18,
+  "panelHoverFadeMs": 120,
+
+  "panelMenuWidth": 180,
+  "panelSubmenuWidth": 180,
+  "panelMenuPadding": 4,
+  "panelMenuItemSpacing": 2,
+  "panelMenuItemHeight": 26,
+  "panelMenuSeparatorHeight": 6,
+  "panelMenuDividerMargin": 10,
+  "panelMenuRadius": 0,
+  "panelMenuHeightExtra": 12,
+  "panelMenuAnchorYOffset": 4,
+  "panelSubmenuGap": 12,
+  "panelMenuChevronSize": 15,
+  "panelMenuIconSize": 16,
+
   "sidePanelCornerRadius": 9,
   "sidePanelSpacing": 12,
   "sidePanelSpacingTight": 6,

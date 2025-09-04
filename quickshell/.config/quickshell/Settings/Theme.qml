@@ -96,6 +96,12 @@ Singleton {
 
             // Tooltip
             property int tooltipDelayMs: 1500
+            property int tooltipMinSize: 20
+            property int tooltipMargin: 12
+            property int tooltipPadding: 8
+            property int tooltipBorderWidth: 1
+            property int tooltipRadius: 2
+            property int tooltipFontPx: 14
 
             // Pill indicator defaults
             property int panelPillHeight: 22
@@ -125,6 +131,33 @@ Singleton {
             // Volume gradient endpoint colors
             property string panelVolumeLowColor:  "#D62E6E"  // raspberry
             property string panelVolumeHighColor: "#0E6B4D"  // spruce green
+
+            // Side-panel popup timings/margins (MusicPopup)
+            property int  sidePanelPopupSlideMs: 220
+            property int  sidePanelPopupAutoHideMs: 4000
+            property int  sidePanelPopupOuterMargin: 4
+
+            // Side-panel spacing medium (in addition to small/tight)
+            property int  sidePanelSpacingMedium: 8
+
+            // Hover behavior (opacity/timing)
+            property real panelHoverOpacity: 0.18
+            property int  panelHoverFadeMs: 120
+
+            // Tray/Panel menu metrics
+            property int  panelMenuWidth: 180
+            property int  panelSubmenuWidth: 180
+            property int  panelMenuPadding: 4
+            property int  panelMenuItemSpacing: 2
+            property int  panelMenuItemHeight: 26
+            property int  panelMenuSeparatorHeight: 6
+            property int  panelMenuDividerMargin: 10
+            property int  panelMenuRadius: 0
+            property int  panelMenuHeightExtra: 12
+            property int  panelMenuAnchorYOffset: 4
+            property int  panelSubmenuGap: 12
+            property int  panelMenuChevronSize: 15
+            property int  panelMenuIconSize: 16
 
             // Side panel defaults (logical)
             property int  sidePanelCornerRadius: 9
@@ -198,6 +231,12 @@ Singleton {
     property int cornerRadiusSmall: themeData.cornerRadiusSmall
     // Tooltip
     property int tooltipDelayMs: themeData.tooltipDelayMs
+    property int tooltipMinSize: themeData.tooltipMinSize
+    property int tooltipMargin: themeData.tooltipMargin
+    property int tooltipPadding: themeData.tooltipPadding
+    property int tooltipBorderWidth: themeData.tooltipBorderWidth
+    property int tooltipRadius: themeData.tooltipRadius
+    property int tooltipFontPx: themeData.tooltipFontPx
     // Pill indicator defaults
     property int panelPillHeight: themeData.panelPillHeight
     property int panelPillIconSize: themeData.panelPillIconSize
@@ -220,6 +259,29 @@ Singleton {
     property int panelVolumeFullHideMs: themeData.panelVolumeFullHideMs
     property color panelVolumeLowColor: themeData.panelVolumeLowColor
     property color panelVolumeHighColor: themeData.panelVolumeHighColor
+    // Side-panel popup timings/margins
+    property int  sidePanelPopupSlideMs: themeData.sidePanelPopupSlideMs
+    property int  sidePanelPopupAutoHideMs: themeData.sidePanelPopupAutoHideMs
+    property int  sidePanelPopupOuterMargin: themeData.sidePanelPopupOuterMargin
+    // Side-panel spacing medium
+    property int  sidePanelSpacingMedium: themeData.sidePanelSpacingMedium
+    // Hover behavior
+    property real panelHoverOpacity: themeData.panelHoverOpacity
+    property int  panelHoverFadeMs: themeData.panelHoverFadeMs
+    // Panel menu metrics
+    property int  panelMenuWidth: themeData.panelMenuWidth
+    property int  panelSubmenuWidth: themeData.panelSubmenuWidth
+    property int  panelMenuPadding: themeData.panelMenuPadding
+    property int  panelMenuItemSpacing: themeData.panelMenuItemSpacing
+    property int  panelMenuItemHeight: themeData.panelMenuItemHeight
+    property int  panelMenuSeparatorHeight: themeData.panelMenuSeparatorHeight
+    property int  panelMenuDividerMargin: themeData.panelMenuDividerMargin
+    property int  panelMenuRadius: themeData.panelMenuRadius
+    property int  panelMenuHeightExtra: themeData.panelMenuHeightExtra
+    property int  panelMenuAnchorYOffset: themeData.panelMenuAnchorYOffset
+    property int  panelSubmenuGap: themeData.panelSubmenuGap
+    property int  panelMenuChevronSize: themeData.panelMenuChevronSize
+    property int  panelMenuIconSize: themeData.panelMenuIconSize
     // Side panel exports
     property int sidePanelCornerRadius: themeData.sidePanelCornerRadius
     property int sidePanelSpacing: themeData.sidePanelSpacing

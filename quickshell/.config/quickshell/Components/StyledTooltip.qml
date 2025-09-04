@@ -21,10 +21,10 @@ Window {
     }
 
     // Scaling parameters with safe fallbacks
-    property real minSize: 20 * scaleFactor
+    property real minSize: Theme.tooltipMinSize * scaleFactor
     property real scaleFactor: Theme.scale ? Theme.scale(screen) : 1
-    property real margin: 12 * scaleFactor
-    property real padding: 8 * scaleFactor
+    property real margin: Theme.tooltipMargin * scaleFactor
+    property real padding: Theme.tooltipPadding * scaleFactor
 
     onTooltipVisibleChanged: {
         if (tooltipVisible) {
@@ -182,10 +182,10 @@ Window {
     // Tooltip background
     Rectangle {
         anchors.fill: parent
-        radius: 2 * scaleFactor
+        radius: Theme.tooltipRadius * scaleFactor
         color: Theme.backgroundTertiary || "#222"
         border.color: Theme.outline || "#444"
-        border.width: 1 * scaleFactor
+        border.width: Theme.tooltipBorderWidth * scaleFactor
         opacity: 0.97
         z: 1
     }
@@ -196,7 +196,7 @@ Window {
         text: tooltipWindow.text
         color: Theme.textPrimary
         font.family: Theme.fontFamily || "Arial"
-        font.pixelSize: 14 * scaleFactor
+        font.pixelSize: Theme.tooltipFontPx * scaleFactor
         anchors.centerIn: parent
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter

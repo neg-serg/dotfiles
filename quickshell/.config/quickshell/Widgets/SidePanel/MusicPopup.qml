@@ -31,7 +31,7 @@ Item {
         visible: false
 
         // --- Auto-hide with pause on hover/focus and while cursor is on panel
-        property int autoHideTotalMs: 4000
+        property int autoHideTotalMs: Theme.sidePanelPopupAutoHideMs
         property int _autoHideRemainingMs: autoHideTotalMs
         property double _autoHideStartedAtMs: 0
         Timer {
@@ -101,7 +101,7 @@ Item {
             id: slide
             target: toast
             property: "slideX"
-            duration: 220
+            duration: Theme.sidePanelPopupSlideMs
             easing.type: Easing.InOutCubic
             onStopped: {
                 if (toast._hiding) {
@@ -118,7 +118,7 @@ Item {
             target: toast.anchor
             function onAnchoring() {
                 const scale = Theme.scale(Screen);
-                const outer = Math.round(4 * scale) + sidebarPopup.barMarginPx;
+                const outer = Math.round(Theme.sidePanelPopupOuterMargin * scale) + sidebarPopup.barMarginPx;
 
                 // Align to the right edge of the panel window
                 const px = sidebarPopup.anchorWindow
@@ -220,7 +220,7 @@ Item {
                 spacing: 0
 
                 RowLayout {
-                    spacing: 8 * Theme.scale(Screen)
+                    spacing: Math.round(Theme.sidePanelSpacingMedium * Theme.scale(Screen))
                     Layout.fillWidth: false
                     Layout.alignment: Qt.AlignHCenter
 
