@@ -8,9 +8,18 @@ import Quickshell.Widgets
 import qs.Components
 import qs.Settings
 
-import "../../Helpers/Fuzzysort.js" as Fuzzysort
+import "../../Helpers" as Helpers
 
 PanelWithOverlay {
+    // Smoke test to ensure Helpers.Fuzzy is available at runtime
+    Component.onCompleted: {
+        try {
+            var res = Helpers.Fuzzy.single('term', 'terminal');
+            console.debug('[Applauncher] Fuzzy smoke:', res ? 'ok' : 'no match');
+        } catch (e) {
+            console.warn('[Applauncher] Fuzzy smoke failed:', e);
+        }
+    }
     Timer {
         id: clipboardTimer
         interval: 1000
@@ -407,7 +416,7 @@ PanelWithOverlay {
                         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
                     }));
                 } else {
-                    var fuzzyResults = Fuzzysort.go(query, apps, {
+                    var fuzzyResults = Helpers.Fuzzy.go(query, apps, {
                         keys: ["name", "comment", "genericName"]
                     });
                     results = results.concat(fuzzyResults.map(function (r) {
