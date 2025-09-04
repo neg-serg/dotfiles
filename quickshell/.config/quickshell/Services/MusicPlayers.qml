@@ -39,9 +39,19 @@ Item {
 
     Component.onCompleted: updateCurrentPlayer()
 
-    // Conservative polling to avoid QML Connections issues in this env
+    // Primary: react to MPRIS players list changes via Connections
+    // Keep it under data: [...] to satisfy Item's default property list
+    data: [
+        Connections {
+            target: Mpris.players
+            ignoreUnknownSignals: true
+            function onValuesChanged() { root.updateCurrentPlayer() }
+        }
+    ]
+
+    // Fallback: light polling in case Connections are not delivered in this env
     Timer {
-        interval: 1200
+        interval: 5000
         repeat: true
         running: true
         onTriggered: root.updateCurrentPlayer()
