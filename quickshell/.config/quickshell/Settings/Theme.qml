@@ -105,6 +105,19 @@ Singleton {
             // Animation timings
             property int panelAnimStdMs: 250
             property int panelAnimFastMs: 200
+
+            // Tray behavior timings (ms)
+            property int panelTrayLongHoldMs: 2500
+            property int panelTrayShortHoldMs: 1500
+            property int panelTrayGuardMs: 120
+            property int panelTrayOverlayDismissDelayMs: 5000
+
+            // Generic row spacing in bar context (logical)
+            property int panelRowSpacing: 8
+            property int panelRowSpacingSmall: 4
+
+            // Volume module behavior (ms)
+            property int panelVolumeFullHideMs: 800
         }
     }
     
@@ -172,4 +185,14 @@ Singleton {
     // Animation timings
     property int panelAnimStdMs: themeData.panelAnimStdMs
     property int panelAnimFastMs: themeData.panelAnimFastMs
+    // Tray behavior timings
+    property int panelTrayLongHoldMs: themeData.panelTrayLongHoldMs
+    property int panelTrayShortHoldMs: themeData.panelTrayShortHoldMs
+    property int panelTrayGuardMs: themeData.panelTrayGuardMs
+    property int panelTrayOverlayDismissDelayMs: themeData.panelTrayOverlayDismissDelayMs
+    // Generic row spacing
+    property int panelRowSpacing: themeData.panelRowSpacing
+    property int panelRowSpacingSmall: themeData.panelRowSpacingSmall
+    // Volume behavior
+    property int panelVolumeFullHideMs: themeData.panelVolumeFullHideMs
 }

@@ -28,7 +28,7 @@ Item {
     RowLayout {
         id: mediaRow
         height: parent.height
-        spacing: 12
+        spacing: Math.round(Theme.panelWidgetSpacing * Theme.scale(Screen))
 
         Item {
             id: albumArtContainer

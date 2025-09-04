@@ -21,7 +21,7 @@ Row {
     // Long hold timer (menu close): keep for 2.5 seconds
     Timer {
         id: longHoldTimer
-        interval: 2500
+        interval: Theme.panelTrayLongHoldMs
         repeat: false
         onTriggered: {
             root.holdOpen = false;
@@ -31,7 +31,7 @@ Row {
     // Short hold timer (hover leave): keep for 1.5 seconds
     Timer {
         id: shortHoldTimer
-        interval: 1500
+        interval: Theme.panelTrayShortHoldMs
         repeat: false
         onTriggered: { root.shortHoldActive = false; if (!root.panelHover && !root.hotHover && !root.holdOpen) root.expanded = false }
     }
@@ -58,9 +58,9 @@ Row {
     // Track programmatic overlay dismiss to distinguish outside-click
     property bool programmaticOverlayDismiss: false
     // Delay collapse after outside click (ms)
-    Timer { id: collapseDelayTimer; interval: 5000; repeat: false; onTriggered: root.expanded = false }
+    Timer { id: collapseDelayTimer; interval: Theme.panelTrayOverlayDismissDelayMs; repeat: false; onTriggered: root.expanded = false }
     function dismissOverlayNow() { root.programmaticOverlayDismiss = true; trayOverlay.dismiss(); root.programmaticOverlayDismiss = false }
-    spacing: 8
+    spacing: Math.round(Theme.panelRowSpacing * Theme.scale(Screen))
     Layout.alignment: Qt.AlignVCenter
 
     property bool containsMouse: false
@@ -71,7 +71,7 @@ Row {
     property bool expanded: false
     // Guard to avoid immediate close from the same click that opened
     property bool openGuard: false
-    Timer { id: guardTimer; interval: 120; repeat: false; onTriggered: openGuard = false }
+    Timer { id: guardTimer; interval: Theme.panelTrayGuardMs; repeat: false; onTriggered: openGuard = false }
 
     // Note: we purposely avoid a full overlay here to prevent immediate close issues in Row
     // Overlay to close tray on outside clicks (Hyprland): separate layer window
@@ -142,7 +142,7 @@ Row {
             // Align to the right edge so reveal expands leftwards
             anchors.right: bg.right
             anchors.verticalCenter: bg.verticalCenter
-            spacing: 4
+            spacing: Math.round(Theme.panelRowSpacingSmall * Theme.scale(Screen))
             Repeater {
                 model: systemTray.items
                 delegate: Item {

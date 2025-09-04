@@ -39,7 +39,7 @@ Item {
     // Hide the pill after ~800ms when volume sits exactly at 100%
     Timer {
         id: fullHideTimer
-        interval: 800
+        interval: Theme.panelVolumeFullHideMs
         repeat: false
         onTriggered: {
             if (volumeDisplay.volume === 100) {
