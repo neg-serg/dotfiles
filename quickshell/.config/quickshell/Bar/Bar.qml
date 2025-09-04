@@ -155,7 +155,6 @@ Scope {
                         CustomTrayMenu { id: externalTrayMenu }
                         Volume {
                             id: widgetsVolume
-                            shell: rootScope.shell
                             Layout.alignment: Qt.AlignVCenter
                         }
 
