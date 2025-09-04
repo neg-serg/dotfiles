@@ -14,7 +14,7 @@ Item {
     property int   desiredHeight: 28
     property int   fontPixelSize: 0
     property bool  useTheme: true
-    property bool  showLabel: false
+    property bool  showLabel: true
     property int   iconSpacing: 4
     property int   textPadding: 4
     property int   iconVAdjust: 0
@@ -32,7 +32,8 @@ Item {
     property bool connected: false
     property string matchedIf: ""
 
-    // Size
+    // Size / visibility
+    visible: connected
     implicitHeight: desiredHeight
     width: row.implicitWidth
     height: desiredHeight
@@ -63,7 +64,7 @@ Item {
                 icon: root.iconName
                 rounded: root.iconRounded
                 size: Math.max(8, Math.round(root.computedFontPx * iconScale))
-                color: root.connected ? root.onColor : root.offColor
+                color: iconColor()
             }
         }
 
@@ -71,7 +72,7 @@ Item {
             id: label
             visible: root.showLabel
             text: "VPN"
-            color: root.connected ? root.onColor : root.offColor
+            color: iconColor()
             font.family: Theme.fontFamily
             font.pixelSize: root.computedFontPx
             padding: textPadding
@@ -120,6 +121,27 @@ Item {
         }
         root.connected = found
         root.matchedIf = name
+    }
+
+    // Subtle styling
+    property bool  muted: true
+    property bool  hovered: false
+    property real  connectedOpacity: 0.8
+    property real  disconnectedOpacity: 0.45
+    opacity: hovered ? 1.0 : (connected ? connectedOpacity : disconnectedOpacity)
+    function iconColor() {
+        if (hovered) return root.connected ? root.onColor : root.offColor
+        if (muted) return root.connected ? Theme.textPrimary : root.offColor
+        return root.connected ? root.onColor : root.offColor
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        acceptedButtons: Qt.NoButton
+        onEntered:  root.hovered = true
+        onExited:   root.hovered = false
+        cursorShape: Qt.ArrowCursor
     }
 
     Component.onCompleted: runner.running = true
