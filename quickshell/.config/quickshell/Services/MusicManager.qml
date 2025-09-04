@@ -174,33 +174,7 @@ Singleton {
         }
     }
 
-    function _computeDsdRateStr() {
-        try {
-            var codec = trackCodec ? String(trackCodec).toUpperCase() : "";
-            if (codec.indexOf('DSD') === -1) return "";
-            // Prefer numeric sample rate if available
-            var hz = _parseRateToHz(trackSampleRateStr);
-            if (!isNaN(hz) && hz > 0) return _fmtMHz(hz);
-            // Try deriving from detected variant like DSD64/128...
-            var variant = _computeDsdVariant(codec, trackSampleRateStr);
-            var m = String(variant).match(/DSD(64|128|256|512|1024)/);
-            if (m) {
-                var mult = Number(m[1]);
-                var estHz = mult * 44100; // base 44.1k
-                return _fmtMHz(estHz);
-            }
-            // Fallback parsing from metadata strings
-            var all = _mdAll();
-            for (var j = 0; j < all.length; j++) {
-                var s = String(all[j]);
-                var mhz = s.match(/(\d+(?:\.\d+)?)\s*MHz/i);
-                if (mhz) return mhz[1] + 'M';
-                var khz = s.match(/(\d{4,6})\s*Hz/i);
-                if (khz) return _fmtMHz(khz[1]);
-            }
-        } catch (e) { /* ignore */ }
-        return "";
-    }
+    // _computeDsdRateStr removed
 
     function _computeBitrateStr() {
         var v = _playerProp(["bitrate", "audioBitrate", "xesam:audioBitrate", "xesam:bitrate", "mpris:bitrate", "mpd:bitrate"]);
