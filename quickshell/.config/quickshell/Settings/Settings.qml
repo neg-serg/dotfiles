@@ -133,6 +133,10 @@ Singleton {
                 "manual",
                 "first"
             ]
+            // Optional preset. If `playerSelectionPriority` is empty or not set,
+            // MusicPlayers will use this preset to derive the rules.
+            // Supported presets: "default", "manualFirst", "playingFirst", "mpdBias"
+            property string playerSelectionPreset: "default"
 
             // Music popup configuration
             // Base logical sizes; scaled per-screen in MusicPopup

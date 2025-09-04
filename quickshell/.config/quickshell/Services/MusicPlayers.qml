@@ -128,10 +128,22 @@ Item {
             }
         }
 
-        // Apply configured priority rules
-        let rules = (Settings.settings && Settings.settings.playerSelectionPriority)
-            ? Settings.settings.playerSelectionPriority
-            : ["mpdPlaying","anyPlaying","mpdRecent","recent","manual","first"];
+        // Derive rules: explicit array wins; otherwise use preset
+        function presetRules(name) {
+            switch (String(name || "default")) {
+            case "manualFirst":
+                return ["manual", "anyPlaying", "recent", "first"]; // honor manual, then any playing, then recents
+            case "playingFirst":
+                return ["anyPlaying", "mpdPlaying", "manual", "recent", "first"]; // prefer playing, then mpdPlaying
+            case "mpdBias":
+                return ["mpdPlaying", "anyPlaying", "mpdRecent", "recent", "manual", "first"]; // default with explicit mpd bias
+            case "default":
+            default:
+                return ["mpdPlaying", "anyPlaying", "mpdRecent", "recent", "manual", "first"]; // sane default
+            }
+        }
+        let cfg = (Settings.settings && Settings.settings.playerSelectionPriority) || null;
+        let rules = (cfg && cfg.length > 0) ? cfg : presetRules(Settings.settings && Settings.settings.playerSelectionPreset);
         for (let r = 0; r < rules.length; r++) {
             let candidate = pick(rules[r]);
             if (candidate) return candidate;
