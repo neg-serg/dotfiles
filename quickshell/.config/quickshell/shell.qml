@@ -9,11 +9,7 @@ import qs.Services
 
 Scope {
     id: root
-    // Centralized audio service
-    Audio { id: audio }
-    // Back-compat surface expected by modules
-    property alias volume: audio.volume
-    function updateVolume(vol) { audio.setVolume(vol) }
+    // Audio service is a singleton now; modules should import qs.Services.Audio directly
     // Window mirroring removed; Hyprland exclusive zones handle panel space
 
     Component.onCompleted: {
@@ -30,8 +26,6 @@ Scope {
     }
 
     IdleInhibitor { id: idleInhibitor; }
-    // Expose default sink for modules that reference it directly
-    property alias defaultAudioSink: audio.defaultAudioSink
     IPCHandlers { appLauncherPanel: appLauncherPanel; idleInhibitor: idleInhibitor; }
 
     Connections {

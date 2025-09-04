@@ -3,10 +3,10 @@ import QtQuick.Layouts
 import qs.Settings
 import qs.Components
 import qs.Bar.Modules
+import qs.Services as Services
 
 Item {
     id: volumeDisplay
-    property var shell
     property int volume: 0
     property bool firstChange: true
     visible: false
@@ -67,7 +67,7 @@ Item {
 
     PillIndicator {
         id: pillIndicator
-        icon: shell && shell.defaultAudioSink && shell.defaultAudioSink.audio && shell.defaultAudioSink.audio.muted
+        icon: Services.Audio.muted
             ? "volume_off"
             : (volume === 0 ? "volume_off" : (volume < 30 ? "volume_down" : "volume_up"))
         text: volume + "%"
@@ -104,17 +104,16 @@ Item {
     }
 
     Connections {
-        target: shell ?? null
+        target: Services.Audio
         function onVolumeChanged() {
-            if (!shell) return;
-            const clampedVolume = Math.max(0, Math.min(200, shell.volume));
+            const clampedVolume = Math.max(0, Math.min(100, Services.Audio.volume));
             if (clampedVolume === volume) return;
 
             volume = clampedVolume;
 
             // Update pill content/icon from current state
             pillIndicator.text = volume + "%";
-            pillIndicator.icon = shell.defaultAudioSink && shell.defaultAudioSink.audio && shell.defaultAudioSink.audio.muted
+            pillIndicator.icon = Services.Audio.muted
                 ? "volume_off"
                 : (volume === 0 ? "volume_off" : (volume < 30 ? "volume_down" : "volume_up"));
 
@@ -143,8 +142,8 @@ Item {
     }
 
     Component.onCompleted: {
-        if (shell && shell.volume !== undefined) {
-            volume = Math.max(0, Math.min(200, shell.volume));
+        if (Services.Audio && Services.Audio.volume !== undefined) {
+            volume = Math.max(0, Math.min(100, Services.Audio.volume));
             // If we start at exactly 100%, schedule auto-hide by default
             if (volume === 100) fullHideTimer.restart();
         }
@@ -167,12 +166,11 @@ Item {
         }
         cursorShape: Qt.PointingHandCursor
         onWheel: (wheel) => {
-            if (!shell) return;
-            let step = 5;
+            let step = Services.Audio.step || 5;
             if (wheel.angleDelta.y > 0) {
-                shell.updateVolume(Math.min(200, shell.volume + step));
+                Services.Audio.changeVolume(step);
             } else if (wheel.angleDelta.y < 0) {
-                shell.updateVolume(Math.max(0, shell.volume - step));
+                Services.Audio.changeVolume(-step);
             }
         }
     }
