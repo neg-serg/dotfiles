@@ -39,11 +39,11 @@ Item {
 
     Component.onCompleted: updateCurrentPlayer()
 
-    // Explicitly attach via data to avoid default property issues
-    data: [
-        Connections {
-            target: Mpris.players
-            function onValuesChanged() { root.updateCurrentPlayer(); }
-        }
-    ]
+    // Conservative polling to avoid QML Connections issues in this env
+    Timer {
+        interval: 1200
+        repeat: true
+        running: true
+        onTriggered: root.updateCurrentPlayer()
+    }
 }
