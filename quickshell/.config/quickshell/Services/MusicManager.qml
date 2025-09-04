@@ -386,8 +386,8 @@ Singleton {
 
     function introspectCurrentTrack() {
         if (!introspectAudioEnabled) return;
-        const p = _pathFromUrl(trackUrlStr);
-        if (!p) { _resetFileMeta(); return; }
+        const p = pathFromUrl(trackUrlStr);
+        if (!p) { resetFileMeta(); return; }
         // Start with ffprobe
         ffprobeProcess.targetPath = p;
         ffprobeProcess.running = true;
@@ -404,7 +404,7 @@ Singleton {
             if (code === 0) {
                 try {
                     const obj = JSON.parse(String(ffprobeStdout.text));
-                    const meta = _parseFfprobe(obj);
+                    const meta = parseFfprobe(obj);
                     if (meta) { fileAudioMeta = meta; return; }
                 } catch (e) { /* fallthrough */ }
             }
@@ -423,7 +423,7 @@ Singleton {
             if (code === 0) {
                 try {
                     const obj = JSON.parse(String(mediainfoStdout.text));
-                    const meta = _parseMediainfo(obj);
+                    const meta = parseMediainfo(obj);
                     if (meta) { fileAudioMeta = meta; return; }
                 } catch (e) { /* ignore */ }
             }
@@ -442,11 +442,11 @@ Singleton {
         onExited: (code, status) => {
             if (code === 0) {
                 const text = String(soxinfoStdout.text || "");
-                const meta = _parseSoxInfo(text);
+                const meta = parseSoxInfo(text);
                 if (meta) { fileAudioMeta = meta; return; }
             }
             // Give up gracefully
-            _resetFileMeta();
+            resetFileMeta();
         }
     }
 
