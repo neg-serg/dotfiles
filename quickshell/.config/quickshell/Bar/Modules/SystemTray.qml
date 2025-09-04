@@ -214,7 +214,7 @@ Row {
         // Keep compact size to match bar density
         size: 24 * Theme.scale(Screen)
         // Reduce rounding specifically for tray button (half of default 8)
-        cornerRadius: 4
+        cornerRadius: Theme.cornerRadiusSmall
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
         // Rotate to point towards tray content when expanded (left)
         iconRotation: expanded ? 90 : 0

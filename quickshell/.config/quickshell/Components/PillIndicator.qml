@@ -13,9 +13,9 @@ Item {
     property color iconCircleColor: Theme.accentPrimary
     property color iconTextColor: Theme.backgroundPrimary
     property color collapsedIconColor: Theme.textPrimary
-    property int pillHeight: 22 * Theme.scale(Screen)
-    property int iconSize: 22 * Theme.scale(Screen)
-    property int pillPaddingHorizontal: 14
+    property int pillHeight: Math.round(Theme.panelPillHeight * Theme.scale(Screen))
+    property int iconSize: Math.round(Theme.panelPillIconSize * Theme.scale(Screen))
+    property int pillPaddingHorizontal: Theme.panelPillPaddingH
     property bool autoHide: false
 
     // Internal state
@@ -57,17 +57,11 @@ Item {
 
         Behavior on width {
             enabled: showAnim.running || hideAnim.running
-            NumberAnimation {
-                duration: 250
-                easing.type: Easing.OutCubic
-            }
+            NumberAnimation { duration: Theme.panelAnimStdMs; easing.type: Easing.OutCubic }
         }
         Behavior on opacity {
             enabled: showAnim.running || hideAnim.running
-            NumberAnimation {
-                duration: 250
-                easing.type: Easing.OutCubic
-            }
+            NumberAnimation { duration: Theme.panelAnimStdMs; easing.type: Easing.OutCubic }
         }
     }
 
@@ -81,10 +75,7 @@ Item {
         anchors.right: parent.right
 
         Behavior on color {
-            ColorAnimation {
-                duration: 200
-                easing.type: Easing.InOutQuad
-            }
+            ColorAnimation { duration: Theme.panelAnimFastMs; easing.type: Easing.InOutQuad }
         }
 
         MaterialIcon {
@@ -99,22 +90,8 @@ Item {
     ParallelAnimation {
         id: showAnim
         running: false
-        NumberAnimation {
-            target: pill
-            property: "width"
-            from: 1
-            to: maxPillWidth
-            duration: 250
-            easing.type: Easing.OutCubic
-        }
-        NumberAnimation {
-            target: pill
-            property: "opacity"
-            from: 0
-            to: 1
-            duration: 250
-            easing.type: Easing.OutCubic
-        }
+        NumberAnimation { target: pill; property: "width";   from: 1;            to: maxPillWidth; duration: Theme.panelAnimStdMs; easing.type: Easing.OutCubic }
+        NumberAnimation { target: pill; property: "opacity"; from: 0;            to: 1;            duration: Theme.panelAnimStdMs; easing.type: Easing.OutCubic }
         onStarted: {
             showPill = true;
         }
@@ -127,9 +104,7 @@ Item {
     SequentialAnimation {
         id: delayedHideAnim
         running: false
-        PauseAnimation {
-            duration: 2500
-        }
+        PauseAnimation { duration: Theme.panelPillAutoHidePauseMs }
         ScriptAction {
             script: if (shouldAnimateHide)
                 hideAnim.start()
@@ -139,22 +114,8 @@ Item {
     ParallelAnimation {
         id: hideAnim
         running: false
-        NumberAnimation {
-            target: pill
-            property: "width"
-            from: maxPillWidth
-            to: 1
-            duration: 250
-            easing.type: Easing.InCubic
-        }
-        NumberAnimation {
-            target: pill
-            property: "opacity"
-            from: 1
-            to: 0
-            duration: 250
-            easing.type: Easing.InCubic
-        }
+        NumberAnimation { target: pill; property: "width";   from: maxPillWidth; to: 1; duration: Theme.panelAnimStdMs; easing.type: Easing.InCubic }
+        NumberAnimation { target: pill; property: "opacity"; from: 1;            to: 0; duration: Theme.panelAnimStdMs; easing.type: Easing.InCubic }
         onStopped: {
             showPill = false;
             shouldAnimateHide = false;
@@ -191,7 +152,7 @@ Item {
 
     Timer {
         id: showTimer
-        interval: 500
+        interval: Theme.panelPillShowDelayMs
         onTriggered: {
             if (!showPill) {
                 showAnim.start();

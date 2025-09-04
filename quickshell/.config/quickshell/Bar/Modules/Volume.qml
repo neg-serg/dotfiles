@@ -86,7 +86,7 @@ Item {
             positionAbove: false
             tooltipVisible: !ioSelector.visible && volumeDisplay.containsMouse
             targetItem: pillIndicator
-            delay: 1500
+            delay: Theme.tooltipDelayMs
         }
 
         MouseArea {

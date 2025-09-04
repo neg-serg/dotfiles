@@ -87,6 +87,24 @@ Singleton {
 
             // Typical bar module preferred height (logical)
             property int panelModuleHeight: 36
+
+            // Corners
+            property int cornerRadius: 8
+            property int cornerRadiusSmall: 4
+
+            // Tooltip
+            property int tooltipDelayMs: 1500
+
+            // Pill indicator defaults
+            property int panelPillHeight: 22
+            property int panelPillIconSize: 22
+            property int panelPillPaddingH: 14
+            property int panelPillShowDelayMs: 500
+            property int panelPillAutoHidePauseMs: 2500
+
+            // Animation timings
+            property int panelAnimStdMs: 250
+            property int panelAnimFastMs: 200
         }
     }
     
@@ -140,4 +158,18 @@ Singleton {
     property int panelHotzoneHeight: themeData.panelHotzoneHeight
     property real panelHotzoneRightShift: themeData.panelHotzoneRightShift
     property int panelModuleHeight: themeData.panelModuleHeight
+    // Corners
+    property int cornerRadius: themeData.cornerRadius
+    property int cornerRadiusSmall: themeData.cornerRadiusSmall
+    // Tooltip
+    property int tooltipDelayMs: themeData.tooltipDelayMs
+    // Pill indicator defaults
+    property int panelPillHeight: themeData.panelPillHeight
+    property int panelPillIconSize: themeData.panelPillIconSize
+    property int panelPillPaddingH: themeData.panelPillPaddingH
+    property int panelPillShowDelayMs: themeData.panelPillShowDelayMs
+    property int panelPillAutoHidePauseMs: themeData.panelPillAutoHidePauseMs
+    // Animation timings
+    property int panelAnimStdMs: themeData.panelAnimStdMs
+    property int panelAnimFastMs: themeData.panelAnimFastMs
 }
