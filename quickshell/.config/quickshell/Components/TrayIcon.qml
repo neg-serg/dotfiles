@@ -8,7 +8,7 @@ Item {
     // Original icon string (may contain '?path=...' suffix)
     property string source: ""
     // Icon logical size in px
-    property int size: 16
+    property int size: Theme.panelIconSizeSmall
     // Apply grayscale effect (used when overlay is visible)
     property bool grayscale: false
     // Optional screen reference for scaling if needed by parent
@@ -61,4 +61,3 @@ Item {
         }
     }
 }
-

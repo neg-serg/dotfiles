@@ -6,8 +6,8 @@ import qs.Settings
 PanelWindow {
     id: outerPanel
     property bool showOverlay: Settings.settings.dimPanels
-    property int topMargin: 36 * Theme.scale(screen)
-    property int bottomMargin: 36 * Theme.scale(screen)
+    property int topMargin: Math.round(Theme.panelModuleHeight * Theme.scale(screen))
+    property int bottomMargin: Math.round(Theme.panelModuleHeight * Theme.scale(screen))
     WlrLayershell.namespace: "quickshell"
     property color overlayColor: showOverlay ? Theme.overlay : "transparent"
     
