@@ -56,12 +56,4 @@ function buildFileUrl(dirPath, fileName) {
     }
 }
 
-// Export functions for QML imports
-var Url = {
-    parseQuery: parseQuery,
-    buildFileUrl: buildFileUrl
-};
-
-// QML JS import returns the module scope; expose functions on module scope too
-var parseQuery = parseQuery;
-var buildFileUrl = buildFileUrl;
+// Functions are exposed via module scope when imported in QML (e.g., `import ".../Url.js" as url`).
