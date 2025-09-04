@@ -67,42 +67,7 @@ function writeCacheError(store, key, errorTtlMs) {
     store[key] = { errorUntil: now() + errorTtlMs };
 }
 
-function xhrGetJson(url, timeoutMs, success, fail) {
-    try {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-        xhr.timeout = timeoutMs;
-        // Some APIs require an explicit User-Agent; set if allowed
-        try {
-            if (xhr.setRequestHeader) {
-                try { xhr.setRequestHeader('Accept', 'application/json'); } catch (e1) {}
-                try { xhr.setRequestHeader('User-Agent', 'Quickshell'); } catch (e2) {}
-            }
-        } catch (e) { /* ignore header setting failures */ }
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState !== XMLHttpRequest.DONE) return;
-            var status = xhr.status;
-            if (status === 200) {
-                try {
-                    success(JSON.parse(xhr.responseText));
-                } catch (e) {
-                    fail && fail({ type: "parse", message: "Failed to parse JSON" });
-                }
-            } else {
-                fail && fail({ type: "http", status: status });
-            }
-        };
-        xhr.ontimeout = function() {
-            fail && fail({ type: "timeout" });
-        };
-        xhr.onerror = function() {
-            fail && fail({ type: "network" });
-        };
-        xhr.send();
-    } catch (e) {
-        fail && fail({ type: "exception", message: String(e) });
-    }
-}
+// httpGetJson removed; use httpGetJson from Helpers/Http.js
 
 function fetchCoordinates(city, callback, errorCallback, options) {
     options = options || {};
@@ -136,7 +101,7 @@ function fetchCoordinates(city, callback, errorCallback, options) {
         count: 1
     });
 
-    // Prefer shared httpGetJson with User-Agent if available
+    // Use shared httpGetJson with User-Agent
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
     if (typeof httpGetJson === 'function') {
         httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
@@ -162,7 +127,7 @@ function fetchCoordinates(city, callback, errorCallback, options) {
         }, _ua);
         return;
     }
-    xhrGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
+    httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
         try {
             if (geoData && geoData.results && geoData.results.length > 0) {
                 var lat = geoData.results[0].latitude;
@@ -230,7 +195,7 @@ function fetchWeather(latitude, longitude, callback, errorCallback, options) {
         }, _ua);
         return;
     }
-    xhrGetJson(url, cfg.timeoutMs, function(weatherData) {
+    httpGetJson(url, cfg.timeoutMs, function(weatherData) {
         if (cacheKey) writeCacheSuccess(_weatherCache, cacheKey, weatherData, cfg.weatherTtlMs);
         callback(weatherData);
     }, function(err) {

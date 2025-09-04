@@ -67,38 +67,7 @@ function writeCacheError(store, key, errorTtlMs) {
     store[key] = { errorUntil: now() + errorTtlMs };
 }
 
-function xhrGetJson(url, timeoutMs, success, fail) {
-    try {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-        xhr.timeout = timeoutMs;
-        // Some APIs require an explicit User-Agent; set if allowed
-        try {
-            if (xhr.setRequestHeader) {
-                try { xhr.setRequestHeader('Accept', 'application/json'); } catch (e1) {}
-                try { xhr.setRequestHeader('User-Agent', 'Quickshell'); } catch (e2) {}
-            }
-        } catch (e) { /* ignore header setting failures */ }
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState !== XMLHttpRequest.DONE) return;
-            var status = xhr.status;
-            if (status === 200) {
-                try {
-                    success(JSON.parse(xhr.responseText));
-                } catch (e) {
-                    fail && fail({ type: "parse" });
-                }
-            } else {
-                fail && fail({ type: "http", status: status });
-            }
-        };
-        xhr.ontimeout = function() { fail && fail({ type: "timeout" }); };
-        xhr.onerror = function() { fail && fail({ type: "network" }); };
-        xhr.send();
-    } catch (e) {
-        fail && fail({ type: "exception" });
-    }
-}
+// xhrGetJson removed; use httpGetJson from Helpers/Http.js
 
 function getCountryCode(callback, errorCallback, options) {
     options = options || {};
@@ -112,6 +81,8 @@ function getCountryCode(callback, errorCallback, options) {
         callback(_countryCode);
         return;
     }
+
+    var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
 
     var url = buildUrl("https://nominatim.openstreetmap.org/search", {
         city: Settings.settings.weatherCity || "",
@@ -138,7 +109,7 @@ function getCountryCode(callback, errorCallback, options) {
         }, _ua);
         return;
     }
-    xhrGetJson(url, cfg.timeoutMs, function(response) {
+    httpGetJson(url, cfg.timeoutMs, function(response) {
         try {
             _countryCode = (response && response[0] && response[0].address && response[0].address.country_code) ? response[0].address.country_code : "US";
             _regionCode = (response && response[0] && response[0].address && response[0].address["ISO3166-2-lvl4"]) ? response[0].address["ISO3166-2-lvl4"] : "";
@@ -150,7 +121,7 @@ function getCountryCode(callback, errorCallback, options) {
         }
     }, function(err) {
         errorCallback && errorCallback("Location lookup error: " + (err.status || err.type || "unknown"));
-    });
+    }, _ua);
 }
 
 function getHolidays(year, countryCode, callback, errorCallback, options) {
@@ -190,7 +161,7 @@ function getHolidays(year, countryCode, callback, errorCallback, options) {
         }, _ua);
         return;
     }
-    xhrGetJson(url, cfg.timeoutMs, function(list) {
+    httpGetJson(url, cfg.timeoutMs, function(list) {
         try {
             var augmented = filterHolidaysByRegion(list || []);
             writeCacheSuccess(_holidaysCache, cacheKey, augmented, cfg.holidaysTtlMs);
@@ -203,7 +174,7 @@ function getHolidays(year, countryCode, callback, errorCallback, options) {
             writeCacheError(_holidaysCache, cacheKey, cfg.errorTtlMs);
         }
         errorCallback && errorCallback("Holidays fetch error: " + (err.status || err.type || "unknown"));
-    });
+    }, _ua);
 }
 
 function filterHolidaysByRegion(holidays) {
