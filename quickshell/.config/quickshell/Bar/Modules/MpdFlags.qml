@@ -161,12 +161,10 @@ Item {
         spacing: Math.round(6 * Theme.scale(Screen))
         Repeater {
             model: activeFlags
-            delegate: Text {
-                text: modelData.icon
+            delegate: MaterialIcon {
+                icon: modelData.icon
                 color: root.iconColor
-                font.family: "Material Symbols Outlined"
-                font.pixelSize: root.iconPx
-                renderType: Text.NativeRendering
+                size: root.iconPx
                 opacity: 0.9
             }
         }

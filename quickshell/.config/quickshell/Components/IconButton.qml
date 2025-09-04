@@ -28,18 +28,13 @@ MouseArea {
         radius: cornerRadius
         color: root.hovering ? root.accentColor : "transparent"
     }
-    Text {
+    MaterialIcon {
         id: iconText
         anchors.centerIn: parent
-        text: root.icon
-        font.family: "Material Symbols Outlined"
-        font.pixelSize: 24 * Theme.scale(Screen)
+        icon: root.icon
+        size: 24 * Theme.scale(Screen)
         color: root.hovering ? root.iconHoverColor : root.iconNormalColor
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
         opacity: root.enabled ? 1.0 : 0.5
-        transformOrigin: Item.Center
-        rotation: root.iconRotation
-        Behavior on rotation { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+        rotationAngle: root.iconRotation
     }
 }

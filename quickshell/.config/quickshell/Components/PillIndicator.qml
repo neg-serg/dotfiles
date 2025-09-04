@@ -87,11 +87,11 @@ Item {
             }
         }
 
-        Text {
+        MaterialIcon {
             anchors.centerIn: parent
-            font.family: showPill ? "Material Symbols Rounded" : "Material Symbols Outlined"
-            font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
-            text: revealPill.icon
+            rounded: showPill
+            size: Theme.fontSizeSmall * Theme.scale(Screen)
+            icon: revealPill.icon
             color: showPill ? iconTextColor : collapsedIconColor
         }
     }

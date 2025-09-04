@@ -231,20 +231,16 @@ Item {
         FontMetrics { id: fmSub;  font: submapIcon.font }
 
         // Submap icon aligned to the same baseline family as the workspace icon
-        Text {
+        MaterialIcon {
             id: submapIcon
             visible: root.submapName && root.submapName.length > 0
-            text: submapIconName(root.submapName)
+            icon: submapIconName(root.submapName)
             color: Theme.accentPrimary
-            renderType: Text.NativeRendering
-            font.family: "Material Symbols Outlined"
-            font.weight: Font.Medium
-            font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
+            size: Theme.fontSizeSmall * Theme.scale(Screen)
             // Align to label baseline like the workspace icon does,
             // then compensate for font ascent differences + fine adjust
             anchors.baseline: label.baseline
             anchors.baselineOffset: Math.round(iconBaselineOffset + (fmIcon.ascent - fmSub.ascent) + submapBaselineAdjust)
-            padding: 1
         }
 
         // Icon as separate Text with baseline alignment to the label
