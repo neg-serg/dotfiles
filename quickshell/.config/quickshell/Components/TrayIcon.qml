@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Effects
 import Quickshell.Widgets
+import "../Helpers/Url.js" as UrlHelper
 
 // TrayIcon — wrapper for system tray icons with HiDPI sizing and optional grayscale
 Item {
@@ -20,17 +21,30 @@ Item {
     // Expose readiness like Image.Ready predicate
     readonly property bool ready: img.status === Image.Ready
 
-    // Resolve `?path=` pattern seen in tray item icons
+    // Resolve optional query string and support `path` param robustly
     function resolvedSource() {
         var icon = source || "";
         if (!icon) return "";
-        if (icon.indexOf("?path=") !== -1) {
-            var parts = icon.split("?path=");
-            var name = parts[0];
-            var path = parts[1] || "";
-            var fileName = name.substring(name.lastIndexOf("/") + 1);
-            return `file://${path}/${fileName}`;
+
+        var qIndex = icon.indexOf("?");
+        if (qIndex === -1) {
+            return icon;
         }
+
+        var base = icon.slice(0, qIndex);
+        var query = icon.slice(qIndex);
+
+        // Parse via shared helper
+        var params = UrlHelper.parseQuery(query);
+
+        var path = params["path"];
+        if (path && path.length > 0) {
+            var fileName = base.substring(base.lastIndexOf("/") + 1);
+            // Build file URL via helper
+            return UrlHelper.buildFileUrl(path, fileName);
+        }
+
+        // Fallback: return original icon (including query)
         return icon;
     }
 
