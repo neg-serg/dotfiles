@@ -155,7 +155,7 @@ Item {
     // --- Internet reachability: ping a well-known IP (1.1.1.1) ---
     Timer {
         id: inetPoll
-        interval: (Settings.settings.networkPingIntervalMs > 0 ? Settings.settings.networkPingIntervalMs : 30000)
+        interval: (function(){ var v = Number(Settings.settings.networkPingIntervalMs); if (!isFinite(v)) v = 30000; return Math.max(1000, Math.min(600000, Math.round(v))); })()
         repeat: true
         running: true
         onTriggered: {

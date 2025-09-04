@@ -307,13 +307,13 @@ Singleton {
     property int panelPillAutoHidePauseMs: themeData.panelPillAutoHidePauseMs
     property color panelPillBackground: themeData.panelPillBackground
     // Animation timings
-    property int panelAnimStdMs: themeData.panelAnimStdMs
-    property int panelAnimFastMs: themeData.panelAnimFastMs
+    property int panelAnimStdMs: Math.max(0, Math.min(5000, themeData.panelAnimStdMs))
+    property int panelAnimFastMs: Math.max(0, Math.min(5000, themeData.panelAnimFastMs))
     // Tray behavior timings
-    property int panelTrayLongHoldMs: themeData.panelTrayLongHoldMs
-    property int panelTrayShortHoldMs: themeData.panelTrayShortHoldMs
-    property int panelTrayGuardMs: themeData.panelTrayGuardMs
-    property int panelTrayOverlayDismissDelayMs: themeData.panelTrayOverlayDismissDelayMs
+    property int panelTrayLongHoldMs: Math.max(0, Math.min(10000, themeData.panelTrayLongHoldMs))
+    property int panelTrayShortHoldMs: Math.max(0, Math.min(10000, themeData.panelTrayShortHoldMs))
+    property int panelTrayGuardMs: Math.max(0, Math.min(2000, themeData.panelTrayGuardMs))
+    property int panelTrayOverlayDismissDelayMs: Math.max(0, Math.min(600000, themeData.panelTrayOverlayDismissDelayMs))
     // Generic row spacing
     property int panelRowSpacing: themeData.panelRowSpacing
     property int panelRowSpacingSmall: themeData.panelRowSpacingSmall
@@ -322,18 +322,18 @@ Singleton {
     property color panelVolumeLowColor: themeData.panelVolumeLowColor
     property color panelVolumeHighColor: themeData.panelVolumeHighColor
     // Core module timings
-    property int timeTickMs: themeData.timeTickMs
-    property int wsRefreshDebounceMs: themeData.wsRefreshDebounceMs
-    property int vpnPollMs: themeData.vpnPollMs
-    property int networkRestartBackoffMs: themeData.networkRestartBackoffMs
-    property int networkLinkPollMs: themeData.networkLinkPollMs
-    property int mediaHoverOpenDelayMs: themeData.mediaHoverOpenDelayMs
-    property int mediaHoverStillThresholdMs: themeData.mediaHoverStillThresholdMs
-    property int spectrumPeakDecayIntervalMs: themeData.spectrumPeakDecayIntervalMs
-    property int spectrumBarAnimMs: themeData.spectrumBarAnimMs
-    property int musicPositionPollMs: themeData.musicPositionPollMs
-    property int musicPlayersPollMs: themeData.musicPlayersPollMs
-    property int musicMetaRecalcDebounceMs: themeData.musicMetaRecalcDebounceMs
+    property int timeTickMs: Math.max(100, Math.min(60000, themeData.timeTickMs))
+    property int wsRefreshDebounceMs: Math.max(0, Math.min(10000, themeData.wsRefreshDebounceMs))
+    property int vpnPollMs: Math.max(500, Math.min(600000, themeData.vpnPollMs))
+    property int networkRestartBackoffMs: Math.max(0, Math.min(600000, themeData.networkRestartBackoffMs))
+    property int networkLinkPollMs: Math.max(500, Math.min(600000, themeData.networkLinkPollMs))
+    property int mediaHoverOpenDelayMs: Math.max(0, Math.min(5000, themeData.mediaHoverOpenDelayMs))
+    property int mediaHoverStillThresholdMs: Math.max(0, Math.min(10000, themeData.mediaHoverStillThresholdMs))
+    property int spectrumPeakDecayIntervalMs: Math.max(10, Math.min(1000, themeData.spectrumPeakDecayIntervalMs))
+    property int spectrumBarAnimMs: Math.max(0, Math.min(5000, themeData.spectrumBarAnimMs))
+    property int musicPositionPollMs: Math.max(100, Math.min(600000, themeData.musicPositionPollMs))
+    property int musicPlayersPollMs: Math.max(100, Math.min(600000, themeData.musicPlayersPollMs))
+    property int musicMetaRecalcDebounceMs: Math.max(0, Math.min(10000, themeData.musicMetaRecalcDebounceMs))
     // Calendar metrics
     property int calendarRowSpacing: themeData.calendarRowSpacing
     property int calendarCellSpacing: themeData.calendarCellSpacing
