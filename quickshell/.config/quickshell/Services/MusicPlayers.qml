@@ -4,6 +4,18 @@ import qs.Settings
 import Quickshell.Services.Mpris
 
 // Non-visual helper that tracks available MPRIS players and exposes currentPlayer
+// Player selection policy
+// - Configured via Settings.settings.playerSelectionPriority (array of rules)
+// - Supported rules (checked in order until a match):
+//   "mpdPlaying"  -> most-recent MPD that is currently playing
+//   "anyPlaying"  -> most-recent player that is currently playing (any backend)
+//   "mpdRecent"   -> most-recent MPD (regardless of playing)
+//   "recent"      -> most-recent player (regardless of playing)
+//   "manual"      -> respect manually selected index if within range
+//   "first"       -> fallback to the first available
+// Examples:
+//   ["manual","recent","first"]
+//   ["anyPlaying","mpdPlaying","manual","first"]
 Item {
     id: root
 

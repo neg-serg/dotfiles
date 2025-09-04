@@ -114,14 +114,17 @@ Singleton {
             // Media visualizer (CAVA/LinearSpectrum) toggle
             property bool showMediaVisualizer: false
 
-            // Music player selection priority (ordered rules)
-            // Allowed values:
-            //  - "mpdPlaying"  : most-recent MPD that is currently playing
-            //  - "anyPlaying"  : most-recent player that is currently playing
-            //  - "mpdRecent"   : most-recent MPD (playing or not)
-            //  - "recent"      : most-recent player (playing or not)
-            //  - "manual"      : respect manually selected index when available
-            //  - "first"       : fallback to the first available player
+            // Music player selection priority (ordered rules). Example presets:
+            //   - Default: prefer MPD playing, then any playing, then MPD recent, recent, manual, first
+            //   - Manual-first: ["manual", "recent", "first"]
+            //   - Any-playing-first (no MPD bias): ["anyPlaying", "recent", "manual", "first"]
+            // Allowed rule values:
+            //   "mpdPlaying"  -> most-recent MPD that is currently playing
+            //   "anyPlaying"  -> most-recent player that is currently playing
+            //   "mpdRecent"   -> most-recent MPD (playing or not)
+            //   "recent"      -> most-recent player (playing or not)
+            //   "manual"      -> respect manually selected index when available
+            //   "first"       -> fallback to the first available player
             property var playerSelectionPriority: [
                 "mpdPlaying",
                 "anyPlaying",
