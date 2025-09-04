@@ -5,6 +5,7 @@ import QtQuick.Layouts
 // (Io import removed)
 import QtQuick.Effects
 import "../../Helpers/Format.js" as Format
+import "../../Helpers/Time.js" as Time
 import qs.Settings
 import qs.Services
 import qs.Components
@@ -284,7 +285,7 @@ Item {
                         const t = trackText.esc(trackText.titlePart)
                                    .replace(/\s(?:-|–|—)\s/g, "&#8201;<span style='color:" + trackText.sepColor + "; font-weight:bold'>—</span>&#8201;");
                         const cur = Format.fmtTime(MusicManager.currentPosition || 0);
-                        const tot = Format.fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
+                        const tot = Format.fmtTime(Time.mprisToMs(MusicManager.trackLength || 0));
                         const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.8));
                         const bp = trackText.bracketPair();
                         return t

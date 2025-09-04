@@ -1,5 +1,6 @@
 import QtQuick
 import QtQml
+import "../Helpers/Time.js" as Time
 
 // Non-visual helper for tracking and seeking playback position
 Item {
@@ -7,14 +8,7 @@ Item {
     property var currentPlayer: null
     property real currentPosition: 0 // ms
 
-    function mprisToMs(v) {
-        if (v === undefined || v === null) return 0;
-        if (v > 1e12) return Math.round(v / 1e6);
-        if (v > 1e9)  return Math.round(v / 1e3);
-        var hasFraction = Math.abs(v - Math.round(v)) > 0.0005;
-        if (hasFraction || v < 36000) return Math.round(v * 1000);
-        return Math.round(v);
-    }
+    // mprisToMs is centralized in Helpers/Time.js
 
     function seek(position) {
         try {
@@ -47,8 +41,8 @@ Item {
             try {
                 if (root.currentPlayer.positionSupported) {
                     root.currentPlayer.positionChanged();
-                    var posMs = root.mprisToMs(root.currentPlayer.position);
-                    var lenMs = root.mprisToMs(root.currentPlayer.length);
+                    var posMs = Time.mprisToMs(root.currentPlayer.position);
+                    var lenMs = Time.mprisToMs(root.currentPlayer.length);
                     root.currentPosition = (lenMs > 0) ? Math.min(posMs, lenMs) : posMs;
                 }
             } catch (e) { /* ignore */ }
@@ -60,8 +54,8 @@ Item {
         function onPositionChanged() {
             try {
                 if (root.currentPlayer && root.currentPlayer.positionSupported) {
-                    var posMs = root.mprisToMs(root.currentPlayer.position);
-                    var lenMs = root.mprisToMs(root.currentPlayer.length);
+                    var posMs = Time.mprisToMs(root.currentPlayer.position);
+                    var lenMs = Time.mprisToMs(root.currentPlayer.length);
                     root.currentPosition = (lenMs > 0) ? Math.min(posMs, lenMs) : posMs;
                 }
             } catch (e) { /* ignore */ }

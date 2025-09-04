@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Mpris
+import "../Helpers/Time.js" as Time
 import qs.Services
 import qs.Settings
 import qs.Components
@@ -11,23 +12,7 @@ Singleton {
     id: manager
 
     // --- Helpers -----------------------------------------------------------
-    // Normalize MPRIS time to milliseconds (handles ns / µs / ms / s[.frac])
-    function mprisToMs(v) {
-        if (v === undefined || v === null) return 0;
-
-        // Magnitude-based heuristics
-        if (v > 1e12) return Math.round(v / 1e6); // ns -> ms
-        if (v > 1e9)  return Math.round(v / 1e3); // µs -> ms
-
-        // MPD case: seconds with fraction (e.g., 110.974)
-        var hasFraction = Math.abs(v - Math.round(v)) > 0.0005;
-        if (hasFraction || v < 36000) {           // <10h or fractional -> assume seconds
-            return Math.round(v * 1000);          // s -> ms
-        }
-
-        // Otherwise treat as already ms
-        return Math.round(v);
-    }
+    // Time conversion is centralized in Helpers/Time.js
 
     // --- Public API --------------------------------------------------------
     // Identify whether a player is MPD-like (mpd/mpdris/mopidy)
