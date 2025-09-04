@@ -120,7 +120,8 @@ Singleton {
             property int  networkPingIntervalMs: 30000
             // Colors for NetworkUsage icon states (strings parsed as colors)
             // No Internet (link up, but no reachability): orange (Half-Life-like)
-            property string networkNoInternetColor: "#F58025"
+            // Orange Box / TF vibe orange
+            property string networkNoInternetColor: "#FF6E00"
             // No Link (interface down): raspberry/crimson-ish
             property string networkNoLinkColor: "#D81B60"
         }
