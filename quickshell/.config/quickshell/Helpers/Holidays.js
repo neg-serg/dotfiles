@@ -11,9 +11,9 @@ var DEFAULTS = {
     timeoutMs: 8000                      // 8s timeout
 };
 
-function _now() { return Date.now(); }
+function now() { return Date.now(); }
 
-function _qsFrom(obj) {
+function qsFrom(obj) {
     var parts = [];
     for (var k in obj) {
         if (!obj.hasOwnProperty(k)) continue;
@@ -24,7 +24,7 @@ function _qsFrom(obj) {
     return parts.join("&");
 }
 
-function _buildUrl(base, paramsObj) {
+function buildUrl(base, paramsObj) {
     try {
         if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
             var u = new URL(base);
@@ -39,33 +39,33 @@ function _buildUrl(base, paramsObj) {
             return u.toString();
         }
     } catch (e) { /* fallthrough */ }
-    var qs = _qsFrom(paramsObj);
+    var qs = qsFrom(paramsObj);
     return qs ? (base + "?" + qs) : base;
 }
 
-function _readCache(store, key) {
+function readCache(store, key) {
     var entry = store[key];
     if (!entry) return null;
-    var now = _now();
-    if (entry.errorUntil && now < entry.errorUntil) {
+    var t = now();
+    if (entry.errorUntil && t < entry.errorUntil) {
         return { error: true };
     }
-    if (entry.expiry && now < entry.expiry) {
+    if (entry.expiry && t < entry.expiry) {
         return { value: entry.value };
     }
     delete store[key];
     return null;
 }
 
-function _writeCacheSuccess(store, key, value, ttlMs) {
-    store[key] = { value: value, expiry: _now() + ttlMs };
+function writeCacheSuccess(store, key, value, ttlMs) {
+    store[key] = { value: value, expiry: now() + ttlMs };
 }
 
-function _writeCacheError(store, key, errorTtlMs) {
-    store[key] = { errorUntil: _now() + errorTtlMs };
+function writeCacheError(store, key, errorTtlMs) {
+    store[key] = { errorUntil: now() + errorTtlMs };
 }
 
-function _xhrGetJson(url, timeoutMs, success, fail) {
+function xhrGetJson(url, timeoutMs, success, fail) {
     try {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
@@ -105,13 +105,13 @@ function getCountryCode(callback, errorCallback, options) {
         errorTtlMs: options.errorTtlMs || DEFAULTS.errorTtlMs,
         timeoutMs: options.timeoutMs || DEFAULTS.timeoutMs
     };
-    var now = _now();
-    if (_countryCode && now < _locationExpiry) {
+    var t = now();
+    if (_countryCode && t < _locationExpiry) {
         callback(_countryCode);
         return;
     }
 
-    var url = _buildUrl("https://nominatim.openstreetmap.org/search", {
+    var url = buildUrl("https://nominatim.openstreetmap.org/search", {
         city: Settings.settings.weatherCity || "",
         country: "",
         format: "json",
@@ -119,12 +119,12 @@ function getCountryCode(callback, errorCallback, options) {
         extratags: 1
     });
 
-    _xhrGetJson(url, cfg.timeoutMs, function(response) {
+    xhrGetJson(url, cfg.timeoutMs, function(response) {
         try {
             _countryCode = (response && response[0] && response[0].address && response[0].address.country_code) ? response[0].address.country_code : "US";
             _regionCode = (response && response[0] && response[0].address && response[0].address["ISO3166-2-lvl4"]) ? response[0].address["ISO3166-2-lvl4"] : "";
             _regionName = (response && response[0] && response[0].address && response[0].address.state) ? response[0].address.state : "";
-            _locationExpiry = _now() + cfg.locationTtlMs;
+            _locationExpiry = now() + cfg.locationTtlMs;
             callback(_countryCode);
         } catch (e) {
             errorCallback && errorCallback("Failed to parse location data");
@@ -142,7 +142,7 @@ function getHolidays(year, countryCode, callback, errorCallback, options) {
         timeoutMs: options.timeoutMs || DEFAULTS.timeoutMs
     };
     var cacheKey = year + "-" + (countryCode || "");
-    var cached = _readCache(_holidaysCache, cacheKey);
+    var cached = readCache(_holidaysCache, cacheKey);
     if (cached) {
         if (cached.error) {
             errorCallback && errorCallback("Holidays temporarily unavailable; retry later");
@@ -154,17 +154,17 @@ function getHolidays(year, countryCode, callback, errorCallback, options) {
 
     var url = "https://date.nager.at/api/v3/PublicHolidays/" + year + "/" + countryCode;
 
-    _xhrGetJson(url, cfg.timeoutMs, function(list) {
+    xhrGetJson(url, cfg.timeoutMs, function(list) {
         try {
             var augmented = filterHolidaysByRegion(list || []);
-            _writeCacheSuccess(_holidaysCache, cacheKey, augmented, cfg.holidaysTtlMs);
+            writeCacheSuccess(_holidaysCache, cacheKey, augmented, cfg.holidaysTtlMs);
             callback(augmented);
         } catch (e) {
             errorCallback && errorCallback("Failed to process holidays");
         }
     }, function(err) {
         if (err && (err.status === 429 || (err.status >= 500 && err.status <= 599))) {
-            _writeCacheError(_holidaysCache, cacheKey, cfg.errorTtlMs);
+            writeCacheError(_holidaysCache, cacheKey, cfg.errorTtlMs);
         }
         errorCallback && errorCallback("Holidays fetch error: " + (err.status || err.type || "unknown"));
     });

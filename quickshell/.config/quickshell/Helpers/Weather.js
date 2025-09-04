@@ -10,9 +10,9 @@ var DEFAULTS = {
     timeoutMs: 8000                      // 8s timeout
 };
 
-function _now() { return Date.now(); }
+function now() { return Date.now(); }
 
-function _qsFrom(obj) {
+function qsFrom(obj) {
     var parts = [];
     for (var k in obj) {
         if (!obj.hasOwnProperty(k)) continue;
@@ -23,7 +23,7 @@ function _qsFrom(obj) {
     return parts.join("&");
 }
 
-function _buildUrl(base, paramsObj) {
+function buildUrl(base, paramsObj) {
     try {
         if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
             var u = new URL(base);
@@ -38,18 +38,18 @@ function _buildUrl(base, paramsObj) {
             return u.toString();
         }
     } catch (e) { /* fallthrough */ }
-    var qs = _qsFrom(paramsObj);
+    var qs = qsFrom(paramsObj);
     return qs ? (base + "?" + qs) : base;
 }
 
-function _readCache(store, key) {
+function readCache(store, key) {
     var entry = store[key];
     if (!entry) return null;
-    var now = _now();
-    if (entry.errorUntil && now < entry.errorUntil) {
+    var t = now();
+    if (entry.errorUntil && t < entry.errorUntil) {
         return { error: true, retryAt: entry.errorUntil };
     }
-    if (entry.expiry && now < entry.expiry) {
+    if (entry.expiry && t < entry.expiry) {
         return { value: entry.value };
     }
     // expired
@@ -57,15 +57,15 @@ function _readCache(store, key) {
     return null;
 }
 
-function _writeCacheSuccess(store, key, value, ttlMs) {
-    store[key] = { value: value, expiry: _now() + ttlMs };
+function writeCacheSuccess(store, key, value, ttlMs) {
+    store[key] = { value: value, expiry: now() + ttlMs };
 }
 
-function _writeCacheError(store, key, errorTtlMs) {
-    store[key] = { errorUntil: _now() + errorTtlMs };
+function writeCacheError(store, key, errorTtlMs) {
+    store[key] = { errorUntil: now() + errorTtlMs };
 }
 
-function _xhrGetJson(url, timeoutMs, success, fail) {
+function xhrGetJson(url, timeoutMs, success, fail) {
     try {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
@@ -115,7 +115,7 @@ function fetchCoordinates(city, callback, errorCallback, options) {
         return;
     }
 
-    var cached = _readCache(_geoCache, key);
+    var cached = readCache(_geoCache, key);
     if (cached) {
         if (cached.error) {
             errorCallback && errorCallback("Geocoding temporarily unavailable; retry later");
@@ -127,31 +127,31 @@ function fetchCoordinates(city, callback, errorCallback, options) {
         }
     }
 
-    var geoUrl = _buildUrl("https://geocoding-api.open-meteo.com/v1/search", {
+    var geoUrl = buildUrl("https://geocoding-api.open-meteo.com/v1/search", {
         name: city,
         language: "en",
         format: "json",
         count: 1
     });
 
-    _xhrGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
+    xhrGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
         try {
             if (geoData && geoData.results && geoData.results.length > 0) {
                 var lat = geoData.results[0].latitude;
                 var lon = geoData.results[0].longitude;
-                _writeCacheSuccess(_geoCache, key, { lat: lat, lon: lon }, cfg.geocodeTtlMs);
+                writeCacheSuccess(_geoCache, key, { lat: lat, lon: lon }, cfg.geocodeTtlMs);
                 callback(lat, lon);
             } else {
-                _writeCacheError(_geoCache, key, cfg.errorTtlMs);
+                writeCacheError(_geoCache, key, cfg.errorTtlMs);
                 errorCallback && errorCallback("City not found");
             }
         } catch (e) {
-            _writeCacheError(_geoCache, key, cfg.errorTtlMs);
+            writeCacheError(_geoCache, key, cfg.errorTtlMs);
             errorCallback && errorCallback("Failed to parse geocoding data");
         }
     }, function(err) {
         if (err && (err.status === 429 || (err.status >= 500 && err.status <= 599))) {
-            _writeCacheError(_geoCache, key, cfg.errorTtlMs);
+            writeCacheError(_geoCache, key, cfg.errorTtlMs);
         }
         errorCallback && errorCallback("Geocoding error: " + (err.status || err.type || "unknown"));
     });
@@ -168,7 +168,7 @@ function fetchWeather(latitude, longitude, callback, errorCallback, options) {
 
     var cacheKey = cfg.cityKey ? String(cfg.cityKey).toLowerCase() : null;
     if (cacheKey) {
-        var cached = _readCache(_weatherCache, cacheKey);
+        var cached = readCache(_weatherCache, cacheKey);
         if (cached) {
             if (cached.error) {
                 errorCallback && errorCallback("Weather temporarily unavailable; retry later");
@@ -181,7 +181,7 @@ function fetchWeather(latitude, longitude, callback, errorCallback, options) {
         }
     }
 
-    var url = _buildUrl("https://api.open-meteo.com/v1/forecast", {
+    var url = buildUrl("https://api.open-meteo.com/v1/forecast", {
         latitude: String(latitude),
         longitude: String(longitude),
         current_weather: "true",
@@ -190,12 +190,12 @@ function fetchWeather(latitude, longitude, callback, errorCallback, options) {
         timezone: "auto"
     });
 
-    _xhrGetJson(url, cfg.timeoutMs, function(weatherData) {
-        if (cacheKey) _writeCacheSuccess(_weatherCache, cacheKey, weatherData, cfg.weatherTtlMs);
+    xhrGetJson(url, cfg.timeoutMs, function(weatherData) {
+        if (cacheKey) writeCacheSuccess(_weatherCache, cacheKey, weatherData, cfg.weatherTtlMs);
         callback(weatherData);
     }, function(err) {
         if (cacheKey && err && (err.status === 429 || (err.status >= 500 && err.status <= 599))) {
-            _writeCacheError(_weatherCache, cacheKey, cfg.errorTtlMs);
+            writeCacheError(_weatherCache, cacheKey, cfg.errorTtlMs);
         }
         errorCallback && errorCallback("Weather fetch error: " + (err.status || err.type || "unknown"));
     });
