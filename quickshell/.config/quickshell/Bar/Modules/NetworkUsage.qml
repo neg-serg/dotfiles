@@ -155,7 +155,7 @@ Item {
     // --- Internet reachability: ping a well-known IP (1.1.1.1) ---
     Timer {
         id: inetPoll
-        interval: 8000
+        interval: (Settings.settings.networkPingIntervalMs > 0 ? Settings.settings.networkPingIntervalMs : 30000)
         repeat: true
         running: true
         onTriggered: {
@@ -202,8 +202,8 @@ Item {
 
     // Current icon color based on connectivity
     function currentIconColor() {
-        if (!root.hasLink) return Theme.error    // red
-        if (!root.hasInternet) return Theme.warning // yellow
+        if (!root.hasLink) return (Settings.settings.networkNoLinkColor || Theme.error)
+        if (!root.hasInternet) return (Settings.settings.networkNoInternetColor || Theme.warning)
         return root.iconColor
     }
 }

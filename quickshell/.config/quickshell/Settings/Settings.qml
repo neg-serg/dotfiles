@@ -114,6 +114,15 @@ Singleton {
             property int  musicPopupWidth: 840     // logical px, scaled
             property int  musicPopupHeight: 250    // logical px, scaled (used when content height unknown)
             property int  musicPopupPadding: 12    // logical px, scaled (inner content padding)
+
+            // Networking / connectivity
+            // Ping interval for internet reachability checks (ms)
+            property int  networkPingIntervalMs: 30000
+            // Colors for NetworkUsage icon states (strings parsed as colors)
+            // No Internet (link up, but no reachability): orange (Half-Life-like)
+            property string networkNoInternetColor: "#F58025"
+            // No Link (interface down): raspberry/crimson-ish
+            property string networkNoLinkColor: "#D81B60"
         }
     }
 
