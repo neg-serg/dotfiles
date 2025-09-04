@@ -7,7 +7,7 @@ Window {
     property string text: ""
     property bool tooltipVisible: false
     property Item targetItem: null
-    property int delay: 300
+    property int delay: Theme.tooltipDelayMs
     property bool positionAbove: true
 
     flags: Qt.ToolTip | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint

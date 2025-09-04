@@ -18,4 +18,47 @@
   "highlight":    "#94E1F9",
   "rippleEffect": "#D6F3FF",
   "onAccent":     "#FFFFFF"
+,
+  "panelHeight": 28,
+  "panelSideMargin": 18,
+  "panelWidgetSpacing": 12,
+  "panelSepOvershoot": 60,
+
+  "panelIconSize": 24,
+  "panelIconSizeSmall": 16,
+  "panelGlyphSize": 14,
+
+  "panelHotzoneWidth": 16,
+  "panelHotzoneHeight": 9,
+  "panelHotzoneRightShift": 1.15,
+
+  "panelModuleHeight": 36,
+  "panelMenuYOffset": 20,
+
+  "cornerRadius": 8,
+  "cornerRadiusSmall": 4,
+
+  "tooltipDelayMs": 1500,
+
+  "panelPillBackground": "#000000",
+  "panelPillHeight": 22,
+  "panelPillIconSize": 22,
+  "panelPillPaddingH": 14,
+  "panelPillShowDelayMs": 500,
+  "panelPillAutoHidePauseMs": 2500,
+
+  "panelAnimStdMs": 250,
+  "panelAnimFastMs": 200,
+
+  "panelTrayLongHoldMs": 2500,
+  "panelTrayShortHoldMs": 1500,
+  "panelTrayGuardMs": 120,
+  "panelTrayOverlayDismissDelayMs": 5000,
+
+  "panelRowSpacing": 8,
+  "panelRowSpacingSmall": 4,
+
+  "panelVolumeFullHideMs": 800,
+  "panelVolumeLowColor":  "#D62E6E",
+  "panelVolumeHighColor": "#0E6B4D"
 }

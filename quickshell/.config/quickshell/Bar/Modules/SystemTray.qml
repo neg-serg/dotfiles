@@ -114,7 +114,7 @@ Row {
         height: bg.height
         Rectangle {
             id: bg
-            radius: 0
+            radius: Theme.cornerRadiusSmall
             color: Theme.backgroundPrimary
             border.color: "transparent"
             border.width: 0
