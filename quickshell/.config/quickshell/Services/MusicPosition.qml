@@ -33,7 +33,7 @@ Item {
     // Poll MPRIS position properly (seconds) and convert to ms
     Timer {
         id: positionPoller
-        interval: 1000
+        interval: Theme.musicPositionPollMs
         repeat: true
         running: !!root.currentPlayer
         onTriggered: {

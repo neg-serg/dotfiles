@@ -51,7 +51,7 @@ Item {
 
     // Fallback: light polling in case Connections are not delivered in this env
     Timer {
-        interval: 5000
+        interval: Theme.musicPlayersPollMs
         repeat: true
         running: true
         onTriggered: root.updateCurrentPlayer()

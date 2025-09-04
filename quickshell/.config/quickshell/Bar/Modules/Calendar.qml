@@ -31,12 +31,12 @@ PanelWithOverlay {
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 16
-            spacing: 12
+            spacing: Theme.calendarRowSpacing
 
             // Month/Year header with navigation
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 8
+                spacing: Theme.calendarCellSpacing
 
                 IconButton {
                     icon: "chevron_left"
@@ -72,8 +72,8 @@ PanelWithOverlay {
             DayOfWeekRow {
                 Layout.fillWidth: true
                 spacing: 0
-                Layout.leftMargin: 8 // Align with grid
-                Layout.rightMargin: 8
+                Layout.leftMargin: Theme.calendarSideMargin // Align with grid
+                Layout.rightMargin: Theme.calendarSideMargin
 
                 delegate: Text {
                     text: shortName
@@ -101,8 +101,8 @@ PanelWithOverlay {
                 }
 
                 Layout.fillWidth: true
-                Layout.leftMargin: 8
-                Layout.rightMargin: 8
+                Layout.leftMargin: Theme.calendarSideMargin
+                Layout.rightMargin: Theme.calendarSideMargin
                 spacing: 0
                 month: Time.date.getMonth()
                 year: Time.date.getFullYear()

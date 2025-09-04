@@ -135,6 +135,9 @@ Singleton {
             // Core module timings (ms)
             property int timeTickMs: 1000
             property int wsRefreshDebounceMs: 120
+            property int musicPositionPollMs: 1000
+            property int musicPlayersPollMs: 5000
+            property int musicMetaRecalcDebounceMs: 80
             property int vpnPollMs: 2500
             property int networkRestartBackoffMs: 1500
             property int networkLinkPollMs: 4000
@@ -143,6 +146,11 @@ Singleton {
             // Spectrum animations
             property int spectrumPeakDecayIntervalMs: 50
             property int spectrumBarAnimMs: 100
+
+            // Calendar metrics
+            property int calendarRowSpacing: 12
+            property int calendarCellSpacing: 8
+            property int calendarSideMargin: 8
 
             // Side-panel popup timings/margins (MusicPopup)
             property int  sidePanelPopupSlideMs: 220
@@ -281,6 +289,13 @@ Singleton {
     property int mediaHoverStillThresholdMs: themeData.mediaHoverStillThresholdMs
     property int spectrumPeakDecayIntervalMs: themeData.spectrumPeakDecayIntervalMs
     property int spectrumBarAnimMs: themeData.spectrumBarAnimMs
+    property int musicPositionPollMs: themeData.musicPositionPollMs
+    property int musicPlayersPollMs: themeData.musicPlayersPollMs
+    property int musicMetaRecalcDebounceMs: themeData.musicMetaRecalcDebounceMs
+    // Calendar metrics
+    property int calendarRowSpacing: themeData.calendarRowSpacing
+    property int calendarCellSpacing: themeData.calendarCellSpacing
+    property int calendarSideMargin: themeData.calendarSideMargin
     // Side-panel popup timings/margins
     property int  sidePanelPopupSlideMs: themeData.sidePanelPopupSlideMs
     property int  sidePanelPopupAutoHideMs: themeData.sidePanelPopupAutoHideMs

@@ -47,7 +47,7 @@ Item {
     // Debounced recalc orchestrator
     Timer {
         id: recalcTimer
-        interval: 80
+        interval: Theme.musicMetaRecalcDebounceMs
         repeat: false
         onTriggered: _recalcAll()
     }
