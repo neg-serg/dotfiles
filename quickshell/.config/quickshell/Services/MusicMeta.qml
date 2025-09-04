@@ -8,30 +8,33 @@ Item {
 
     // Inputs
     property var currentPlayer: null
+    // Diagnostics (off by default)
+    property bool debugMetaLogging: false
+    property int _recalcSeq: 0
 
-    // Public metadata (computed/bound)
-    property string trackGenre:          _computeGenre()
-    property string trackLabel:          _computeLabel()
-    property string trackYear:           _computeYear()
-    property string trackBitrateStr:     _computeBitrateStr()
-    property string trackSampleRateStr:  _computeSampleRateStr()
-    property string trackDsdRateStr:     _computeDsdRateStr()
-    property string trackCodec:          _computeCodec()
-    property string trackCodecDetail:    _computeCodecDetail()
-    property string trackChannelsStr:    _computeChannelsStr()
-    property string trackBitDepthStr:    _computeBitDepthStr()
-    property string trackNumberStr:      _computeTrackNumberStr()
-    property string trackDiscNumberStr:  _computeDiscNumberStr()
-    property string trackAlbumArtist:    _computeAlbumArtist()
-    property string trackComposer:       _computeComposer()
-    property string trackUrlStr:         _computeUrlStr()
-    property string trackRgTrackStr:     _computeRgTrackStr()
-    property string trackRgAlbumStr:     _computeRgAlbumStr()
-    property string trackDateStr:        _computeDateStr()
-    property string trackContainer:      _computeContainer()
-    property string trackFileSizeStr:    _computeFileSizeStr()
-    property string trackChannelLayout:  _computeChannelLayout()
-    property string trackQualitySummary: _computeQualitySummary()
+    // Public metadata — now set imperatively to avoid expensive re-evaluation
+    property string trackGenre:          ""
+    property string trackLabel:          ""
+    property string trackYear:           ""
+    property string trackBitrateStr:     ""
+    property string trackSampleRateStr:  ""
+    property string trackDsdRateStr:     ""
+    property string trackCodec:          ""
+    property string trackCodecDetail:    ""
+    property string trackChannelsStr:    ""
+    property string trackBitDepthStr:    ""
+    property string trackNumberStr:      ""
+    property string trackDiscNumberStr:  ""
+    property string trackAlbumArtist:    ""
+    property string trackComposer:       ""
+    property string trackUrlStr:         ""
+    property string trackRgTrackStr:     ""
+    property string trackRgAlbumStr:     ""
+    property string trackDateStr:        ""
+    property string trackContainer:      ""
+    property string trackFileSizeStr:    ""
+    property string trackChannelLayout:  ""
+    property string trackQualitySummary: ""
 
     // Internal state for file introspection
     property bool introspectAudioEnabled: true
@@ -40,6 +43,55 @@ Item {
     property string _pendingPath: ""
     property var  fileAudioMeta: ({})   // { codec, codecLong, profile, sampleFormat, sampleRate, bitrateKbps, channels, bitDepth, tags:{}, fileSizeBytes, container, channelLayout, encoder }
     function _resetFileMeta() { fileAudioMeta = ({}) }
+
+    // Debounced recalc orchestrator
+    Timer {
+        id: recalcTimer
+        interval: 80
+        repeat: false
+        onTriggered: _recalcAll()
+    }
+
+    function scheduleRecalc() {
+        if (recalcTimer.running) recalcTimer.restart(); else recalcTimer.start();
+    }
+
+    // Recalculate all public fields in one pass (debounced by caller if needed)
+    function _recalcAll() {
+        var t0 = 0; if (debugMetaLogging) { t0 = Date.now(); ++_recalcSeq; console.debug('[MusicMeta] recalc #' + _recalcSeq + ' begin'); }
+        // Compute URL first to trigger introspection when it changes
+        var newUrl = _computeUrlStr();
+        if (trackUrlStr !== newUrl) trackUrlStr = newUrl;
+
+        trackGenre          = _computeGenre();
+        trackLabel          = _computeLabel();
+        trackYear           = _computeYear();
+        trackBitrateStr     = _computeBitrateStr();
+        trackSampleRateStr  = _computeSampleRateStr();
+        trackCodec          = _computeCodec();
+        trackCodecDetail    = _computeCodecDetail();
+        trackChannelsStr    = _computeChannelsStr();
+        trackBitDepthStr    = _computeBitDepthStr();
+        trackNumberStr      = _computeTrackNumberStr();
+        trackDiscNumberStr  = _computeDiscNumberStr();
+        trackAlbumArtist    = _computeAlbumArtist();
+        trackComposer       = _computeComposer();
+        trackRgTrackStr     = _computeRgTrackStr();
+        trackRgAlbumStr     = _computeRgAlbumStr();
+        trackDateStr        = _computeDateStr();
+        trackContainer      = _computeContainer();
+        trackFileSizeStr    = _computeFileSizeStr();
+        trackChannelLayout  = _computeChannelLayout();
+        // Depends on several of the above
+        trackDsdRateStr     = _computeDsdRateStr();
+        trackQualitySummary = _computeQualitySummary();
+        if (debugMetaLogging) {
+            var dt = Date.now() - t0;
+            var pl = (currentPlayer && (currentPlayer.name || currentPlayer.identity)) || '';
+            var title = (typeof trackTitle !== 'undefined' ? trackTitle : (currentPlayer && currentPlayer.trackTitle)) || '';
+            console.debug('[MusicMeta] recalc #' + _recalcSeq + ' done in ' + dt + 'ms', 'player=', pl, 'title=', title);
+        }
+    }
 
     // --- Helpers over currentPlayer -------------------------------------
     function _playerProp(keys) {
@@ -154,6 +206,26 @@ Item {
         _startIntrospection(p);
     }
     onTrackUrlStrChanged: introspectCurrentTrack()
+
+    // Initial population
+    Component.onCompleted: _recalcAll()
+
+    // Recompute on player changes and common metadata updates; ignoreUnknownSignals for portability
+    Connections {
+        target: root.currentPlayer
+        ignoreUnknownSignals: true
+        function onMetadataChanged()          { root.scheduleRecalc() }
+        function onTrackTitleChanged()        { root.scheduleRecalc() }
+        function onTrackArtistChanged()       { root.scheduleRecalc() }
+        function onTrackAlbumChanged()        { root.scheduleRecalc() }
+        function onTrackArtUrlChanged()       { root.scheduleRecalc() }
+        function onLengthChanged()            { root.scheduleRecalc() }
+        function onPlaybackStateChanged()     { root.scheduleRecalc() }
+    }
+    onCurrentPlayerChanged: scheduleRecalc()
+
+    // Update computed fields when file introspection updates land
+    onFileAudioMetaChanged: scheduleRecalc()
 
     // Processes: ffprobe → mediainfo → sox --i
     Process {
