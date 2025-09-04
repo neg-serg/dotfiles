@@ -135,6 +135,7 @@ Singleton {
             // Core module timings (ms)
             property int timeTickMs: 1000
             property int wsRefreshDebounceMs: 120
+            property int applauncherClipboardPollMs: 1000
             property int musicPositionPollMs: 1000
             property int musicPlayersPollMs: 5000
             property int musicMetaRecalcDebounceMs: 80
@@ -192,6 +193,24 @@ Singleton {
             // Overlay panels
             property int  panelOverlayRadius: 20
             property int  cornerRadiusLarge: 12
+
+            // Generic UI spacings/margins (logical)
+            property int  uiMarginLarge: 32
+            property int  uiMarginMedium: 16
+            property int  uiPaddingMedium: 14
+            property int  uiSpacingLarge: 18
+            property int  uiSpacingSmall: 10
+            property int  uiSpacingXSmall: 2
+            property int  uiGapTiny: 1
+            property int  uiControlHeight: 48
+
+            // Calendar popup sizing
+            property int  calendarWidth: 340
+            property int  calendarHeight: 380
+            property int  calendarPopupMargin: 4
+            property int  calendarBorderWidth: 1
+            property int  calendarCellSize: 32
+            property int  calendarHolidayDotSize: 4
         }
     }
     
@@ -331,4 +350,20 @@ Singleton {
     // Overlay radius and larger corner
     property int panelOverlayRadius: themeData.panelOverlayRadius
     property int cornerRadiusLarge: themeData.cornerRadiusLarge
+    // Generic UI spacings/margins
+    property int uiMarginLarge: themeData.uiMarginLarge
+    property int uiMarginMedium: themeData.uiMarginMedium
+    property int uiPaddingMedium: themeData.uiPaddingMedium
+    property int uiSpacingLarge: themeData.uiSpacingLarge
+    property int uiSpacingSmall: themeData.uiSpacingSmall
+    property int uiSpacingXSmall: themeData.uiSpacingXSmall
+    property int uiGapTiny: themeData.uiGapTiny
+    property int uiControlHeight: themeData.uiControlHeight
+    // Calendar popup sizing
+    property int calendarWidth: themeData.calendarWidth
+    property int calendarHeight: themeData.calendarHeight
+    property int calendarPopupMargin: themeData.calendarPopupMargin
+    property int calendarBorderWidth: themeData.calendarBorderWidth
+    property int calendarCellSize: themeData.calendarCellSize
+    property int calendarHolidayDotSize: themeData.calendarHolidayDotSize
 }
