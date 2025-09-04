@@ -27,7 +27,7 @@ Item {
                 sidebarPopup.showAt();
             }
         }
-        onEntered: buttonRoot.hoverOpacity = 0.18
+        onEntered: buttonRoot.hoverOpacity = Theme.panelHoverOpacity
         onExited: buttonRoot.hoverOpacity = 0.0
     }
 
@@ -44,16 +44,13 @@ Item {
         id: iconText
         icon: "dashboard"
         rounded: isActive
-        size: 16 * Theme.scale(screen)
+        size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen))
         color: sidebarPopup.visible ? Theme.accentPrimary : Theme.textPrimary
         anchors.centerIn: parent
         z: 1
     }
 
     Behavior on hoverOpacity {
-        NumberAnimation {
-            duration: 120
-            easing.type: Easing.OutQuad
-        }
+        NumberAnimation { duration: Theme.panelHoverFadeMs; easing.type: Easing.OutQuad }
     }
 }
