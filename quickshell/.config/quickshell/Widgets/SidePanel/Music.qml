@@ -346,12 +346,11 @@ Rectangle {
                                 visible: !!MusicManager.trackArtist
                                 Layout.fillWidth: true
                                 spacing: 6 * Theme.scale(screen)
-                                Text {
+                                MaterialIcon {
                                     // Artist icon
-                                    text: "person"
-                                    font.family: "Material Symbols Outlined"
+                                    icon: "person"
                                     color: "#004E4E"
-                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.05)
+                                    size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
                                     Layout.fillWidth: true
@@ -370,12 +369,11 @@ Rectangle {
                                 visible: !!MusicManager.trackAlbumArtist && MusicManager.trackAlbumArtist !== MusicManager.trackArtist
                                 Layout.fillWidth: true
                                 spacing: 6 * Theme.scale(screen)
-                                Text {
+                                MaterialIcon {
                                     // Album artist icon
-                                    text: "person"
-                                    font.family: "Material Symbols Outlined"
+                                    icon: "person"
                                     color: "#004E4E"
-                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.05)
+                                    size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
                                     Layout.fillWidth: true
@@ -394,12 +392,11 @@ Rectangle {
                                 visible: !!MusicManager.trackAlbum
                                 Layout.fillWidth: true
                                 spacing: 6 * Theme.scale(screen)
-                                Text {
+                                MaterialIcon {
                                     // Album icon
-                                    text: "album"
-                                    font.family: "Material Symbols Outlined"
+                                    icon: "album"
                                     color: "#004E4E"
-                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.05)
+                                    size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
                                     Layout.fillWidth: true
@@ -420,13 +417,11 @@ Rectangle {
                                 visible: !!MusicManager.trackGenre
                                 Layout.fillWidth: true
                                 spacing: 6 * Theme.scale(screen)
-                                Text {
+                                MaterialIcon {
                                     // Genre icon
-                                    text: "category"
-                                    font.family: "Material Symbols Outlined"
+                                    icon: "category"
                                     color: "#004E4E"
-                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
-                                    font.weight: Font.Bold
+                                    size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
                                 Text {
@@ -447,13 +442,11 @@ Rectangle {
                                 visible: !!MusicManager.trackYear && !MusicManager.trackDateStr
                                 Layout.fillWidth: true
                                 spacing: 6 * Theme.scale(screen)
-                                Text {
+                                MaterialIcon {
                                     // Year icon
-                                    text: "calendar_month"
-                                    font.family: "Material Symbols Outlined"
+                                    icon: "calendar_month"
                                     color: "#004E4E"
-                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
-                                    font.weight: Font.Bold
+                                    size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
                                 Text {
@@ -473,13 +466,11 @@ Rectangle {
                                 visible: !!MusicManager.trackLabel
                                 Layout.fillWidth: true
                                 spacing: 6 * Theme.scale(screen)
-                                Text {
+                                MaterialIcon {
                                     // Label/Publisher icon
-                                    text: "sell"
-                                    font.family: "Material Symbols Outlined"
+                                    icon: "sell"
                                     color: "#004E4E"
-                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
-                                    font.weight: Font.Bold
+                                    size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
                                 Text {
@@ -500,13 +491,11 @@ Rectangle {
                                 visible: !!MusicManager.trackComposer
                                 Layout.fillWidth: true
                                 spacing: 6 * Theme.scale(screen)
-                                Text {
+                                MaterialIcon {
                                     // Composer icon
-                                    text: "piano"
-                                    font.family: "Material Symbols Outlined"
+                                    icon: "piano"
                                     color: "#004E4E"
-                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
-                                    font.weight: Font.Bold
+                                    size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
                                 Text {
@@ -549,13 +538,11 @@ Rectangle {
                                 visible: !!MusicManager.trackQualitySummary
                                 Layout.fillWidth: true
                                 spacing: 6 * Theme.scale(screen)
-                                Text {
+                                MaterialIcon {
                                     // Quality icon
-                                    text: "high_quality"
-                                    font.family: "Material Symbols Outlined"
+                                    icon: "high_quality"
                                     color: "#004E4E"
-                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
-                                    font.weight: Font.Bold
+                                    size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
                                 Text {
@@ -582,13 +569,11 @@ Rectangle {
                                 visible: !!MusicManager.trackDsdRateStr
                                 Layout.fillWidth: true
                                 spacing: 6 * Theme.scale(screen)
-                                Text {
+                                MaterialIcon {
                                     // DSD rate icon
-                                    text: "speed"
-                                    font.family: "Material Symbols Outlined"
+                                    icon: "speed"
                                     color: "#004E4E"
-                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
-                                    font.weight: Font.Bold
+                                    size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
                                 Text {
@@ -750,13 +735,11 @@ Rectangle {
                                 visible: !!MusicManager.trackDateStr
                                 Layout.fillWidth: true
                                 spacing: 6 * Theme.scale(screen)
-                                Text {
+                                MaterialIcon {
                                     // Date icon
-                                    text: "calendar_month"
-                                    font.family: "Material Symbols Outlined"
+                                    icon: "calendar_month"
                                     color: "#004E4E"
-                                    font.pixelSize: Math.round(playerUI.musicFontPx * 1.15)
-                                    font.weight: Font.Bold
+                                    size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
                                 Text {

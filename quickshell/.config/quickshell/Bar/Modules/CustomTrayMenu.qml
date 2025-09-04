@@ -4,6 +4,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import Quickshell
 import qs.Settings
+import qs.Components
 
     PopupWindow {
         id: trayMenu
@@ -150,14 +151,12 @@ import qs.Settings
                         fillMode: Image.PreserveAspectFit;
                     }
 
-                    Text {
-                        // Material Symbols Outlined chevron right for submenu
-                        text: modelData?.hasChildren ? "menu" : "";
-                        font.family: "Material Symbols Outlined";
-                        font.pixelSize: Math.round(15 * Theme.scale(screen));
-                        verticalAlignment: Text.AlignVCenter;
-                        visible: modelData?.hasChildren ?? false;
-                        color: Theme.textPrimary;
+                    MaterialIcon {
+                        // Chevron/right indicator for submenu
+                        icon: modelData?.hasChildren ? "chevron_right" : ""
+                        size: Math.round(15 * Theme.scale(screen))
+                        visible: modelData?.hasChildren ?? false
+                        color: Theme.textPrimary
                     }
                 }
 
@@ -389,13 +388,11 @@ import qs.Settings
                                 fillMode: Image.PreserveAspectFit;
                             }
 
-                            Text {
-                                text: modelData?.hasChildren ? "\uE5CC" : "";
-                                font.family: "Material Symbols Outlined";
-                                font.pixelSize: Math.round(15 * Theme.scale(screen));
-                                verticalAlignment: Text.AlignVCenter;
-                                visible: modelData?.hasChildren ?? false;
-                                color: Theme.textPrimary;
+                            MaterialIcon {
+                                icon: modelData?.hasChildren ? "chevron_right" : ""
+                                size: Math.round(15 * Theme.scale(screen))
+                                visible: modelData?.hasChildren ?? false
+                                color: Theme.textPrimary
                             }
                         }
 

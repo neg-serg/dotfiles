@@ -526,12 +526,10 @@ PanelWithOverlay {
                             anchors.rightMargin: 14
                             spacing: 10
 
-                            Text {
-                                text: "search"
-                                font.family: "Material Symbols Outlined"
-                                font.pixelSize: Theme.fontSizeHeader * Theme.scale(screen)
+                            MaterialIcon {
+                                icon: "search"
+                                size: Theme.fontSizeHeader * Theme.scale(screen)
                                 color: searchField.activeFocus ? Theme.accentPrimary : Theme.textSecondary
-                                verticalAlignment: Text.AlignVCenter
                                 Layout.alignment: Qt.AlignVCenter
                             }
 
@@ -728,14 +726,12 @@ PanelWithOverlay {
                                         Layout.fillWidth: true
                                     }
 
-                                    Text {
-                                        text: modelData.isCalculator ? "content_copy" : "chevron_right"
-                                        font.family: "Material Symbols Outlined"
-                                        font.pixelSize: Theme.fontSizeBody * Theme.scale(screen)
+                                    MaterialIcon {
+                                        icon: modelData.isCalculator ? "content_copy" : "chevron_right"
+                                        size: Theme.fontSizeBody * Theme.scale(screen)
                                         color: (hovered || isSelected)
                                             ? Theme.onAccent
                                             : (appLauncherPanel.isPinned(modelData) ? Theme.textPrimary : Theme.textSecondary)
-                                        verticalAlignment: Text.AlignVCenter
                                         Layout.rightMargin: 8
                                     }
 
@@ -811,15 +807,13 @@ PanelWithOverlay {
                                         }
                                     }
 
-                                    Text {
+                                    MaterialIcon {
                                         anchors.centerIn: parent
-                                        text: "star"
-                                        font.family: "Material Symbols Outlined"
-                                        font.pixelSize: Theme.fontSizeSmall * Theme.scale(screen)
+                                        icon: "star"
+                                        size: Theme.fontSizeSmall * Theme.scale(screen)
                                         color: (parent.MouseArea.containsMouse || hovered || isSelected)
                                             ? Theme.onAccent
                                             : (appLauncherPanel.isPinned(modelData) ? Theme.textPrimary : Theme.textDisabled)
-                                        verticalAlignment: Text.AlignVCenter
                                     }
                                 }
                             }
