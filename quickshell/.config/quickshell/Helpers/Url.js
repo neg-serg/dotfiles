@@ -56,4 +56,4 @@ function buildFileUrl(dirPath, fileName) {
     }
 }
 
-// Functions are exposed via module scope when imported in QML (e.g., `import ".../Url.js" as url`).
+// Functions are exposed via module scope when imported in QML (e.g., `import ".../Url.js" as Url`).
