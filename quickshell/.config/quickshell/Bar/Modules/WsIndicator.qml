@@ -374,7 +374,7 @@ Item {
     // Debounce before asking hyprctl again (used on monitor focus change)
     Timer {
         id: refreshOnce
-        interval: 120
+        interval: Theme.wsRefreshDebounceMs
         onTriggered: getCurrentWS.running = true
     }
 

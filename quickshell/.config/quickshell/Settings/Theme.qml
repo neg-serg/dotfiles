@@ -132,6 +132,18 @@ Singleton {
             property string panelVolumeLowColor:  "#D62E6E"  // raspberry
             property string panelVolumeHighColor: "#0E6B4D"  // spruce green
 
+            // Core module timings (ms)
+            property int timeTickMs: 1000
+            property int wsRefreshDebounceMs: 120
+            property int vpnPollMs: 2500
+            property int networkRestartBackoffMs: 1500
+            property int networkLinkPollMs: 4000
+            property int mediaHoverOpenDelayMs: 320
+            property int mediaHoverStillThresholdMs: 180
+            // Spectrum animations
+            property int spectrumPeakDecayIntervalMs: 50
+            property int spectrumBarAnimMs: 100
+
             // Side-panel popup timings/margins (MusicPopup)
             property int  sidePanelPopupSlideMs: 220
             property int  sidePanelPopupAutoHideMs: 4000
@@ -259,6 +271,16 @@ Singleton {
     property int panelVolumeFullHideMs: themeData.panelVolumeFullHideMs
     property color panelVolumeLowColor: themeData.panelVolumeLowColor
     property color panelVolumeHighColor: themeData.panelVolumeHighColor
+    // Core module timings
+    property int timeTickMs: themeData.timeTickMs
+    property int wsRefreshDebounceMs: themeData.wsRefreshDebounceMs
+    property int vpnPollMs: themeData.vpnPollMs
+    property int networkRestartBackoffMs: themeData.networkRestartBackoffMs
+    property int networkLinkPollMs: themeData.networkLinkPollMs
+    property int mediaHoverOpenDelayMs: themeData.mediaHoverOpenDelayMs
+    property int mediaHoverStillThresholdMs: themeData.mediaHoverStillThresholdMs
+    property int spectrumPeakDecayIntervalMs: themeData.spectrumPeakDecayIntervalMs
+    property int spectrumBarAnimMs: themeData.spectrumBarAnimMs
     // Side-panel popup timings/margins
     property int  sidePanelPopupSlideMs: themeData.sidePanelPopupSlideMs
     property int  sidePanelPopupAutoHideMs: themeData.sidePanelPopupAutoHideMs

@@ -97,5 +97,14 @@
   "sidePanelWeatherHeight": 180,
   "uiIconSizeLarge": 28,
   "panelOverlayRadius": 20,
-  "cornerRadiusLarge": 12
+  "cornerRadiusLarge": 12,
+  "timeTickMs": 1000,
+  "wsRefreshDebounceMs": 120,
+  "vpnPollMs": 2500,
+  "networkRestartBackoffMs": 1500,
+  "networkLinkPollMs": 4000,
+  "mediaHoverOpenDelayMs": 320,
+  "mediaHoverStillThresholdMs": 180,
+  "spectrumPeakDecayIntervalMs": 50,
+  "spectrumBarAnimMs": 100
 }

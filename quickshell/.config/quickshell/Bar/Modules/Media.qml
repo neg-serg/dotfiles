@@ -131,13 +131,13 @@ Item {
                 }
                 Timer {
                     id: hoverOpenTimer
-                    interval: 320
+                    interval: Theme.mediaHoverOpenDelayMs
                     repeat: false
                     onTriggered: {
                         try {
                             if (!trackSidePanelClick._armed) return;
                             const stillMs = Date.now() - trackSidePanelClick._lastMoveTs;
-                            if (stillMs < 180) { restart(); return; }
+                            if (stillMs < Theme.mediaHoverStillThresholdMs) { restart(); return; }
                             if (mediaControl.sidePanelPopup && trackText.text && trackText.text.length > 0) {
                                 mediaControl.sidePanelPopup.showAt();
                             }

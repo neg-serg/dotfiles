@@ -113,7 +113,7 @@ Item {
     // Backoff before restart
     Timer {
         id: restartTimer
-        interval: 1500
+        interval: Theme.networkRestartBackoffMs
         repeat: false
         onTriggered: runner.running = true
     }
@@ -121,7 +121,7 @@ Item {
     // --- Link detection: parse `ip -j -br a` ---
     Timer {
         id: linkPoll
-        interval: 4000
+        interval: Theme.networkLinkPollMs
         repeat: true
         running: true
         onTriggered: if (!linkProbe.running) linkProbe.running = true

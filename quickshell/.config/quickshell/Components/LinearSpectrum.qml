@@ -60,7 +60,7 @@ Item {
             property real peak: 0
             onVChanged: if (root.showPeaks && v > peak) peak = v;
             Timer {
-                interval: 50; running: root.showPeaks; repeat: true
+                interval: Theme.spectrumPeakDecayIntervalMs; running: root.showPeaks; repeat: true
                 onTriggered: parent.peak = Math.max(0, parent.peak - 0.04)
             }
 
@@ -74,7 +74,7 @@ Item {
                 y: root.mirror ? root.halfH : root.halfH - height
                 color: Qt.rgba(root.colorAt(index).r, root.colorAt(index).g, root.colorAt(index).b, root.fillOpacity)
                 antialiasing: true
-                Behavior on height { SmoothedAnimation { duration: 100 } }
+                Behavior on height { SmoothedAnimation { duration: Theme.spectrumBarAnimMs } }
             }
 
             // Mirrored bar (top half)
@@ -87,7 +87,7 @@ Item {
                 y: root.halfH - height
                 color: Qt.rgba(root.colorAt(index).r, root.colorAt(index).g, root.colorAt(index).b, root.fillOpacity)
                 antialiasing: true
-                Behavior on height { SmoothedAnimation { duration: 100 } }
+                Behavior on height { SmoothedAnimation { duration: Theme.spectrumBarAnimMs } }
             }
 
             // Peak indicator (optional)

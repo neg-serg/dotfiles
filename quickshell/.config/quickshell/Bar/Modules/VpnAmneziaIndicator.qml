@@ -87,7 +87,7 @@ Item {
     // Poll every few seconds
     Timer {
         id: poll
-        interval: 2500
+        interval: Theme.vpnPollMs
         repeat: true
         running: true
         onTriggered: if (!runner.running) runner.running = true

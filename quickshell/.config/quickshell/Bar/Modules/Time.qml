@@ -36,7 +36,7 @@ Singleton {
     }
 
     Timer {
-        interval: 1000
+        interval: Theme.timeTickMs
         repeat: true
         running: true
 
