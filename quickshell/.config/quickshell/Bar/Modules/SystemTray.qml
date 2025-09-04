@@ -159,40 +159,13 @@ Row {
                         radius: 6
                         color: "transparent"
                         clip: true
-                        IconImage {
+                        TrayIcon {
+                            id: icon
                             anchors.centerIn: parent
-                            width: Math.round(16 * Theme.scale(Screen))
-                            height: Math.round(16 * Theme.scale(Screen))
-                            smooth: false
-                            // route mipmap to underlying image backer
-                            backer.mipmap: false
-                            asynchronous: true
-                            backer.fillMode: Image.PreserveAspectFit
-                            // Request a device-pixel-aligned source size for crisp rendering
-                            backer.sourceSize: Qt.size(
-                                Math.round(width  * Screen.devicePixelRatio),
-                                Math.round(height * Screen.devicePixelRatio)
-                            )
-                            source: {
-                                let icon = modelData?.icon || "";
-                                if (!icon) return "";
-                                if (icon.includes("?path=")) {
-                                    const [name, path] = icon.split("?path=");
-                                    const fileName = name.substring(name.lastIndexOf("/") + 1);
-                                    return `file://${path}/${fileName}`;
-                                }
-                                return icon;
-                            }
-                            opacity: status === Image.Ready ? 1 : 0
-                            // Apply grayscale when the tray overlay is visible
-                            layer.enabled: trayOverlay.visible
-                            layer.smooth: false
-                            layer.samples: 1
-                            layer.effect: MultiEffect {
-                                saturation: 0.0
-                                brightness: 0.0
-                                contrast: 1.0
-                            }
+                            size: Math.round(16 * Theme.scale(Screen))
+                            source: modelData?.icon || ""
+                            grayscale: trayOverlay.visible
+                            opacity: ready ? 1 : 0
                         }
                     }
                     MouseArea {
@@ -315,42 +288,13 @@ Row {
                 color: "transparent"
                 clip: true
 
-                IconImage {
+                TrayIcon {
                     id: trayIcon
                     anchors.centerIn: parent
-                    width: Math.round(16 * Theme.scale(Screen))
-                    height: Math.round(16 * Theme.scale(Screen))
-                    smooth: false
-                    backer.mipmap: false
-                    asynchronous: true
-                    backer.fillMode: Image.PreserveAspectFit
-                    backer.sourceSize: Qt.size(
-                        Math.round(width  * Screen.devicePixelRatio),
-                        Math.round(height * Screen.devicePixelRatio)
-                    )
-                    source: {
-                        let icon = modelData?.icon || "";
-                        if (!icon)
-                            return "";
-                        // Process icon path
-                        if (icon.includes("?path=")) {
-                            const [name, path] = icon.split("?path=");
-                            const fileName = name.substring(name.lastIndexOf("/") + 1);
-                            return `file://${path}/${fileName}`;
-                        }
-                        return icon;
-                    }
-                    opacity: status === Image.Ready ? 1 : 0
-                    Component.onCompleted: {}
-                    // Apply grayscale when the tray overlay is visible
-                    layer.enabled: trayOverlay.visible
-                    layer.smooth: false
-                    layer.samples: 1
-                    layer.effect: MultiEffect {
-                        saturation: 0.0
-                        brightness: 0.0
-                        contrast: 1.0
-                    }
+                    size: Math.round(16 * Theme.scale(Screen))
+                    source: modelData?.icon || ""
+                    grayscale: trayOverlay.visible
+                    opacity: ready ? 1 : 0
                 }
             }
 
