@@ -18,9 +18,13 @@ Item {
     property var    cmd: ["rsmetrx"]
     property string displayText: "0/0K"
     property bool   useTheme: true
+    // Connectivity state
+    property bool   hasLink: true
+    property bool   hasInternet: true
 
     // Icon tuning
     property real   iconScale: 0.7
+    // Base icon color (used when link+internet are OK)
     property color  iconColor: useTheme && Theme.gothicColor ? Theme.gothicColor : "#8d9eb2"
     property int    iconVAdjust: 0                 // vertical nudge (px) for the icon
     property string iconText: ""                  // Font Awesome: network-wired
@@ -68,7 +72,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.verticalCenterOffset: iconVAdjust
                 text: iconText
-                color: iconColor
+                color: currentIconColor()
                 font.family: iconFontFamily
                 font.styleName: iconStyleName
                 font.weight: Font.Normal
@@ -114,6 +118,64 @@ Item {
         onTriggered: runner.running = true
     }
 
+    // --- Link detection: parse `ip -j -br a` ---
+    Timer {
+        id: linkPoll
+        interval: 4000
+        repeat: true
+        running: true
+        onTriggered: if (!linkProbe.running) linkProbe.running = true
+    }
+    Process {
+        id: linkProbe
+        command: ["bash", "-lc", "ip -j -br a"]
+        stdout: StdioCollector {
+            waitForEnd: true
+            onStreamFinished: {
+                try {
+                    const arr = JSON.parse(text)
+                    let up = false
+                    for (let it of arr) {
+                        const name = (it && it.ifname) ? String(it.ifname) : ""
+                        if (!name || name === "lo") continue
+                        const state = (it && it.operstate) ? String(it.operstate) : ""
+                        const addrs = Array.isArray(it?.addr_info) ? it.addr_info : []
+                        // Treat as "link present" if operstate UP, or UNKNOWN but has an address (e.g., VPN)
+                        if (state === "UP" || (state === "UNKNOWN" && addrs.length > 0)) { up = true; break }
+                    }
+                    root.hasLink = up
+                } catch (e) {
+                    // On parse error, assume unknown link (keep previous)
+                }
+                linkProbe.running = false
+            }
+        }
+    }
+
+    // --- Internet reachability: ping a well-known IP (1.1.1.1) ---
+    Timer {
+        id: inetPoll
+        interval: 8000
+        repeat: true
+        running: true
+        onTriggered: {
+            if (!root.hasLink) { root.hasInternet = false; return }
+            if (!inetProbe.running) inetProbe.running = true
+        }
+    }
+    Process {
+        id: inetProbe
+        command: ["bash", "-lc", "ping -n -c1 -W1 1.1.1.1 >/dev/null && echo OK || echo FAIL"]
+        stdout: StdioCollector {
+            waitForEnd: true
+            onStreamFinished: {
+                const result = (text || "").trim()
+                root.hasInternet = (result.indexOf("OK") !== -1)
+                inetProbe.running = false
+            }
+        }
+    }
+
     // JSON parsing from rsmetrx
     function parseJsonLine(line) {
         try {
@@ -137,4 +199,11 @@ Item {
     function fmtKiBps(kib) { return kib.toFixed(1) }
 
     Component.onCompleted: {}
+
+    // Current icon color based on connectivity
+    function currentIconColor() {
+        if (!root.hasLink) return Theme.error    // red
+        if (!root.hasInternet) return Theme.warning // yellow
+        return root.iconColor
+    }
 }
