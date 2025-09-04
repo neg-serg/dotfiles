@@ -70,6 +70,13 @@ function _xhrGetJson(url, timeoutMs, success, fail) {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
         xhr.timeout = timeoutMs;
+        // Some APIs require an explicit User-Agent; set if allowed
+        try {
+            if (xhr.setRequestHeader) {
+                try { xhr.setRequestHeader('Accept', 'application/json'); } catch (e1) {}
+                try { xhr.setRequestHeader('User-Agent', 'Quickshell'); } catch (e2) {}
+            }
+        } catch (e) { /* ignore header setting failures */ }
         xhr.onreadystatechange = function() {
             if (xhr.readyState !== XMLHttpRequest.DONE) return;
             var status = xhr.status;
