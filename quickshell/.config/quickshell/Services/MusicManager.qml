@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Mpris
+import qs.Services
 import qs.Settings
 import qs.Components
 
@@ -43,9 +44,13 @@ Singleton {
     }
 
     function isCurrentMpdPlayer() { return isPlayerMpd(currentPlayer); }
-    property var  currentPlayer: null
-    property real currentPosition: 0                 // ms (kept in UI units)
-    property int  selectedPlayerIndex: 0
+    // Delegate core responsibilities to helper objects
+    MusicPlayers { id: players }
+    MusicPosition { id: position; currentPlayer: players.currentPlayer }
+    // Public surface stays identical
+    property alias currentPlayer: players.currentPlayer
+    property alias selectedPlayerIndex: players.selectedPlayerIndex
+    property alias currentPosition: position.currentPosition
 
     // Playback state helpers
     property bool   isPlaying:      currentPlayer ? currentPlayer.isPlaying : false
@@ -61,7 +66,7 @@ Singleton {
     property bool   canGoNext:      currentPlayer ? currentPlayer.canGoNext : false
     property bool   canGoPrevious:  currentPlayer ? currentPlayer.canGoPrevious : false
     property bool   canSeek:        currentPlayer ? currentPlayer.canSeek : false
-    property bool   hasPlayer:      getAvailablePlayers().length > 0
+    property bool   hasPlayer:      players.hasPlayer
 
     // --- Extended track metadata (best-effort from MPRIS metadata) -------
     // These are derived properties; values depend on what the player exposes.
@@ -90,45 +95,9 @@ Singleton {
     property string trackQualitySummary: _computeQualitySummary()
     
 
-    Item {
-        Component.onCompleted: updateCurrentPlayer()
-    }
-
-    function getAvailablePlayers() {
-        if (!Mpris.players || !Mpris.players.values) return [];
-        let all = Mpris.players.values;
-        let res = [];
-        for (let i = 0; i < all.length; i++) {
-            let p = all[i];
-            if (p && p.canControl) res.push(p);
-        }
-        return res;
-    }
-
-    function findActivePlayer() {
-        let avail = getAvailablePlayers();
-        if (avail.length === 0) return null;
-        if (selectedPlayerIndex < avail.length) return avail[selectedPlayerIndex];
-        selectedPlayerIndex = 0;
-        return avail[0];
-    }
-
-    // Switch to selected/active player
-    function updateCurrentPlayer() {
-        let np = findActivePlayer();
-        if (np !== currentPlayer) {
-            currentPlayer = np;
-            // Initialize position from player if supported; else reset
-            try {
-                if (currentPlayer && currentPlayer.positionSupported) {
-                    // Mpris position is in seconds (qreal); convert to ms
-                    currentPosition = mprisToMs(currentPlayer.position);
-                    // Hint the backend to refresh the cached position
-                    currentPlayer.positionChanged();
-                } else currentPosition = 0;
-            } catch (e) { currentPosition = 0; }
-        }
-    }
+    Item { Component.onCompleted: players.updateCurrentPlayer() }
+    function getAvailablePlayers() { return players.getAvailablePlayers(); }
+    function updateCurrentPlayer() { return players.updateCurrentPlayer(); }
 
     function playPause() {
         if (!currentPlayer) return;
@@ -140,18 +109,7 @@ Singleton {
     function next()     { if (currentPlayer && currentPlayer.canGoNext)     currentPlayer.next(); }
     function previous() { if (currentPlayer && currentPlayer.canGoPrevious) currentPlayer.previous(); }
 
-    function seek(position) {
-        // Use relative Seek only; avoid SetPosition and any Position property writes
-        try {
-            if (currentPlayer && currentPlayer.canSeek && typeof currentPlayer.seek === 'function') {
-                var targetMs = Math.max(0, Math.round(position));
-                var deltaMs = targetMs - Math.max(0, Math.round(currentPosition));
-                // Quickshell MPRIS seek expects seconds; convert ms -> s
-                currentPlayer.seek(deltaMs / 1000.0);
-                currentPosition = targetMs;
-            }
-        } catch (e) { /* ignore */ }
-    }
+    function seek(posMs) { position.seek(posMs); }
 
     // --- Metadata helpers -------------------------------------------------
     function _playerProp(keys) {
@@ -939,54 +897,7 @@ Singleton {
     }
 
     // --- Poll MPRIS position properly (seconds) and convert to ms ---------
-    Timer {
-        id: positionPoller
-        interval: 1000
-        repeat: true
-        running: !!currentPlayer
-        onTriggered: {
-            if (!currentPlayer) { currentPosition = 0; return; }
-            try {
-                // Only refresh from backend when the player can report position
-                if (currentPlayer.positionSupported) {
-                    // Hint Quickshell to refresh the value; see docs
-                    currentPlayer.positionChanged();
-                    var posMs = mprisToMs(currentPlayer.position);
-                    var lenMs = mprisToMs(currentPlayer.length);
-                    currentPosition = (lenMs > 0) ? Math.min(posMs, lenMs) : posMs;
-                }
-            } catch (e) { /* ignore */ }
-        }
-    }
-
-    // (Removed explicit onCurrentPlayerChanged handler to avoid duplicate binding issues)
-
-    // Subscribe to currentPlayer change notifications (if any)
-    Connections {
-        target: currentPlayer
-        function onIsPlayingChanged() { /* no-op */ }
-        function onLengthChanged() { /* no-op */ }
-        function onPositionChanged() {
-            try {
-                if (currentPlayer && currentPlayer.positionSupported) {
-                    var posMs = mprisToMs(currentPlayer.position);
-                    var lenMs = mprisToMs(currentPlayer.length);
-                    currentPosition = (lenMs > 0) ? Math.min(posMs, lenMs) : posMs;
-                }
-            } catch (e) { /* ignore */ }
-        }
-        function onPlaybackStateChanged() {
-            if (!currentPlayer) { currentPosition = 0; return; }
-            // Reset position on full stop
-            if (currentPlayer.playbackState === MprisPlaybackState.Stopped) currentPosition = 0;
-        }
-    }
-
-    // React to MPRIS players list changes
-    Connections {
-        target: Mpris.players
-        function onValuesChanged() { updateCurrentPlayer(); }
-    }
+    // Position polling handled by MusicPosition; player list by MusicPlayers
 
     // Audio spectrum (bars count from settings)
     // Prefer active profile bars, then settings, then fallback
