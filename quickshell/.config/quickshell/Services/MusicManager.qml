@@ -68,31 +68,30 @@ Singleton {
     property bool   canSeek:        currentPlayer ? currentPlayer.canSeek : false
     property bool   hasPlayer:      players.hasPlayer
 
-    // --- Extended track metadata (best-effort from MPRIS metadata) -------
-    // These are derived properties; values depend on what the player exposes.
-    property string trackGenre:          _computeGenre()
-    property string trackLabel:          _computeLabel()
-    property string trackYear:           _computeYear()
-    property string trackBitrateStr:     _computeBitrateStr()
-    property string trackSampleRateStr:  _computeSampleRateStr()
-    // DSD-specific compact MHz rate (e.g., 2.8M, 5.6M) for UI details (not summary)
-    property string trackDsdRateStr:     _computeDsdRateStr()
-    property string trackCodec:          _computeCodec()
-    property string trackCodecDetail:    _computeCodecDetail()
-    property string trackChannelsStr:    _computeChannelsStr()
-    property string trackBitDepthStr:    _computeBitDepthStr()
-    property string trackNumberStr:      _computeTrackNumberStr()
-    property string trackDiscNumberStr:  _computeDiscNumberStr()
-    property string trackAlbumArtist:    _computeAlbumArtist()
-    property string trackComposer:       _computeComposer()
-    property string trackUrlStr:         _computeUrlStr()
-    property string trackRgTrackStr:     _computeRgTrackStr()
-    property string trackRgAlbumStr:     _computeRgAlbumStr()
-    property string trackDateStr:        _computeDateStr()
-    property string trackContainer:      _computeContainer()
-    property string trackFileSizeStr:    _computeFileSizeStr()
-    property string trackChannelLayout:  _computeChannelLayout()
-    property string trackQualitySummary: _computeQualitySummary()
+    // --- Extended track metadata moved to MusicMeta ----------------------
+    MusicMeta { id: meta; currentPlayer: players.currentPlayer }
+    property alias trackGenre:          meta.trackGenre
+    property alias trackLabel:          meta.trackLabel
+    property alias trackYear:           meta.trackYear
+    property alias trackBitrateStr:     meta.trackBitrateStr
+    property alias trackSampleRateStr:  meta.trackSampleRateStr
+    property alias trackDsdRateStr:     meta.trackDsdRateStr
+    property alias trackCodec:          meta.trackCodec
+    property alias trackCodecDetail:    meta.trackCodecDetail
+    property alias trackChannelsStr:    meta.trackChannelsStr
+    property alias trackBitDepthStr:    meta.trackBitDepthStr
+    property alias trackNumberStr:      meta.trackNumberStr
+    property alias trackDiscNumberStr:  meta.trackDiscNumberStr
+    property alias trackAlbumArtist:    meta.trackAlbumArtist
+    property alias trackComposer:       meta.trackComposer
+    property alias trackUrlStr:         meta.trackUrlStr
+    property alias trackRgTrackStr:     meta.trackRgTrackStr
+    property alias trackRgAlbumStr:     meta.trackRgAlbumStr
+    property alias trackDateStr:        meta.trackDateStr
+    property alias trackContainer:      meta.trackContainer
+    property alias trackFileSizeStr:    meta.trackFileSizeStr
+    property alias trackChannelLayout:  meta.trackChannelLayout
+    property alias trackQualitySummary: meta.trackQualitySummary
     
 
     Item { Component.onCompleted: players.updateCurrentPlayer() }
@@ -111,162 +110,19 @@ Singleton {
 
     function seek(posMs) { position.seek(posMs); }
 
-    // --- Metadata helpers -------------------------------------------------
-    function _playerProp(keys) {
-        // Try direct properties on currentPlayer (e.g., trackGenre) then common aliases
-        var p = currentPlayer;
-        if (!p) return undefined;
-        for (var i = 0; i < keys.length; i++) {
-            var k = keys[i];
-            try {
-                if (p[k] !== undefined && p[k] !== null && p[k] !== "") return p[k];
-                var k2 = k.replace(/[:.]/g, "_");
-                if (p[k2] !== undefined && p[k2] !== null && p[k2] !== "") return p[k2];
-            } catch (e) { /* ignore */ }
-        }
-        // Try metadata dictionary variants
-        var md = null;
-        try { md = p['metadata'] || p['trackMetadata'] || p['meta'] || null; } catch (e) { md = null; }
-        if (md) {
-            for (var j = 0; j < keys.length; j++) {
-                var mk = keys[j];
-                try {
-                    if (md[mk] !== undefined && md[mk] !== null && md[mk] !== "") return md[mk];
-                    var mk2 = mk.replace(/[:.]/g, "_");
-                    if (md[mk2] !== undefined && md[mk2] !== null && md[mk2] !== "") return md[mk2];
-                } catch (e2) { /* ignore */ }
-            }
-        }
-        return undefined;
-    }
+    // Metadata helpers moved to Services/MusicMeta
 
-    function _mdAll() {
-        var out = [];
-        var p = currentPlayer;
-        if (!p) return out;
-        try {
-            var md = p['metadata'] || p['trackMetadata'] || p['meta'] || null;
-            if (md && typeof md === 'object') {
-                for (var k in md) {
-                    try { out.push(String(md[k])); } catch (e) { /* ignore */ }
-                }
-            }
-        } catch (e) { /* ignore */ }
-        // Collect a few likely direct props too
-        var directKeys = [
-            'format','audioFormat','audio_format','audio-format','bitrate','samplerate','sampleRate','channels','channelCount','codec','encoding','mimeType','mimetype'
-        ];
-        for (var i = 0; i < directKeys.length; i++) {
-            var k = directKeys[i];
-            try {
-                var v = p[k];
-                if (v !== undefined && v !== null && v !== '') out.push(String(v));
-            } catch (e2) { /* ignore */ }
-        }
-        return out;
-    }
+    // _mdAll removed (now in MusicMeta)
 
-    function _toFlatString(v) {
-        if (v === undefined || v === null) return "";
-        try {
-            if (Array.isArray(v)) return v.filter(function(x){return !!x;}).join(", ");
-        } catch (e) { /* ignore */ }
-        return String(v);
-    }
+    // _toFlatString removed (now in MusicMeta)
 
-    function _computeGenre() {
-        var v = _playerProp(["trackGenre", "genre", "genres", "xesam:genre", "xesam.genre"]);
-        var s = _toFlatString(v);
-        if (s) return s;
-        try { if (fileAudioMeta && fileAudioMeta.tags && fileAudioMeta.tags.genre) return _toFlatString(fileAudioMeta.tags.genre); } catch (e) {}
-        return "";
-    }
+    // _computeGenre removed
 
-    function _computeLabel() {
-        var v = _playerProp(["label", "publisher", "albumLabel", "xesam:publisher", "xesam:label", "xesam:albumLabel"]);
-        var s = _toFlatString(v);
-        if (s) return s;
-        try {
-            if (fileAudioMeta && fileAudioMeta.tags) {
-                if (fileAudioMeta.tags.label) return _toFlatString(fileAudioMeta.tags.label);
-                if (fileAudioMeta.tags.publisher) return _toFlatString(fileAudioMeta.tags.publisher);
-            }
-        } catch (e) {}
-        return "";
-    }
+    // _computeLabel removed
 
-    function _computeYear() {
-        var v = _playerProp(["year", "date", "releaseDate", "xesam:contentCreated", "xesam:year"]);
-        var s = _toFlatString(v);
-        if (!s) return "";
-        // Try to parse ISO/date and extract year
-        try {
-            // Accept pure year, datetime, or timestamp in ms
-            if (/^\d{4}$/.test(s)) return s;
-            var n = Number(s);
-            if (!isNaN(n) && n > 1000) {
-                // Heuristic: values like 20200101 or ms timestamp
-                if (n < 3000) return String(Math.floor(n));
-                var d = new Date(n);
-                var y = d.getFullYear();
-                if (y > 1900 && y < 3000) return String(y);
-            }
-            var d2 = new Date(s);
-            var y2 = d2.getFullYear();
-            if (y2 > 1900 && y2 < 3000) return String(y2);
-        } catch (e) { /* ignore */ }
-        // Fallback: take first 4-digit year-like token
-        var m = s.match(/(19\d{2}|20\d{2})/);
-        if (m) return m[1];
-        try {
-            if (fileAudioMeta && fileAudioMeta.tags && fileAudioMeta.tags.date) {
-                const y = String(fileAudioMeta.tags.date);
-                const m2 = y.match(/(19\d{2}|20\d{2})/);
-                if (m2) return m2[1];
-            }
-        } catch (e) {}
-        return "";
-    }
+    // _computeYear removed
 
-    function _fmtKbps(val) {
-        if (val === undefined || val === null || val === "") return "";
-        var s = String(val).trim();
-        if (/kbps$/i.test(s)) return s;
-        var n = Number(s);
-        if (isNaN(n)) return s;
-        // If looks like bps (e.g., 192000), convert to kbps
-        if (n > 5000) n = Math.round(n / 1000);
-        return n + " kbps";
-    }
-
-    function _fmtKHz(val) {
-        if (val === undefined || val === null || val === "") return "";
-        var s = String(val).trim();
-        if (/khz$/i.test(s)) {
-            // normalize "44.1 kHz" or "44.1kHz" to "44.1k"
-            var m = s.match(/(\d+(?:\.\d+)?)/);
-            if (m) {
-                var num = Number(m[1]);
-                var dec = (Math.abs(num - Math.round(num)) > 0.05) ? 1 : 0;
-                return Number(num).toFixed(dec) + 'k';
-            }
-            return s.replace(/\s*kHz/i, 'k');
-        }
-        var n = Number(s);
-        if (isNaN(n)) return s;
-        // If looks like Hz (e.g., 44100), convert to kHz
-        var khz = n >= 1000 ? (n / 1000) : n; // support already-in-kHz numbers
-        // Show 1 decimal for common non-integer kHz (e.g., 44.1)
-        var dec = (Math.abs(khz - Math.round(khz)) > 0.05) ? 1 : 0;
-        return khz.toFixed(dec) + 'k';
-    }
-
-    function _fmtMHz(hz) {
-        var mhz = Number(hz) / 1e6;
-        if (!isFinite(mhz) || mhz <= 0) return "";
-        var dec = (Math.abs(mhz - Math.round(mhz)) > 0.05) ? 1 : 1; // keep 1 decimal for readability
-        return mhz.toFixed(dec) + 'M';
-    }
+    // _fmtKbps/_fmtKHz/_fmtMHz removed (now in MusicMeta)
 
     // Parse a variety of kHz/Hz string formats to Hz number (approximate)
     function _parseRateToHz(val) {
@@ -381,21 +237,7 @@ Singleton {
         return "";
     }
 
-    function _computeCodec() {
-        // Common codec names; try direct fields and metadata scan
-        var v = _playerProp(["codec","encoding","format","mimeType","mimetype","xesam:audioCodec","xesam:codec","mpd:codec"]);
-        var s = _toFlatString(v);
-        if (s) return _prettyCodecName(s);
-        try { if (fileAudioMeta && fileAudioMeta.codec) return _prettyCodecName(fileAudioMeta.codec); } catch (e) {}
-        var all = _mdAll();
-        var re = /(flac|alac|wav|aiff|pcm|mp3|aac|m4a|opus|vorbis|ogg|wma|ape|wv|dsd|dff|dsf)/i;
-        for (var i = 0; i < all.length; i++) {
-            var str = all[i];
-            var m = str.match(re);
-            if (m) return m[1].toUpperCase();
-        }
-        return "";
-    }
+    // _computeCodec removed
 
     function _computeCodecDetail() {
         try {
