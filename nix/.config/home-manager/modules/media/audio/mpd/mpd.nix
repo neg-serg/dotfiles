@@ -38,27 +38,5 @@ with {
       };
       Install = {WantedBy = ["default.target"];};
     };
-
-    cover-notify = {
-      Unit = {
-        Description = "Music track notification with cover";
-        StartLimitIntervalSec = "1";
-      };
-      Service = {
-        ExecStart = lib.strings.concatStringsSep " " [
-          "${pkgs.cached-nix-shell}/bin/cached-nix-shell "
-          "-p 'python3.withPackages (p: [p.pygobject3 p.systemd p.dbus-python])' "
-          "-p gobject-introspection"
-          "-p sox"
-          "-p dunst"
-          "-p swaynotificationcenter"
-          "-p id3lib"
-          "--run %h/bin/track-notification"
-        ];
-        Restart = "always";
-        RestartSec = "3";
-      };
-      Install = {WantedBy = ["default.target"];};
-    };
   };
 }
