@@ -4,6 +4,7 @@ import QtQuick.Layouts
 // Quickshell.Widgets not needed
 // (Io import removed)
 import QtQuick.Effects
+import "../../Helpers/Format.js" as Format
 import qs.Settings
 import qs.Services
 import qs.Components
@@ -22,17 +23,7 @@ Item {
 
     property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
 
-    // Format ms -> m:ss или h:mm:ss
-    function fmtTime(ms) {
-        if (ms === undefined || ms < 0) return "0:00";
-        var s = Math.floor(ms / 1000);
-        var m = Math.floor(s / 60);
-        var h = Math.floor(m / 60);
-        s = s % 60; m = m % 60;
-        var mm = h > 0 ? (m < 10 ? "0"+m : ""+m) : ""+m;
-        var ss = s < 10 ? "0"+s : ""+s;
-        return h > 0 ? (h + ":" + mm + ":" + ss) : (mm + ":" + ss);
-    }
+    // Time formatting moved to Helpers/Format.js
     RowLayout {
         id: mediaRow
         height: parent.height
@@ -318,8 +309,8 @@ Item {
                         if (!trackText.titlePart) return "";
                         const t = trackText.esc(trackText.titlePart)
                                    .replace(/\s(?:-|–|—)\s/g, "&#8201;<span style='color:" + trackText.sepColor + "; font-weight:bold'>—</span>&#8201;");
-                        const cur = fmtTime(MusicManager.currentPosition || 0);
-                        const tot = fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
+                        const cur = Format.fmtTime(MusicManager.currentPosition || 0);
+                        const tot = Format.fmtTime(MusicManager.mprisToMs(MusicManager.trackLength || 0));
                         const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.8));
                         const bp = trackText.bracketPair();
                         return t

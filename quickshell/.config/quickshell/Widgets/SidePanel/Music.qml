@@ -16,17 +16,7 @@ Rectangle {
     color: "transparent"
     implicitHeight: playerUI.implicitHeight
 
-    // Format ms -> m:ss or h:mm:ss (same as bar media)
-    function fmtTime(ms) {
-        if (ms === undefined || ms < 0) return "0:00";
-        var s = Math.floor(ms / 1000);
-        var m = Math.floor(s / 60);
-        var h = Math.floor(m / 60);
-        s = s % 60; m = m % 60;
-        var mm = h > 0 ? (m < 10 ? "0"+m : ""+m) : ""+m;
-        var ss = s < 10 ? "0"+s : ""+s;
-        return h > 0 ? (h + ":" + mm + ":" + ss) : (mm + ":" + ss);
-    }
+    // Time formatting moved to Helpers/Format.js
 
         Rectangle {
             id: card
