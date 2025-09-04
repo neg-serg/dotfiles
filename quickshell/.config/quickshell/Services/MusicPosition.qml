@@ -1,5 +1,6 @@
 import QtQuick
 import QtQml
+import qs.Settings
 import "../Helpers/Time.js" as Time
 
 // Non-visual helper for tracking and seeking playback position
