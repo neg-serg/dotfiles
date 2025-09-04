@@ -5,33 +5,15 @@ import QtCore
 import qs.Bar
 import qs.Bar.Modules
 import qs.Helpers
+import qs.Services
 
 Scope {
     id: root
-    // Helper function to round value to nearest step
-    function roundToStep(value, step) { return Math.round(value / step) * step; }
-    // Volume property reflecting current audio volume in 0-100
-    // Will be kept in sync dynamically below
-    property int volume: (defaultAudioSink && defaultAudioSink.audio && !defaultAudioSink.audio.muted)
-                        ? Math.round(defaultAudioSink.audio.volume * 100)
-                        : 0
-    // Function to update volume with clamping, stepping, and applying to audio sink
-    function updateVolume(vol) {
-        var clamped = Math.max(0, Math.min(100, vol));
-        var stepped = roundToStep(clamped, 5);
-        if (defaultAudioSink && defaultAudioSink.audio) {
-            defaultAudioSink.audio.volume = stepped / 100;
-        }
-        volume = stepped;
-    }
-    // Sync volume with current sink state
-    function syncVolume() {
-        if (defaultAudioSink && defaultAudioSink.audio) {
-            volume = defaultAudioSink.audio.muted
-                ? 0
-                : Math.round(defaultAudioSink.audio.volume * 100);
-        }
-    }
+    // Centralized audio service
+    Audio { id: audio }
+    // Back-compat surface expected by modules
+    property alias volume: audio.volume
+    function updateVolume(vol) { audio.setVolume(vol) }
     // Window mirroring removed; Hyprland exclusive zones handle panel space
 
     Component.onCompleted: {
@@ -48,8 +30,8 @@ Scope {
     }
 
     IdleInhibitor { id: idleInhibitor; }
-    property var defaultAudioSink: Pipewire.defaultAudioSink // Reference to the default audio sink from Pipewire
-    PwObjectTracker { objects: [Pipewire.defaultAudioSink]; }
+    // Expose default sink for modules that reference it directly
+    property alias defaultAudioSink: audio.defaultAudioSink
     IPCHandlers { appLauncherPanel: appLauncherPanel; idleInhibitor: idleInhibitor; }
 
     Connections {
@@ -65,10 +47,6 @@ Scope {
         onTriggered: Quickshell.reload(true)
     }
 
-    Connections {
-        target: defaultAudioSink ? defaultAudioSink.audio : null
-        function onVolumeChanged() { syncVolume(); }
-        function onMutedChanged() { syncVolume(); }
-    }
+    // Volume/mute updates are handled inside Services/Audio
 
 }
