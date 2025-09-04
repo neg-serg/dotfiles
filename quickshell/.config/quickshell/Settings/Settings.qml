@@ -114,6 +114,23 @@ Singleton {
             // Media visualizer (CAVA/LinearSpectrum) toggle
             property bool showMediaVisualizer: false
 
+            // Music player selection priority (ordered rules)
+            // Allowed values:
+            //  - "mpdPlaying"  : most-recent MPD that is currently playing
+            //  - "anyPlaying"  : most-recent player that is currently playing
+            //  - "mpdRecent"   : most-recent MPD (playing or not)
+            //  - "recent"      : most-recent player (playing or not)
+            //  - "manual"      : respect manually selected index when available
+            //  - "first"       : fallback to the first available player
+            property var playerSelectionPriority: [
+                "mpdPlaying",
+                "anyPlaying",
+                "mpdRecent",
+                "recent",
+                "manual",
+                "first"
+            ]
+
             // Music popup configuration
             // Base logical sizes; scaled per-screen in MusicPopup
             property int  musicPopupWidth: 840     // logical px, scaled

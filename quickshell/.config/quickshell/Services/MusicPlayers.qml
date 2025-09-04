@@ -76,31 +76,56 @@ Item {
         let byId = {};
         for (let i = 0; i < avail.length; i++) byId[playerId(avail[i])] = avail[i];
 
-        // Priority: MPD-like > others
-        // 1) Most-recent MPD that is currently playing
-        for (let k = 0; k < _lastActiveStack.length; k++) {
-            let p = byId[_lastActiveStack[k]];
-            if (p && p.isPlaying && isPlayerMpd(p)) return p;
+        function pick(rule) {
+            switch (String(rule)) {
+            case "mpdPlaying":
+                for (let i = 0; i < _lastActiveStack.length; i++) {
+                    let p = byId[_lastActiveStack[i]];
+                    if (p && p.isPlaying && isPlayerMpd(p)) return p;
+                }
+                return null;
+            case "anyPlaying":
+                for (let i = 0; i < _lastActiveStack.length; i++) {
+                    let p = byId[_lastActiveStack[i]];
+                    if (p && p.isPlaying) return p;
+                }
+                // Fallback: scan avail if stack empty
+                for (let j = 0; j < avail.length; j++) if (avail[j] && avail[j].isPlaying) return avail[j];
+                return null;
+            case "mpdRecent":
+                for (let i = 0; i < _lastActiveStack.length; i++) {
+                    let p = byId[_lastActiveStack[i]];
+                    if (p && isPlayerMpd(p)) return p;
+                }
+                // Fallback: first MPD in avail
+                for (let j = 0; j < avail.length; j++) if (isPlayerMpd(avail[j])) return avail[j];
+                return null;
+            case "recent":
+                for (let i = 0; i < _lastActiveStack.length; i++) {
+                    let p = byId[_lastActiveStack[i]];
+                    if (p) return p;
+                }
+                return null;
+            case "manual":
+                if (selectedPlayerIndex < avail.length) return avail[selectedPlayerIndex];
+                return null;
+            case "first":
+                return avail[0] || null;
+            default:
+                return null;
+            }
         }
-        // 2) Most-recent non-MPD that is currently playing
-        for (let k1 = 0; k1 < _lastActiveStack.length; k1++) {
-            let p1 = byId[_lastActiveStack[k1]];
-            if (p1 && p1.isPlaying && !isPlayerMpd(p1)) return p1;
+
+        // Apply configured priority rules
+        let rules = (Settings.settings && Settings.settings.playerSelectionPriority)
+            ? Settings.settings.playerSelectionPriority
+            : ["mpdPlaying","anyPlaying","mpdRecent","recent","manual","first"];
+        for (let r = 0; r < rules.length; r++) {
+            let candidate = pick(rules[r]);
+            if (candidate) return candidate;
         }
-        // 3) Most-recent MPD available
-        for (let k2 = 0; k2 < _lastActiveStack.length; k2++) {
-            let p2 = byId[_lastActiveStack[k2]];
-            if (p2 && isPlayerMpd(p2)) return p2;
-        }
-        // 4) Most-recent non-MPD available
-        for (let k3 = 0; k3 < _lastActiveStack.length; k3++) {
-            let p3 = byId[_lastActiveStack[k3]];
-            if (p3 && !isPlayerMpd(p3)) return p3;
-        }
-        // 5) Otherwise, respect selected index if in range
-        if (selectedPlayerIndex < avail.length) return avail[selectedPlayerIndex];
-        // 6) Fallback to first
-        selectedPlayerIndex = 0;
+
+        // Safety fallback
         return avail[0];
     }
 
