@@ -51,7 +51,7 @@ Item {
                 HiDpiImage {
                     id: cover
                     anchors.fill: parent
-                    source: MusicManager.coverUrl
+                    source: (MusicManager.coverUrl || "")
                     fillMode: Image.PreserveAspectCrop
                     visible: status === Image.Ready
                 }
