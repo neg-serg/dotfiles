@@ -73,6 +73,20 @@ Singleton {
             property int panelWidgetSpacing: 12
             // Separator overshoot is typically unscaled to preserve look
             property int panelSepOvershoot: 60
+
+            // Panel icon sizing (logical)
+            property int panelIconSize: 24          // typical icon/button size in bar
+            property int panelIconSizeSmall: 16     // small icon or inner icon
+            property int panelGlyphSize: 14         // glyphs inside overlays/buttons
+
+            // Panel hover hot-zone (logical)
+            property int panelHotzoneWidth: 16
+            property int panelHotzoneHeight: 9
+            // Factor to compute right shift of hotzone relative to its width
+            property real panelHotzoneRightShift: 1.15
+
+            // Typical bar module preferred height (logical)
+            property int panelModuleHeight: 36
         }
     }
     
@@ -117,4 +131,13 @@ Singleton {
     property int panelSideMargin: themeData.panelSideMargin
     property int panelWidgetSpacing: themeData.panelWidgetSpacing
     property int panelSepOvershoot: themeData.panelSepOvershoot
+    // Panel icon sizing
+    property int panelIconSize: themeData.panelIconSize
+    property int panelIconSizeSmall: themeData.panelIconSizeSmall
+    property int panelGlyphSize: themeData.panelGlyphSize
+    // Panel hot-zone
+    property int panelHotzoneWidth: themeData.panelHotzoneWidth
+    property int panelHotzoneHeight: themeData.panelHotzoneHeight
+    property real panelHotzoneRightShift: themeData.panelHotzoneRightShift
+    property int panelModuleHeight: themeData.panelModuleHeight
 }

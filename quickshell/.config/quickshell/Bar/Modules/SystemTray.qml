@@ -146,23 +146,23 @@ Row {
             Repeater {
                 model: systemTray.items
                 delegate: Item {
-                    width: Math.round(24 * Theme.scale(Screen))
-                    height: Math.round(24 * Theme.scale(Screen))
+                    width: Math.round(Theme.panelIconSize * Theme.scale(Screen))
+                    height: Math.round(Theme.panelIconSize * Theme.scale(Screen))
                     visible: modelData
                     // No per-icon animation; show immediately
                     opacity: 1
                     x: 0
                     Rectangle {
                         anchors.centerIn: parent
-                        width: Math.round(16 * Theme.scale(Screen))
-                        height: Math.round(16 * Theme.scale(Screen))
+                        width: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
+                        height: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
                         radius: 6
                         color: "transparent"
                         clip: true
                         TrayIcon {
                             id: icon
                             anchors.centerIn: parent
-                            size: Math.round(16 * Theme.scale(Screen))
+                            size: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
                             source: modelData?.icon || ""
                             grayscale: trayOverlay.visible
                             opacity: ready ? 1 : 0

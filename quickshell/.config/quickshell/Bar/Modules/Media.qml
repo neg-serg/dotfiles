@@ -14,7 +14,7 @@ Item {
     id: mediaControl
     property var sidePanelPopup: null
     implicitWidth: mediaRow.implicitWidth
-    height: 36 * Theme.scale(Screen)
+    height: Math.round((Theme.panelModuleHeight !== undefined ? Theme.panelModuleHeight : 36) * Theme.scale(Screen))
     visible: Settings.settings.showMediaInBar
              && MusicManager.currentPlayer
              && !MusicManager.isStopped
@@ -32,14 +32,14 @@ Item {
 
         Item {
             id: albumArtContainer
-            width: 24 * Theme.scale(Screen)
-            height: 24 * Theme.scale(Screen)
+            width: Math.round(Theme.panelIconSize * Theme.scale(Screen))
+            height: Math.round(Theme.panelIconSize * Theme.scale(Screen))
             Layout.alignment: Qt.AlignVCenter
 
             Rectangle {
                 id: albumArtwork
-                width: 24 * Theme.scale(Screen)
-                height: 24 * Theme.scale(Screen)
+                width: Math.round(Theme.panelIconSize * Theme.scale(Screen))
+                height: Math.round(Theme.panelIconSize * Theme.scale(Screen))
                 anchors.centerIn: parent
                 color: Qt.darker(Theme.surface, 1.1)
                 border.color: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.3)
@@ -61,7 +61,7 @@ Item {
                     id: fallbackIcon
                     anchors.centerIn: parent
                     icon: "music_note"
-                    size: 14 * Theme.scale(Screen)
+                    size: Math.round(Theme.panelGlyphSize * Theme.scale(Screen))
                     color: Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.4)
                     visible: !cover.visible
                 }

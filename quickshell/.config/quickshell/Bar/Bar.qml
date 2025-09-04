@@ -195,11 +195,11 @@ Scope {
                         id: trayHotZone
                         anchors.right: barBackground.right
                         anchors.bottom: barBackground.bottom
-                        // 4x narrower, 2x lower (half height)
-                        width: Math.round(16 * panel.s)
-                        height: Math.round(9 * panel.s)
-                        // Shift left by 115% of its own width (previous position)
-                        anchors.rightMargin: Math.round(width * 1.15)
+                        // Size and offset from Theme metrics (scaled)
+                        width: Math.round(Theme.panelHotzoneWidth * panel.s)
+                        height: Math.round(Theme.panelHotzoneHeight * panel.s)
+                        // Shift left by a factor of its width
+                        anchors.rightMargin: Math.round(width * Theme.panelHotzoneRightShift)
                         anchors.bottomMargin: 0
                         hoverEnabled: true
                         acceptedButtons: Qt.NoButton
