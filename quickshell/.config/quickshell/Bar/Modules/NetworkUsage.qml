@@ -7,13 +7,13 @@ Item {
     id: root
     // Public props
     property var    screen: null
-    property int    desiredHeight: 28
+    property int    desiredHeight: Math.round(Theme.panelHeight * Theme.scale(Screen))
     property int    fontPixelSize: 0
     property color  textColor: Theme.textPrimary
     // Match media separators color (same blue as workspace accents)
     property color  separatorColor: "#3b7bb3"
     property color  bgColor:   "transparent"
-    property int    iconSpacing: 4
+    property int    iconSpacing: Theme.panelRowSpacingSmall
     property string deviceMatch: ""
     property var    cmd: ["rsmetrx"]
     property string displayText: "0/0K"
@@ -32,7 +32,7 @@ Item {
     property string iconStyleName: "Solid"
 
     // Text padding
-    property int    textPadding: 4
+    property int    textPadding: Theme.panelRowSpacingSmall
 
     // Sizing
     implicitHeight: desiredHeight

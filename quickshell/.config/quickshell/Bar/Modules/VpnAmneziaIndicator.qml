@@ -11,12 +11,12 @@ Item {
     id: root
 
     // Public API
-    property int   desiredHeight: 28
+    property int   desiredHeight: Math.round(Theme.panelHeight * Theme.scale(Screen))
     property int   fontPixelSize: 0
     property bool  useTheme: true
     property bool  showLabel: true
-    property int   iconSpacing: 4
-    property int   textPadding: 4
+    property int   iconSpacing: Theme.panelRowSpacingSmall
+    property int   textPadding: Theme.panelRowSpacingSmall
     property int   iconVAdjust: 0
     property real  iconScale: 1.0
     property color bgColor: "transparent"

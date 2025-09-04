@@ -9,15 +9,15 @@ Item {
     id: root
     property bool expanded: false
 
-    height: 24 * Theme.scale(Screen)
-    width: 24 * Theme.scale(Screen)
+    height: Math.round(Theme.panelIconSize * Theme.scale(Screen))
+    width: Math.round(Theme.panelIconSize * Theme.scale(Screen))
 
     IconButton {
         id: weatherBtn
         anchors.centerIn: parent
-        size: 24 * Theme.scale(Screen)
+        size: Math.round(Theme.panelIconSize * Theme.scale(Screen))
         icon: "partly_cloudy_day"
-        cornerRadius: 4
+        cornerRadius: Theme.cornerRadiusSmall
         accentColor: Theme.accentPrimary
         iconNormalColor: Theme.textPrimary
         iconHoverColor: Theme.onAccent
@@ -50,19 +50,19 @@ Item {
         }
         Rectangle {
             id: popup
-            radius: 9 * Theme.scale(Screen)
+            radius: Math.round(Theme.panelOverlayRadius * Theme.scale(Screen))
             color: Qt.rgba(0, 0, 0, 0.10)
             border.color: Theme.backgroundTertiary
             border.width: 1
             anchors.top: parent.top
             anchors.left: parent.left
-            anchors.topMargin: 8 * Theme.scale(Screen)
-            anchors.leftMargin: 18 * Theme.scale(Screen)
+            anchors.topMargin: Math.round(Theme.sidePanelSpacingMedium * Theme.scale(Screen))
+            anchors.leftMargin: Math.round(Theme.panelSideMargin * Theme.scale(Screen))
 
             Weather {
                 id: weather
-                width: 420 * Theme.scale(Screen)
-                height: 180 * Theme.scale(Screen)
+                width: Math.round(Theme.sidePanelWeatherWidth * Theme.scale(Screen))
+                height: Math.round(Theme.sidePanelWeatherHeight * Theme.scale(Screen))
             }
         }
         MouseArea {
@@ -77,7 +77,7 @@ Item {
         id: weatherTip
         targetItem: weatherBtn
         positionAbove: false
-        delay: 350
+        delay: Theme.tooltipDelayMs
         tooltipVisible: weatherBtn.hovering
         text: root.tooltipText()
     }
