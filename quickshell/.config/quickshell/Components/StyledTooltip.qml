@@ -51,7 +51,7 @@ Window {
     function showNow() {
         // Validate target before showing
         if (!targetItem || !targetItem.visible) {
-            _hideNow();
+            hideNow();
             return;
         }
 

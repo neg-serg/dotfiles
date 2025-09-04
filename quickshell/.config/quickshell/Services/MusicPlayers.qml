@@ -34,7 +34,7 @@ Item {
 
     function touchActive(p) {
         try {
-            var id = _playerId(p);
+            var id = playerId(p);
             if (!id) return;
             // Move to front (dedupe)
             var arr = _lastActiveStack || [];
@@ -49,7 +49,7 @@ Item {
         try {
             var avail = getAvailablePlayers();
             var ids = {};
-            for (var i = 0; i < avail.length; i++) ids[_playerId(avail[i])] = true;
+            for (var i = 0; i < avail.length; i++) ids[playerId(avail[i])] = true;
             var pruned = [];
             var src = _lastActiveStack || [];
             for (var j = 0; j < src.length; j++) if (ids[src[j]]) pruned.push(src[j]);
