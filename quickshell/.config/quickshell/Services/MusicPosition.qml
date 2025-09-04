@@ -1,7 +1,7 @@
 import QtQuick
 
 // Non-visual helper for tracking and seeking playback position
-QtObject {
+Item {
     id: root
     property var currentPlayer: null
     property real currentPosition: 0 // ms
@@ -71,4 +71,3 @@ QtObject {
         }
     }
 }
-

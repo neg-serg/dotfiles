@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell.Services.Mpris
 
 // Non-visual helper that tracks available MPRIS players and exposes currentPlayer
-QtObject {
+Item {
     id: root
 
     // Public API
@@ -43,4 +43,3 @@ QtObject {
         function onValuesChanged() { root.updateCurrentPlayer(); }
     }
 }
-
