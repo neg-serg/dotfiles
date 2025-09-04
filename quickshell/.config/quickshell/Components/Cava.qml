@@ -12,7 +12,13 @@ Scope {
     // Active profile (if any)
     property var _vp: (Settings.settings.visualizerProfiles && Settings.settings.activeVisualizerProfile && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile]) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] : null
     property int noiseReduction: (_vp && _vp.cavaNoiseReduction !== undefined) ? _vp.cavaNoiseReduction : (Settings.settings.cavaNoiseReduction !== undefined ? Settings.settings.cavaNoiseReduction : 5)
-    property int framerate:      (_vp && _vp.cavaFramerate      !== undefined) ? _vp.cavaFramerate      : (Settings.settings.cavaFramerate      !== undefined ? Settings.settings.cavaFramerate      : 30)
+    // Clamp framerate to a safe range 1..120
+    property int framerate: (function(){
+        var raw = (_vp && _vp.cavaFramerate !== undefined) ? _vp.cavaFramerate
+                 : (Settings.settings.cavaFramerate !== undefined ? Settings.settings.cavaFramerate : 30);
+        var n = Math.round(Number(raw)); if (!isFinite(n)) n = 30;
+        return Math.max(1, Math.min(120, n));
+    })()
     property int gravity:        (_vp && _vp.cavaGravity        !== undefined) ? _vp.cavaGravity        : (Settings.settings.cavaGravity        !== undefined ? Settings.settings.cavaGravity        : 20000)
     property bool monstercat:    (_vp && _vp.cavaMonstercat     !== undefined) ? _vp.cavaMonstercat     : (Settings.settings.cavaMonstercat     !== undefined ? Settings.settings.cavaMonstercat     : false)
     property string channels: "mono"

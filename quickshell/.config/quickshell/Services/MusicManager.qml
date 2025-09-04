@@ -103,8 +103,8 @@ Singleton {
             Settings.settings.visualizerProfiles
             && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile]
             && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].cavaBars
-        ) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].cavaBars
-          : ((Settings.settings.cavaBars && Settings.settings.cavaBars > 0) ? Settings.settings.cavaBars : 86)
+        ) ? Math.max(8, Math.min(512, Number(Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].cavaBars)))
+          : (function(){ var v = Number(Settings.settings.cavaBars); if (!isFinite(v)) v = 86; return Math.max(8, Math.min(512, Math.round(v))); })()
     }
     property alias cavaValues: cava.values
 }
