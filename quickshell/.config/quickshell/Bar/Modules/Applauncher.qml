@@ -704,7 +704,7 @@ PanelWithOverlay {
                                             font.family: Theme.fontFamily
                                             font.pixelSize: Theme.fontSizeCaption * Theme.scale(screen)
                                             font.italic: !(modelData.comment || modelData.genericName)
-                                            opacity: modelData.isClipboard ? 0.8 : modelData.isCommand ? 0.9 : ((modelData.comment || modelData.genericName) ? 1.0 : 0.6)
+                                            opacity: modelData.isClipboard ? Theme.applauncherClipboardEntryOpacity : modelData.isCommand ? Theme.applauncherCommandEntryOpacity : ((modelData.comment || modelData.genericName) ? 1.0 : Theme.applauncherNoMetaOpacity)
                                             elide: Text.ElideRight
                                             maximumLineCount: (modelData.isClipboard || modelData.isCommand) ? 2 : 1
                                             wrapMode: (modelData.isClipboard || modelData.isCommand) ? Text.WordWrap : Text.NoWrap

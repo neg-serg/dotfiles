@@ -142,7 +142,7 @@ Scope {
                                 && (MusicManager.isPlaying || MusicManager.isPaused || (MusicManager.trackTitle && MusicManager.trackTitle.length > 0))
                             )
                             enabled: _mediaVisible && MusicManager.isCurrentMpdPlayer()
-                            iconPx: Math.round(Theme.fontSizeSmall * Theme.scale(panel.screen) * 0.95)
+                            iconPx: Math.round(Theme.fontSizeSmall * Theme.scale(panel.screen) * Theme.mpdFlagsIconScale)
                             iconColor: Theme.textPrimary
                         }
                         // Side panel button removed; track click toggles sidebarPopup

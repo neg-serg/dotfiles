@@ -38,7 +38,7 @@ Item {
         opacity: isActive ? 1.0 : hoverOpacity
         radius: Math.round(height * Theme.sidePanelButtonHoverRadiusFactor)
         z: 0
-        visible: (isActive ? 0.18 : hoverOpacity) > 0.01
+        visible: (isActive ? Theme.sidePanelButtonActiveVisibleMin : hoverOpacity) > Theme.uiVisibilityEpsilon
     }
 
     MaterialIcon {
@@ -52,6 +52,6 @@ Item {
     }
 
     Behavior on hoverOpacity {
-        NumberAnimation { duration: Theme.panelHoverFadeMs; easing.type: Easing.OutQuad }
+        NumberAnimation { duration: Theme.panelHoverFadeMs; easing.type: Theme.uiEasingQuick }
     }
 }

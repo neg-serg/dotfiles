@@ -252,7 +252,7 @@ Item {
                     // Time color: dim and desaturate when paused
                     property string timeColor: (function(){
                         var c = MusicManager.isPlaying ? Theme.textPrimary : Theme.textSecondary;
-                        var a = MusicManager.isPlaying ? 1.0 : 0.8;
+                        var a = MusicManager.isPlaying ? Theme.mediaTimeAlphaPlaying : Theme.mediaTimeAlphaPaused;
                         return Format.colorCss(c, a);
                     })()
                     property string titlePart: (MusicManager.trackArtist || MusicManager.trackTitle)

@@ -51,7 +51,7 @@ Item {
     // Computed font size tied to height
     readonly property int computedFontPx: fontPixelSize > 0
         ? fontPixelSize
-        : Utils.clamp(Math.round((desiredHeight - 2 * textPadding) * 0.6), 16, 4096)
+        : Utils.clamp(Math.round((desiredHeight - 2 * textPadding) * Theme.panelComputedFontScale), 16, 4096)
 
     // Font metrics for text (not icon)
     FontMetrics { id: fmText; font: label.font }

@@ -6,18 +6,18 @@ import "../../Helpers/Utils.js" as Utils
 Item {
     id: root
     property color color: Theme.borderSubtle
-    property real alpha: 0.05
-    property real thickness: 7.0
-    property real angleDeg: 30
-    property real inset: 4
+    property real alpha: Theme.uiSeparatorDiagonalAlpha
+    property real thickness: Theme.uiSeparatorDiagonalThickness
+    property real angleDeg: Theme.uiSeparatorDiagonalAngleDeg
+    property real inset: Theme.uiSeparatorDiagonalInset
     // Accent stripe options
     property bool  stripeEnabled: true
     // Darken accent strongly towards black to reduce brightness
-    property real  stripeBrightness: 0.4 // 0..1, lower = closer to black
+    property real  stripeBrightness: Theme.uiSeparatorDiagonalStripeBrightness // 0..1, lower = closer to black
     property color stripeColor: Color.towardsBlack(Theme.accentPrimary, 1 - stripeBrightness)
     property real  stripeOpacity: Theme.uiSeparatorStripeOpacity
     // Portion of thickness used by the accent stripe (0..1)
-    property real  stripeRatio: 0.35
+    property real  stripeRatio: Theme.uiSeparatorDiagonalStripeRatio
     // Which side to draw the stripe on: true = right edge, false = left edge
     property bool  stripeOnRight: true
 

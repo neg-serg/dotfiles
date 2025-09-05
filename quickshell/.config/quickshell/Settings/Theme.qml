@@ -418,6 +418,8 @@ Singleton {
     // Generic row spacing
     property int panelRowSpacing: val('panel.rowSpacing', themeData.panelRowSpacing)
     property int panelRowSpacingSmall: val('panel.rowSpacingSmall', themeData.panelRowSpacingSmall)
+    // Scale factor for computedFontPx used by small icon/text modules (e.g., network, vpn)
+    property real panelComputedFontScale: Utils.clamp(val('panel.computedFontScale', 0.6), 0.1, 1.0)
     // Spacing between VPN + NetworkUsage in left cluster
     property int panelNetClusterSpacing: Utils.clamp(val('panel.netCluster.spacing', 6), 0, 64)
     // Volume behavior
@@ -479,6 +481,8 @@ Singleton {
     property int  sidePanelPopupOuterMargin: val('sidePanel.popup.outerMargin', themeData.sidePanelPopupOuterMargin)
     // Side-panel popup spacing (between inner items)
     property int  sidePanelPopupSpacing: val('sidePanel.popup.spacing', 0)
+    // Side-panel button hover rectangle visibility guard
+    property real sidePanelButtonActiveVisibleMin: Utils.clamp(val('sidePanel.button.activeVisibleMin', 0.18), 0, 1)
     // Side-panel spacing medium
     property int  sidePanelSpacingMedium: val('sidePanel.spacingMedium', themeData.sidePanelSpacingMedium)
     // Hover behavior
@@ -537,6 +541,8 @@ Singleton {
     property int uiBorderWidth: Utils.clamp(val('ui.border.width', 1), 0, 8)
     property int uiSeparatorThickness: Utils.clamp(val('ui.separator.thickness', 1), 1, 8)
     property int uiSeparatorRadius: Utils.clamp(val('ui.separator.radius', 0), 0, 8)
+    // UI small-visibility epsilon for hover fades, etc.
+    property real uiVisibilityEpsilon: Utils.clamp(val('ui.visibilityEpsilon', 0.01), 0, 0.5)
     // UI "none" tokens for consistency
     property int uiMarginNone: val('ui.margin.none', 0)
     property int uiSpacingNone: val('ui.spacing.none', 0)
@@ -545,6 +551,13 @@ Singleton {
     // Diagonal separator implicit size
     property int uiDiagonalSeparatorImplicitWidth: Utils.clamp(val('ui.separator.diagonal.implicitWidth', 10), 1, 512)
     property int uiDiagonalSeparatorImplicitHeight: Utils.clamp(val('ui.separator.diagonal.implicitHeight', 28), 1, 1024)
+    // Diagonal separator tuning
+    property real uiSeparatorDiagonalAlpha: Utils.clamp(val('ui.separator.diagonal.alpha', 0.05), 0, 1)
+    property real uiSeparatorDiagonalThickness: Utils.clamp(val('ui.separator.diagonal.thickness', 7.0), 0.5, 64)
+    property int  uiSeparatorDiagonalAngleDeg: Utils.clamp(val('ui.separator.diagonal.angleDeg', 30), 0, 90)
+    property int  uiSeparatorDiagonalInset: Utils.clamp(val('ui.separator.diagonal.inset', 4), 0, 64)
+    property real uiSeparatorDiagonalStripeBrightness: Utils.clamp(val('ui.separator.diagonal.stripeBrightness', 0.4), 0, 1)
+    property real uiSeparatorDiagonalStripeRatio: Utils.clamp(val('ui.separator.diagonal.stripeRatio', 0.35), 0, 1)
     // UI common opacities
     property real uiRippleOpacity: Utils.clamp(val('ui.ripple.opacity', 0.18), 0, 1)
     property real uiIconEmphasisOpacity: Utils.clamp(val('ui.icon.emphasisOpacity', 0.9), 0, 1)
@@ -588,8 +601,13 @@ Singleton {
     property int uiSpinnerDurationMs: Utils.clamp(val('ui.spinner.durationMs', 1000), 100, 600000)
     // Media emphasis scaling for icons
     property real mediaIconScaleEmphasis: val('media.iconScaleEmphasis', 1.15)
+    // MPD flags
+    property real mpdFlagsIconScale: Utils.clamp(val('media.mpd.flags.iconScale', 0.95), 0.1, 2.0)
     // Media album art fallback icon opacity
     property real mediaAlbumArtFallbackOpacity: Utils.clamp(val('media.albumArt.fallbackOpacity', 0.4), 0, 1)
+    // Media time alphas
+    property real mediaTimeAlphaPlaying: Utils.clamp(val('media.time.alpha.playing', 1.0), 0, 1)
+    property real mediaTimeAlphaPaused: Utils.clamp(val('media.time.alpha.paused', 0.8), 0, 1)
     // MPD flags polling (fallback interval)
     property int mpdFlagsFallbackMs: Utils.clamp(val('media.mpd.flags.fallbackMs', 2500), 200, 600000)
     // Time/Clock module
@@ -624,6 +642,10 @@ Singleton {
     property int uiEasingStdOut: easingType(val('ui.anim.easing.stdOut', 'OutCubic'), 'OutCubic')
     property int uiEasingStdIn: easingType(val('ui.anim.easing.stdIn', 'InCubic'), 'InCubic')
     property int uiEasingInOut: easingType(val('ui.anim.easing.inOut', 'InOutQuad'), 'InOutQuad')
+    // Applauncher entry opacities
+    property real applauncherClipboardEntryOpacity: Utils.clamp(val('applauncher.list.opacity.clipboard', 0.8), 0, 1)
+    property real applauncherCommandEntryOpacity: Utils.clamp(val('applauncher.list.opacity.command', 0.9), 0, 1)
+    property real applauncherNoMetaOpacity: Utils.clamp(val('applauncher.list.opacity.noMeta', 0.6), 0, 1)
     // Calendar popup sizing
     property int calendarWidth: Utils.clamp(val('calendar.size.width', themeData.calendarWidth), 200, 800)
     property int calendarHeight: Utils.clamp(val('calendar.size.height', themeData.calendarHeight), 200, 800)

@@ -32,9 +32,10 @@ Additional UI tokens (nested)
   - Time text: media.time.fontScale
   - MPD flags polling: media.mpd.flags.fallbackMs
   - Album art fallback opacity: media.albumArt.fallbackOpacity
-- System tray: panel.tray.inlinePadding (px)
+ - System tray: panel.tray.inlinePadding (px)
   - Menu: panel.menu.itemFontScale (font size multiplier)
  - Bar layout: panel.netCluster.spacing (spacing between VPN and Network)
+ - Side panel button visibility guard: sidePanel.button.activeVisibleMin; UI epsilon: ui.visibilityEpsilon
  - Network icon: network.icon.scale, network.icon.vAdjust
  - Volume:
   - panel.volume.lowColor, panel.volume.highColor

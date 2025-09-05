@@ -126,6 +126,7 @@
       "autoHideMs": 4000,
       "outerMargin": 4
     },
+    "button": { "activeVisibleMin": 0.18 },
     "weather": {
       "width": 440,
       "height": 180,
@@ -155,9 +156,10 @@
   "ui": {
     "iconSizeLarge": 28,
     "border": { "width": 1 },
-    "separator": { "thickness": 1, "radius": 0, "diagonal": { "stripeOpacity": 0.9, "implicitWidth": 10, "implicitHeight": 28 } },
+    "separator": { "thickness": 1, "radius": 0, "diagonal": { "stripeOpacity": 0.9, "implicitWidth": 10, "implicitHeight": 28, "alpha": 0.05, "thickness": 7, "angleDeg": 30, "inset": 4, "stripeBrightness": 0.4, "stripeRatio": 0.35 } },
     "ripple": { "opacity": 0.18 },
     "icon": { "emphasisOpacity": 0.9 },
+    "visibilityEpsilon": 0.01,
     "shadow": {
       "opacity": 0.6,
       "blur": 0.8,
@@ -246,7 +248,7 @@
       "openDelayMs": 320,
       "stillThresholdMs": 180
     },
-    "mpd": { "flags": { "fallbackMs": 2500 } }
+    "mpd": { "flags": { "fallbackMs": 2500, "iconScale": 0.95 } }
   },
   "spectrum": {
     "peakDecayIntervalMs": 50,
@@ -262,7 +264,7 @@
     "cornerRadius": 28,
     "margins": { "bottom": 16 },
     "anim": { "enterMs": 300, "scaleMs": 200, "offscreenShift": 12 },
-    "list": { "itemHeight": 48, "itemHeightLarge": 64 },
+    "list": { "itemHeight": 48, "itemHeightLarge": 64, "opacity": { "clipboard": 0.8, "command": 0.9, "noMeta": 0.6 } },
     "preview": { "width": 200, "innerMargin": 14, "maxHeightRatio": 1.0 },
     "content": { "margin": 32 }
   }
