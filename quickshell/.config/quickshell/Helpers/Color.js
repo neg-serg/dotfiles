@@ -60,6 +60,19 @@ function contrastOn(bg, light, dark, threshold) {
     }
 }
 
+// Relative contrast ratio (WCAG) between two colors in RGB space
+function contrastRatio(a, b) {
+    try {
+        var ca = _toRgb(a), cb = _toRgb(b);
+        if (!ca || !cb) return 1;
+        var La = _luminance(ca) + 0.05;
+        var Lb = _luminance(cb) + 0.05;
+        var high = Math.max(La, Lb);
+        var low  = Math.min(La, Lb);
+        return high / low;
+    } catch (e) { return 1; }
+}
+
 function withAlpha(c, a) {
     try {
         var rgb = _toRgb(c);

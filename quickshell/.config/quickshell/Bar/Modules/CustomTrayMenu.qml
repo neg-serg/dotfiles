@@ -5,12 +5,13 @@ import QtQuick.Layouts 1.15
 import Quickshell
 import qs.Settings
 import qs.Components
+import "../../Helpers/Utils.js" as Utils
 import "../../Helpers/Color.js" as Color
 
     PopupWindow {
         id: trayMenu
         implicitWidth: Theme.panelMenuWidth
-        implicitHeight: Math.max(40, listView.contentHeight + Theme.panelMenuHeightExtra)
+        implicitHeight: Utils.clamp(listView.contentHeight + Theme.panelMenuHeightExtra, 40, listView.contentHeight + Theme.panelMenuHeightExtra)
         visible: false
         color: "transparent"
 
@@ -71,8 +72,8 @@ import "../../Helpers/Color.js" as Color
         id: bg;
         anchors.fill: parent;
         color: Theme.backgroundPrimary || "#222";
-        border.color: "transparent";
-        border.width: 0;
+        border.color: Theme.borderSubtle;
+        border.width: 1;
         radius: Theme.panelMenuRadius;
         z: 0;
     }
@@ -90,14 +91,8 @@ import "../../Helpers/Color.js" as Color
             values: opener.children ? [...opener.children.values] : []
         }
 
-        // Brighter hover color: lighten accentPrimary towards white, then apply light alpha
-        readonly property real _lighten: 0.5
-        readonly property color _hoverColor: Qt.rgba(
-            Theme.accentPrimary.r + (1 - Theme.accentPrimary.r) * _lighten,
-            Theme.accentPrimary.g + (1 - Theme.accentPrimary.g) * _lighten,
-            Theme.accentPrimary.b + (1 - Theme.accentPrimary.b) * _lighten,
-            0.18
-        )
+        // Hover color: use derived surface hover token
+        readonly property color _hoverColor: Theme.surfaceHover
 
         delegate: Rectangle {
             id: entry;
@@ -121,7 +116,7 @@ import "../../Helpers/Color.js" as Color
             Rectangle {
                 id: bg;
                 anchors.fill: parent;
-                // Hover color: brightened accent tint with light alpha
+                // Hover color: derived surface hover
                 color: mouseArea.containsMouse ? listView._hoverColor : "transparent";
                 radius: 0;
                 visible: !(modelData?.isSeparator ?? false);
@@ -266,7 +261,7 @@ import "../../Helpers/Color.js" as Color
         PopupWindow {
             id: subMenu;
             implicitWidth: 180;
-            implicitHeight: Math.max(40, listView.contentHeight + 12);
+            implicitHeight: Utils.clamp(listView.contentHeight + 12, 40, listView.contentHeight + 12);
             visible: false;
             color: "transparent";
 

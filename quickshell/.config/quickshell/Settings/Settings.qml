@@ -112,6 +112,10 @@ Singleton {
             // Global contrast threshold (0..1) for Color.contrastOn
             // Lower = prefers light text more often; higher = prefers dark
             property real contrastThreshold: 0.5
+            // Debug: log low-contrast warnings when components opt-in
+            property bool debugContrast: false
+            // Target contrast ratio for warnings (WCAG AA for normal text ~4.5)
+            property real contrastWarnRatio: 4.5
 
             // Music player selection helpers
             // Optional lists of player IDs to pin or ignore.

@@ -236,25 +236,18 @@ Item {
                         s = (s === undefined || s === null) ? "" : String(s);
                         return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     }
-                    // Separator color (dash and slash): almost as dark as brackets
-                    // Use a slightly higher brightness factor than brackets
-                    // 165% lighter than brackets (clamped)
-                    property real sepB: Utils.clamp(bracketB * 2.65, 0, 1)
-                    property string sepColor: (
-                        "rgba(" 
-                        + Math.round(Theme.accentPrimary.r * sepB * 255) + ","
-                        + Math.round(Theme.accentPrimary.g * sepB * 255) + ","
-                        + Math.round(Theme.accentPrimary.b * sepB * 255) + ",1)"
-                    )
-                    // Bracket color only: dark accent derived from calendar/tray
-                    property real bracketB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
-                    // Make brackets 1.5x lighter (clamped to 1.0)
-                    property real bracketLight: Utils.clamp(bracketB * 1.5, 0, 1)
+                    // Unified dark accent usage
                     property string bracketColor: (
                         "rgba(" 
-                        + Math.round(Theme.accentPrimary.r * bracketLight * 255) + ","
-                        + Math.round(Theme.accentPrimary.g * bracketLight * 255) + ","
-                        + Math.round(Theme.accentPrimary.b * bracketLight * 255) + ",1)"
+                        + Math.round(Theme.accentDarkStrong.r * 255) + ","
+                        + Math.round(Theme.accentDarkStrong.g * 255) + ","
+                        + Math.round(Theme.accentDarkStrong.b * 255) + ",1)"
+                    )
+                    property string sepColor: (
+                        "rgba(" 
+                        + Math.round(Theme.accentHover.r * 255) + ","
+                        + Math.round(Theme.accentHover.g * 255) + ","
+                        + Math.round(Theme.accentHover.b * 255) + ",1)"
                     )
                     // Time color: dim and desaturate when paused
                     property string timeColor: (function(){
