@@ -1,7 +1,9 @@
 import QtQuick
 import QtQuick.Controls
+import Quickshell
 import qs.Components
 import qs.Settings
+import "../Helpers/Utils.js" as Utils
 
 PopupWindow {
     id: subMenu
@@ -65,4 +67,3 @@ PopupWindow {
 
     Component { id: submenuHostComp; SubmenuHost {} }
 }
-
