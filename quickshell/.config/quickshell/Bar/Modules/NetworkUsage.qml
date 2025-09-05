@@ -24,11 +24,11 @@ Item {
     property bool   hasLink: true
     property bool   hasInternet: true
 
-    // Icon tuning
-    property real   iconScale: 0.7
+    // Icon tuning (from Theme tokens)
+    property real   iconScale: Theme.networkIconScale
     // Base icon color (used when link+internet are OK)
-    property color  iconColor: useTheme && Theme.gothicColor ? Theme.gothicColor : Theme.textSecondary
-    property int    iconVAdjust: 0                 // vertical nudge (px) for the icon
+    property color  iconColor: useTheme ? Theme.textSecondary : Theme.textSecondary
+    property int    iconVAdjust: Theme.networkIconVAdjust   // vertical nudge (px) for the icon
     property string iconText: ""                  // Font Awesome: network-wired
     property string iconFontFamily: "Font Awesome 6 Free"
     property string iconStyleName: "Solid"

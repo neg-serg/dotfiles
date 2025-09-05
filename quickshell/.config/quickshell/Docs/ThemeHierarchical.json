@@ -47,6 +47,7 @@
       "padding": 4,
       "itemSpacing": 2,
       "itemHeight": 26,
+      "itemFontScale": 0.9,
       "itemRadius": 0,
       "separatorHeight": 6,
       "dividerMargin": 10,
@@ -73,7 +74,8 @@
       "longHoldMs": 2500,
       "shortHoldMs": 1500,
       "guardMs": 120,
-      "overlayDismissDelayMs": 5000
+      "overlayDismissDelayMs": 5000,
+      "inlinePadding": 6
     },
     "rowSpacing": 8,
     "rowSpacingSmall": 4,
@@ -103,7 +105,9 @@
     "smallScaleRatio": 0.71
   },
   "weather": {
-    "headerScale": 0.75
+    "headerScale": 0.75,
+    "card": { "opacity": 0.85 },
+    "centerOffset": -2
   },
   "sidePanel": {
     "cornerRadius": 9,
@@ -126,6 +130,26 @@
       "height": 180,
       "leftColumnRatio": 0.32
     }
+  },
+  "keyboard": {
+    "height": 28,
+    "minWidth": 40,
+    "margin": 4,
+    "radius": 4,
+    "icon": { "scale": 1.0, "spacing": 4, "padding": 4, "baselineOffset": 0 },
+    "text": { "padding": 1.5, "baselineOffset": 0, "bold": false },
+    "opacity": { "normal": 1.0, "hover": 1.0 },
+    "font": { "scale": 0.9 },
+    "colors": {
+      "bg": "#ef000000",
+      "hoverBg": "#14222f",
+      "text": "#CBD6E5",
+      "icon": "#AEB9C8"
+    }
+  },
+  "time": {
+    "font": { "scale": 1.0, "weight": 500 },
+    "text": { "color": "#CBD6E5" }
   },
   "ui": {
     "iconSizeLarge": 28,
@@ -160,6 +184,18 @@
       "height": 48
     }
   },
+  "volume": {
+    "icon": { "offThreshold": 0, "downThreshold": 30, "upThreshold": 50 },
+    "pill": {
+      "autoHidePauseMs": 2500,
+      "showDelayMs": 500
+    }
+  },
+  "ws": {
+    "icon": { "scale": 1.45, "baselineOffset": 4, "spacing": 1, "innerPadding": 1 },
+    "label": { "padding": 6, "leftPadding": { "normal": 2, "terminal": -2 } },
+    "submapBaselineAdjust": -5
+  },
   "calendar": {
     "size": {
       "width": 280,
@@ -190,14 +226,17 @@
   "network": {
     "vpnPollMs": 2500,
     "restartBackoffMs": 1500,
-    "linkPollMs": 4000
+    "linkPollMs": 4000,
+    "icon": { "scale": 0.7, "vAdjust": 0 }
   },
   "media": {
     "iconScaleEmphasis": 1.15,
+    "time": { "fontScale": 0.8 },
     "hover": {
       "openDelayMs": 320,
       "stillThresholdMs": 180
-    }
+    },
+    "mpd": { "flags": { "fallbackMs": 2500 } }
   },
   "spectrum": {
     "peakDecayIntervalMs": 50,
