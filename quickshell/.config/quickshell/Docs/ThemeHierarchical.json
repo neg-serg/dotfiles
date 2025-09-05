@@ -14,13 +14,12 @@
     "onAccent": "#FFFFFF",
     "outline": "#3B4C5C",
     "shadow": "#000000",
-    "overlay": "#10141A",
     "status": {
       "error": "#FF6B81",
       "warning": "#FFBB66"
     },
     "highlight": "#94E1F9",
-    "ripple": "#D6F3FF",
+    
     "overrides": {
       
     }
@@ -84,7 +83,6 @@
       "highColor": "#0E6B4D"
     },
     "hover": {
-      "opacity": 0.18,
       "fadeMs": 120
     }
   },
