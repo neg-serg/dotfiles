@@ -59,12 +59,17 @@ PopupWindow {
 
         model: ScriptModel { id: subMenuModel; values: opener.children ? [...opener.children.values] : [] }
 
-        delegate: DelegateEntry {
-            itemData: modelData
-            listViewRef: listView
-            submenuHostComponent: subMenu.submenuHostComponent
-            menuWindow: subMenu
-            screen: subMenu.screen
+        delegate: Item {
+            width: listView.width; height: Theme.panelMenuItemHeight
+            property var data: modelData
+            DelegateEntry {
+                anchors.fill: parent
+                itemData: parent.data
+                listViewRef: listView
+                submenuHostComponent: subMenu.submenuHostComponent
+                menuWindow: subMenu
+                screen: subMenu.screen
+            }
         }
     }
 }
