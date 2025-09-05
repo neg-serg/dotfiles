@@ -113,7 +113,9 @@
   "ui": {
     "iconSizeLarge": 28,
     "border": { "width": 1 },
-    "separator": { "thickness": 1, "radius": 0 }
+    "separator": { "thickness": 1, "radius": 0, "diagonal": { "stripeOpacity": 0.9 } },
+    "anim": { "quickMs": 120, "rotateMs": 160, "rippleMs": 320 },
+    "spinner": { "durationMs": 1000 }
   },
   "timers": {
     "timeTickMs": 1000,
@@ -137,13 +139,15 @@
     "peakDecayIntervalMs": 50,
     "barAnimMs": 100,
     "barGap": 2,
-    "minBarWidth": 2
+    "minBarWidth": 2,
+    "peakOpacity": 0.7
   },
   "calendar": {
     "rowSpacing": 2,
     "cellSpacing": 2,
     "sideMargin": 2,
-    "font": { "titlePx": 18, "dowPx": 15, "dayPx": 24 }
+    "font": { "titlePx": 18, "dowPx": 15, "dayPx": 24 },
+    "opacity": { "title": 0.7, "dow": 0.9, "otherMonthDay": 0.3 }
   },
   "weather": { "headerScale": 0.75 },
   "applauncher": {

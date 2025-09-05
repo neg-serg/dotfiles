@@ -15,7 +15,7 @@ Item {
     // Darken accent strongly towards black to reduce brightness
     property real  stripeBrightness: 0.4 // 0..1, lower = closer to black
     property color stripeColor: Color.towardsBlack(Theme.accentPrimary, 1 - stripeBrightness)
-    property real  stripeOpacity: 0.9
+    property real  stripeOpacity: Theme.uiSeparatorStripeOpacity
     // Portion of thickness used by the accent stripe (0..1)
     property real  stripeRatio: 0.35
     // Which side to draw the stripe on: true = right edge, false = left edge

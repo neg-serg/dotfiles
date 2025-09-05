@@ -56,7 +56,7 @@ PanelWithOverlay {
                     horizontalAlignment: Text.AlignHCenter
                     text: calendar.title
                     color: Theme.textPrimary
-                    opacity: 0.7
+                    opacity: Theme.calendarTitleOpacity
                     font.pixelSize: Math.round(Theme.calendarTitleFontPx * Theme.scale(screen))
                     font.family: Theme.fontFamily
                     font.weight: Font.Medium
@@ -85,7 +85,7 @@ PanelWithOverlay {
                 delegate: Text {
                     text: shortName
                     color: Theme.textSecondary
-                    opacity: 0.9
+                    opacity: Theme.calendarDowOpacity
                     font.pixelSize: Math.round(Theme.calendarDowFontPx * Theme.scale(screen))
                     font.family: Theme.fontFamily
                     font.weight: Font.Normal
@@ -176,7 +176,7 @@ PanelWithOverlay {
                         color: (model.today || isSelected || mouseArea2.containsMouse)
                             ? Color.contrastOn(parent.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
                             : Theme.textPrimary
-                        opacity: model.month === calendar.month ? (mouseArea2.containsMouse ? 1 : 0.7) : 0.3
+                        opacity: model.month === calendar.month ? (mouseArea2.containsMouse ? 1 : Theme.calendarTitleOpacity) : Theme.calendarOtherMonthDayOpacity
                         font.pixelSize: Math.round(Theme.calendarDayFontPx * Theme.scale(screen))
                         font.family: Theme.fontFamily
                         font.weight: Font.Bold

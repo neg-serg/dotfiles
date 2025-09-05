@@ -128,13 +128,15 @@
   "ui": {
     "iconSizeLarge": 28,
     "border": { "width": 1 },
-    "separator": { "thickness": 1, "radius": 0 },
+    "separator": { "thickness": 1, "radius": 0, "diagonal": { "stripeOpacity": 0.9 } },
     "shadow": {
       "opacity": 0.6,
       "blur": 0.8,
       "offsetX": 0,
       "offsetY": 1
     },
+    "anim": { "quickMs": 120, "rotateMs": 160, "rippleMs": 320 },
+    "spinner": { "durationMs": 1000 },
     "margin": {
       "large": 32,
       "medium": 16
@@ -163,6 +165,7 @@
     "dow": { "italic": true, "underline": true },
     "cell": { "radiusFactor": 0.33 },
     "holidayDot": { "radiusFactor": 0.5 },
+    "opacity": { "title": 0.7, "dow": 0.9, "otherMonthDay": 0.3 },
     "popupMargin": 2,
     "borderWidth": 1,
     "cellSize": 28,
@@ -195,7 +198,8 @@
     "peakDecayIntervalMs": 50,
     "barAnimMs": 100,
     "barGap": 2,
-    "minBarWidth": 2
+    "minBarWidth": 2,
+    "peakOpacity": 0.7
   },
   "applauncher": {
     "clipboardPollMs": 1000,
@@ -207,4 +211,6 @@
     "preview": { "width": 200, "innerMargin": 14, "maxHeightRatio": 1.0 },
     "content": { "margin": 32 }
   }
+  ,
+  "vpn": { "connectedOpacity": 0.8, "disconnectedOpacity": 0.45 }
 }

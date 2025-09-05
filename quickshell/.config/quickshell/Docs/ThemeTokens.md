@@ -24,6 +24,8 @@ Additional UI tokens (nested)
 - UI shadow: ui.shadow.opacity, ui.shadow.blur, ui.shadow.offsetX, ui.shadow.offsetY
 - UI border/separators: ui.border.width, ui.separator.thickness
   - Separator radius: ui.separator.radius
+  - UI animation: ui.anim.quickMs, ui.anim.rotateMs, ui.anim.rippleMs
+  - UI spinner: ui.spinner.durationMs
 - Media: media.iconScaleEmphasis
 - Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
   - Applauncher list: applauncher.list.itemHeight, applauncher.list.itemHeightLarge
@@ -38,7 +40,11 @@ Additional UI tokens (nested)
 - Calendar font sizes: calendar.font.titlePx, calendar.font.dowPx, calendar.font.dayPx
   - Calendar DOW style: calendar.dow.italic, calendar.dow.underline
   - Calendar shape: calendar.cell.radiusFactor, calendar.holidayDot.radiusFactor
-  - Spectrum bars: spectrum.barGap, spectrum.minBarWidth
+- Spectrum bars: spectrum.barGap, spectrum.minBarWidth
+  - Spectrum peak opacity: spectrum.peakOpacity
+  - Diagonal separator stripe: ui.separator.diagonal.stripeOpacity
+  - VPN opacities: vpn.connectedOpacity, vpn.disconnectedOpacity
+  - Calendar opacities: calendar.opacity.title, calendar.opacity.dow, calendar.opacity.otherMonthDay
 
 Overrides (advanced)
 - You can override any derived token by adding an "Override" key in Theme.json:

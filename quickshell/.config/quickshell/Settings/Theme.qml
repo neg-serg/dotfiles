@@ -436,6 +436,15 @@ Singleton {
     property int uiBorderWidth: Utils.clamp(val('ui.border.width', 1), 0, 8)
     property int uiSeparatorThickness: Utils.clamp(val('ui.separator.thickness', 1), 1, 8)
     property int uiSeparatorRadius: Utils.clamp(val('ui.separator.radius', 0), 0, 8)
+    // VPN indicator opacities
+    property real vpnConnectedOpacity: Utils.clamp(val('vpn.connectedOpacity', 0.8), 0, 1)
+    property real vpnDisconnectedOpacity: Utils.clamp(val('vpn.disconnectedOpacity', 0.45), 0, 1)
+    // UI animation timings
+    property int uiAnimQuickMs: Utils.clamp(val('ui.anim.quickMs', 120), 0, 2000)
+    property int uiAnimRotateMs: Utils.clamp(val('ui.anim.rotateMs', 160), 0, 5000)
+    property int uiAnimRippleMs: Utils.clamp(val('ui.anim.rippleMs', 320), 0, 10000)
+    // UI spinner
+    property int uiSpinnerDurationMs: Utils.clamp(val('ui.spinner.durationMs', 1000), 100, 600000)
     // Media emphasis scaling for icons
     property real mediaIconScaleEmphasis: val('media.iconScaleEmphasis', 1.15)
     // Calendar popup sizing
@@ -449,8 +458,16 @@ Singleton {
     property int calendarTitleFontPx: Utils.clamp(val('calendar.font.titlePx', 18), 8, 64)
     property int calendarDowFontPx: Utils.clamp(val('calendar.font.dowPx', 15), 6, 48)
     property int calendarDayFontPx: Utils.clamp(val('calendar.font.dayPx', 24), 8, 64)
+    // Calendar opacities
+    property real calendarTitleOpacity: Utils.clamp(val('calendar.opacity.title', 0.7), 0, 1)
+    property real calendarDowOpacity: Utils.clamp(val('calendar.opacity.dow', 0.9), 0, 1)
+    property real calendarOtherMonthDayOpacity: Utils.clamp(val('calendar.opacity.otherMonthDay', 0.3), 0, 1)
     // Tunable factor for dark accent on calendar highlights (today/selected/hover)
     property real calendarAccentDarken: Utils.clamp(val('calendar.accentDarken', themeData.calendarAccentDarken), 0, 1)
+    // Spectrum opacity for peaks
+    property real spectrumPeakOpacity: Utils.clamp(val('spectrum.peakOpacity', 0.7), 0, 1)
+    // Diagonal separator stripe opacity
+    property real uiSeparatorStripeOpacity: Utils.clamp(val('ui.separator.diagonal.stripeOpacity', 0.9), 0, 1)
     // Derived accent/surface/border tokens (formula-based)
     // Keep simple and perceptually stable; expose tokens for reuse
     // Each derived token may be overridden by matching *Override property in Theme.json

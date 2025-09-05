@@ -205,7 +205,7 @@ Item {
                 drawTop: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].showSpectrumTopHalf !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].showSpectrumTopHalf : Settings.settings.showSpectrumTopHalf
                 drawBottom: true
                 fillOpacity: (function(){ var raw = (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumFillOpacity !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumFillOpacity : Settings.settings.spectrumFillOpacity; return Utils.clamp(Utils.coerceReal(raw, 0.35), 0, 1); })()
-                peakOpacity: 0.7
+                peakOpacity: Theme.spectrumPeakOpacity
                 useGradient: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient : Settings.settings.spectrumUseGradient
                 barColor: Theme.accentPrimary
                 // Push spectrum to the very bottom within this container

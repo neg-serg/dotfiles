@@ -40,6 +40,9 @@ Item {
     property color accentBase: Color.saturate(Theme.accentPrimary, accentSaturateBoost)
     property color accentColor: desaturateColor(accentBase, desaturateAmount)
 
+    // Opacity tokens (from Theme)
+    property real connectedOpacity: Theme.vpnConnectedOpacity
+    property real disconnectedOpacity: Theme.vpnDisconnectedOpacity
     // Internal state
     property bool connected: false
     property string matchedIf: ""
