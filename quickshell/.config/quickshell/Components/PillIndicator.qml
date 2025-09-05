@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import qs.Settings
+import "../Helpers/Utils.js" as Utils
 
 Item {
     id: revealPill
@@ -24,7 +25,7 @@ Item {
 
     // Exposed width logic
     readonly property int pillOverlap: iconSize / 2
-    readonly property int maxPillWidth: Math.max(1, textItem.implicitWidth + pillPaddingHorizontal * 2 + pillOverlap)
+    readonly property int maxPillWidth: Utils.clamp(textItem.implicitWidth + pillPaddingHorizontal * 2 + pillOverlap, 1, textItem.implicitWidth + pillPaddingHorizontal * 2 + pillOverlap)
 
     signal shown
     signal hidden
