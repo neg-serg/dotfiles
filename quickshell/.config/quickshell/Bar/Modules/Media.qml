@@ -239,7 +239,7 @@ Item {
                     // Separator color (dash and slash): almost as dark as brackets
                     // Use a slightly higher brightness factor than brackets
                     // 165% lighter than brackets (clamped)
-                    property real sepB: Math.min(1, bracketB * 2.65)
+                    property real sepB: Utils.clamp(bracketB * 2.65, 0, 1)
                     property string sepColor: (
                         "rgba(" 
                         + Math.round(Theme.accentPrimary.r * sepB * 255) + ","
@@ -249,7 +249,7 @@ Item {
                     // Bracket color only: dark accent derived from calendar/tray
                     property real bracketB: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
                     // Make brackets 1.5x lighter (clamped to 1.0)
-                    property real bracketLight: Math.min(1, bracketB * 1.5)
+                    property real bracketLight: Utils.clamp(bracketB * 1.5, 0, 1)
                     property string bracketColor: (
                         "rgba(" 
                         + Math.round(Theme.accentPrimary.r * bracketLight * 255) + ","
@@ -287,7 +287,7 @@ Item {
                                    .replace(/\s(?:-|–|—)\s/g, "&#8201;<span style='color:" + trackText.sepColor + "; font-weight:bold'>—</span>&#8201;");
                         const cur = Format.fmtTime(MusicManager.currentPosition || 0);
                         const tot = Format.fmtTime(Time.mprisToMs(MusicManager.trackLength || 0));
-                        const timeSize = Math.max(1, Math.round(trackText.font.pixelSize * 0.8));
+                        const timeSize = Utils.clamp(Math.round(trackText.font.pixelSize * 0.8), 1, 2048);
                         const bp = trackText.bracketPair();
                         return t
                                + " &#8201;<span style='color:" + trackText.bracketColor + "'>" + bp.l + "</span>"
