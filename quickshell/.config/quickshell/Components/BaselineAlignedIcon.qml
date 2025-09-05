@@ -33,8 +33,7 @@ Item {
     implicitWidth: (mode === "material") ? materialItem.implicitWidth : textItem.implicitWidth
     implicitHeight: (mode === "material") ? materialItem.implicitHeight : textItem.implicitHeight
 
-    // Label and icon font metrics for precise baseline offset
-    FontMetrics { id: fmLabel; font: (root.labelRef && root.labelRef.font) ? root.labelRef.font : Qt.font({ pixelSize: root._labelPx }) }
+    
 
     // Text glyph mode
     Text {
@@ -48,8 +47,7 @@ Item {
         font.pixelSize: Math.max(1, Math.round(root._labelPx * root.scale))
         renderType: Text.NativeRendering
         anchors.baseline: (root.labelRef && root.labelRef.baseline !== undefined) ? root.labelRef.baseline : undefined
-        FontMetrics { id: fmText; font: textItem.font }
-        anchors.baselineOffset: Math.round(root.baselineOffset + (fmLabel.ascent - fmText.ascent))
+        anchors.baselineOffset: root.baselineOffset
     }
 
     // Material icon mode
@@ -62,8 +60,6 @@ Item {
         color: root.color
         screen: root.screen
         anchors.baseline: (root.labelRef && root.labelRef.baseline !== undefined) ? root.labelRef.baseline : undefined
-        FontMetrics { id: fmMat; font: materialItem.font }
-        anchors.baselineOffset: Math.round(root.baselineOffset + (fmLabel.ascent - fmMat.ascent))
+        anchors.baselineOffset: root.baselineOffset
     }
 }
-
