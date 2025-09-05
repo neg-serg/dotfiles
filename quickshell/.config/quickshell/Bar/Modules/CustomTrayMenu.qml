@@ -144,11 +144,20 @@ import qs.Components
                     }
 
                     Image {
+                        id: menuIcon
                         Layout.preferredWidth: 16;
                         Layout.preferredHeight: 16;
                         source: modelData?.icon ?? "";
                         visible: (modelData?.icon ?? "") !== "";
                         fillMode: Image.PreserveAspectFit;
+                    }
+
+                    // Fallback icon when provided source fails to load
+                    MaterialIcon {
+                        visible: ((modelData?.icon ?? "") !== "") && (menuIcon.status === Image.Error)
+                        icon: Settings.settings.trayFallbackIcon || "broken_image"
+                        size: Math.round(16 * Theme.scale(screen))
+                        color: Theme.textSecondary
                     }
 
                     MaterialIcon {
@@ -381,11 +390,20 @@ import qs.Components
                             }
 
                             Image {
+                                id: subMenuIcon
                                 Layout.preferredWidth: Theme.panelMenuIconSize;
                                 Layout.preferredHeight: Theme.panelMenuIconSize;
                                 source: modelData?.icon ?? "";
                                 visible: (modelData?.icon ?? "") !== "";
                                 fillMode: Image.PreserveAspectFit;
+                            }
+
+                            // Fallback when submenu icon fails
+                            MaterialIcon {
+                                visible: ((modelData?.icon ?? "") !== "") && (subMenuIcon.status === Image.Error)
+                                icon: Settings.settings.trayFallbackIcon || "broken_image"
+                                size: Math.round(Theme.panelMenuIconSize * Theme.scale(screen))
+                                color: Theme.textSecondary
                             }
 
                             MaterialIcon {
