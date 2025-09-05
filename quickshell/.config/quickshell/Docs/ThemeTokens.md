@@ -22,6 +22,7 @@ Overview
 Additional UI tokens (nested)
 - Tooltip: tooltip.opacity, tooltip.smallScaleRatio
 - UI shadow: ui.shadow.opacity, ui.shadow.blur, ui.shadow.offsetX, ui.shadow.offsetY
+- UI border/separators: ui.border.width, ui.separator.thickness
 - Media: media.iconScaleEmphasis
 - Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
 

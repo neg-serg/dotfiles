@@ -73,7 +73,7 @@ import "../../Helpers/Color.js" as Color
         anchors.fill: parent;
         color: Theme.background || "#222";
         border.color: Theme.borderSubtle;
-        border.width: 1;
+        border.width: Theme.uiBorderWidth;
         radius: Theme.panelMenuRadius;
         z: 0;
     }
@@ -108,7 +108,7 @@ import "../../Helpers/Color.js" as Color
             Rectangle {
                 anchors.centerIn: parent;
                 width: parent.width - (Theme.panelMenuDividerMargin * 2);
-                height: 1;
+                height: Theme.uiSeparatorThickness;
                 color: Theme.borderSubtle;
                 visible: modelData?.isSeparator ?? false;
             }
@@ -320,7 +320,7 @@ import "../../Helpers/Color.js" as Color
                 anchors.fill: parent;
                 color: Theme.background || "#222";
                 border.color: Theme.borderSubtle;
-                border.width: 1;
+                border.width: Theme.uiBorderWidth;
                 radius: 0;
                 z: 0;
             }
@@ -355,7 +355,7 @@ import "../../Helpers/Color.js" as Color
                     Rectangle {
                         anchors.centerIn: parent;
                         width: parent.width - (Theme.panelMenuDividerMargin * 2);
-                        height: 1;
+                        height: Theme.uiSeparatorThickness;
                         color: Theme.borderSubtle;
                         visible: modelData?.isSeparator ?? false;
                     }

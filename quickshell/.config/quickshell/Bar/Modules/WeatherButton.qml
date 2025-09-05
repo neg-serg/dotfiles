@@ -53,7 +53,7 @@ Item {
             radius: Math.round(Theme.panelOverlayRadius * Theme.scale(Screen))
             color: Theme.overlayWeak
             border.color: Theme.borderSubtle
-            border.width: 1
+            border.width: Theme.uiBorderWidth
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.topMargin: Math.round(Theme.sidePanelSpacingMedium * Theme.scale(Screen))

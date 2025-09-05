@@ -99,7 +99,7 @@ Rectangle {
         // Dark accent background with alpha; unify with theme tokens
         color: Color.withAlpha(Theme.accentDarkStrong, 0.85)
         border.color: Theme.borderSubtle
-        border.width: 1
+        border.width: Theme.uiBorderWidth
         radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
  
         ColumnLayout {

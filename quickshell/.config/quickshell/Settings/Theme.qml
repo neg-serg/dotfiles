@@ -412,6 +412,9 @@ Singleton {
     property real uiShadowBlur: val('ui.shadow.blur', 0.8)
     property int uiShadowOffsetX: val('ui.shadow.offsetX', 0)
     property int uiShadowOffsetY: val('ui.shadow.offsetY', 1)
+    // UI border/separator thickness
+    property int uiBorderWidth: Utils.clamp(val('ui.border.width', 1), 0, 8)
+    property int uiSeparatorThickness: Utils.clamp(val('ui.separator.thickness', 1), 1, 8)
     // Media emphasis scaling for icons
     property real mediaIconScaleEmphasis: val('media.iconScaleEmphasis', 1.15)
     // Calendar popup sizing

@@ -107,7 +107,9 @@
     }
   },
   "ui": {
-    "iconSizeLarge": 28
+    "iconSizeLarge": 28,
+    "border": { "width": 1 },
+    "separator": { "thickness": 1 }
   },
   "timers": {
     "timeTickMs": 1000,
