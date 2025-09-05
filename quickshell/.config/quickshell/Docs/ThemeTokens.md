@@ -30,6 +30,7 @@ Additional UI tokens (nested)
   - Spectrum: spectrum.peakThickness
   - Side panel: sidePanel.innerRadius (inner blocks)
   - Side panel button hover radius factor: sidePanel.buttonHoverRadiusFactor
+  - Weather left column width ratio: sidePanel.weather.leftColumnRatio
 
 Overrides (advanced)
 - You can override any derived token by adding an "Override" key in Theme.json:

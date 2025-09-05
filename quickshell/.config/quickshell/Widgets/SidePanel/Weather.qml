@@ -115,7 +115,8 @@ Rectangle {
  
                 RowLayout {
                     spacing: Math.round(Theme.sidePanelSpacing * Theme.scale(Screen))
-                    Layout.preferredWidth: Math.round(140 * Theme.scale(Screen))
+                    // Width proportionate to panel width for responsiveness
+                    Layout.preferredWidth: Math.round(weatherRoot.width * Theme.sidePanelWeatherLeftColumnRatio)
  
  
                     Spinner {
@@ -177,6 +178,7 @@ Rectangle {
                 height: Utils.clamp(Math.round(Theme.tooltipBorderWidth * Theme.scale(Screen)), 1, 64)
                 // Use theme subtle border for divider
                 color: Theme.borderSubtle
+                radius: Theme.uiSeparatorRadius
                 Layout.fillWidth: true
                 Layout.topMargin: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(Screen))
                 Layout.bottomMargin: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(Screen))
@@ -184,7 +186,7 @@ Rectangle {
  
  
             RowLayout {
-                spacing: 12 * Theme.scale(Screen)
+                spacing: Math.round(Theme.sidePanelSpacing * Theme.scale(Screen))
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter
                 visible: weatherData && weatherData.daily && weatherData.daily.time

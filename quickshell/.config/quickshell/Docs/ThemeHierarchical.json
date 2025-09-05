@@ -118,7 +118,8 @@
     },
     "weather": {
       "width": 440,
-      "height": 180
+      "height": 180,
+      "leftColumnRatio": 0.32
     }
   },
   "ui": {
