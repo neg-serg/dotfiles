@@ -22,7 +22,7 @@ import "../../Helpers/Color.js" as Color
 
     anchor.item: anchorItem ? anchorItem : null
     anchor.rect.x: anchorX
-    anchor.rect.y: anchorY - Theme.panelMenuAnchorYOffset
+    anchor.rect.y: anchorY - Math.round(Theme.panelMenuAnchorYOffset * Theme.scale(Screen))
 
     // Recursive function to destroy all open submenus in delegate tree, safely avoiding infinite recursion
     function destroySubmenusRecursively(item) {
