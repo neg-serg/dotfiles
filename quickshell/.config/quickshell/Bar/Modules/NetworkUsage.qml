@@ -52,7 +52,7 @@ Item {
     // Computed font size
     readonly property int computedFontPx: fontPixelSize > 0
         ? fontPixelSize
-        : Utils.clamp(Math.round((desiredHeight - 2 * textPadding) * Theme.panelComputedFontScale), 16, 4096)
+        : Utils.computedInlineFontPx(desiredHeight, textPadding, Theme.panelComputedFontScale)
 
     // Font metrics no longer needed after refactor
 
