@@ -7,6 +7,7 @@ import QtQuick.Layouts
 import QtQuick.Effects
 import "../../Helpers/Format.js" as Format
 import "../../Helpers/Time.js" as Time
+import "../../Helpers/Color.js" as Color
 import qs.Settings
 import qs.Services
 import qs.Components

@@ -158,7 +158,7 @@ Row {
                         height: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
                         radius: Theme.cornerRadiusSmall
                         // Use a dark overlay for hover to avoid white-ish look
-                        color: mouseArea.containsMouse ? Theme.overlayWeak : "transparent"
+                        color: trayItemMouseArea.containsMouse ? Theme.overlayWeak : "transparent"
                         clip: true
                         TrayIcon {
                             id: icon
@@ -170,6 +170,7 @@ Row {
                         }
                     }
                     MouseArea {
+                        id: trayItemMouseArea
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
