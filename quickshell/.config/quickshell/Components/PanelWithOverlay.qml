@@ -9,7 +9,7 @@ PanelWindow {
     property int topMargin: Math.round(Theme.panelModuleHeight * Theme.scale(screen))
     property int bottomMargin: Math.round(Theme.panelModuleHeight * Theme.scale(screen))
     WlrLayershell.namespace: "quickshell"
-    property color overlayColor: showOverlay ? Theme.overlay : "transparent"
+    property color overlayColor: showOverlay ? Theme.overlayStrong : "transparent"
     
     function dismiss() {
         visible = false;

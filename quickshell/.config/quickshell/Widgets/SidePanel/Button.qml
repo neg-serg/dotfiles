@@ -9,7 +9,7 @@ Item {
     width: iconText.implicitWidth + 0
     height: iconText.implicitHeight + 0
 
-    property color hoverColor: Theme.rippleEffect
+    property color hoverColor: Theme.surfaceHover
     property real hoverOpacity: 0.0
     property bool isActive: mouseArea.containsMouse || (sidebarPopup && sidebarPopup.visible)
 
@@ -27,14 +27,15 @@ Item {
                 sidebarPopup.showAt();
             }
         }
-        onEntered: buttonRoot.hoverOpacity = Theme.panelHoverOpacity
+        onEntered: buttonRoot.hoverOpacity = 1.0
         onExited: buttonRoot.hoverOpacity = 0.0
     }
 
     Rectangle {
         anchors.fill: parent
         color: hoverColor
-        opacity: isActive ? 0.18 : hoverOpacity
+        // Use color alpha directly; animate opacity for hover
+        opacity: isActive ? 1.0 : hoverOpacity
         radius: height / 2
         z: 0
         visible: (isActive ? 0.18 : hoverOpacity) > 0.01

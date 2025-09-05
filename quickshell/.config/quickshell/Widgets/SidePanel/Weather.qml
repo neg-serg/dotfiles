@@ -86,23 +86,10 @@ Rectangle {
     Rectangle {
         id: card
         anchors.fill: parent
-        // Almost-black with accent hue; reduce saturation by 50%
-        property real cardTint: 0.10
-        property real cardAlpha: 0.85 // 15% transparent
-        property real desat: 0.5
-        // Compute tinted base
-        property real baseR: Theme.accentPrimary.r * cardTint
-        property real baseG: Theme.accentPrimary.g * cardTint
-        property real baseB: Theme.accentPrimary.b * cardTint
-        // Luminance for neutral grey
-        property real lum: 0.2126 * baseR + 0.7152 * baseG + 0.0722 * baseB
-        // Mix towards luminance to reduce saturation
-        color: Qt.rgba(
-            baseR * desat + lum * (1 - desat),
-            baseG * desat + lum * (1 - desat),
-            baseB * desat + lum * (1 - desat),
-            cardAlpha
-        )
+        // Dark accent background with alpha; unify with theme tokens
+        color: Color.withAlpha(Theme.accentDarkStrong, 0.85)
+        border.color: Theme.borderSubtle
+        border.width: 1
         radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
  
         ColumnLayout {

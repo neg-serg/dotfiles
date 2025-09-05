@@ -22,18 +22,10 @@ Rectangle {
         Rectangle {
             id: card
             anchors.fill: parent
-            // Almost-black with accent hue; reduce saturation by 50%
-            property real cardTint: 0.10
-            property real cardAlpha: 0.85 // 15% transparent
-            property real desat: 0.5
-            // Compute tinted base
-            property real baseR: Theme.accentPrimary.r * cardTint
-            property real baseG: Theme.accentPrimary.g * cardTint
-            property real baseB: Theme.accentPrimary.b * cardTint
-            // Luminance for neutral grey
-            property real lum: 0.2126 * baseR + 0.7152 * baseG + 0.0722 * baseB
-            // Mix towards luminance to reduce saturation
-            color: "#000000" // Solid black background for music
+            // Dark accent background with alpha; unify with theme tokens
+            color: Color.withAlpha(Theme.accentDarkStrong, 0.90)
+            border.color: Theme.borderSubtle
+            border.width: 1
             radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
 
         // Show fallback UI if no player is available
@@ -208,9 +200,7 @@ Rectangle {
                     }
                     highlighted: playerSelector.highlightedIndex === index
 
-                    background: Rectangle {
-                        color: highlighted ? Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.15) : "transparent"
-                    }
+                    background: Rectangle { color: highlighted ? Theme.surfaceHover : "transparent" }
                 }
 
             // Single player label (when no need for ComboBox)
@@ -435,13 +425,7 @@ Rectangle {
                                 visible: !!MusicManager.trackYear && !MusicManager.trackDateStr
                                 Layout.fillWidth: true
                                 spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
-                                MaterialIcon {
-                                    // Year icon
-                                    icon: "calendar_month"
-                                    color: "#004E4E"
-                                    size: Math.round(playerUI.musicFontPx * 1.15)
-                                    Layout.alignment: Qt.AlignVCenter
-                                }
+                                MaterialIcon { icon: "calendar_month"; color: Theme.accentHover; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
                                 Text {
                                     Layout.fillWidth: true
                                     text: MusicManager.trackYear
@@ -459,13 +443,7 @@ Rectangle {
                                 visible: !!MusicManager.trackLabel
                                 Layout.fillWidth: true
                                 spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
-                                MaterialIcon {
-                                    // Label/Publisher icon
-                                    icon: "sell"
-                                    color: "#004E4E"
-                                    size: Math.round(playerUI.musicFontPx * 1.15)
-                                    Layout.alignment: Qt.AlignVCenter
-                                }
+                                MaterialIcon { icon: "sell"; color: Theme.accentHover; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
                                 Text {
                                     Layout.fillWidth: true
                                     text: MusicManager.trackLabel
@@ -484,13 +462,7 @@ Rectangle {
                                 visible: !!MusicManager.trackComposer
                                 Layout.fillWidth: true
                                 spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
-                                MaterialIcon {
-                                    // Composer icon
-                                    icon: "piano"
-                                    color: "#004E4E"
-                                    size: Math.round(playerUI.musicFontPx * 1.15)
-                                    Layout.alignment: Qt.AlignVCenter
-                                }
+                                MaterialIcon { icon: "piano"; color: Theme.accentHover; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
                                 Text {
                                     Layout.fillWidth: true
                                     text: MusicManager.trackComposer

@@ -116,8 +116,8 @@ Row {
             id: bg
             radius: Theme.cornerRadiusSmall
             color: Theme.backgroundPrimary
-            border.color: "transparent"
-            border.width: 0
+            border.color: Theme.borderSubtle
+            border.width: 1
             // No animated width — show full content immediately
             width: collapsedRow.implicitWidth + 6
             height: collapsedRow.implicitHeight + 6

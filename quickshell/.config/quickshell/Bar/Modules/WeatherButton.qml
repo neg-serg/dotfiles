@@ -51,8 +51,8 @@ Item {
         Rectangle {
             id: popup
             radius: Math.round(Theme.panelOverlayRadius * Theme.scale(Screen))
-            color: Qt.rgba(0, 0, 0, 0.10)
-            border.color: Theme.backgroundTertiary
+            color: Theme.overlayWeak
+            border.color: Theme.borderSubtle
             border.width: 1
             anchors.top: parent.top
             anchors.left: parent.left
