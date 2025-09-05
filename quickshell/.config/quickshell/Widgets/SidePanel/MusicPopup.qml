@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.15
 import Quickshell
 import qs.Components
 import qs.Settings
+import "../../Helpers/Utils.js" as Utils
 
 Item {
     id: sidebarPopup
@@ -56,12 +57,12 @@ Item {
             autoHideTimer.interval = toast._autoHideRemainingMs;
             autoHideTimer.restart();
         }
-        function pauseAutoHide() {
-            if (!autoHideTimer.running) return;
-            const elapsed = Math.max(0, Date.now() - toast._autoHideStartedAtMs);
-            toast._autoHideRemainingMs = Math.max(0, toast._autoHideRemainingMs - elapsed);
-            autoHideTimer.stop();
-        }
+            function pauseAutoHide() {
+                if (!autoHideTimer.running) return;
+            const elapsed = Utils.clamp(Date.now() - toast._autoHideStartedAtMs, 0, 3600000);
+            toast._autoHideRemainingMs = Utils.clamp(toast._autoHideRemainingMs - elapsed, 0, 3600000);
+                autoHideTimer.stop();
+            }
         function resumeAutoHide() {
             if (toast._autoHideRemainingMs <= 0) { toast.hidePopup(); return; }
             toast._autoHideStartedAtMs = Date.now();
@@ -170,8 +171,8 @@ Item {
                 var ih = (musicWidget && musicWidget.implicitHeight > 0)
                          ? musicWidget.implicitHeight
                          : (Settings.settings.musicPopupHeight * scale);
-                const guardMax = Math.max(1, Math.round(Screen.height * 0.7));
-                computedHeightPx = Math.round(Math.min(ih, guardMax));
+                const guardMax = Utils.clamp(Math.round(Screen.height * 0.7), 1, Screen.height);
+                computedHeightPx = Utils.clamp(Math.round(ih), 1, guardMax);
             }
 
             if (!visible) {
