@@ -2,7 +2,7 @@ Theme Color Tokens and Derivations
 
 Overview
 - Base palette (user-configurable in Theme.json):
-  - backgroundPrimary/Secondary/Tertiary
+  - background
   - surface/surfaceVariant
   - textPrimary/Secondary/Disabled
   - accentPrimary/Secondary/Tertiary, onAccent
@@ -54,4 +54,3 @@ Examples
 - Menu item hover: Theme.surfaceHover
 - Selected day (calendar): Theme.accentDarkStrong background + Theme.accentPrimary border
 - Media separators: bracket = Theme.accentDarkStrong; separator = Theme.accentHover
-

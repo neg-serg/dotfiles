@@ -76,7 +76,6 @@ Singleton {
             // Accent Colors
             property string accentPrimary:   "#006FCC"
             property string accentSecondary: "#0077DB"
-            property string accentTertiary:  "#0064B8"
             // Error/Warning
             property string error:   "#FF6B81"
             property string warning: "#FFBB66"
@@ -251,7 +250,6 @@ Singleton {
     // Accent Colors
     property color accentPrimary: themeData.accentPrimary
     property color accentSecondary: themeData.accentSecondary
-    property color accentTertiary: themeData.accentTertiary
     // Error/Warning
     property color error: themeData.error
     property color warning: themeData.warning
