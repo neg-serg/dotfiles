@@ -100,7 +100,9 @@
     "padding": 8,
     "borderWidth": 1,
     "radius": 2,
-    "fontPx": 14
+    "fontPx": 14,
+    "opacity": 0.98,
+    "smallScaleRatio": 0.71
   },
   "sidePanel": {
     "cornerRadius": 9,
@@ -121,6 +123,12 @@
   },
   "ui": {
     "iconSizeLarge": 28,
+    "shadow": {
+      "opacity": 0.6,
+      "blur": 0.8,
+      "offsetX": 0,
+      "offsetY": 1
+    },
     "margin": {
       "large": 32,
       "medium": 16
@@ -167,6 +175,7 @@
     "linkPollMs": 4000
   },
   "media": {
+    "iconScaleEmphasis": 1.15,
     "hover": {
       "openDelayMs": 320,
       "stillThresholdMs": 180
@@ -175,6 +184,12 @@
   "spectrum": {
     "peakDecayIntervalMs": 50,
     "barAnimMs": 100
+  },
+  "applauncher": {
+    "clipboardPollMs": 1000,
+    "size": { "width": 460, "height": 640 },
+    "cornerRadius": 28,
+    "margins": { "bottom": 16 },
+    "anim": { "enterMs": 300, "scaleMs": 200, "offscreenShift": 12 }
   }
 }
-
