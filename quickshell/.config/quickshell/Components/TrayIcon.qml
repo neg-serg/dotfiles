@@ -13,10 +13,16 @@ Item {
     property string source: ""
     // Icon logical size in px
     property int size: Theme.panelIconSizeSmall
+    // Rotation in degrees (applies to image and fallback)
+    property real rotationAngle: 0
     // Apply grayscale effect (used when overlay is visible)
     property bool grayscale: false
     // Optional screen reference for scaling if needed by parent
     property var screen: null
+    // Unified color prop (applies to fallback icon)
+    property alias color: fallbackColor
+    // Use Rounded Material family for fallback icon
+    property bool rounded: false
     // Custom fallback icon (Material Symbols name). If empty, uses Settings.settings.trayFallbackIcon
     property string fallbackIcon: (Settings.settings && Settings.settings.trayFallbackIcon) ? Settings.settings.trayFallbackIcon : "broken_image"
     // Optional fallback styling overrides
@@ -25,6 +31,8 @@ Item {
 
     width: size
     height: size
+    rotation: rotationAngle
+    transformOrigin: Item.Center
 
     // Expose readiness like Image.Ready predicate
     readonly property bool ready: img.status === Image.Ready
@@ -91,5 +99,10 @@ Item {
         icon: root.fallbackIcon && root.fallbackIcon.length > 0 ? root.fallbackIcon : "broken_image"
         color: root.fallbackColor
         visible: (img.status === Image.Error) || (!img.source || img.source === "")
+        rotationAngle: root.rotationAngle
+        rounded: root.rounded
     }
+
+    // Simple rotation animation to match MaterialIcon behavior
+    Behavior on rotation { NumberAnimation { duration: Theme.uiAnimRotateMs; easing.type: Theme.uiEasingRotate } }
 }
