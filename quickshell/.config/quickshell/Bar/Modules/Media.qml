@@ -78,7 +78,7 @@ Item {
                     MaterialIcon {
                         anchors.centerIn: parent
                         icon: MusicManager.isPlaying ? "pause" : "play_arrow"
-                        size: 14 * Theme.scale(Screen)
+                        size: Math.round(Theme.panelGlyphSize * Theme.scale(Screen))
                         color: Theme.onAccent
                     }
                 }
@@ -239,21 +239,12 @@ Item {
                         return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     }
                     // Unified dark accent usage
-                    property string bracketColor: (
-                        "rgba(" 
-                        + Math.round(Theme.accentDarkStrong.r * 255) + ","
-                        + Math.round(Theme.accentDarkStrong.g * 255) + ","
-                        + Math.round(Theme.accentDarkStrong.b * 255) + ",1)"
-                    )
+                    property string bracketColor: Format.colorCss(Theme.accentDarkStrong, 1)
                     // Time color: dim and desaturate when paused
                     property string timeColor: (function(){
                         var c = MusicManager.isPlaying ? Theme.textPrimary : Theme.textSecondary;
                         var a = MusicManager.isPlaying ? 1.0 : 0.8;
-                        return (
-                            "rgba(" + Math.round(c.r * 255) + ","
-                                     + Math.round(c.g * 255) + ","
-                                     + Math.round(c.b * 255) + "," + a + ")"
-                        );
+                        return Format.colorCss(c, a);
                     })()
                     property string titlePart: (MusicManager.trackArtist || MusicManager.trackTitle)
                         ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")

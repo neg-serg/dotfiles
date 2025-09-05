@@ -529,7 +529,7 @@ Rectangle {
                                     textFormat: Text.RichText
                                     text: (function(){
                                         const s = MusicManager.trackQualitySummary || "";
-                                        const c = `rgba(${Math.round(Theme.accentPrimary.r*255)},${Math.round(Theme.accentPrimary.g*255)},${Math.round(Theme.accentPrimary.b*255)},1)`;
+                                        const c = Format.colorCss(Theme.accentPrimary, 1);
                                         return s.replace(/\u00B7/g, `<span style='color:${c}; font-weight:bold'>&#183;</span>`);
                                     })()
                                     color: playerUI.musicTextColor
