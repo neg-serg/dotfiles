@@ -1,6 +1,7 @@
 import QtQuick
 import QtQml
 import Quickshell.Io
+import qs.Components
 import qs.Settings
 
 // Non-visual helper that computes extended track metadata and introspects files

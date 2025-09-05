@@ -137,6 +137,7 @@ PanelWithOverlay {
                 }
 
                 delegate: Rectangle {
+                    id: dayCell
                     property bool isSelected: model.year === calendar.selectedYear && model.month === calendar.selectedMonth && model.day === calendar.selectedDay
                     property var holidayInfo: calendar.holidays.filter(function(h) {
                         var d = new Date(h.date);
@@ -170,7 +171,7 @@ PanelWithOverlay {
                     }
 
                     // Contrast guard for highlighted cells
-                    ContrastGuard { id: dayCg; bg: parent.color; label: 'CalendarDay' }
+                    ContrastGuard { id: dayCg; bg: dayCell.color; label: 'CalendarDay' }
 
                     Text {
                         anchors.centerIn: parent
