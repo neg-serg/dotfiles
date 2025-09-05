@@ -110,7 +110,7 @@ Singleton {
             property string trayFallbackIcon: "broken_image"
 
             // Global contrast threshold (0..1) for Color.contrastOn
-            // Lower = чаще выбирается светлый текст; выше = чаще тёмный
+            // Lower = prefers light text more often; higher = prefers dark
             property real contrastThreshold: 0.5
 
             // Music player selection helpers
