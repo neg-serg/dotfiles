@@ -239,6 +239,8 @@ Item {
             visible: iconGlyph.length > 0
             mode: "text"
             labelRef: label
+            // Slightly larger than label for better prominence
+            scale: 1.15
             // Token-style API
             baselineOffsetToken: iconBaselineOffset
             alignMode: "optical"
