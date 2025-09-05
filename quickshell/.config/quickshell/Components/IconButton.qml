@@ -11,7 +11,7 @@ MouseArea {
     // Rotation for the icon glyph (degrees).
     property real iconRotation: 0
     // Unified alias for API parity
-    property alias rotationAngle: iconRotation
+    property alias rotationAngle: root.iconRotation
     // Corner radius (allows per-usage override)
     property int cornerRadius: Theme.cornerRadiusSmall
     // Customizable colors
