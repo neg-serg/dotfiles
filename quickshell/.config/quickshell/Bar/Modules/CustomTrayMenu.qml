@@ -260,8 +260,8 @@ import "../../Helpers/Color.js" as Color
 
         PopupWindow {
             id: subMenu;
-            implicitWidth: 180;
-            implicitHeight: Utils.clamp(listView.contentHeight + 12, 40, listView.contentHeight + 12);
+            implicitWidth: Theme.panelSubmenuWidth;
+            implicitHeight: Utils.clamp(listView.contentHeight + Theme.panelMenuHeightExtra, 40, listView.contentHeight + Theme.panelMenuHeightExtra);
             visible: false;
             color: "transparent";
 

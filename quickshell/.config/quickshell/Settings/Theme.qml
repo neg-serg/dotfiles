@@ -252,6 +252,34 @@ Singleton {
         var v = _getNested(path);
         return (v !== undefined && v !== null) ? v : fallback;
     }
+
+        // Map string or numeric to a QML Easing.Type
+        function easingType(nameOrCode, fallbackName) {
+            try {
+                var map = {
+                    Linear: Easing.Linear,
+                    InQuad: Easing.InQuad,
+                    OutQuad: Easing.OutQuad,
+                    InOutQuad: Easing.InOutQuad,
+                    InCubic: Easing.InCubic,
+                    OutCubic: Easing.OutCubic,
+                    InOutCubic: Easing.InOutCubic,
+                    InSine: Easing.InSine,
+                    OutSine: Easing.OutSine,
+                    InOutSine: Easing.InOutSine,
+                    InBack: Easing.InBack,
+                    OutBack: Easing.OutBack,
+                    InOutBack: Easing.InOutBack
+                };
+                if (typeof nameOrCode === 'number') return nameOrCode;
+                var s = String(nameOrCode || '');
+                if (map[s] !== undefined) return map[s];
+                var fb = String(fallbackName || 'OutCubic');
+                return map[fb] !== undefined ? map[fb] : Easing.OutCubic;
+            } catch (e) {
+                return Easing.OutCubic;
+            }
+        }
     
     // Backgrounds
     property color background: val('colors.background', themeData.background)
@@ -382,6 +410,8 @@ Singleton {
     property int  sidePanelPopupSlideMs: val('sidePanel.popup.slideMs', themeData.sidePanelPopupSlideMs)
     property int  sidePanelPopupAutoHideMs: val('sidePanel.popup.autoHideMs', themeData.sidePanelPopupAutoHideMs)
     property int  sidePanelPopupOuterMargin: val('sidePanel.popup.outerMargin', themeData.sidePanelPopupOuterMargin)
+    // Side-panel popup spacing (between inner items)
+    property int  sidePanelPopupSpacing: val('sidePanel.popup.spacing', 0)
     // Side-panel spacing medium
     property int  sidePanelSpacingMedium: val('sidePanel.spacingMedium', themeData.sidePanelSpacingMedium)
     // Hover behavior
@@ -438,6 +468,12 @@ Singleton {
     property int uiBorderWidth: Utils.clamp(val('ui.border.width', 1), 0, 8)
     property int uiSeparatorThickness: Utils.clamp(val('ui.separator.thickness', 1), 1, 8)
     property int uiSeparatorRadius: Utils.clamp(val('ui.separator.radius', 0), 0, 8)
+    // Diagonal separator implicit size
+    property int uiDiagonalSeparatorImplicitWidth: Utils.clamp(val('ui.separator.diagonal.implicitWidth', 10), 1, 512)
+    property int uiDiagonalSeparatorImplicitHeight: Utils.clamp(val('ui.separator.diagonal.implicitHeight', 28), 1, 1024)
+    // UI common opacities
+    property real uiRippleOpacity: Utils.clamp(val('ui.ripple.opacity', 0.18), 0, 1)
+    property real uiIconEmphasisOpacity: Utils.clamp(val('ui.icon.emphasisOpacity', 0.9), 0, 1)
     // VPN indicator opacities
     property real vpnConnectedOpacity: Utils.clamp(val('vpn.connectedOpacity', 0.8), 0, 1)
     property real vpnDisconnectedOpacity: Utils.clamp(val('vpn.disconnectedOpacity', 0.45), 0, 1)
@@ -449,6 +485,13 @@ Singleton {
     property int uiSpinnerDurationMs: Utils.clamp(val('ui.spinner.durationMs', 1000), 100, 600000)
     // Media emphasis scaling for icons
     property real mediaIconScaleEmphasis: val('media.iconScaleEmphasis', 1.15)
+    // UI easing (configurable via string names)
+    property int uiEasingQuick: easingType(val('ui.anim.easing.quick', 'OutQuad'), 'OutQuad')
+    property int uiEasingRotate: easingType(val('ui.anim.easing.rotate', 'OutCubic'), 'OutCubic')
+    property int uiEasingRipple: easingType(val('ui.anim.easing.ripple', 'InOutCubic'), 'InOutCubic')
+    property int uiEasingStdOut: easingType(val('ui.anim.easing.stdOut', 'OutCubic'), 'OutCubic')
+    property int uiEasingStdIn: easingType(val('ui.anim.easing.stdIn', 'InCubic'), 'InCubic')
+    property int uiEasingInOut: easingType(val('ui.anim.easing.inOut', 'InOutQuad'), 'InOutQuad')
     // Calendar popup sizing
     property int calendarWidth: Utils.clamp(val('calendar.size.width', themeData.calendarWidth), 200, 800)
     property int calendarHeight: Utils.clamp(val('calendar.size.height', themeData.calendarHeight), 200, 800)
@@ -456,6 +499,10 @@ Singleton {
     property int calendarBorderWidth: val('calendar.borderWidth', themeData.calendarBorderWidth)
     property int calendarCellSize: Utils.clamp(val('calendar.cellSize', themeData.calendarCellSize), 16, 64)
     property int calendarHolidayDotSize: val('calendar.holidayDotSize', themeData.calendarHolidayDotSize)
+    // Calendar explicit spacings/margins
+    property int calendarDowSpacing: val('calendar.dow.spacing', 0)
+    property int calendarDowSideMargin: val('calendar.dow.sideMargin', 0)
+    property int calendarGridSpacing: val('calendar.grid.spacing', 0)
     // Calendar font sizes (logical px before per-screen scaling)
     property int calendarTitleFontPx: Utils.clamp(val('calendar.font.titlePx', 18), 8, 64)
     property int calendarDowFontPx: Utils.clamp(val('calendar.font.dowPx', 15), 6, 48)

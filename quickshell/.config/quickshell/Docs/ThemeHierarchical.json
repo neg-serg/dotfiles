@@ -110,6 +110,7 @@
     "innerRadius": 0,
     "buttonHoverRadiusFactor": 0.5,
     "selector": { "minWidth": 120 },
+    "popup": { "spacing": 0 },
     "spacing": 12,
     "spacingTight": 6,
     "spacingSmall": 4,
@@ -129,14 +130,16 @@
   "ui": {
     "iconSizeLarge": 28,
     "border": { "width": 1 },
-    "separator": { "thickness": 1, "radius": 0, "diagonal": { "stripeOpacity": 0.9 } },
+    "separator": { "thickness": 1, "radius": 0, "diagonal": { "stripeOpacity": 0.9, "implicitWidth": 10, "implicitHeight": 28 } },
+    "ripple": { "opacity": 0.18 },
+    "icon": { "emphasisOpacity": 0.9 },
     "shadow": {
       "opacity": 0.6,
       "blur": 0.8,
       "offsetX": 0,
       "offsetY": 1
     },
-    "anim": { "quickMs": 120, "rotateMs": 160, "rippleMs": 320 },
+    "anim": { "quickMs": 120, "rotateMs": 160, "rippleMs": 320, "easing": { "quick": "OutQuad", "rotate": "OutCubic", "ripple": "InOutCubic", "stdOut": "OutCubic", "stdIn": "InCubic", "inOut": "InOutQuad" } },
     "spinner": { "durationMs": 1000 },
     "margin": {
       "large": 32,
@@ -163,7 +166,8 @@
       "height": 320
     },
     "font": { "titlePx": 18, "dowPx": 15, "dayPx": 24 },
-    "dow": { "italic": true, "underline": true },
+    "dow": { "italic": true, "underline": true, "spacing": 0, "sideMargin": 0 },
+    "grid": { "spacing": 0 },
     "cell": { "radiusFactor": 0.33 },
     "holidayDot": { "radiusFactor": 0.5 },
     "opacity": { "title": 0.7, "dow": 0.9, "otherMonthDay": 0.3 },

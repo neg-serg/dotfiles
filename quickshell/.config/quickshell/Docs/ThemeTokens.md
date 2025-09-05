@@ -24,8 +24,10 @@ Additional UI tokens (nested)
 - UI shadow: ui.shadow.opacity, ui.shadow.blur, ui.shadow.offsetX, ui.shadow.offsetY
 - UI border/separators: ui.border.width, ui.separator.thickness
   - Separator radius: ui.separator.radius
-  - UI animation: ui.anim.quickMs, ui.anim.rotateMs, ui.anim.rippleMs
+- UI animation: ui.anim.quickMs, ui.anim.rotateMs, ui.anim.rippleMs
+  - UI easing: ui.anim.easing.quick|rotate|ripple|stdOut|stdIn|inOut (string names like "OutCubic")
   - UI spinner: ui.spinner.durationMs
+  - UI opacities: ui.ripple.opacity, ui.icon.emphasisOpacity
 - Media: media.iconScaleEmphasis
 - Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
   - Applauncher list: applauncher.list.itemHeight, applauncher.list.itemHeightLarge
@@ -36,14 +38,17 @@ Additional UI tokens (nested)
   - Side panel: sidePanel.innerRadius (inner blocks)
   - Side panel button hover radius factor: sidePanel.buttonHoverRadiusFactor
   - Side panel selector: sidePanel.selector.minWidth
+  - Side panel popup spacing: sidePanel.popup.spacing
   - Weather left column width ratio: sidePanel.weather.leftColumnRatio
   - Weather header scale: weather.headerScale
 - Calendar font sizes: calendar.font.titlePx, calendar.font.dowPx, calendar.font.dayPx
   - Calendar DOW style: calendar.dow.italic, calendar.dow.underline
   - Calendar shape: calendar.cell.radiusFactor, calendar.holidayDot.radiusFactor
+  - Calendar layout: calendar.dow.spacing, calendar.dow.sideMargin, calendar.grid.spacing
 - Spectrum bars: spectrum.barGap, spectrum.minBarWidth
   - Spectrum peak opacity: spectrum.peakOpacity
   - Diagonal separator stripe: ui.separator.diagonal.stripeOpacity
+  - Diagonal separator implicit size: ui.separator.diagonal.implicitWidth, ui.separator.diagonal.implicitHeight
   - VPN opacities: vpn.connectedOpacity, vpn.disconnectedOpacity
   - Calendar opacities: calendar.opacity.title, calendar.opacity.dow, calendar.opacity.otherMonthDay
 

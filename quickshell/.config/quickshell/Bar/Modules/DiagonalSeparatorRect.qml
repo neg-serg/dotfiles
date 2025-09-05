@@ -21,8 +21,8 @@ Item {
     // Which side to draw the stripe on: true = right edge, false = left edge
     property bool  stripeOnRight: true
 
-    implicitWidth: 10
-    implicitHeight: 28
+    implicitWidth: Theme.uiDiagonalSeparatorImplicitWidth
+    implicitHeight: Theme.uiDiagonalSeparatorImplicitHeight
 
     Rectangle {
         id: line
