@@ -157,7 +157,8 @@ Row {
                         width: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
                         height: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
                         radius: Theme.cornerRadiusSmall
-                        color: mouseArea.containsMouse ? Theme.surfaceHover : "transparent"
+                        // Use a dark overlay for hover to avoid white-ish look
+                        color: mouseArea.containsMouse ? Theme.overlayWeak : "transparent"
                         clip: true
                         TrayIcon {
                             id: icon
