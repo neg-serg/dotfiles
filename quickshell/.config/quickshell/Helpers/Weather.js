@@ -2,7 +2,7 @@
 var _geoCache = {}; // key: cityLower -> { value: {lat, lon}, expiry: ts, errorUntil?: ts }
 var _weatherCache = {}; // key: cityLower -> { value: weatherObject, expiry: ts, errorUntil?: ts }
 // Shared HTTP helper
-try { Qt.include("Http.js"); } catch (e) { }
+try { Qt.include("./Http.js"); } catch (e) { }
 
 // Defaults (can be overridden via options argument)
 var DEFAULTS = {

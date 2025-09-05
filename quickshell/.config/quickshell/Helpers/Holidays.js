@@ -1,11 +1,11 @@
-try { Qt.include("Http.js"); } catch (e) { }
+try { Qt.include("./Http.js"); } catch (e) { }
 var _countryCode = null;
 var _regionCode = null;
 var _regionName = null;
 var _locationExpiry = 0;
 var _holidaysCache = {}; // key: "year-country" -> { value, expiry, errorUntil }
 // Shared HTTP helper
-try { Qt.include("Http.js") /* deprecated include; kept for compatibility if needed */; } catch (e) { }
+try { Qt.include("./Http.js") /* deprecated include; kept for compatibility if needed */; } catch (e) { }
 
 var DEFAULTS = {
     locationTtlMs: 24 * 60 * 60 * 1000,  // 24h
