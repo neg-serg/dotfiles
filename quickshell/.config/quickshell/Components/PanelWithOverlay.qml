@@ -37,8 +37,5 @@ PanelWindow {
         onClicked: outerPanel.dismiss()
     }
 
-    Behavior on color {
-        enabled: showOverlay
-        ColorAnimation { duration: Theme.panelAnimFastMs; easing.type: Theme.uiEasingRipple }
-    }
+    Behavior on color { enabled: showOverlay; ColorRippleBehavior {} }
 }

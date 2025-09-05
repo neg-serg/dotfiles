@@ -243,19 +243,9 @@ PanelWithOverlay {
             property int targetY: Utils.clamp(parent.height - height - bottomMargin, 0, parent.height)
             property int offscreenYBottom: parent.height + Theme.applauncherOffscreenShift
             y: appLauncherPanelRect.shouldBeVisible ? targetY : offscreenYBottom
-            Behavior on y {
-                NumberAnimation {
-                    duration: Theme.applauncherEnterAnimMs
-                    easing.type: Theme.uiEasingQuick
-                }
-            }
+            Behavior on y { NumberFadeBehavior { duration: Theme.applauncherEnterAnimMs; easing.type: Theme.uiEasingQuick } }
             scale: appLauncherPanelRect.shouldBeVisible ? 1 : 0
-            Behavior on scale {
-                NumberAnimation {
-                    duration: Theme.applauncherScaleAnimMs
-                    easing.type: Theme.uiEasingInOut
-                }
-            }
+            Behavior on scale { NumberFadeBehavior { duration: Theme.applauncherScaleAnimMs; easing.type: Theme.uiEasingInOut } }
             onScaleChanged: {
                 if (scale === 0 && !appLauncherPanelRect.shouldBeVisible) {
                     appLauncherPanel.visible = false;
@@ -576,8 +566,8 @@ PanelWithOverlay {
                             }
                         }
 
-                        Behavior on border.color { ColorAnimation { duration: Theme.uiAnimQuickMs; easing.type: Theme.uiEasingQuick } }
-                        Behavior on border.width { NumberAnimation { duration: Theme.uiAnimQuickMs; easing.type: Theme.uiEasingQuick } }
+                        Behavior on border.color { ColorFadeBehavior {} }
+                        Behavior on border.width { NumberFadeBehavior {} }
                     }
 
             
@@ -617,9 +607,9 @@ PanelWithOverlay {
                                         : (hovered || isSelected ? Theme.accentPrimary : "transparent")
                                     border.width: appLauncherPanel.isPinned(modelData) ? 0 : (hovered || isSelected ? 2 : 0)
 
-                                    Behavior on color { ColorAnimation { duration: Theme.uiAnimQuickMs; easing.type: Theme.uiEasingQuick } }
-                                    Behavior on border.color { ColorAnimation { duration: Theme.uiAnimQuickMs; easing.type: Theme.uiEasingQuick } }
-                                    Behavior on border.width { NumberAnimation { duration: Theme.uiAnimQuickMs; easing.type: Theme.uiEasingQuick } }
+                                    Behavior on color { ColorFadeBehavior {} }
+                                    Behavior on border.color { ColorFadeBehavior {} }
+                                    Behavior on border.width { NumberFadeBehavior {} }
                                 }
 
                                 RowLayout {
@@ -759,7 +749,7 @@ PanelWithOverlay {
                                     onReleased: ripple.opacity = 0.0
                                 }
 
-                                    NumberAnimation { id: rippleNumberAnimation; target: ripple; property: "opacity"; to: 0.0; duration: Theme.uiAnimRippleMs; easing.type: Theme.uiEasingRipple }
+                                    RippleFadeBehavior { id: rippleNumberAnimation; target: ripple; property: "opacity"; to: 0.0 }
 
                                 Rectangle {
                                     anchors.left: parent.left

@@ -104,5 +104,5 @@ Item {
     }
 
     // Simple rotation animation to match MaterialIcon behavior
-    Behavior on rotation { NumberAnimation { duration: Theme.uiAnimRotateMs; easing.type: Theme.uiEasingRotate } }
+    Behavior on rotation { RotateBehavior {} }
 }

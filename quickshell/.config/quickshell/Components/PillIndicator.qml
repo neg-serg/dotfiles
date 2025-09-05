@@ -60,14 +60,8 @@ Item {
             visible: showPill
         }
 
-        Behavior on width {
-            enabled: showAnim.running || hideAnim.running
-            NumberAnimation { duration: Theme.panelAnimStdMs; easing.type: Theme.uiEasingStdOut }
-        }
-        Behavior on opacity {
-            enabled: showAnim.running || hideAnim.running
-            NumberAnimation { duration: Theme.panelAnimStdMs; easing.type: Theme.uiEasingStdOut }
-        }
+        Behavior on width { enabled: showAnim.running || hideAnim.running; NumberStdOutBehavior {} }
+        Behavior on opacity { enabled: showAnim.running || hideAnim.running; NumberStdOutBehavior {} }
     }
 
     Rectangle {
@@ -79,7 +73,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
 
-        Behavior on color { ColorAnimation { duration: Theme.panelAnimFastMs; easing.type: Theme.uiEasingInOut } }
+        Behavior on color { ColorFastInOutBehavior {} }
 
         MaterialIcon {
             anchors.centerIn: parent
@@ -93,8 +87,8 @@ Item {
     ParallelAnimation {
         id: showAnim
         running: false
-        NumberAnimation { target: pill; property: "width";   from: 1;            to: maxPillWidth; duration: Theme.panelAnimStdMs; easing.type: Theme.uiEasingStdOut }
-        NumberAnimation { target: pill; property: "opacity"; from: 0;            to: 1;            duration: Theme.panelAnimStdMs; easing.type: Theme.uiEasingStdOut }
+        NumberStdOutBehavior { target: pill; property: "width";   from: 1;            to: maxPillWidth }
+        NumberStdOutBehavior { target: pill; property: "opacity"; from: 0;            to: 1 }
         onStarted: {
             showPill = true;
         }
@@ -117,8 +111,8 @@ Item {
     ParallelAnimation {
         id: hideAnim
         running: false
-        NumberAnimation { target: pill; property: "width";   from: maxPillWidth; to: 1; duration: Theme.panelAnimStdMs; easing.type: Theme.uiEasingStdIn }
-        NumberAnimation { target: pill; property: "opacity"; from: 1;            to: 0; duration: Theme.panelAnimStdMs; easing.type: Theme.uiEasingStdIn }
+        NumberStdInBehavior { target: pill; property: "width";   from: maxPillWidth; to: 1 }
+        NumberStdInBehavior { target: pill; property: "opacity"; from: 1;            to: 0 }
         onStopped: {
             showPill = false;
             shouldAnimateHide = false;

@@ -51,7 +51,5 @@ Item {
         z: 1
     }
 
-    Behavior on hoverOpacity {
-        NumberAnimation { duration: Theme.panelHoverFadeMs; easing.type: Theme.uiEasingQuick }
-    }
+    Behavior on hoverOpacity { NumberFadeBehavior { duration: Theme.panelHoverFadeMs } }
 }
