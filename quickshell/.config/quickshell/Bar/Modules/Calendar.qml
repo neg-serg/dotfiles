@@ -13,7 +13,7 @@ PanelWithOverlay {
 
     Rectangle {
         color: Theme.backgroundPrimary
-        radius: Theme.cornerRadiusLarge
+        radius: Math.round(Theme.cornerRadiusLarge / 2)
         border.color: Theme.backgroundTertiary
         border.width: Theme.calendarBorderWidth
         width: Theme.calendarWidth
@@ -85,10 +85,11 @@ PanelWithOverlay {
                     text: shortName
                     color: Theme.textSecondary
                     opacity: 0.9
-                    font.pixelSize: 14 * Theme.scale(screen)
+                    font.pixelSize: 15 * Theme.scale(screen)
                     font.family: Theme.fontFamily
                     font.weight: Font.Normal
                     font.underline: true
+                    font.italic: true
                     horizontalAlignment: Text.AlignHCenter
                     width: Theme.calendarCellSize
                 }
@@ -99,6 +100,10 @@ PanelWithOverlay {
                 id: calendar
 
                 property var holidays: []
+                // Selected date tracking
+                property int selectedYear: -1
+                property int selectedMonth: -1
+                property int selectedDay: -1
 
                 // Fetch holidays when calendar is opened or month/year changes
                 function updateHolidays() {
@@ -131,6 +136,7 @@ PanelWithOverlay {
                 }
 
                 delegate: Rectangle {
+                    property bool isSelected: model.year === calendar.selectedYear && model.month === calendar.selectedMonth && model.day === calendar.selectedDay
                     property var holidayInfo: calendar.holidays.filter(function(h) {
                         var d = new Date(h.date);
                         return d.getDate() === model.day && d.getMonth() === model.month && d.getFullYear() === model.year;
@@ -139,7 +145,7 @@ PanelWithOverlay {
 
                     width: Theme.calendarCellSize
                     height: Theme.calendarCellSize
-                radius: Theme.cornerRadius
+                radius: Math.round(Theme.cornerRadius / 2)
                     // Background coloring: today uses full accent; hover uses significantly darkened accent (~80% closer to black)
                     property color _hoverColor: Qt.rgba(
                         Theme.accentPrimary.r * 0.2,
@@ -147,17 +153,17 @@ PanelWithOverlay {
                         Theme.accentPrimary.b * 0.2,
                         Theme.accentPrimary.a
                     )
-                    color: model.today ? Theme.accentPrimary : (mouseArea2.containsMouse ? _hoverColor : "transparent")
-                    // Accent border on hover
-                    border.color: mouseArea2.containsMouse ? Theme.accentPrimary : "transparent"
-                    border.width: mouseArea2.containsMouse ? 1 : 0
+                    color: model.today ? Theme.accentPrimary : ((isSelected || mouseArea2.containsMouse) ? _hoverColor : "transparent")
+                    // Accent border on hover/selected
+                    border.color: (isSelected || mouseArea2.containsMouse) ? Theme.accentPrimary : "transparent"
+                    border.width: (isSelected || mouseArea2.containsMouse) ? 1 : 0
 
                     // Holiday dot indicator
                     Rectangle {
                         visible: isHoliday
                         width: Theme.calendarHolidayDotSize
                         height: Theme.calendarHolidayDotSize
-                        radius: Theme.cornerRadiusSmall
+                        radius: Math.round(Theme.cornerRadiusSmall / 2)
                         color: Theme.accentTertiary
                         anchors.top: parent.top
                         anchors.right: parent.right
@@ -174,6 +180,7 @@ PanelWithOverlay {
                         font.pixelSize: 24 * Theme.scale(screen)
                         font.family: Theme.fontFamily
                         font.weight: Font.Bold
+                        font.underline: model.today
                     }
 
                     MouseArea {
@@ -191,6 +198,11 @@ PanelWithOverlay {
                             }
                         }
                         onExited: holidayTooltip.tooltipVisible = false
+                        onClicked: {
+                            calendar.selectedYear = model.year;
+                            calendar.selectedMonth = model.month;
+                            calendar.selectedDay = model.day;
+                        }
                     }
 
                     StyledTooltip {
