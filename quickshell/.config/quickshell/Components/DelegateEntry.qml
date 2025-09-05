@@ -7,7 +7,7 @@ import "../Helpers/Color.js" as Color
 
 Rectangle {
     id: entry
-    required property var rowData
+    // Use ListView delegate context: modelData, index
     // Reference to parent ListView for sibling submenu cleanup
     required property ListView listViewRef
     // Component to create submenu host
@@ -17,12 +17,28 @@ Rectangle {
 
     // Optional screen (for Theme.scale). If not provided, defaults to 1.0 scale.
     property var screen: (menuWindow && menuWindow.screen) ? menuWindow.screen : null
+    // Debug: computed font px
+    readonly property int _computedPx: Math.max(1, Math.round(Theme.fontSizeSmall * Theme.scale(entry.screen) * Theme.panelMenuItemFontScale))
+    function _entryText() {
+        try {
+            var d = modelData; if (!d) return "";
+            var keys = ['text','label','title','name','id'];
+            for (var i=0;i<keys.length;i++) {
+                var k = keys[i]; var v = d[k];
+                if (v !== undefined && v !== null) {
+                    var s = String(v); if (s.length) return s;
+                }
+            }
+            // Fallback best-effort
+            return (d && d.toString) ? String(d) : '';
+        } catch (e) { return "" }
+    }
     // Theming
     property color hoverBaseColor: Theme.surfaceHover
     property int   itemRadius: Theme.panelMenuItemRadius
 
     width: listViewRef.width
-    height: (rowData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight
+    height: (modelData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight
     color: "transparent"
     radius: itemRadius
 
@@ -34,7 +50,7 @@ Rectangle {
         width: parent.width - (Theme.panelMenuDividerMargin * 2)
         height: Theme.uiSeparatorThickness
         color: Theme.borderSubtle
-        visible: rowData?.isSeparator ?? false
+        visible: modelData?.isSeparator ?? false
     }
 
     // Hover background for regular items
@@ -43,7 +59,7 @@ Rectangle {
         anchors.fill: parent
         color: mouseArea.containsMouse ? hoverBaseColor : "transparent"
         radius: itemRadius
-        visible: !(rowData?.isSeparator ?? false)
+        visible: !(modelData?.isSeparator ?? false)
         property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold) : Theme.textPrimary
 
         RowLayout {
@@ -54,35 +70,39 @@ Rectangle {
 
             Text {
                 Layout.fillWidth: true
-                color: (rowData?.enabled ?? true) ? bg.hoverTextColor : Theme.textDisabled
-                text: rowData?.text ?? ""
+                // Use primary text normally; switch to contrast-on-hover when hovered
+                color: mouseArea.containsMouse
+                       ? bg.hoverTextColor
+                       : ((modelData?.enabled ?? true) ? Theme.textPrimary : Theme.textDisabled)
+                text: entry._entryText()
                 font.family: Theme.fontFamily
-                font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(entry.screen) * Theme.panelMenuItemFontScale)
+                font.pixelSize: entry._computedPx
                 font.weight: mouseArea.containsMouse ? Font.DemiBold : Font.Medium
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
+                z: 10
             }
 
             Image {
                 id: menuIcon
                 Layout.preferredWidth: Theme.panelMenuIconSize
                 Layout.preferredHeight: Theme.panelMenuIconSize
-                source: rowData?.icon ?? ""
-                visible: (rowData?.icon ?? "") !== ""
+                source: modelData?.icon ?? ""
+                visible: (modelData?.icon ?? "") !== ""
                 fillMode: Image.PreserveAspectFit
             }
             // Fallback icon when provided source fails to load
             MaterialIcon {
-                visible: ((rowData?.icon ?? "") !== "") && (menuIcon.status === Image.Error)
+                visible: ((modelData?.icon ?? "") !== "") && (menuIcon.status === Image.Error)
                 icon: Settings.settings.trayFallbackIcon || "broken_image"
                 size: Math.round(Theme.panelMenuIconSize * Theme.scale(screen))
                 color: Theme.textSecondary
             }
             MaterialIcon {
                 // Chevron/right indicator for submenu
-                icon: rowData?.hasChildren ? "chevron_right" : ""
+                icon: modelData?.hasChildren ? "chevron_right" : ""
                 size: Math.round(Theme.panelMenuChevronSize * Theme.scale(entry.screen))
-                visible: rowData?.hasChildren ?? false
+                visible: modelData?.hasChildren ?? false
                 color: Theme.textPrimary
             }
         }
@@ -91,11 +111,11 @@ Rectangle {
             id: mouseArea
             anchors.fill: parent
             hoverEnabled: true
-            enabled: (rowData?.enabled ?? true) && !(rowData?.isSeparator ?? false) && (menuWindow && menuWindow.visible)
+            enabled: (modelData?.enabled ?? true) && !(modelData?.isSeparator ?? false) && (menuWindow && menuWindow.visible)
             cursorShape: Qt.PointingHandCursor
 
             function openSubmenu() {
-                if (!(rowData?.hasChildren)) return;
+                if (!(modelData?.hasChildren)) return;
                 // Close sibling submenus
                 for (let i = 0; i < listViewRef.contentItem.children.length; i++) {
                     const sibling = listViewRef.contentItem.children[i];
@@ -116,7 +136,7 @@ Rectangle {
                 var openLeft = (globalPos.x + entry.width + submenuWidth > Screen.width);
                 var anchorX = openLeft ? -submenuWidth - gap : entry.width + gap;
                 entry.subMenu = submenuHostComponent.createObject(menuWindow, {
-                    menu: rowData,
+                    menu: modelData,
                     anchorItem: entry,
                     anchorX: anchorX,
                     anchorY: 0
@@ -125,13 +145,27 @@ Rectangle {
             }
 
             onClicked: {
-                if (!rowData || rowData.isSeparator) return;
-                if (rowData.hasChildren) return; // submenu opens on hover
-                rowData.triggered();
+                if (!modelData || modelData.isSeparator) return;
+                if (modelData.hasChildren) return; // submenu opens on hover
+                modelData.triggered();
                 // Close the root menu
                 menuWindow.visible = false;
             }
             onEntered: openSubmenu()
         }
+    }
+    Component.onCompleted: {
+        try {
+            var keys = []; var d=modelData; for (var k in d) keys.push(k);
+            console.debug('[Menu][DelegateEntry] init keys=', keys.join(','), 'text=', entry._entryText(), 'px=', entry._computedPx,
+                          'textPrimary=', String(Theme.textPrimary), 'hoverBase=', String(hoverBaseColor))
+        } catch (e) {}
+    }
+    onModelDataChanged: {
+        try {
+            var keys = []; var d=modelData; for (var k in d) keys.push(k);
+            console.debug('[Menu][DelegateEntry] rowDataChanged keys=', keys.join(','), 'text=', entry._entryText(), 'px=', entry._computedPx,
+                          'menuVisible=', (menuWindow && menuWindow.visible))
+        } catch (e) {}
     }
 }
