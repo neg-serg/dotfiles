@@ -356,7 +356,7 @@ import "../../Helpers/Color.js" as Color
                         anchors.centerIn: parent;
                         width: parent.width - (Theme.panelMenuDividerMargin * 2);
                         height: 1;
-                        color: Qt.darker(Theme.surfaceVariant || "#222", 1.4);
+                        color: Theme.borderSubtle;
                         visible: modelData?.isSeparator ?? false;
                     }
 

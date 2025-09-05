@@ -4,7 +4,6 @@ import Quickshell
 import qs.Components
 import qs.Settings
 import "../../Helpers/Utils.js" as Utils
-import "../../Helpers/Color.js" as Color
 
 Item {
     id: sidebarPopup
@@ -29,8 +28,8 @@ Item {
 
     PopupWindow {
         id: toast
-        // Uniform translucent dark background for the whole popup
-        color: Color.withAlpha(Theme.accentDarkStrong, 0.90)
+        // Neutral dark backdrop for the entire popup (non-accent)
+        color: Theme.overlayStrong
         visible: false
 
         // --- Auto-hide with pause on hover/focus and while cursor is on panel
