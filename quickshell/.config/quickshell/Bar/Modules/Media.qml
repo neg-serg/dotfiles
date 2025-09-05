@@ -1,4 +1,5 @@
-import QtQuick 
+import QtQuick
+import "../../Helpers/Utils.js" as Utils
 import QtQuick.Controls
 import QtQuick.Layouts
 // Quickshell.Widgets not needed
@@ -181,8 +182,8 @@ Item {
                     (Settings.settings.visualizerProfiles
                      && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile]
                      && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumOverlapFactor !== undefined)
-                        ? Math.max(0, Math.min(1, Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumOverlapFactor))
-                        : Math.max(0, Math.min(1, Settings.settings.spectrumOverlapFactor))
+                        ? Utils.clamp(Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumOverlapFactor, 0, 1)
+                        : Utils.clamp(Settings.settings.spectrumOverlapFactor, 0, 1)
                     
                     +
                     (Settings.settings.visualizerProfiles
@@ -196,12 +197,12 @@ Item {
                 width: Math.ceil(titleMeasure.width)
                 values: MusicManager.cavaValues
                 amplitudeScale: 1.0
-                barGap: (function(){ var raw = (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumBarGap !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumBarGap : Settings.settings.spectrumBarGap; var v = Number(raw); if (!isFinite(v)) v = 1.0; return Math.max(0, Math.min(10, v)); })() * Theme.scale(Screen)
+                barGap: (function(){ var raw = (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumBarGap !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumBarGap : Settings.settings.spectrumBarGap; return Utils.clamp(Utils.coerceReal(raw, 1.0), 0, 10); })() * Theme.scale(Screen)
                 minBarWidth: 2 * Theme.scale(Screen)
                 mirror: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumMirror !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumMirror : Settings.settings.spectrumMirror
                 drawTop: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].showSpectrumTopHalf !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].showSpectrumTopHalf : Settings.settings.showSpectrumTopHalf
                 drawBottom: true
-                fillOpacity: (function(){ var raw = (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumFillOpacity !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumFillOpacity : Settings.settings.spectrumFillOpacity; var v = Number(raw); if (!isFinite(v)) v = 0.35; return Math.max(0, Math.min(1, v)); })()
+                fillOpacity: (function(){ var raw = (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumFillOpacity !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumFillOpacity : Settings.settings.spectrumFillOpacity; return Utils.clamp(Utils.coerceReal(raw, 0.35), 0, 1); })()
                 peakOpacity: 0.7
                 useGradient: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient : Settings.settings.spectrumUseGradient
                 barColor: Theme.accentPrimary

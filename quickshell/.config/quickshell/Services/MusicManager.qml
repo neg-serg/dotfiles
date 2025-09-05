@@ -97,14 +97,15 @@ Singleton {
 
     // Audio spectrum (bars count from settings)
     // Prefer active profile bars, then settings, then fallback
+    import "../Helpers/Utils.js" as Utils
     Cava {
         id: cava
         count: (
             Settings.settings.visualizerProfiles
             && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile]
             && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].cavaBars
-        ) ? Math.max(8, Math.min(512, Number(Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].cavaBars)))
-          : (function(){ var v = Number(Settings.settings.cavaBars); if (!isFinite(v)) v = 86; return Math.max(8, Math.min(512, Math.round(v))); })()
+        ) ? Utils.clamp(Utils.coerceInt(Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].cavaBars, 86), 8, 512)
+          : Utils.clamp(Utils.coerceInt(Settings.settings.cavaBars, 86), 8, 512)
     }
     property alias cavaValues: cava.values
 }

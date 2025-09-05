@@ -1,6 +1,7 @@
 // Theme.qml
 pragma Singleton
 import QtQuick
+import "../Helpers/Utils.js" as Utils
 import Quickshell
 import Quickshell.Io
 import qs.Settings
@@ -274,7 +275,7 @@ Singleton {
     property int fontSizeCaption: Math.round(12 * fontSizeMultiplier)    // Captions and fine print
 
     // Panel metrics (logical)
-    property int panelHeight: Math.max(16, Math.min(64, themeData.panelHeight))
+    property int panelHeight: Utils.clamp(themeData.panelHeight, 16, 64)
     property int panelSideMargin: themeData.panelSideMargin
     property int panelWidgetSpacing: themeData.panelWidgetSpacing
     property int panelSepOvershoot: themeData.panelSepOvershoot
@@ -348,7 +349,7 @@ Singleton {
     property real panelHoverOpacity: themeData.panelHoverOpacity
     property int  panelHoverFadeMs: themeData.panelHoverFadeMs
     // Panel menu metrics
-    property int  panelMenuWidth: Math.max(100, Math.min(600, themeData.panelMenuWidth))
+    property int  panelMenuWidth: Utils.clamp(themeData.panelMenuWidth, 100, 600)
     property int  panelSubmenuWidth: themeData.panelSubmenuWidth
     property int  panelMenuPadding: Math.max(0, Math.min(32, themeData.panelMenuPadding))
     property int  panelMenuItemSpacing: Math.max(0, Math.min(16, themeData.panelMenuItemSpacing))
