@@ -175,9 +175,9 @@ Singleton {
             property int calendarSideMargin: 2
 
             // Side-panel popup timings/margins (MusicPopup)
-            property int  sidePanelPopupSlideMs: 220
-            property int  sidePanelPopupAutoHideMs: 4000
-            property int  sidePanelPopupOuterMargin: 4
+            property int  sidePanelPopupSlideMs: val('sidePanel.popup.slideMs', 220)
+            property int  sidePanelPopupAutoHideMs: val('sidePanel.popup.autoHideMs', 4000)
+            property int  sidePanelPopupOuterMargin: val('sidePanel.popup.outerMargin', 4)
 
             // Side-panel spacing medium (in addition to small/tight)
             property int  sidePanelSpacingMedium: 8
@@ -187,19 +187,19 @@ Singleton {
             property int  panelHoverFadeMs: 120
 
             // Tray/Panel menu metrics
-            property int  panelMenuWidth: 180
-            property int  panelSubmenuWidth: 180
-            property int  panelMenuPadding: 4
-            property int  panelMenuItemSpacing: 2
-            property int  panelMenuItemHeight: 26
-            property int  panelMenuSeparatorHeight: 6
-            property int  panelMenuDividerMargin: 10
-            property int  panelMenuRadius: 0
-            property int  panelMenuHeightExtra: 12
-            property int  panelMenuAnchorYOffset: 4
-            property int  panelSubmenuGap: 12
-            property int  panelMenuChevronSize: 15
-            property int  panelMenuIconSize: 16
+            property int  panelMenuWidth: val('panel.menu.width', 180)
+            property int  panelSubmenuWidth: val('panel.menu.submenuWidth', 180)
+            property int  panelMenuPadding: val('panel.menu.padding', 4)
+            property int  panelMenuItemSpacing: val('panel.menu.itemSpacing', 2)
+            property int  panelMenuItemHeight: val('panel.menu.itemHeight', 26)
+            property int  panelMenuSeparatorHeight: val('panel.menu.separatorHeight', 6)
+            property int  panelMenuDividerMargin: val('panel.menu.dividerMargin', 10)
+            property int  panelMenuRadius: val('panel.menu.radius', 0)
+            property int  panelMenuHeightExtra: val('panel.menu.heightExtra', 12)
+            property int  panelMenuAnchorYOffset: val('panel.menu.anchorYOffset', 4)
+            property int  panelSubmenuGap: val('panel.menu.submenuGap', 12)
+            property int  panelMenuChevronSize: val('panel.menu.chevronSize', 15)
+            property int  panelMenuIconSize: val('panel.menu.iconSize', 16)
 
             // Side panel defaults (logical)
             property int  sidePanelCornerRadius: 9
@@ -235,31 +235,49 @@ Singleton {
             // Calendar highlight darken factor (0..1)
             property real calendarAccentDarken: 0.8
         }
+ 
+
+    // --- Nested reader helpers (support hierarchical Theme.json with backward-compat) ---
+    function _getNested(path) {
+        try {
+            var obj = themeData; var parts = String(path).split('.');
+            for (var i=0;i<parts.length;i++) {
+                if (!obj) return undefined;
+                var k = parts[i];
+                obj = obj[k];
+            }
+            return obj;
+        } catch (e) { return undefined }
     }
+    function val(path, fallback) {
+        var v = _getNested(path);
+        return (v !== undefined && v !== null) ? v : fallback;
+    }
+   }
     
     // Backgrounds
-    property color background: themeData.background
+    property color background: val('colors.background', themeData.background)
     // Surfaces & Elevation
-    property color surface: themeData.surface
-    property color surfaceVariant: themeData.surfaceVariant
+    property color surface: val('colors.surface', themeData.surface)
+    property color surfaceVariant: val('colors.surfaceVariant', themeData.surfaceVariant)
     // Text Colors
-    property color textPrimary: themeData.textPrimary
-    property color textSecondary: themeData.textSecondary
-    property color textDisabled: themeData.textDisabled
+    property color textPrimary: val('colors.text.primary', themeData.textPrimary)
+    property color textSecondary: val('colors.text.secondary', themeData.textSecondary)
+    property color textDisabled: val('colors.text.disabled', themeData.textDisabled)
     // Accent Colors
-    property color accentPrimary: themeData.accentPrimary
+    property color accentPrimary: val('colors.accent.primary', themeData.accentPrimary)
     // Error/Warning
-    property color error: themeData.error
-    property color warning: themeData.warning
+    property color error: val('colors.status.error', themeData.error)
+    property color warning: val('colors.status.warning', themeData.warning)
     // Highlights & Focus
-    property color highlight: themeData.highlight
-    property color rippleEffect: themeData.rippleEffect
+    property color highlight: val('colors.highlight', themeData.highlight)
+    property color rippleEffect: val('colors.ripple', themeData.rippleEffect)
     // Additional Theme Properties
-    property color onAccent: themeData.onAccent
-    property color outline: themeData.outline
+    property color onAccent: val('colors.onAccent', themeData.onAccent)
+    property color outline: val('colors.outline', themeData.outline)
     // Shadows & Overlays
-    property color shadow: applyOpacity(themeData.shadow, "B3")
-    property color overlay: applyOpacity(themeData.overlay, "66")
+    property color shadow: applyOpacity(val('colors.shadow', themeData.shadow), "B3")
+    property color overlay: applyOpacity(val('colors.overlay', themeData.overlay), "66")
     property string fontFamily: "Iosevka" // Font Properties
     // Font size multiplier - adjust this in Settings.json to scale all fonts
     property real fontSizeMultiplier: Settings.settings.fontSizeMultiplier || 1.0
@@ -273,7 +291,7 @@ Singleton {
     property int fontSizeCaption: Math.round(12 * fontSizeMultiplier)    // Captions and fine print
 
     // Panel metrics (logical)
-    property int panelHeight: Utils.clamp(themeData.panelHeight, 16, 64)
+    property int panelHeight: Utils.clamp(val('panel.height', themeData.panelHeight), 16, 64)
     property int panelSideMargin: themeData.panelSideMargin
     property int panelWidgetSpacing: themeData.panelWidgetSpacing
     property int panelSepOvershoot: themeData.panelSepOvershoot
@@ -286,18 +304,18 @@ Singleton {
     property int panelHotzoneHeight: Utils.clamp(themeData.panelHotzoneHeight, 2, 64)
     property real panelHotzoneRightShift: Utils.clamp(themeData.panelHotzoneRightShift, 0.5, 3.0)
     property int panelModuleHeight: themeData.panelModuleHeight
-    property int panelMenuYOffset: themeData.panelMenuYOffset
+    property int panelMenuYOffset: val('panel.menuYOffset', themeData.panelMenuYOffset)
     // Corners
-    property int cornerRadius: themeData.cornerRadius
-    property int cornerRadiusSmall: themeData.cornerRadiusSmall
+    property int cornerRadius: val('shape.cornerRadius', themeData.cornerRadius)
+    property int cornerRadiusSmall: val('shape.cornerRadiusSmall', themeData.cornerRadiusSmall)
     // Tooltip
-    property int tooltipDelayMs: themeData.tooltipDelayMs
-    property int tooltipMinSize: themeData.tooltipMinSize
-    property int tooltipMargin: themeData.tooltipMargin
-    property int tooltipPadding: themeData.tooltipPadding
-    property int tooltipBorderWidth: themeData.tooltipBorderWidth
-    property int tooltipRadius: themeData.tooltipRadius
-    property int tooltipFontPx: themeData.tooltipFontPx
+    property int tooltipDelayMs: val('tooltip.delayMs', themeData.tooltipDelayMs)
+    property int tooltipMinSize: val('tooltip.minSize', themeData.tooltipMinSize)
+    property int tooltipMargin: val('tooltip.margin', themeData.tooltipMargin)
+    property int tooltipPadding: val('tooltip.padding', themeData.tooltipPadding)
+    property int tooltipBorderWidth: val('tooltip.borderWidth', themeData.tooltipBorderWidth)
+    property int tooltipRadius: val('tooltip.radius', themeData.tooltipRadius)
+    property int tooltipFontPx: val('tooltip.fontPx', themeData.tooltipFontPx)
     // Pill indicator defaults
     property int panelPillHeight: themeData.panelPillHeight
     property int panelPillIconSize: themeData.panelPillIconSize
@@ -321,7 +339,7 @@ Singleton {
     property color panelVolumeLowColor: themeData.panelVolumeLowColor
     property color panelVolumeHighColor: themeData.panelVolumeHighColor
     // Core module timings
-    property int timeTickMs: Utils.clamp(themeData.timeTickMs, 100, 60000)
+    property int timeTickMs: Utils.clamp(val('timers.timeTickMs', themeData.timeTickMs), 100, 60000)
     property int wsRefreshDebounceMs: Utils.clamp(themeData.wsRefreshDebounceMs, 0, 10000)
     property int vpnPollMs: Utils.clamp(themeData.vpnPollMs, 500, 600000)
     property int networkRestartBackoffMs: Utils.clamp(themeData.networkRestartBackoffMs, 0, 600000)
@@ -334,9 +352,9 @@ Singleton {
     property int musicPlayersPollMs: Utils.clamp(themeData.musicPlayersPollMs, 100, 600000)
     property int musicMetaRecalcDebounceMs: Utils.clamp(themeData.musicMetaRecalcDebounceMs, 0, 10000)
     // Calendar metrics
-    property int calendarRowSpacing: themeData.calendarRowSpacing
-    property int calendarCellSpacing: themeData.calendarCellSpacing
-    property int calendarSideMargin: themeData.calendarSideMargin
+    property int calendarRowSpacing: val('calendar.rowSpacing', themeData.calendarRowSpacing)
+    property int calendarCellSpacing: val('calendar.cellSpacing', themeData.calendarCellSpacing)
+    property int calendarSideMargin: val('calendar.sideMargin', themeData.calendarSideMargin)
     // Side-panel popup timings/margins
     property int  sidePanelPopupSlideMs: themeData.sidePanelPopupSlideMs
     property int  sidePanelPopupAutoHideMs: themeData.sidePanelPopupAutoHideMs
@@ -382,14 +400,14 @@ Singleton {
     property int uiGapTiny: themeData.uiGapTiny
     property int uiControlHeight: themeData.uiControlHeight
     // Calendar popup sizing
-    property int calendarWidth: Utils.clamp(themeData.calendarWidth, 200, 800)
-    property int calendarHeight: Utils.clamp(themeData.calendarHeight, 200, 800)
-    property int calendarPopupMargin: Utils.clamp(themeData.calendarPopupMargin, 0, 32)
-    property int calendarBorderWidth: themeData.calendarBorderWidth
-    property int calendarCellSize: Utils.clamp(themeData.calendarCellSize, 16, 64)
-    property int calendarHolidayDotSize: themeData.calendarHolidayDotSize
+    property int calendarWidth: Utils.clamp(val('calendar.size.width', themeData.calendarWidth), 200, 800)
+    property int calendarHeight: Utils.clamp(val('calendar.size.height', themeData.calendarHeight), 200, 800)
+    property int calendarPopupMargin: Utils.clamp(val('calendar.popupMargin', themeData.calendarPopupMargin), 0, 32)
+    property int calendarBorderWidth: val('calendar.borderWidth', themeData.calendarBorderWidth)
+    property int calendarCellSize: Utils.clamp(val('calendar.cellSize', themeData.calendarCellSize), 16, 64)
+    property int calendarHolidayDotSize: val('calendar.holidayDotSize', themeData.calendarHolidayDotSize)
     // Tunable factor for dark accent on calendar highlights (today/selected/hover)
-    property real calendarAccentDarken: Utils.clamp(themeData.calendarAccentDarken, 0, 1)
+    property real calendarAccentDarken: Utils.clamp(val('calendar.accentDarken', themeData.calendarAccentDarken), 0, 1)
     // Derived accent/surface/border tokens (formula-based)
     // Keep simple and perceptually stable; expose tokens for reuse
     // Each derived token may be overridden by matching *Override property in Theme.json
