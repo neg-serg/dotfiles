@@ -12,7 +12,7 @@ Rectangle {
     width: Math.round(Theme.sidePanelWeatherWidth * Theme.scale(Screen))
     height: Math.round(Theme.sidePanelWeatherHeight * Theme.scale(Screen))
     color: "transparent"
-    anchors.horizontalCenterOffset: -2
+    anchors.horizontalCenterOffset: Theme.weatherCenterOffset
  
     property string city: Settings.settings.weatherCity !== undefined ? Settings.settings.weatherCity : ""
     property var weatherData: null
@@ -96,8 +96,8 @@ Rectangle {
     Rectangle {
         id: card
         anchors.fill: parent
-        // Dark accent background with alpha; unify with theme tokens
-        color: Color.withAlpha(Theme.accentDarkStrong, 0.85)
+        // Dark accent background with configurable alpha
+        color: Color.withAlpha(Theme.accentDarkStrong, Theme.weatherCardOpacity)
         border.color: Theme.borderSubtle
         border.width: Theme.uiBorderWidth
         radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
