@@ -74,7 +74,7 @@ Item {
 
         pillColor: Theme.panelPillBackground
         iconCircleColor: getVolumeColor()
-        iconTextColor: Theme.backgroundPrimary
+        iconTextColor: Theme.background
         textColor: Theme.textPrimary
         collapsedIconColor: getIconColor()
         autoHide: true

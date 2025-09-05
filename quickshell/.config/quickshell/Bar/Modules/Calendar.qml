@@ -13,7 +13,7 @@ PanelWithOverlay {
     showOverlay: false
 
     Rectangle {
-        color: Theme.backgroundPrimary
+        color: Theme.background
         radius: Math.round(Theme.cornerRadiusLarge / 3)
         border.color: Theme.borderSubtle
         border.width: Theme.calendarBorderWidth

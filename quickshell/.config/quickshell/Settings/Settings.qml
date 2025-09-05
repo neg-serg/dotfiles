@@ -130,7 +130,7 @@ Singleton {
             property var pinnedPlayers: []
             property var ignoredPlayers: []
             property string trayAccentColor: "#3b7bb3" // Accent color for tray button/icon
-            // Tray popup background darkness blend (0 = surfaceVariant, 1 = backgroundPrimary)
+            // Tray popup background darkness blend (0 = surfaceVariant, 1 = background)
             property real trayPopupDarkness: 0.65
             // Tray button accent brightness relative to calendar accent (0..1)
             property real trayAccentBrightness: 0.25

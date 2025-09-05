@@ -33,7 +33,7 @@ Item {
     property int    textBaselineAdjust: 0
 
     // Colors
-    property color  bgColor:      useTheme ? Theme.backgroundPrimary : "#1e293b"
+    property color  bgColor:      useTheme ? Theme.background : "#1e293b"
     property color  textColor:    useTheme ? Theme.textPrimary : "white"
     property color  hoverBgColor: useTheme ? Theme.surfaceHover : "#223043"
 

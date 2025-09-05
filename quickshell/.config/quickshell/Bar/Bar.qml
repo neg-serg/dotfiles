@@ -53,7 +53,7 @@ Scope {
                     property int  widgetSpacing: Math.round(Theme.panelWidgetSpacing * s)
                     // Separator overshoot kept unscaled by design
                     property int  sepOvershoot:  Theme.panelSepOvershoot
-                    property color barBgColor:   Theme.backgroundPrimary // Colors
+                    property color barBgColor:   Theme.background // Colors
 
                     // Inline component for repeated diagonal separator
                     component DiagSep: DiagonalSeparatorRect {

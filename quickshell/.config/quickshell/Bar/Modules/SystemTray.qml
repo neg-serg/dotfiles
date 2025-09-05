@@ -115,7 +115,7 @@ Row {
         Rectangle {
             id: bg
             radius: Theme.cornerRadiusSmall
-            color: Theme.backgroundPrimary
+            color: Theme.background
             border.color: Theme.borderSubtle
             border.width: 1
             // No animated width — show full content immediately

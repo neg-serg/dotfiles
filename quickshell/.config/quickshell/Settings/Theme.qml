@@ -65,7 +65,7 @@ Singleton {
             // Defaults aligned with Theme.json; file values override these
 
             // Backgrounds
-            property string backgroundPrimary:  "#ef000000"
+            property string background:  "#ef000000"
             // Surfaces & Elevation
             property string surface:        "#181C25"
             property string surfaceVariant: "#242A35"
@@ -240,7 +240,7 @@ Singleton {
     }
     
     // Backgrounds
-    property color backgroundPrimary: themeData.backgroundPrimary
+    property color background: themeData.background
     // Surfaces & Elevation
     property color surface: themeData.surface
     property color surfaceVariant: themeData.surfaceVariant

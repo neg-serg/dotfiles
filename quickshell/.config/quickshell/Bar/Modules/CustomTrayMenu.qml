@@ -71,7 +71,7 @@ import "../../Helpers/Color.js" as Color
     Rectangle {
         id: bg;
         anchors.fill: parent;
-        color: Theme.backgroundPrimary || "#222";
+        color: Theme.background || "#222";
         border.color: Theme.borderSubtle;
         border.width: 1;
         radius: Theme.panelMenuRadius;
@@ -318,7 +318,7 @@ import "../../Helpers/Color.js" as Color
             Rectangle {
                 id: bg;
                 anchors.fill: parent;
-                color: Theme.backgroundPrimary || "#222";
+                color: Theme.background || "#222";
                 border.color: Theme.borderSubtle;
                 border.width: 1;
                 radius: 0;

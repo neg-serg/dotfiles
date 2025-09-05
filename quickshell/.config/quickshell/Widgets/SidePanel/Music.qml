@@ -33,7 +33,7 @@ Rectangle {
             id: card
             anchors.fill: parent
             // Use primary background (no accent tint) for music card
-            color: Theme.backgroundPrimary
+            color: Theme.background
             border.color: Theme.borderSubtle
             border.width: 1
             radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))

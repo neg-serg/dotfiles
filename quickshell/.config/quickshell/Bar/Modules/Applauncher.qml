@@ -231,7 +231,7 @@ PanelWithOverlay {
             width: 460
             height: 640
             x: (parent.width - width) / 2
-            color: Theme.backgroundPrimary
+            color: Theme.background
             bottomLeftRadius: 28
             bottomRightRadius: 28
 

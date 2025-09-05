@@ -12,7 +12,7 @@ Item {
     property color pillColor: Theme.surfaceVariant
     property color textColor: Theme.textPrimary
     property color iconCircleColor: Theme.accentPrimary
-    property color iconTextColor: Theme.backgroundPrimary
+    property color iconTextColor: Theme.background
     property color collapsedIconColor: Theme.textPrimary
     property int pillHeight: Math.round(Theme.panelPillHeight * Theme.scale(Screen))
     property int iconSize: Math.round(Theme.panelPillIconSize * Theme.scale(Screen))
