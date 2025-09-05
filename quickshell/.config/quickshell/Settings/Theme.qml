@@ -9,6 +9,8 @@ import qs.Settings
 
 Singleton {
     id: root
+    // Set true after Theme.json is loaded/applied at least once
+    property bool _themeLoaded: false
     // Removed unused designScreenWidth
     // Per-monitor UI scaling (defaults to 1.0)
     function scale(currentScreen) {
@@ -58,6 +60,7 @@ Singleton {
         onAdapterUpdated: {
             writeAdapter();
             try { root._checkDeprecatedTokens(); } catch (e) {}
+            root._themeLoaded = true
         }
         onLoadFailed: function(error) {
             if (error.toString().includes("No such file") || error === 2) {
@@ -281,6 +284,8 @@ Singleton {
         try {
             if (Settings.settings && Settings.settings.strictThemeTokens) {
                 var key = String(path);
+                // During startup before Theme.json is loaded, do not warn yet
+                if (!root._themeLoaded) return fallback;
                 // Optional override keys: do not warn when absent
                 if (!/^colors\.overrides\./.test(key)) {
                     // Legacy flat-compat mapping: if a corresponding flat key exists, suppress warning
