@@ -17,10 +17,10 @@ Item {
     property int   fontPixelSize: 0
     property bool  useTheme: true
     property bool  showLabel: true
-    property int   iconSpacing: Theme.panelRowSpacingSmall
-    property int   textPadding: Theme.panelRowSpacingSmall
-    property int   iconVAdjust: 0
-    property real  iconScale: 1.0
+    property int   iconSpacing: Theme.vpnIconSpacing
+    property int   textPadding: Theme.vpnTextPadding
+    property int   iconVAdjust: Theme.vpnIconVAdjust
+    property real  iconScale: Theme.vpnIconScale
     property color bgColor: "transparent"
     // Material Symbols icon
     property string iconName: "verified_user"
@@ -28,14 +28,14 @@ Item {
 
     // Colors
     // Tuning for derived VPN accent (edit locally if you want stronger effect)
-    property real accentSaturateBoost: 0.12   // can be increased beyond 0.12
-    property real accentLightenTowardWhite: 0.20
+    property real accentSaturateBoost: Theme.vpnAccentSaturateBoost
+    property real accentLightenTowardWhite: Theme.vpnAccentLightenTowardWhite
     // Derive a slightly lighter/more saturated variant from the primary accent
     // (approximate former accentSecondary without needing a separate palette token)
     property color onColor:  Color.towardsWhite(Color.saturate(Theme.accentPrimary, accentSaturateBoost), accentLightenTowardWhite)
     property color offColor: useTheme ? Theme.textDisabled  : Theme.textDisabled
     // Accent derived from Theme; desaturated for subtle look
-    property real  desaturateAmount: 0.45   // 0..1, higher = less saturated
+    property real  desaturateAmount: Theme.vpnDesaturateAmount   // 0..1, higher = less saturated
     // Base accent for subtle styling (then desaturated by desaturateAmount below)
     property color accentBase: Color.saturate(Theme.accentPrimary, accentSaturateBoost)
     property color accentColor: desaturateColor(accentBase, desaturateAmount)
@@ -160,8 +160,6 @@ Item {
     // Subtle styling
     property bool  muted: true
     property bool  hovered: false
-    property real  connectedOpacity: 0.8
-    property real  disconnectedOpacity: 0.45
     opacity: hovered ? 1.0 : (connected ? connectedOpacity : disconnectedOpacity)
     function iconColor() {
         if (!connected) return offColor

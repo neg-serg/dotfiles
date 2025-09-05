@@ -34,6 +34,7 @@ Additional UI tokens (nested)
   - Album art fallback opacity: media.albumArt.fallbackOpacity
 - System tray: panel.tray.inlinePadding (px)
   - Menu: panel.menu.itemFontScale (font size multiplier)
+ - Bar layout: panel.netCluster.spacing (spacing between VPN and Network)
  - Network icon: network.icon.scale, network.icon.vAdjust
  - Volume:
   - panel.volume.lowColor, panel.volume.highColor
@@ -87,6 +88,8 @@ Additional UI tokens (nested)
   - Diagonal separator stripe: ui.separator.diagonal.stripeOpacity
   - Diagonal separator implicit size: ui.separator.diagonal.implicitWidth, ui.separator.diagonal.implicitHeight
   - VPN opacities: vpn.connectedOpacity, vpn.disconnectedOpacity
+  - VPN icon/layout: vpn.icon.scale, vpn.icon.vAdjust, vpn.icon.spacing; vpn.text.padding
+  - VPN accent tuning: vpn.accent.saturateBoost, vpn.accent.lightenTowardWhite; vpn.desaturateAmount
   - Calendar opacities: calendar.opacity.title, calendar.opacity.dow, calendar.opacity.otherMonthDay
 
 Overrides (advanced)

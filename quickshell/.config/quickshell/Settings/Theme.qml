@@ -418,6 +418,8 @@ Singleton {
     // Generic row spacing
     property int panelRowSpacing: val('panel.rowSpacing', themeData.panelRowSpacing)
     property int panelRowSpacingSmall: val('panel.rowSpacingSmall', themeData.panelRowSpacingSmall)
+    // Spacing between VPN + NetworkUsage in left cluster
+    property int panelNetClusterSpacing: Utils.clamp(val('panel.netCluster.spacing', 6), 0, 64)
     // Volume behavior
     property int panelVolumeFullHideMs: val('panel.volume.fullHideMs', themeData.panelVolumeFullHideMs)
     property color panelVolumeLowColor: val('panel.volume.lowColor', themeData.panelVolumeLowColor)
@@ -570,6 +572,14 @@ Singleton {
     // VPN indicator opacities
     property real vpnConnectedOpacity: Utils.clamp(val('vpn.connectedOpacity', 0.8), 0, 1)
     property real vpnDisconnectedOpacity: Utils.clamp(val('vpn.disconnectedOpacity', 0.45), 0, 1)
+    // VPN icon/layout tuning and accent mix
+    property real vpnIconScale: Utils.clamp(val('vpn.icon.scale', 1.0), 0.2, 3.0)
+    property int  vpnIconVAdjust: Utils.clamp(val('vpn.icon.vAdjust', 0), -100, 100)
+    property int  vpnIconSpacing: Utils.clamp(val('vpn.icon.spacing', panelRowSpacingSmall), 0, 64)
+    property int  vpnTextPadding: Utils.clamp(val('vpn.text.padding', panelRowSpacingSmall), 0, 64)
+    property real vpnAccentSaturateBoost: Utils.clamp(val('vpn.accent.saturateBoost', 0.12), 0, 1)
+    property real vpnAccentLightenTowardWhite: Utils.clamp(val('vpn.accent.lightenTowardWhite', 0.20), 0, 1)
+    property real vpnDesaturateAmount: Utils.clamp(val('vpn.desaturateAmount', 0.45), 0, 1)
     // UI animation timings
     property int uiAnimQuickMs: Utils.clamp(val('ui.anim.quickMs', 120), 0, 2000)
     property int uiAnimRotateMs: Utils.clamp(val('ui.anim.rotateMs', 160), 0, 5000)

@@ -79,6 +79,7 @@
     },
     "rowSpacing": 8,
     "rowSpacingSmall": 4,
+    "netCluster": { "spacing": 6 },
     "volume": {
       "fullHideMs": 800,
       "lowColor": "#D62E6E",
@@ -229,6 +230,14 @@
     "restartBackoffMs": 1500,
     "linkPollMs": 4000,
     "icon": { "scale": 0.7, "vAdjust": 0 }
+  },
+  "vpn": {
+    "connectedOpacity": 0.8,
+    "disconnectedOpacity": 0.45,
+    "icon": { "scale": 1.0, "vAdjust": 0, "spacing": 4 },
+    "text": { "padding": 4 },
+    "accent": { "saturateBoost": 0.12, "lightenTowardWhite": 0.2 },
+    "desaturateAmount": 0.45
   },
   "media": {
     "iconScaleEmphasis": 1.15,
