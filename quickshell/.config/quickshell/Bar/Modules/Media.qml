@@ -45,7 +45,7 @@ Item {
                 anchors.centerIn: parent
                 color: Theme.surface
                 border.color: "transparent"
-                border.width: 0
+                border.width: Theme.uiBorderNone
                 clip: true
                 antialiasing: true
                 layer.enabled: true
@@ -65,7 +65,7 @@ Item {
                     anchors.centerIn: parent
                     icon: "music_note"
                     size: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
-                    color: Color.withAlpha(Theme.textPrimary, 0.4)
+                    color: Color.withAlpha(Theme.textPrimary, Theme.mediaAlbumArtFallbackOpacity)
                     visible: !cover.visible
                 }
 
@@ -217,7 +217,7 @@ Item {
                 id: textFrame
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.rightMargin: 0
+                anchors.rightMargin: Theme.uiMarginNone
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 clip: true
@@ -270,7 +270,7 @@ Item {
                                    });
                         const cur = Format.fmtTime(MusicManager.currentPosition || 0);
                         const tot = Format.fmtTime(Time.mprisToMs(MusicManager.trackLength || 0));
-                        const timeSize = Utils.clamp(Math.round(trackText.font.pixelSize * 0.8), 1, 2048);
+                        const timeSize = Utils.clamp(Math.round(trackText.font.pixelSize * Theme.mediaTimeFontScale), 1, 2048);
                         const bp = trackText.bracketPair();
                         return t
                                + " &#8201;<span style='color:" + trackText.bracketColor + "'>" + bp.l + "</span>"
