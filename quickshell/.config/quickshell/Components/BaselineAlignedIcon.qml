@@ -52,12 +52,17 @@ Item {
     function centerOffset(ascent, descent) { return (descent - ascent) / 2.0 }
     function computeCenterOffset(iconAscent, iconDescent) {
         var off = root._effBaselineOffset;
+        var labelCenter = centerOffset(fmLabel.ascent, fmLabel.descent);
+        var iconCenter  = centerOffset(iconAscent, iconDescent);
         if (root.alignMode === "optical") {
-            var labelCenter = centerOffset(fmLabel.ascent, fmLabel.descent);
-            var iconCenter  = centerOffset(iconAscent, iconDescent);
+            // Align visual centers
             off = off + (labelCenter - iconCenter);
-        } else if (root.compensateMetrics) {
-            off = off + (fmLabel.ascent - iconAscent) * root.compensationFactor;
+        } else {
+            // Align baselines using center math
+            off = off - (labelCenter - iconCenter);
+            if (root.compensateMetrics) {
+                off = off + (fmLabel.ascent - iconAscent) * root.compensationFactor;
+            }
         }
         return Math.round(off);
     }

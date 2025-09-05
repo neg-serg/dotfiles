@@ -229,7 +229,7 @@ Item {
             labelRef: label
             // Token-style API
             baselineOffsetToken: submapBaselineAdjust
-            alignMode: "optical"
+            alignMode: "baseline"
             icon: submapIconName(root.submapName)
             color: Theme.wsSubmapIconColor
         }
@@ -243,7 +243,7 @@ Item {
             scale: 1.15
             // Token-style API
             baselineOffsetToken: iconBaselineOffset
-            alignMode: "optical"
+            alignMode: "baseline"
             text: iconGlyph
             fontFamily: Theme.fontFamily
             color: iconColor
