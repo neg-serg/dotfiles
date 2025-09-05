@@ -9,8 +9,8 @@ Item {
     property var values: []
     // Visual tuning
     property real amplitudeScale: 1.0        // scales value height
-    property real barGap: 2 * Theme.scale(Screen)
-    property real minBarWidth: 2 * Theme.scale(Screen)
+    property real barGap: Math.round(Theme.spectrumBarGap * Theme.scale(Screen))
+    property real minBarWidth: Math.round(Theme.spectrumMinBarWidth * Theme.scale(Screen))
     property bool mirror: true               // draw above and below center
     property real fillOpacity: 0.85
     property real peakOpacity: 1.0

@@ -135,7 +135,9 @@
   },
   "spectrum": {
     "peakDecayIntervalMs": 50,
-    "barAnimMs": 100
+    "barAnimMs": 100,
+    "barGap": 2,
+    "minBarWidth": 2
   },
   "calendar": {
     "rowSpacing": 2,

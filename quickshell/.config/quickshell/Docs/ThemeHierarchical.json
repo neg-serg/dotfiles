@@ -160,6 +160,9 @@
       "height": 320
     },
     "font": { "titlePx": 18, "dowPx": 15, "dayPx": 24 },
+    "dow": { "italic": true, "underline": true },
+    "cell": { "radiusFactor": 0.33 },
+    "holidayDot": { "radiusFactor": 0.5 },
     "popupMargin": 2,
     "borderWidth": 1,
     "cellSize": 28,
@@ -190,7 +193,9 @@
   },
   "spectrum": {
     "peakDecayIntervalMs": 50,
-    "barAnimMs": 100
+    "barAnimMs": 100,
+    "barGap": 2,
+    "minBarWidth": 2
   },
   "applauncher": {
     "clipboardPollMs": 1000,

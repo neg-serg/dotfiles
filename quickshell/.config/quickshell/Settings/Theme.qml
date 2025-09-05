@@ -350,6 +350,8 @@ Singleton {
     property int spectrumPeakDecayIntervalMs: Utils.clamp(val('spectrum.peakDecayIntervalMs', themeData.spectrumPeakDecayIntervalMs), 10, 1000)
     property int spectrumBarAnimMs: Utils.clamp(val('spectrum.barAnimMs', themeData.spectrumBarAnimMs), 0, 5000)
     property int spectrumPeakThickness: Utils.clamp(val('spectrum.peakThickness', 2), 1, 12)
+    property real spectrumBarGap: val('spectrum.barGap', 2)
+    property real spectrumMinBarWidth: val('spectrum.minBarWidth', 2)
     property int musicPositionPollMs: Utils.clamp(val('timers.musicPositionPollMs', themeData.musicPositionPollMs), 100, 600000)
     property int musicPlayersPollMs: Utils.clamp(val('timers.musicPlayersPollMs', themeData.musicPlayersPollMs), 100, 600000)
     property int musicMetaRecalcDebounceMs: Utils.clamp(val('timers.musicMetaRecalcDebounceMs', themeData.musicMetaRecalcDebounceMs), 0, 10000)

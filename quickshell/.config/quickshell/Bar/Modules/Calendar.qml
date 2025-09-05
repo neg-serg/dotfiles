@@ -89,8 +89,8 @@ PanelWithOverlay {
                     font.pixelSize: Math.round(Theme.calendarDowFontPx * Theme.scale(screen))
                     font.family: Theme.fontFamily
                     font.weight: Font.Normal
-                    font.underline: true
-                    font.italic: true
+                    font.underline: Theme.calendarDowUnderline
+                    font.italic: Theme.calendarDowItalic
                     horizontalAlignment: Text.AlignHCenter
                     width: Theme.calendarCellSize
                 }
@@ -146,7 +146,7 @@ PanelWithOverlay {
 
                     width: Theme.calendarCellSize
                     height: Theme.calendarCellSize
-                radius: Math.round(Theme.cornerRadius / 3)
+                radius: Math.round(Theme.cornerRadius * Theme.calendarCellRadiusFactor)
                     // Today/selected/hover use explicit darkened accent (tunable factor)
                     color: (model.today || isSelected || mouseArea2.containsMouse)
                         ? Color.towardsBlack(Theme.accentPrimary, Theme.calendarAccentDarken)
@@ -160,7 +160,7 @@ PanelWithOverlay {
                         visible: isHoliday
                         width: Theme.calendarHolidayDotSize
                         height: Theme.calendarHolidayDotSize
-                        radius: Math.round(Theme.cornerRadiusSmall / 3)
+                        radius: Math.round(Theme.calendarHolidayDotSize * Theme.calendarHolidayDotRadiusFactor)
                         color: Theme.accentPrimary
                         anchors.top: parent.top
                         anchors.right: parent.right
