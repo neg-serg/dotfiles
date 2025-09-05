@@ -80,13 +80,13 @@ Singleton {
             property string warning: "#FFBB66"
             // Highlights & Focus
             property string highlight:    "#94E1F9"
-            property string rippleEffect: "#D6F3FF"
+            // Removed unused rippleEffect
             // Additional Theme Properties
             property string onAccent: "#FFFFFF"
             property string outline:  "#3B4C5C"
             // Shadows & Overlays
             property string shadow:  "#000000"
-            property string overlay: "#10141A"
+            // Removed unused base overlay color; use overlayWeak/Strong derived tokens
 
             // Panel metrics (logical px; scaled per-screen via Theme.scale(screen))
             property int panelHeight: 28
@@ -182,8 +182,7 @@ Singleton {
             // Side-panel spacing medium (in addition to small/tight)
             property int  sidePanelSpacingMedium: 8
 
-            // Hover behavior (opacity/timing)
-            property real panelHoverOpacity: 0.18
+            // Hover behavior (timing only)
             property int  panelHoverFadeMs: 120
 
             // Tray/Panel menu metrics
@@ -271,13 +270,13 @@ Singleton {
     property color warning: val('colors.status.warning', themeData.warning)
     // Highlights & Focus
     property color highlight: val('colors.highlight', themeData.highlight)
-    property color rippleEffect: val('colors.ripple', themeData.rippleEffect)
+    // Removed unused rippleEffect token
     // Additional Theme Properties
     property color onAccent: val('colors.onAccent', themeData.onAccent)
     property color outline: val('colors.outline', themeData.outline)
     // Shadows & Overlays
     property color shadow: applyOpacity(val('colors.shadow', themeData.shadow), "B3")
-    property color overlay: applyOpacity(val('colors.overlay', themeData.overlay), "66")
+    // Removed unused base overlay token; use overlayWeak/overlayStrong
     property string fontFamily: "Iosevka" // Font Properties
     // Font size multiplier - adjust this in Settings.json to scale all fonts
     property real fontSizeMultiplier: Settings.settings.fontSizeMultiplier || 1.0
@@ -374,7 +373,6 @@ Singleton {
     // Side-panel spacing medium
     property int  sidePanelSpacingMedium: val('sidePanel.spacingMedium', themeData.sidePanelSpacingMedium)
     // Hover behavior
-    property real panelHoverOpacity: val('panel.hover.opacity', themeData.panelHoverOpacity)
     property int  panelHoverFadeMs: val('panel.hover.fadeMs', themeData.panelHoverFadeMs)
     // Panel menu metrics
     property int  panelMenuWidth: Utils.clamp(val('panel.menu.width', themeData.panelMenuWidth), 100, 600)
@@ -434,8 +432,7 @@ Singleton {
         ? val('colors.overrides.accentHover', themeData.accentHoverOverride) : Color.towardsWhite(accentPrimary, 0.2)
     property color accentActive: (val('colors.overrides.accentActive', themeData.accentActiveOverride) !== undefined)
         ? val('colors.overrides.accentActive', themeData.accentActiveOverride) : Color.towardsBlack(accentPrimary, 0.2)
-    property color accentDisabled: (val('colors.overrides.accentDisabled', themeData.accentDisabledOverride) !== undefined)
-        ? val('colors.overrides.accentDisabled', themeData.accentDisabledOverride) : Color.withAlpha(accentPrimary, 0.4)
+    // Removed unused accentDisabled token
     property color accentDarkStrong: (val('colors.overrides.accentDarkStrong', themeData.accentDarkStrongOverride) !== undefined)
         ? val('colors.overrides.accentDarkStrong', themeData.accentDarkStrongOverride) : Color.towardsBlack(accentPrimary, 0.8)
     property color surfaceHover: (val('colors.overrides.surfaceHover', themeData.surfaceHoverOverride) !== undefined)

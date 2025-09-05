@@ -6,19 +6,18 @@ Overview
   - surface/surfaceVariant
   - textPrimary/Secondary/Disabled
   - accentPrimary, onAccent
-  - outline, shadow, overlay
-  - error, warning, highlight, rippleEffect
+  - outline, shadow
+  - error, warning, highlight
 
 - Derived tokens (computed in Settings/Theme.qml):
   - accentHover: lighter accent for hover states
   - accentActive: darker accent for active/pressed states
-  - accentDisabled: accent with alpha for disabled states
   - accentDarkStrong: strong darkened accent (used for “dark accent” UIs)
   - surfaceHover: subtle overlay for hover on surfaces
   - surfaceActive: slightly stronger overlay for pressed states
   - borderSubtle: low-emphasis border color
   - borderStrong: higher-emphasis border color
-- overlayWeak/overlayStrong: backdrop overlays
+  - overlayWeak/overlayStrong: backdrop overlays
 
 Additional UI tokens (nested)
 - Tooltip: tooltip.opacity, tooltip.smallScaleRatio
@@ -28,7 +27,7 @@ Additional UI tokens (nested)
 
 Overrides (advanced)
 - You can override any derived token by adding an "Override" key in Theme.json:
-  - accentHoverOverride, accentActiveOverride, accentDisabledOverride, accentDarkStrongOverride
+  - accentHoverOverride, accentActiveOverride, accentDarkStrongOverride
   - surfaceHoverOverride, surfaceActiveOverride
   - borderSubtleOverride, borderStrongOverride
   - overlayWeakOverride, overlayStrongOverride
