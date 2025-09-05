@@ -316,6 +316,8 @@ Singleton {
     property int tooltipBorderWidth: val('tooltip.borderWidth', themeData.tooltipBorderWidth)
     property int tooltipRadius: val('tooltip.radius', themeData.tooltipRadius)
     property int tooltipFontPx: val('tooltip.fontPx', themeData.tooltipFontPx)
+    property real tooltipOpacity: val('tooltip.opacity', 0.98)
+    property real tooltipSmallScaleRatio: val('tooltip.smallScaleRatio', 0.71)
     // Pill indicator defaults
     property int panelPillHeight: val('panel.pill.height', themeData.panelPillHeight)
     property int panelPillIconSize: val('panel.pill.iconSize', themeData.panelPillIconSize)
@@ -353,6 +355,14 @@ Singleton {
     property int musicMetaRecalcDebounceMs: Utils.clamp(val('timers.musicMetaRecalcDebounceMs', themeData.musicMetaRecalcDebounceMs), 0, 10000)
     // Applauncher
     property int applauncherClipboardPollMs: Utils.clamp(val('applauncher.clipboardPollMs', themeData.applauncherClipboardPollMs), 100, 600000)
+    // Applauncher UI/config (nested)
+    property int applauncherWidth: val('applauncher.size.width', 460)
+    property int applauncherHeight: val('applauncher.size.height', 640)
+    property int applauncherCornerRadius: val('applauncher.cornerRadius', 28)
+    property int applauncherBottomMargin: val('applauncher.margins.bottom', 16)
+    property int applauncherOffscreenShift: val('applauncher.anim.offscreenShift', 12)
+    property int applauncherEnterAnimMs: Utils.clamp(val('applauncher.anim.enterMs', 300), 0, 10000)
+    property int applauncherScaleAnimMs: Utils.clamp(val('applauncher.anim.scaleMs', 200), 0, 10000)
     // Calendar metrics
     property int calendarRowSpacing: val('calendar.rowSpacing', themeData.calendarRowSpacing)
     property int calendarCellSpacing: val('calendar.cellSpacing', themeData.calendarCellSpacing)
@@ -401,6 +411,13 @@ Singleton {
     property int uiSpacingXSmall: Utils.clamp(val('ui.spacing.xsmall', themeData.uiSpacingXSmall), 0, 16)
     property int uiGapTiny: val('ui.gap.tiny', themeData.uiGapTiny)
     property int uiControlHeight: val('ui.control.height', themeData.uiControlHeight)
+    // UI shadows (used by text overlays, etc.)
+    property real uiShadowOpacity: val('ui.shadow.opacity', 0.6)
+    property real uiShadowBlur: val('ui.shadow.blur', 0.8)
+    property int uiShadowOffsetX: val('ui.shadow.offsetX', 0)
+    property int uiShadowOffsetY: val('ui.shadow.offsetY', 1)
+    // Media emphasis scaling for icons
+    property real mediaIconScaleEmphasis: val('media.iconScaleEmphasis', 1.15)
     // Calendar popup sizing
     property int calendarWidth: Utils.clamp(val('calendar.size.width', themeData.calendarWidth), 200, 800)
     property int calendarHeight: Utils.clamp(val('calendar.size.height', themeData.calendarHeight), 200, 800)

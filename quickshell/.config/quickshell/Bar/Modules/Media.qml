@@ -289,10 +289,10 @@ Item {
                     layer.effect: MultiEffect {
                         shadowEnabled: true
                         shadowColor: Theme.shadow
-                        shadowOpacity: 0.6
-                        shadowHorizontalOffset: 0
-                        shadowVerticalOffset: 1
-                        shadowBlur: 0.8
+                        shadowOpacity: Theme.uiShadowOpacity
+                        shadowHorizontalOffset: Theme.uiShadowOffsetX
+                        shadowVerticalOffset: Theme.uiShadowOffsetY
+                        shadowBlur: Theme.uiShadowBlur
                     }
                 }
             }

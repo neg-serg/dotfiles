@@ -198,8 +198,8 @@ PanelWithOverlay {
 
     Rectangle {
         id: appLauncherPanelRect
-        implicitWidth: 460
-        implicitHeight: 640
+        implicitWidth: Theme.applauncherWidth
+        implicitHeight: Theme.applauncherHeight
         color: "transparent"
         visible: parent.visible
         property bool shouldBeVisible: false
@@ -228,31 +228,31 @@ PanelWithOverlay {
 
         Rectangle {
             id: root
-            width: 460
-            height: 640
+            width: Theme.applauncherWidth
+            height: Theme.applauncherHeight
             x: (parent.width - width) / 2
             color: Theme.background
-            bottomLeftRadius: 28
-            bottomRightRadius: 28
+            bottomLeftRadius: Theme.applauncherCornerRadius
+            bottomRightRadius: Theme.applauncherCornerRadius
 
             property var appModel: DesktopEntries.applications.values
             property var filteredApps: []
             property int selectedIndex: 0
             // Bottom-docked animation: slide from offscreen bottom to bottom with small margin
-            property int bottomMargin: 16
+            property int bottomMargin: Theme.applauncherBottomMargin
             property int targetY: Utils.clamp(parent.height - height - bottomMargin, 0, parent.height)
-            property int offscreenYBottom: parent.height + 12
+            property int offscreenYBottom: parent.height + Theme.applauncherOffscreenShift
             y: appLauncherPanelRect.shouldBeVisible ? targetY : offscreenYBottom
             Behavior on y {
                 NumberAnimation {
-                    duration: 300
+                    duration: Theme.applauncherEnterAnimMs
                     easing.type: Easing.OutCubic
                 }
             }
             scale: appLauncherPanelRect.shouldBeVisible ? 1 : 0
             Behavior on scale {
                 NumberAnimation {
-                    duration: 200
+                    duration: Theme.applauncherScaleAnimMs
                     easing.type: Easing.InOutCubic
                 }
             }

@@ -188,7 +188,7 @@ Window {
         color: Theme.surfaceActive
         border.color: Theme.borderSubtle
         border.width: Theme.tooltipBorderWidth * scaleFactor
-        opacity: 0.98
+        opacity: Theme.tooltipOpacity
         z: 1
     }
 

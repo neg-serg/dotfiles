@@ -8,6 +8,7 @@ import qs.Settings
 import qs.Components
 import qs.Services
 import "../../Helpers/Color.js" as Color
+import "../../Helpers/Format.js" as Format
 
 Rectangle {
     id: musicCard
@@ -417,7 +418,7 @@ Rectangle {
                                     // Genre icon
                                     icon: "category"
                                     color: Theme.accentHover
-                                    size: Math.round(playerUI.musicFontPx * 1.15)
+                                    size: Math.round(playerUI.musicFontPx * Theme.mediaIconScaleEmphasis)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
                                 Text {
@@ -520,7 +521,7 @@ Rectangle {
                                     // Quality icon
                                     icon: "high_quality"
                                     color: Theme.accentHover
-                                    size: Math.round(playerUI.musicFontPx * 1.15)
+                                    size: Math.round(playerUI.musicFontPx * Theme.mediaIconScaleEmphasis)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
                                 Text {
