@@ -176,7 +176,8 @@ Rectangle {
             Rectangle {
                 width: parent.width
                 height: Math.max(1, Math.round(Theme.tooltipBorderWidth * Theme.scale(Screen)))
-                color: Qt.rgba(Theme.textSecondary.g, Theme.textSecondary.g, Theme.textSecondary.b, 0.12)
+                // Use contrast-based subtle divider
+                color: Color.contrastOn(card.color, "#26FFFFFF", "#26000000")
                 Layout.fillWidth: true
                 Layout.topMargin: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(Screen))
                 Layout.bottomMargin: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(Screen))

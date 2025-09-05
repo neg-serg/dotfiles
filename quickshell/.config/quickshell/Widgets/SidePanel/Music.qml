@@ -7,6 +7,7 @@ import QtQuick.Window 2.15
 import qs.Settings
 import qs.Components
 import qs.Services
+import "../../Helpers/Color.js" as Color
 
 Rectangle {
     id: musicCard
@@ -49,7 +50,7 @@ Rectangle {
                     text: "music_note"
                     font.family: "Material Symbols Outlined"
                     font.pixelSize: Theme.fontSizeHeader * Theme.scale(screen)
-                    color: Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.3)
+                    color: Color.contrastOn(card.color, Theme.textSecondary, Theme.textPrimary)
                     Layout.alignment: Qt.AlignHCenter
                 }
 
@@ -79,7 +80,7 @@ Rectangle {
             property int musicFontPx: Math.round(13 * Theme.scale(screen))
             // Exact text size to match the rest of the panel
             property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(screen))
-            property color musicTextColor: Theme.textPrimary
+            property color musicTextColor: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary)
             property int musicFontWeight: Font.Medium
 
             // Fancy info removed
@@ -291,7 +292,7 @@ Rectangle {
                             text: "album"
                             font.family: "Material Symbols Outlined"
                             font.pixelSize: Theme.fontSizeBody * Theme.scale(screen)
-                            color: Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.4)
+                            color: Color.contrastOn(card.color, Theme.textSecondary, Theme.textPrimary)
                             visible: !albumArt.visible
                         }
                     }
