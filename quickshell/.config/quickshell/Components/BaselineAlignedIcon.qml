@@ -8,9 +8,9 @@ Item {
     id: root
     // Reference label whose baseline we align to
     property var labelRef
-    // Preferred token-style API (use these when available)
-    property real scaleToken: 1.0
-    property int  baselineOffsetToken: 0
+    // Preferred token-style API (optional). Leave undefined to fall back to legacy props.
+    property var  scaleToken: undefined
+    property var  baselineOffsetToken: undefined
     // Legacy direct props (kept for compatibility)
     property real scale: 1.0
     property int  baselineOffset: 0
@@ -36,8 +36,8 @@ Item {
     property real compensationFactor: 1.0
 
     // Effective inputs (prefer token-style when provided)
-    readonly property real _effScale: (scaleToken !== undefined && scaleToken !== null) ? scaleToken : scale
-    readonly property int  _effBaselineOffset: (baselineOffsetToken !== undefined && baselineOffsetToken !== null) ? baselineOffsetToken : baselineOffset
+    readonly property real _effScale: (typeof scaleToken === 'number') ? scaleToken : scale
+    readonly property int  _effBaselineOffset: (typeof baselineOffsetToken === 'number') ? baselineOffsetToken : baselineOffset
 
     // Fallback base size when labelRef is not available
     readonly property int _labelPx: (labelRef && labelRef.font && labelRef.font.pixelSize)
