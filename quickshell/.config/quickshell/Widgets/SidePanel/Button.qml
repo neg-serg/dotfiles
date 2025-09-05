@@ -31,12 +31,12 @@ Item {
         onExited: buttonRoot.hoverOpacity = 0.0
     }
 
-    Rectangle {
+    ThemedHoverRect {
         anchors.fill: parent
-        color: hoverColor
-        // Use color alpha directly; animate opacity for hover
-        opacity: isActive ? 1.0 : hoverOpacity
-        radius: Math.round(height * Theme.sidePanelButtonHoverRadiusFactor)
+        colorToken: hoverColor
+        radiusFactor: Theme.sidePanelButtonHoverRadiusFactor
+        epsToken: Theme.uiVisibilityEpsilon
+        intensity: isActive ? 1.0 : hoverOpacity
         z: 0
         visible: (isActive ? Theme.sidePanelButtonActiveVisibleMin : hoverOpacity) > Theme.uiVisibilityEpsilon
     }
