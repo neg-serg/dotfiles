@@ -2,7 +2,7 @@
 var _geoCache = {}; // key: cityLower -> { value: {lat, lon}, expiry: ts, errorUntil?: ts }
 var _weatherCache = {}; // key: cityLower -> { value: weatherObject, expiry: ts, errorUntil?: ts }
 // Shared HTTP helper
-import "Http.js" as Http
+try { Qt.include("Http.js"); } catch (e) { }
 
 // Defaults (can be overridden via options argument)
 var DEFAULTS = {
@@ -106,7 +106,7 @@ function fetchCoordinates(city, callback, errorCallback, options) {
     if (typeof httpGetJson === 'function') {
         var dbg = !!(options && options.debug);
     if (dbg) try { console.debug('[Weather] GET', geoUrl); } catch (e) {}
-    Http.httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
+    httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
             try {
                 if (geoData && geoData.results && geoData.results.length > 0) {
                     var lat = geoData.results[0].latitude;
@@ -131,7 +131,7 @@ function fetchCoordinates(city, callback, errorCallback, options) {
     }
     var dbg = !!(options && options.debug);
     if (dbg) try { console.debug('[Weather] GET', geoUrl); } catch (e) {}
-    Http.httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
+    httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
         try {
             if (geoData && geoData.results && geoData.results.length > 0) {
                 var lat = geoData.results[0].latitude;
@@ -190,7 +190,7 @@ function fetchWeather(latitude, longitude, callback, errorCallback, options) {
     });
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
     if (dbg) try { console.debug('[Weather] GET', url); } catch (e) {}
-    Http.httpGetJson(url, cfg.timeoutMs, function(weatherData) {
+    httpGetJson(url, cfg.timeoutMs, function(weatherData) {
         if (cacheKey) writeCacheSuccess(_weatherCache, cacheKey, weatherData, cfg.weatherTtlMs);
         callback(weatherData);
     }, function(err) {

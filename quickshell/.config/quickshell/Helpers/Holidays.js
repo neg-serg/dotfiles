@@ -1,4 +1,4 @@
-import "Http.js" as Http
+try { Qt.include("Http.js"); } catch (e) { }
 var _countryCode = null;
 var _regionCode = null;
 var _regionName = null;
@@ -93,7 +93,7 @@ function getCountryCode(callback, errorCallback, options) {
         extratags: 1
     });
     if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
-    Http.httpGetJson(url, cfg.timeoutMs, function(response) {
+    httpGetJson(url, cfg.timeoutMs, function(response) {
         try {
             _countryCode = (response && response[0] && response[0].address && response[0].address.country_code) ? response[0].address.country_code : "US";
             _regionCode = (response && response[0] && response[0].address && response[0].address["ISO3166-2-lvl4"]) ? response[0].address["ISO3166-2-lvl4"] : "";
@@ -135,7 +135,7 @@ function getHolidays(year, countryCode, callback, errorCallback, options) {
     var url = "https://date.nager.at/api/v3/PublicHolidays/" + year + "/" + countryCode;
 
     if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
-    Http.httpGetJson(url, cfg.timeoutMs, function(list) {
+    httpGetJson(url, cfg.timeoutMs, function(list) {
         try {
             var augmented = filterHolidaysByRegion(list || []);
             writeCacheSuccess(_holidaysCache, cacheKey, augmented, cfg.holidaysTtlMs);

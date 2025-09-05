@@ -36,7 +36,7 @@ Singleton {
             property string weatherCity: "Moscow"
             // Optional User-Agent for external APIs (e.g., Nominatim, Open-Meteo)
             // Set to something like: "Quickshell/1.0 (contact: name@example.com)"
-            property string userAgent: "Quickshell"
+            property string userAgent: "NegPanel"
             property string profileImage: Quickshell.env("HOME") + "/.face"
             // Debug toggles
             property bool debugNetwork: false

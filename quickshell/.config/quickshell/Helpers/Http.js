@@ -26,13 +26,16 @@ function httpGetJson(url, timeoutMs, success, fail, userAgent) {
                 try { xhr.setRequestHeader('User-Agent', _ua); } catch (e2) {}
             }
         } catch (e) { /* ignore header setting failures */ }
-        // Advisory: some APIs (e.g., Nominatim) require UA with contact info
+        // Advisory: some geocoding APIs require a descriptive User-Agent with contact info
         try {
             var host = _hostOf(url).toLowerCase();
-            if (host.indexOf('nominatim.openstreetmap.org') !== -1) {
+            var needsContactUA = (host.indexOf('nominatim.openstreetmap.org') !== -1);
+            if (needsContactUA) {
                 var uastr = String(userAgent || '').trim();
-                if (!uastr || /^quickshell$/i.test(uastr)) {
-                    try { console.warn('[Http] Consider setting Settings.userAgent with contact for Nominatim'); } catch (_e) {}
+                if (!uastr || /^quickshell$/i.test(uastr) || /^negpanel$/i.test(uastr)) {
+                    try {
+                        console.warn('[Http] Geocoding service recommends a descriptive User-Agent with contact. Set Settings.userAgent, e.g.: "NegPanel/1.0 (contact: you@example.com)"');
+                    } catch (_e) {}
                 }
             }
         } catch (e4) {}
