@@ -20,7 +20,7 @@ Item {
     // Optional screen reference for scaling if needed by parent
     property var screen: null
     // Unified color prop (applies to fallback icon)
-    property alias color: fallbackColor
+    property alias color: root.fallbackColor
     // Use Rounded Material family for fallback icon
     property bool rounded: false
     // Custom fallback icon (Material Symbols name). If empty, uses Settings.settings.trayFallbackIcon
