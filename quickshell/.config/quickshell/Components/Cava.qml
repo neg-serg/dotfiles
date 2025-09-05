@@ -81,7 +81,7 @@ Scope {
                     process.index = 0;
                 }
                 for (let i = 0; i < data.length; i += 1) {
-                    newValues[process.index] = Math.min(data.charCodeAt(i), 128) / 128;
+                    newValues[process.index] = Utils.clamp(data.charCodeAt(i), 0, 128) / 128;
                     process.index = (process.index+1) % count;
                 }
                 values = newValues;
