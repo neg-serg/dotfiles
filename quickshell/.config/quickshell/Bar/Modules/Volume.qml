@@ -10,6 +10,9 @@ Item {
     id: volumeDisplay
     property int volume: 0
     property bool firstChange: true
+    // Track last non-muted icon category to add hysteresis between thresholds
+    // Values: 'off' | 'down' | 'up'
+    property string lastVolIconCategory: 'up'
     visible: false
     // Pleasant endpoint colors from Theme
     property color volLowColor: Theme.panelVolumeLowColor
@@ -65,11 +68,26 @@ Item {
         return getVolumeColor();
     }
 
+    function resolveIconCategory(vol, muted) {
+        if (muted) return 'off';
+        if (vol <= Theme.volumeIconOffThreshold) return 'off';
+        // Hysteresis region between downThreshold and upThreshold retains last category
+        if (vol < Theme.volumeIconDownThreshold) return 'down';
+        if (vol >= Theme.volumeIconUpThreshold) return 'up';
+        return lastVolIconCategory === 'down' ? 'down' : 'up';
+    }
+
+    function iconNameForCategory(cat) {
+        switch (cat) {
+        case 'off': return 'volume_off';
+        case 'down': return 'volume_down';
+        case 'up': default: return 'volume_up';
+        }
+    }
+
     PillIndicator {
         id: pillIndicator
-        icon: Services.Audio.muted
-            ? "volume_off"
-            : (volume === 0 ? "volume_off" : (volume < 30 ? "volume_down" : "volume_up"))
+        icon: iconNameForCategory(resolveIconCategory(volume, Services.Audio.muted))
         text: volume + "%"
 
         pillColor: Theme.panelPillBackground
@@ -78,6 +96,9 @@ Item {
         textColor: Theme.textPrimary
         collapsedIconColor: getIconColor()
         autoHide: true
+        // Use per-volume override if provided
+        autoHidePauseMs: Theme.volumePillAutoHidePauseMs
+        showDelayMs: Theme.volumePillShowDelayMs
 
         StyledTooltip {
             id: volumeTooltip
@@ -112,9 +133,9 @@ Item {
 
             // Update pill content/icon from current state
             pillIndicator.text = volume + "%";
-            pillIndicator.icon = Services.Audio.muted
-                ? "volume_off"
-                : (volume === 0 ? "volume_off" : (volume < 30 ? "volume_down" : "volume_up"));
+            const cat = resolveIconCategory(volume, Services.Audio.muted);
+            if (cat !== 'off') lastVolIconCategory = cat;
+            pillIndicator.icon = iconNameForCategory(cat);
 
             const atHundred = (volume === 100);
 
@@ -143,6 +164,9 @@ Item {
     Component.onCompleted: {
         if (Services.Audio && Services.Audio.volume !== undefined) {
             volume = Utils.clamp(Services.Audio.volume, 0, 100);
+            const cat = resolveIconCategory(volume, Services.Audio.muted || false);
+            if (cat !== 'off') lastVolIconCategory = cat;
+            pillIndicator.icon = iconNameForCategory(cat);
             // If we start at exactly 100%, schedule auto-hide by default
             if (volume === 100) fullHideTimer.restart();
         }
