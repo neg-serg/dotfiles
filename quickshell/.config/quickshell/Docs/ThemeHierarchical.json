@@ -1,0 +1,180 @@
+{
+  "colors": {
+    "background": "#ef000000",
+    "surface": "#181C25",
+    "surfaceVariant": "#242A35",
+    "text": {
+      "primary": "#CBD6E5",
+      "secondary": "#AEB9C8",
+      "disabled": "#6B718A"
+    },
+    "accent": {
+      "primary": "#006FCC"
+    },
+    "onAccent": "#FFFFFF",
+    "outline": "#3B4C5C",
+    "shadow": "#000000",
+    "overlay": "#10141A",
+    "status": {
+      "error": "#FF6B81",
+      "warning": "#FFBB66"
+    },
+    "highlight": "#94E1F9",
+    "ripple": "#D6F3FF",
+    "overrides": {
+      
+    }
+  },
+  "panel": {
+    "height": 28,
+    "sideMargin": 18,
+    "widgetSpacing": 12,
+    "sepOvershoot": 60,
+    "moduleHeight": 36,
+    "menuYOffset": 20,
+    "overlayRadius": 20,
+    "icons": {
+      "iconSize": 24,
+      "iconSizeSmall": 16,
+      "glyphSize": 14
+    },
+    "hotzone": {
+      "width": 16,
+      "height": 9,
+      "rightShift": 1.15
+    },
+    "menu": {
+      "width": 180,
+      "submenuWidth": 180,
+      "padding": 4,
+      "itemSpacing": 2,
+      "itemHeight": 26,
+      "separatorHeight": 6,
+      "dividerMargin": 10,
+      "radius": 0,
+      "heightExtra": 12,
+      "anchorYOffset": 4,
+      "submenuGap": 12,
+      "chevronSize": 15,
+      "iconSize": 16
+    },
+    "pill": {
+      "height": 22,
+      "iconSize": 22,
+      "paddingH": 14,
+      "showDelayMs": 500,
+      "autoHidePauseMs": 2500,
+      "background": "#000000"
+    },
+    "animations": {
+      "stdMs": 250,
+      "fastMs": 200
+    },
+    "tray": {
+      "longHoldMs": 2500,
+      "shortHoldMs": 1500,
+      "guardMs": 120,
+      "overlayDismissDelayMs": 5000
+    },
+    "rowSpacing": 8,
+    "rowSpacingSmall": 4,
+    "volume": {
+      "fullHideMs": 800,
+      "lowColor": "#D62E6E",
+      "highColor": "#0E6B4D"
+    },
+    "hover": {
+      "opacity": 0.18,
+      "fadeMs": 120
+    }
+  },
+  "shape": {
+    "cornerRadius": 8,
+    "cornerRadiusSmall": 4,
+    "cornerRadiusLarge": 12
+  },
+  "tooltip": {
+    "delayMs": 1500,
+    "minSize": 20,
+    "margin": 12,
+    "padding": 8,
+    "borderWidth": 1,
+    "radius": 2,
+    "fontPx": 14
+  },
+  "sidePanel": {
+    "cornerRadius": 9,
+    "spacing": 12,
+    "spacingTight": 6,
+    "spacingSmall": 4,
+    "spacingMedium": 8,
+    "albumArtSize": 200,
+    "popup": {
+      "slideMs": 220,
+      "autoHideMs": 4000,
+      "outerMargin": 4
+    },
+    "weather": {
+      "width": 440,
+      "height": 180
+    }
+  },
+  "ui": {
+    "iconSizeLarge": 28,
+    "margin": {
+      "large": 32,
+      "medium": 16
+    },
+    "padding": {
+      "medium": 14
+    },
+    "spacing": {
+      "large": 18,
+      "small": 10,
+      "xsmall": 2
+    },
+    "gap": {
+      "tiny": 1
+    },
+    "control": {
+      "height": 48
+    }
+  },
+  "calendar": {
+    "size": {
+      "width": 280,
+      "height": 320
+    },
+    "popupMargin": 2,
+    "borderWidth": 1,
+    "cellSize": 28,
+    "holidayDotSize": 3,
+    "rowSpacing": 2,
+    "cellSpacing": 2,
+    "sideMargin": 2,
+    "accentDarken": 0.8
+  },
+  "timers": {
+    "timeTickMs": 1000,
+    "wsRefreshDebounceMs": 120,
+    "musicPositionPollMs": 1000,
+    "musicPlayersPollMs": 5000,
+    "musicMetaRecalcDebounceMs": 80
+  },
+  "network": {
+    "vpnPollMs": 2500,
+    "restartBackoffMs": 1500,
+    "linkPollMs": 4000
+  },
+  "media": {
+    "hover": {
+      "openDelayMs": 320,
+      "stillThresholdMs": 180
+    }
+  },
+  "spectrum": {
+    "peakDecayIntervalMs": 50,
+    "barAnimMs": 100
+  }
+}
+
