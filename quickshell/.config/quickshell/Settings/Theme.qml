@@ -347,6 +347,7 @@ Singleton {
     property int mediaHoverStillThresholdMs: Utils.clamp(val('media.hover.stillThresholdMs', themeData.mediaHoverStillThresholdMs), 0, 10000)
     property int spectrumPeakDecayIntervalMs: Utils.clamp(val('spectrum.peakDecayIntervalMs', themeData.spectrumPeakDecayIntervalMs), 10, 1000)
     property int spectrumBarAnimMs: Utils.clamp(val('spectrum.barAnimMs', themeData.spectrumBarAnimMs), 0, 5000)
+    property int spectrumPeakThickness: Utils.clamp(val('spectrum.peakThickness', 2), 1, 12)
     property int musicPositionPollMs: Utils.clamp(val('timers.musicPositionPollMs', themeData.musicPositionPollMs), 100, 600000)
     property int musicPlayersPollMs: Utils.clamp(val('timers.musicPlayersPollMs', themeData.musicPlayersPollMs), 100, 600000)
     property int musicMetaRecalcDebounceMs: Utils.clamp(val('timers.musicMetaRecalcDebounceMs', themeData.musicMetaRecalcDebounceMs), 0, 10000)
@@ -381,6 +382,7 @@ Singleton {
     property int  panelMenuSeparatorHeight: Utils.clamp(val('panel.menu.separatorHeight', themeData.panelMenuSeparatorHeight), 1, 16)
     property int  panelMenuDividerMargin: Utils.clamp(val('panel.menu.dividerMargin', themeData.panelMenuDividerMargin), 0, 32)
     property int  panelMenuRadius: Utils.clamp(val('panel.menu.radius', themeData.panelMenuRadius), 0, 32)
+    property int  panelMenuItemRadius: Utils.clamp(val('panel.menu.itemRadius', 0), 0, 32)
     property int  panelMenuHeightExtra: Utils.clamp(val('panel.menu.heightExtra', themeData.panelMenuHeightExtra), 0, 64)
     property int  panelMenuAnchorYOffset: Utils.clamp(val('panel.menu.anchorYOffset', themeData.panelMenuAnchorYOffset), -20, 100)
     property int  panelSubmenuGap: val('panel.menu.submenuGap', themeData.panelSubmenuGap)
@@ -415,6 +417,7 @@ Singleton {
     // UI border/separator thickness
     property int uiBorderWidth: Utils.clamp(val('ui.border.width', 1), 0, 8)
     property int uiSeparatorThickness: Utils.clamp(val('ui.separator.thickness', 1), 1, 8)
+    property int uiSeparatorRadius: Utils.clamp(val('ui.separator.radius', 0), 0, 8)
     // Media emphasis scaling for icons
     property real mediaIconScaleEmphasis: val('media.iconScaleEmphasis', 1.15)
     // Calendar popup sizing

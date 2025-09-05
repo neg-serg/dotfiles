@@ -23,8 +23,11 @@ Additional UI tokens (nested)
 - Tooltip: tooltip.opacity, tooltip.smallScaleRatio
 - UI shadow: ui.shadow.opacity, ui.shadow.blur, ui.shadow.offsetX, ui.shadow.offsetY
 - UI border/separators: ui.border.width, ui.separator.thickness
+  - Separator radius: ui.separator.radius
 - Media: media.iconScaleEmphasis
 - Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
+  - Menu item radius: panel.menu.itemRadius
+  - Spectrum: spectrum.peakThickness
 
 Overrides (advanced)
 - You can override any derived token by adding an "Override" key in Theme.json:

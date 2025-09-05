@@ -118,7 +118,7 @@ import "../../Helpers/Color.js" as Color
                 anchors.fill: parent;
                 // Hover color: derived surface hover
                 color: mouseArea.containsMouse ? listView._hoverColor : "transparent";
-                radius: 0;
+                radius: Theme.panelMenuItemRadius;
                 visible: !(modelData?.isSeparator ?? false);
                 property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold) : Theme.textPrimary;
 
@@ -352,13 +352,14 @@ import "../../Helpers/Color.js" as Color
 
                     property var subMenu: null;
 
-                    Rectangle {
-                        anchors.centerIn: parent;
-                        width: parent.width - (Theme.panelMenuDividerMargin * 2);
-                        height: Theme.uiSeparatorThickness;
-                        color: Theme.borderSubtle;
-                        visible: modelData?.isSeparator ?? false;
-                    }
+            Rectangle {
+                anchors.centerIn: parent;
+                width: parent.width - (Theme.panelMenuDividerMargin * 2);
+                height: Theme.uiSeparatorThickness;
+                radius: Theme.uiSeparatorRadius;
+                color: Theme.borderSubtle;
+                visible: modelData?.isSeparator ?? false;
+            }
 
                     Rectangle {
                         id: bg;

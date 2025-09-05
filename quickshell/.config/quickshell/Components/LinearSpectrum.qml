@@ -96,7 +96,7 @@ Item {
                 visible: root.showPeaks && root.mirror && root.drawTop
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
-                height: 2
+                height: Theme.spectrumPeakThickness
                 radius: height / 2
                 y: root.halfH - Utils.clamp(parent.peak * root.halfH, 0, root.halfH) - height
                 color: Qt.rgba(root.colorAt(index).r, root.colorAt(index).g, root.colorAt(index).b, root.peakOpacity)

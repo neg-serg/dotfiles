@@ -65,6 +65,7 @@
       "padding": 4,
       "itemSpacing": 2,
       "itemHeight": 26,
+      "itemRadius": 0,
       "separatorHeight": 6,
       "dividerMargin": 10,
       "radius": 0,
@@ -109,7 +110,7 @@
   "ui": {
     "iconSizeLarge": 28,
     "border": { "width": 1 },
-    "separator": { "thickness": 1 }
+    "separator": { "thickness": 1, "radius": 0 }
   },
   "timers": {
     "timeTickMs": 1000,

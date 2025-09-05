@@ -29,7 +29,7 @@ Item {
         width: Math.round(thickness * Theme.scale(panel.screen))
         // Snap height to whole pixels to avoid subpixel blur when rotated
         height: Math.round(Math.hypot(root.width, root.height) - inset*2)
-        radius: 0
+        radius: Theme.uiSeparatorRadius
         // Apply alpha in color so children (accent stripe) are not faded
         color: Qt.rgba(root.color.r, root.color.g, root.color.b, root.alpha)
         anchors.centerIn: parent
