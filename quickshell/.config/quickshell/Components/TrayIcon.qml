@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Effects
 import Quickshell.Widgets
+import qs.Components
 // QML requires import qualifiers to start with an uppercase letter
 import "../Helpers/Url.js" as Url
 
@@ -74,5 +75,15 @@ Item {
             brightness: 0.0
             contrast: 1.0
         }
+    }
+
+    // Silent fallback when icon source fails to load
+    // Render a generic Material icon instead of leaving a blank spot
+    MaterialIcon {
+        anchors.centerIn: parent
+        size: root.size
+        icon: "broken_image"
+        color: Theme.textSecondary
+        visible: (img.status === Image.Error) || (!img.source || img.source === "")
     }
 }
