@@ -98,7 +98,7 @@ Scope {
                         Row {
                             id: netCluster
                             anchors.verticalCenter: wsindicator.verticalCenter
-                            spacing: Math.round(6 * panel.s)
+                            spacing: Math.round(Theme.panelNetClusterSpacing * panel.s)
                             LocalMods.VpnAmneziaIndicator {
                                 id: amneziaVpn
                                 // Icon only
@@ -200,7 +200,7 @@ Scope {
                         height: Math.round(Theme.panelHotzoneHeight * panel.s)
                         // Shift left by a factor of its width
                         anchors.rightMargin: Math.round(width * Theme.panelHotzoneRightShift)
-                        anchors.bottomMargin: 0
+                        anchors.bottomMargin: Theme.uiMarginNone
                         hoverEnabled: true
                         acceptedButtons: Qt.NoButton
                         // Place above generic bar hover tracker so it receives hover reliably
