@@ -316,6 +316,7 @@ Item {
     ProcessRunner {
         id: getCurrentWS
         cmd: ["hyprctl", "-j", "activeworkspace"]
+        env: hyprEnvOrNull()
         parseJson: true
         autoStart: false
         onJson: (obj) => { try { root.wsId = obj.id; root.wsName = obj.name; } catch (e) {} }
@@ -332,6 +333,7 @@ Item {
     ProcessRunner {
         id: getBinds
         cmd: ["bash", "-lc", "hyprctl -j binds"]
+        env: hyprEnvOrNull()
         parseJson: true
         onJson: (arr) => {
             try {

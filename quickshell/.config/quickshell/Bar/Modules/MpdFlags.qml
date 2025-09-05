@@ -98,27 +98,26 @@ Item {
     }
 
     // One-shot status parser
-    Process {
+    ProcessRunner {
         id: proc
-        command: ["bash", "-lc", cmd + " 2>/dev/null || true"]
-        stdout: StdioCollector {
-            waitForEnd: true
-            onStreamFinished: { root.parseStatus(text) }
-        }
+        cmd: ["bash", "-lc", cmd + " 2>/dev/null || true"]
+        autoStart: false
+        restartOnExit: false
+        // Consume entire output via onLine accumulation; sufficient for our parser
+        property string _buf: ""
+        onLine: (s) => { _buf += (s + "\n") }
+        onExited: (code, status) => { root.parseStatus(_buf); _buf = "" }
     }
 
     // Updates via MPD idle on 'options' subsystem
-    Process {
+    ProcessRunner {
         id: idle
         // Prefer mpc; fallback to rmpc
-        command: ["bash", "-lc", "mpc -q idle options player 2>/dev/null || rmpc -q idle options player 2>/dev/null || true"]
+        cmd: ["bash", "-lc", "mpc -q idle options player 2>/dev/null || rmpc -q idle options player 2>/dev/null || true"]
+        restartOnExit: true
+        backoffMs: 250
         onExited: (code, status) => {
-            // On options change: refresh and re-arm
-            if (root.enabled) {
-                proc.running = true
-                // Re-arm idle after a tiny delay to avoid tight loops
-                Qt.callLater(function(){ idle.running = true })
-            }
+            if (root.enabled) proc.start()
         }
     }
 
@@ -133,14 +132,14 @@ Item {
     }
 
     // Control lifecycle
-    Component.onCompleted: { if (enabled) { proc.running = true; idle.running = true; } }
+    Component.onCompleted: { if (enabled) { proc.start(); idle.start(); } }
     onEnabledChanged: {
         if (enabled) {
             activeFlags = [];
-            proc.running = true;
-            idle.running = true;
+            proc.start();
+            idle.start();
         } else {
-            idle.running = false;
+            idle.stop();
             activeFlags = [];
         }
     }

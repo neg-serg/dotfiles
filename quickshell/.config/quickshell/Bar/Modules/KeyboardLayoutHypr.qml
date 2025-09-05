@@ -111,9 +111,8 @@ Item {
             cursorShape: Qt.PointingHandCursor
             onClicked: {
                 const target = (kb.deviceName && kb.deviceName.length) ? kb.deviceName : "current"
-                switchProc.command = ["bash", "-lc", `hyprctl switchxkblayout ${target} next`]
-                switchProc.running = false
-                switchProc.running = true
+                switchProc.cmd = ["bash", "-lc", `hyprctl switchxkblayout ${target} next`]
+                switchProc.start()
             }
         }
     }
@@ -145,27 +144,23 @@ Item {
     }
 
     // Initial snapshot
-    Process {
+    ProcessRunner {
         id: initProc
-        command: ["bash", "-lc", "hyprctl -j devices"]
-        running: true
-        stdout: StdioCollector {
-            waitForEnd: true
-            onStreamFinished: {
-                try {
-                    const obj = JSON.parse(text)
-                    kb.knownKeyboards = (obj?.keyboards || []).map(k => (k.name || ""))
-                    const pick = selectKeyboard(obj?.keyboards || [])
-                    if (pick && deviceAllowed(pick.name || "")) {
-                        kb.layoutText = shortenLayout(pick.active_keymap || pick.layout || kb.layoutText)
-                    }
-                } catch (_) { /* ignore parse errors */ }
-            }
+        cmd: ["bash", "-lc", "hyprctl -j devices"]
+        parseJson: true
+        onJson: (obj) => {
+            try {
+                kb.knownKeyboards = (obj?.keyboards || []).map(k => (k.name || ""))
+                const pick = selectKeyboard(obj?.keyboards || [])
+                if (pick && deviceAllowed(pick.name || "")) {
+                    kb.layoutText = shortenLayout(pick.active_keymap || pick.layout || kb.layoutText)
+                }
+            } catch (_) { }
         }
     }
 
     // Click runner
-    Process { id: switchProc }
+    ProcessRunner { id: switchProc; autoStart: false; restartOnExit: false }
 
     // Helpers
     function deviceAllowed(name) {

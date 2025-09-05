@@ -14,6 +14,8 @@ Item {
     property var cmd: []
     // Restart backoff after unexpected exit (ms)
     property int backoffMs: 1500
+    // Optional environment map (array/object depending on Process API)
+    property var env: null
     // Optional polling interval (ms). When > 0, runs once per tick.
     property int intervalMs: 0
     // Parse stdout as JSON (single shot). When true, emits json(obj) on stream finish.
@@ -27,6 +29,7 @@ Item {
 
     signal line(string s)
     signal json(var obj)
+    signal exited(int code, int status)
 
     // Streaming collector
     property int _consumed: 0
@@ -51,6 +54,7 @@ Item {
     Process {
         id: proc
         command: root.cmd
+        environment: root.env
         running: root.intervalMs === 0 ? root.autoStart : false
 
         stdout: StdioCollector {
@@ -85,6 +89,7 @@ Item {
 
         onExited: {
             root._consumed = 0;
+            root.exited(code, status);
             if (root.intervalMs > 0) {
                 // In poll mode, rely on timer to retrigger
             } else {
