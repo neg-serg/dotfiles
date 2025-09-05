@@ -552,8 +552,13 @@ Singleton {
     property int  wsIconSpacing: val('ws.icon.spacing', 1)
     // Back-compat token (flat): ws.submapBaselineAdjust
     property int  wsSubmapBaselineAdjust: val('ws.submapBaselineAdjust', -5)
-    // New nested token for submap icon baseline vs. text; falls back to legacy flat key
+    // New nested tokens for submap icon
+    // Baseline vs. text; falls back to legacy flat key
     property int  wsSubmapIconBaselineOffset: val('ws.submap.icon.baselineOffset', wsSubmapBaselineAdjust)
+    // Scale relative to label font size
+    property real wsSubmapIconScale: Utils.clamp(val('ws.submap.icon.scale', 1.0), 0.2, 3.0)
+    // Color of the submap icon
+    property color wsSubmapIconColor: val('ws.submap.icon.color', accentPrimary)
     // Workspace label/icon paddings
     property int  wsLabelPadding: Utils.clamp(val('ws.label.padding', 6), 0, 64)
     property int  wsLabelLeftPadding: Utils.clamp(val('ws.label.leftPadding.normal', 2), -32, 64)

@@ -235,8 +235,8 @@ Item {
             id: submapIcon
             visible: root.submapName && root.submapName.length > 0
             icon: submapIconName(root.submapName)
-            color: Theme.accentPrimary
-            size: Theme.fontSizeSmall * Theme.scale(Screen)
+            color: Theme.wsSubmapIconColor
+            size: Math.round(label.font.pixelSize * Theme.wsSubmapIconScale)
             // Align to label baseline like the workspace icon does,
             // then compensate for font ascent differences + fine adjust
             anchors.baseline: label.baseline

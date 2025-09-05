@@ -63,6 +63,7 @@ Additional UI tokens (nested)
    - ws.label.padding, ws.label.leftPadding.normal, ws.label.leftPadding.terminal
    - ws.icon.innerPadding
   - Optional nested submap baseline: ws.submap.icon.baselineOffset (fallback to ws.submapBaselineAdjust)
+  - Submap icon: ws.submap.icon.scale, ws.submap.icon.color
 - Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
   - Applauncher list: applauncher.list.itemHeight, applauncher.list.itemHeightLarge
   - Applauncher preview: applauncher.preview.width

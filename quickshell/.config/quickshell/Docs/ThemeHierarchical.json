@@ -195,7 +195,7 @@
     "icon": { "scale": 1.45, "baselineOffset": 4, "spacing": 1, "innerPadding": 1 },
     "label": { "padding": 6, "leftPadding": { "normal": 2, "terminal": -2 } },
     "submapBaselineAdjust": -5,
-    "submap": { "icon": { "baselineOffset": -5 } }
+    "submap": { "icon": { "baselineOffset": -5, "scale": 1.0, "color": "#006FCC" } }
   },
   "calendar": {
     "size": {
