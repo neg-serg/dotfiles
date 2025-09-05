@@ -101,7 +101,7 @@ import "../../Helpers/Color.js" as Color
             width: listView.width;
             height: (modelData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight;
             color: "transparent";
-            radius: 0;
+            radius: Theme.panelMenuItemRadius;
 
             property var subMenu: null;
 
@@ -124,9 +124,9 @@ import "../../Helpers/Color.js" as Color
 
                 RowLayout {
                     anchors.fill: parent;
-                    anchors.leftMargin: 6;
-                    anchors.rightMargin: 6;
-                    spacing: 4;
+                    anchors.leftMargin: Theme.panelMenuPadding;
+                    anchors.rightMargin: Theme.panelMenuPadding;
+                    spacing: Theme.panelMenuItemSpacing;
 
                     Text {
                         Layout.fillWidth: true;
@@ -321,7 +321,7 @@ import "../../Helpers/Color.js" as Color
                 color: Theme.background || "#222";
                 border.color: Theme.borderSubtle;
                 border.width: Theme.uiBorderWidth;
-                radius: 0;
+                radius: Theme.panelMenuItemRadius;
                 z: 0;
             }
 
@@ -348,7 +348,7 @@ import "../../Helpers/Color.js" as Color
                     width: listView.width;
                     height: (modelData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight;
                     color: "transparent";
-                    radius: 0;
+                    radius: Theme.panelMenuItemRadius;
 
                     property var subMenu: null;
 
@@ -371,8 +371,8 @@ import "../../Helpers/Color.js" as Color
 
                         RowLayout {
                             anchors.fill: parent;
-                            anchors.leftMargin: 6;
-                            anchors.rightMargin: 6;
+                            anchors.leftMargin: Theme.panelMenuPadding;
+                            anchors.rightMargin: Theme.panelMenuPadding;
                             spacing: Theme.panelMenuItemSpacing;
 
                             Text {

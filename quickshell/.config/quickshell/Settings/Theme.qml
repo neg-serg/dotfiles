@@ -411,6 +411,8 @@ Singleton {
     property int sidePanelInnerRadius: Utils.clamp(val('sidePanel.innerRadius', 0), 0, 32)
     // Hover background radius factor for side panel buttons (0..1 of height)
     property real sidePanelButtonHoverRadiusFactor: Utils.clamp(val('sidePanel.buttonHoverRadiusFactor', 0.5), 0, 1)
+    // Side panel selector minimal width
+    property int sidePanelSelectorMinWidth: Utils.clamp(val('sidePanel.selector.minWidth', 120), 40, 600)
     property int sidePanelWeatherWidth: val('sidePanel.weather.width', themeData.sidePanelWeatherWidth)
     property int sidePanelWeatherHeight: val('sidePanel.weather.height', themeData.sidePanelWeatherHeight)
     property real sidePanelWeatherLeftColumnRatio: Utils.clamp(val('sidePanel.weather.leftColumnRatio', 0.32), 0.1, 0.8)
@@ -458,6 +460,12 @@ Singleton {
     property int calendarTitleFontPx: Utils.clamp(val('calendar.font.titlePx', 18), 8, 64)
     property int calendarDowFontPx: Utils.clamp(val('calendar.font.dowPx', 15), 6, 48)
     property int calendarDayFontPx: Utils.clamp(val('calendar.font.dayPx', 24), 8, 64)
+    // Calendar DOW styles
+    property bool calendarDowItalic: val('calendar.dow.italic', true)
+    property bool calendarDowUnderline: val('calendar.dow.underline', true)
+    // Calendar shape factors
+    property real calendarCellRadiusFactor: Utils.clamp(val('calendar.cell.radiusFactor', 0.33), 0, 1)
+    property real calendarHolidayDotRadiusFactor: Utils.clamp(val('calendar.holidayDot.radiusFactor', 0.5), 0, 1)
     // Calendar opacities
     property real calendarTitleOpacity: Utils.clamp(val('calendar.opacity.title', 0.7), 0, 1)
     property real calendarDowOpacity: Utils.clamp(val('calendar.opacity.dow', 0.9), 0, 1)

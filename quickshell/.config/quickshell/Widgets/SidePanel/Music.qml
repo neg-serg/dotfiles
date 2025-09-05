@@ -80,8 +80,8 @@ Rectangle {
             visible: !!MusicManager.currentPlayer
 
             // Unified typography for music widget
-            // Base size for icons and calculations (kept as-is)
-            property int musicFontPx: Math.round(13 * Theme.scale(screen))
+            // Base size for icons and calculations (align to Theme.fontSizeSmall)
+            property int musicFontPx: Math.round(Theme.fontSizeSmall * Theme.scale(screen))
             // Exact text size to match the rest of the panel
             property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(screen))
             property color musicTextColor: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
@@ -151,7 +151,7 @@ Rectangle {
                 }
             
                 background: Rectangle {
-                    implicitWidth: 120 * Theme.scale(screen)
+                    implicitWidth: Math.round(Theme.sidePanelSelectorMinWidth * Theme.scale(screen))
                     implicitHeight: Math.round(Theme.uiControlHeight * Theme.scale(screen))
                     // Match window/card palette
                     color: card.color
@@ -175,7 +175,7 @@ Rectangle {
                     y: playerSelector.topPadding + (playerSelector.availableHeight - height) / 2
                     text: "arrow_drop_down"
                     font.family: "Material Symbols Outlined"
-                    font.pixelSize: 20 * Theme.scale(screen)
+                    font.pixelSize: playerUI.musicTextPx
                     color: playerUI.musicTextColor
                 }
 
@@ -183,7 +183,7 @@ Rectangle {
                     y: playerSelector.height
                     width: playerSelector.width
                     implicitHeight: contentItem.implicitHeight
-                    padding: 1 * Theme.scale(screen)
+                    padding: Math.round(Theme.uiGapTiny * Theme.scale(screen))
 
                     contentItem: ListView {
                         clip: true

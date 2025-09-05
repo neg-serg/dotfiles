@@ -35,6 +35,7 @@ Additional UI tokens (nested)
   - Spectrum: spectrum.peakThickness
   - Side panel: sidePanel.innerRadius (inner blocks)
   - Side panel button hover radius factor: sidePanel.buttonHoverRadiusFactor
+  - Side panel selector: sidePanel.selector.minWidth
   - Weather left column width ratio: sidePanel.weather.leftColumnRatio
   - Weather header scale: weather.headerScale
 - Calendar font sizes: calendar.font.titlePx, calendar.font.dowPx, calendar.font.dayPx
