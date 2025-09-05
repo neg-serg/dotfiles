@@ -1,10 +1,11 @@
+import "Http.js" as Http
 var _countryCode = null;
 var _regionCode = null;
 var _regionName = null;
 var _locationExpiry = 0;
 var _holidaysCache = {}; // key: "year-country" -> { value, expiry, errorUntil }
 // Shared HTTP helper
-try { Qt.include("Http.js"); } catch (e) { }
+try { Qt.include("Http.js") /* deprecated include; kept for compatibility if needed */; } catch (e) { }
 
 var DEFAULTS = {
     locationTtlMs: 24 * 60 * 60 * 1000,  // 24h
@@ -92,7 +93,7 @@ function getCountryCode(callback, errorCallback, options) {
         extratags: 1
     });
     if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
-    httpGetJson(url, cfg.timeoutMs, function(response) {
+    Http.httpGetJson(url, cfg.timeoutMs, function(response) {
         try {
             _countryCode = (response && response[0] && response[0].address && response[0].address.country_code) ? response[0].address.country_code : "US";
             _regionCode = (response && response[0] && response[0].address && response[0].address["ISO3166-2-lvl4"]) ? response[0].address["ISO3166-2-lvl4"] : "";
@@ -134,7 +135,7 @@ function getHolidays(year, countryCode, callback, errorCallback, options) {
     var url = "https://date.nager.at/api/v3/PublicHolidays/" + year + "/" + countryCode;
 
     if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
-    httpGetJson(url, cfg.timeoutMs, function(list) {
+    Http.httpGetJson(url, cfg.timeoutMs, function(list) {
         try {
             var augmented = filterHolidaysByRegion(list || []);
             writeCacheSuccess(_holidaysCache, cacheKey, augmented, cfg.holidaysTtlMs);

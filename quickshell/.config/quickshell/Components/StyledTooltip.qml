@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Window 2.15
 import qs.Settings
+import "../Helpers/Utils.js" as Utils
 import "../Helpers/Color.js" as Color
 
 Window {
@@ -45,8 +46,8 @@ Window {
 
         var contentWidth = tooltipText.implicitWidth + 2 * padding;
         var contentHeight = tooltipText.implicitHeight + 2 * padding;
-        width = Math.max(minSize, contentWidth);
-        height = Math.max(minSize, contentHeight);
+        width = Utils.clamp(contentWidth, minSize, contentWidth);
+        height = Utils.clamp(contentHeight, minSize, contentHeight);
     }
 
     function showNow() {
@@ -91,13 +92,12 @@ Window {
 
         // Vertical boundary correction
         if (finalPositionAbove) {
-            proposedY = Math.max(screenGeometry.y, proposedY);
+            proposedY = Utils.clamp(proposedY, screenGeometry.y, proposedY);
         } else {
             if (proposedY + height > screenGeometry.y + screenGeometry.height) {
-                // Fallback to above if below doesn't fit
                 proposedY = globalPos.y - height - margin;
                 finalPositionAbove = true;
-                proposedY = Math.max(screenGeometry.y, proposedY);
+                proposedY = Utils.clamp(proposedY, screenGeometry.y, proposedY);
             }
         }
 

@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Settings
+import "../Helpers/Utils.js" as Utils
 
 Item {
     id: root
@@ -42,9 +43,9 @@ Item {
 
     // Computed bar width
     property real computedBarWidth: {
-        const n = Math.max(1, barCount);
+        const n = Utils.clamp(barCount, 1, barCount || 1);
         const w = (width - (n - 1) * barGap) / n;
-        return Math.max(minBarWidth, w);
+        return Utils.clamp(w, minBarWidth, w);
     }
 
     Repeater {
@@ -61,7 +62,7 @@ Item {
             onVChanged: if (root.showPeaks && v > peak) peak = v;
             Timer {
                 interval: Theme.spectrumPeakDecayIntervalMs; running: root.showPeaks; repeat: true
-                onTriggered: parent.peak = Math.max(0, parent.peak - 0.04)
+                onTriggered: parent.peak = Utils.clamp(parent.peak - 0.04, 0, 1)
             }
 
             // Base bar (bottom half)
@@ -70,7 +71,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 radius: width / 3
-                height: Math.max(1, Math.min(root.halfH, parent.v * root.halfH))
+                height: Utils.clamp(parent.v * root.halfH, 1, root.halfH)
                 y: root.mirror ? root.halfH : root.halfH - height
                 color: Qt.rgba(root.colorAt(index).r, root.colorAt(index).g, root.colorAt(index).b, root.fillOpacity)
                 antialiasing: true
@@ -83,7 +84,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 radius: width / 3
-                height: Math.max(1, Math.min(root.halfH, parent.v * root.halfH))
+                height: Utils.clamp(parent.v * root.halfH, 1, root.halfH)
                 y: root.halfH - height
                 color: Qt.rgba(root.colorAt(index).r, root.colorAt(index).g, root.colorAt(index).b, root.fillOpacity)
                 antialiasing: true
@@ -97,7 +98,7 @@ Item {
                 width: parent.width
                 height: 2
                 radius: height / 2
-                y: root.halfH - Math.min(root.halfH, parent.peak * root.halfH) - height
+                y: root.halfH - Utils.clamp(parent.peak * root.halfH, 0, root.halfH) - height
                 color: Qt.rgba(root.colorAt(index).r, root.colorAt(index).g, root.colorAt(index).b, root.peakOpacity)
                 antialiasing: true
             }
