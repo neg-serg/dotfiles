@@ -5,6 +5,7 @@ import QtQuick.Layouts
 // Quickshell and Wayland imports not needed here
 import qs.Components
 import qs.Settings
+import "../../Helpers/Color.js" as Color
 
 PanelWithOverlay {
     id: calendarOverlay
