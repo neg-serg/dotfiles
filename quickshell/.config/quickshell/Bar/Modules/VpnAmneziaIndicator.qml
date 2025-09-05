@@ -3,6 +3,7 @@ import QtQuick.Controls
 import Quickshell.Io
 import qs.Components
 import qs.Settings
+import "../../Helpers/Utils.js" as Utils
 
 // Amnezia VPN status indicator (basic)
 // - Polls `ip -j -br a` and considers VPN connected if any interface
@@ -48,7 +49,7 @@ Item {
     // Computed font size tied to height
     readonly property int computedFontPx: fontPixelSize > 0
         ? fontPixelSize
-        : Math.max(16, Math.round((desiredHeight - 2 * textPadding) * 0.6))
+        : Utils.clamp(Math.round((desiredHeight - 2 * textPadding) * 0.6), 16, 4096)
 
     Row {
         id: row
@@ -67,7 +68,7 @@ Item {
                 anchors.verticalCenterOffset: iconVAdjust
                 icon: root.iconName
                 rounded: root.iconRounded
-                size: Math.max(8, Math.round(root.computedFontPx * iconScale))
+                size: Utils.clamp(Math.round(root.computedFontPx * iconScale), 8, 2048)
                 color: iconColor()
             }
         }
@@ -126,7 +127,7 @@ Item {
         return Qt.rgba(y, y, y, c.a)
     }
     function desaturateColor(c, amount) {
-        amount = Math.max(0, Math.min(1, amount || 0))
+        amount = Utils.clamp(amount || 0, 0, 1)
         return mixColor(c, grayOf(c), amount)
     }
 
