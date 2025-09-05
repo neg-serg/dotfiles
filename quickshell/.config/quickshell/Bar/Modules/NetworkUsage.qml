@@ -39,7 +39,7 @@ Item {
 
     // Sizing
     implicitHeight: desiredHeight
-    width: lineBox.implicitWidth
+    width: inlineView.implicitWidth
     height: desiredHeight
 
     // Background (optional)
@@ -54,8 +54,7 @@ Item {
         ? fontPixelSize
         : Utils.clamp(Math.round((desiredHeight - 2 * textPadding) * Theme.panelComputedFontScale), 16, 4096)
 
-    // Font metrics for text (not icon)
-    FontMetrics { id: fmText; font: label.font }
+    // Font metrics no longer needed after refactor
 
     SmallInlineStat {
         id: inlineView

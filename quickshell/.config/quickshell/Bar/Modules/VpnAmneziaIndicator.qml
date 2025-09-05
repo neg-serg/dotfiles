@@ -66,10 +66,10 @@ Item {
         materialIconRounded: root.iconRounded
         iconScale: root.iconScale
         iconVAdjust: root.iconVAdjust
-        iconColor: iconColor()
+        iconColor: root.iconColor()
         labelVisible: root.showLabel
         labelText: "VPN"
-        labelColor: iconColor()
+        labelColor: root.iconColor()
     }
 
     // Poll every few seconds
