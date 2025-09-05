@@ -284,9 +284,9 @@ Singleton {
     property int panelIconSizeSmall: themeData.panelIconSizeSmall
     property int panelGlyphSize: themeData.panelGlyphSize
     // Panel hot-zone
-    property int panelHotzoneWidth: Math.max(4, Math.min(64, themeData.panelHotzoneWidth))
-    property int panelHotzoneHeight: Math.max(2, Math.min(64, themeData.panelHotzoneHeight))
-    property real panelHotzoneRightShift: Math.max(0.5, Math.min(3.0, themeData.panelHotzoneRightShift))
+    property int panelHotzoneWidth: Utils.clamp(themeData.panelHotzoneWidth, 4, 64)
+    property int panelHotzoneHeight: Utils.clamp(themeData.panelHotzoneHeight, 2, 64)
+    property real panelHotzoneRightShift: Utils.clamp(themeData.panelHotzoneRightShift, 0.5, 3.0)
     property int panelModuleHeight: themeData.panelModuleHeight
     property int panelMenuYOffset: themeData.panelMenuYOffset
     // Corners
@@ -308,13 +308,13 @@ Singleton {
     property int panelPillAutoHidePauseMs: themeData.panelPillAutoHidePauseMs
     property color panelPillBackground: themeData.panelPillBackground
     // Animation timings
-    property int panelAnimStdMs: Math.max(0, Math.min(5000, themeData.panelAnimStdMs))
-    property int panelAnimFastMs: Math.max(0, Math.min(5000, themeData.panelAnimFastMs))
+    property int panelAnimStdMs: Utils.clamp(themeData.panelAnimStdMs, 0, 5000)
+    property int panelAnimFastMs: Utils.clamp(themeData.panelAnimFastMs, 0, 5000)
     // Tray behavior timings
-    property int panelTrayLongHoldMs: Math.max(0, Math.min(10000, themeData.panelTrayLongHoldMs))
-    property int panelTrayShortHoldMs: Math.max(0, Math.min(10000, themeData.panelTrayShortHoldMs))
-    property int panelTrayGuardMs: Math.max(0, Math.min(2000, themeData.panelTrayGuardMs))
-    property int panelTrayOverlayDismissDelayMs: Math.max(0, Math.min(600000, themeData.panelTrayOverlayDismissDelayMs))
+    property int panelTrayLongHoldMs: Utils.clamp(themeData.panelTrayLongHoldMs, 0, 10000)
+    property int panelTrayShortHoldMs: Utils.clamp(themeData.panelTrayShortHoldMs, 0, 10000)
+    property int panelTrayGuardMs: Utils.clamp(themeData.panelTrayGuardMs, 0, 2000)
+    property int panelTrayOverlayDismissDelayMs: Utils.clamp(themeData.panelTrayOverlayDismissDelayMs, 0, 600000)
     // Generic row spacing
     property int panelRowSpacing: themeData.panelRowSpacing
     property int panelRowSpacingSmall: themeData.panelRowSpacingSmall
@@ -323,18 +323,18 @@ Singleton {
     property color panelVolumeLowColor: themeData.panelVolumeLowColor
     property color panelVolumeHighColor: themeData.panelVolumeHighColor
     // Core module timings
-    property int timeTickMs: Math.max(100, Math.min(60000, themeData.timeTickMs))
-    property int wsRefreshDebounceMs: Math.max(0, Math.min(10000, themeData.wsRefreshDebounceMs))
-    property int vpnPollMs: Math.max(500, Math.min(600000, themeData.vpnPollMs))
-    property int networkRestartBackoffMs: Math.max(0, Math.min(600000, themeData.networkRestartBackoffMs))
-    property int networkLinkPollMs: Math.max(500, Math.min(600000, themeData.networkLinkPollMs))
-    property int mediaHoverOpenDelayMs: Math.max(0, Math.min(5000, themeData.mediaHoverOpenDelayMs))
-    property int mediaHoverStillThresholdMs: Math.max(0, Math.min(10000, themeData.mediaHoverStillThresholdMs))
-    property int spectrumPeakDecayIntervalMs: Math.max(10, Math.min(1000, themeData.spectrumPeakDecayIntervalMs))
-    property int spectrumBarAnimMs: Math.max(0, Math.min(5000, themeData.spectrumBarAnimMs))
-    property int musicPositionPollMs: Math.max(100, Math.min(600000, themeData.musicPositionPollMs))
-    property int musicPlayersPollMs: Math.max(100, Math.min(600000, themeData.musicPlayersPollMs))
-    property int musicMetaRecalcDebounceMs: Math.max(0, Math.min(10000, themeData.musicMetaRecalcDebounceMs))
+    property int timeTickMs: Utils.clamp(themeData.timeTickMs, 100, 60000)
+    property int wsRefreshDebounceMs: Utils.clamp(themeData.wsRefreshDebounceMs, 0, 10000)
+    property int vpnPollMs: Utils.clamp(themeData.vpnPollMs, 500, 600000)
+    property int networkRestartBackoffMs: Utils.clamp(themeData.networkRestartBackoffMs, 0, 600000)
+    property int networkLinkPollMs: Utils.clamp(themeData.networkLinkPollMs, 500, 600000)
+    property int mediaHoverOpenDelayMs: Utils.clamp(themeData.mediaHoverOpenDelayMs, 0, 5000)
+    property int mediaHoverStillThresholdMs: Utils.clamp(themeData.mediaHoverStillThresholdMs, 0, 10000)
+    property int spectrumPeakDecayIntervalMs: Utils.clamp(themeData.spectrumPeakDecayIntervalMs, 10, 1000)
+    property int spectrumBarAnimMs: Utils.clamp(themeData.spectrumBarAnimMs, 0, 5000)
+    property int musicPositionPollMs: Utils.clamp(themeData.musicPositionPollMs, 100, 600000)
+    property int musicPlayersPollMs: Utils.clamp(themeData.musicPlayersPollMs, 100, 600000)
+    property int musicMetaRecalcDebounceMs: Utils.clamp(themeData.musicMetaRecalcDebounceMs, 0, 10000)
     // Calendar metrics
     property int calendarRowSpacing: themeData.calendarRowSpacing
     property int calendarCellSpacing: themeData.calendarCellSpacing
@@ -351,14 +351,14 @@ Singleton {
     // Panel menu metrics
     property int  panelMenuWidth: Utils.clamp(themeData.panelMenuWidth, 100, 600)
     property int  panelSubmenuWidth: themeData.panelSubmenuWidth
-    property int  panelMenuPadding: Math.max(0, Math.min(32, themeData.panelMenuPadding))
-    property int  panelMenuItemSpacing: Math.max(0, Math.min(16, themeData.panelMenuItemSpacing))
-    property int  panelMenuItemHeight: Math.max(16, Math.min(64, themeData.panelMenuItemHeight))
-    property int  panelMenuSeparatorHeight: Math.max(1, Math.min(16, themeData.panelMenuSeparatorHeight))
-    property int  panelMenuDividerMargin: Math.max(0, Math.min(32, themeData.panelMenuDividerMargin))
-    property int  panelMenuRadius: Math.max(0, Math.min(32, themeData.panelMenuRadius))
-    property int  panelMenuHeightExtra: Math.max(0, Math.min(64, themeData.panelMenuHeightExtra))
-    property int  panelMenuAnchorYOffset: Math.max(-20, Math.min(100, themeData.panelMenuAnchorYOffset))
+    property int  panelMenuPadding: Utils.clamp(themeData.panelMenuPadding, 0, 32)
+    property int  panelMenuItemSpacing: Utils.clamp(themeData.panelMenuItemSpacing, 0, 16)
+    property int  panelMenuItemHeight: Utils.clamp(themeData.panelMenuItemHeight, 16, 64)
+    property int  panelMenuSeparatorHeight: Utils.clamp(themeData.panelMenuSeparatorHeight, 1, 16)
+    property int  panelMenuDividerMargin: Utils.clamp(themeData.panelMenuDividerMargin, 0, 32)
+    property int  panelMenuRadius: Utils.clamp(themeData.panelMenuRadius, 0, 32)
+    property int  panelMenuHeightExtra: Utils.clamp(themeData.panelMenuHeightExtra, 0, 64)
+    property int  panelMenuAnchorYOffset: Utils.clamp(themeData.panelMenuAnchorYOffset, -20, 100)
     property int  panelSubmenuGap: themeData.panelSubmenuGap
     property int  panelMenuChevronSize: themeData.panelMenuChevronSize
     property int  panelMenuIconSize: themeData.panelMenuIconSize
@@ -375,19 +375,19 @@ Singleton {
     property int panelOverlayRadius: themeData.panelOverlayRadius
     property int cornerRadiusLarge: themeData.cornerRadiusLarge
     // Generic UI spacings/margins
-    property int uiMarginLarge: Math.max(0, Math.min(128, themeData.uiMarginLarge))
-    property int uiMarginMedium: Math.max(0, Math.min(64, themeData.uiMarginMedium))
-    property int uiPaddingMedium: Math.max(0, Math.min(64, themeData.uiPaddingMedium))
-    property int uiSpacingLarge: Math.max(0, Math.min(64, themeData.uiSpacingLarge))
-    property int uiSpacingSmall: Math.max(0, Math.min(32, themeData.uiSpacingSmall))
-    property int uiSpacingXSmall: Math.max(0, Math.min(16, themeData.uiSpacingXSmall))
+    property int uiMarginLarge: Utils.clamp(themeData.uiMarginLarge, 0, 128)
+    property int uiMarginMedium: Utils.clamp(themeData.uiMarginMedium, 0, 64)
+    property int uiPaddingMedium: Utils.clamp(themeData.uiPaddingMedium, 0, 64)
+    property int uiSpacingLarge: Utils.clamp(themeData.uiSpacingLarge, 0, 64)
+    property int uiSpacingSmall: Utils.clamp(themeData.uiSpacingSmall, 0, 32)
+    property int uiSpacingXSmall: Utils.clamp(themeData.uiSpacingXSmall, 0, 16)
     property int uiGapTiny: themeData.uiGapTiny
     property int uiControlHeight: themeData.uiControlHeight
     // Calendar popup sizing
-    property int calendarWidth: Math.max(200, Math.min(800, themeData.calendarWidth))
-    property int calendarHeight: Math.max(200, Math.min(800, themeData.calendarHeight))
-    property int calendarPopupMargin: Math.max(0, Math.min(32, themeData.calendarPopupMargin))
+    property int calendarWidth: Utils.clamp(themeData.calendarWidth, 200, 800)
+    property int calendarHeight: Utils.clamp(themeData.calendarHeight, 200, 800)
+    property int calendarPopupMargin: Utils.clamp(themeData.calendarPopupMargin, 0, 32)
     property int calendarBorderWidth: themeData.calendarBorderWidth
-    property int calendarCellSize: Math.max(16, Math.min(64, themeData.calendarCellSize))
+    property int calendarCellSize: Utils.clamp(themeData.calendarCellSize, 16, 64)
     property int calendarHolidayDotSize: themeData.calendarHolidayDotSize
 }
