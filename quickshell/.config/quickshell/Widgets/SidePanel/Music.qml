@@ -17,6 +17,16 @@ Rectangle {
     color: "transparent"
     implicitHeight: playerUI.implicitHeight
 
+    // Optional contrast warnings (debug only)
+    function warnContrast(bg, fg, label) {
+        try {
+            if (!(Settings.settings && Settings.settings.enforceContrastWarnings)) return;
+            var ratio = Color.contrastRatio(bg, fg);
+            var th = (Settings.settings && Settings.settings.contrastWarnRatio) ? Settings.settings.contrastWarnRatio : 4.5;
+            if (ratio < th) console.warn('[Music] Low contrast', label || 'text', ratio.toFixed(2));
+        } catch (e) {}
+    }
+
     // Time formatting moved to Helpers/Format.js
 
         Rectangle {
@@ -44,6 +54,7 @@ Rectangle {
                     font.pixelSize: Theme.fontSizeHeader * Theme.scale(screen)
                     color: Color.contrastOn(card.color, Theme.textSecondary, Theme.textPrimary, Theme.contrastThreshold)
                     Layout.alignment: Qt.AlignHCenter
+                    Component.onCompleted: musicCard.warnContrast(card.color, color, 'fallbackIcon')
                 }
 
                 Text {
@@ -73,6 +84,7 @@ Rectangle {
             // Exact text size to match the rest of the panel
             property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(screen))
             property color musicTextColor: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
+            Component.onCompleted: musicCard.warnContrast(card.color, musicTextColor, 'musicText')
             property int musicFontWeight: Font.Medium
 
             // Fancy info removed
@@ -115,7 +127,8 @@ Rectangle {
                     // ignore
                 }
             }
-            Component.onCompleted: playerUI.dedupePlayers()
+            // Triggered by periodic Timer and onCurrentPlayerChanged; initial call not required
+            // Component.onCompleted: playerUI.dedupePlayers()
             Timer { interval: 2000; running: true; repeat: true; onTriggered: playerUI.dedupePlayers() }
             Connections { target: MusicManager; function onCurrentPlayerChanged() { playerUI.dedupePlayers() } }
             ComboBox {
