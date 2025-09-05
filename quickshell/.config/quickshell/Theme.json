@@ -12,7 +12,6 @@
       "secondary": "#AEB9C8"
     },
     "highlight": "#94E1F9",
-    
     "onAccent": "#FFFFFF"
   },
   "panel": {
@@ -47,7 +46,8 @@
       "longHoldMs": 2500,
       "shortHoldMs": 1500,
       "guardMs": 120,
-      "overlayDismissDelayMs": 5000
+      "overlayDismissDelayMs": 5000,
+      "inlinePadding": 6
     },
     "rowSpacing": 8,
     "rowSpacingSmall": 4,
@@ -73,9 +73,13 @@
       "anchorYOffset": 4,
       "submenuGap": 12,
       "chevronSize": 15,
-      "iconSize": 16
+      "iconSize": 16,
+      "itemFontScale": 0.9
     },
-    "overlayRadius": 20
+    "overlayRadius": 20,
+    "netCluster": {
+      "spacing": 6
+    }
   },
   "shape": {
     "cornerRadius": 8,
@@ -93,15 +97,14 @@
   },
   "sidePanel": {
     "popup": {
-      "slideMs": 220,
-      "autoHideMs": 4000,
-      "outerMargin": 4
+      "spacing": 0
     },
     "cornerRadius": 9,
     "innerRadius": 0,
     "buttonHoverRadiusFactor": 0.5,
-    "selector": { "minWidth": 120 },
-    "popup": { "spacing": 0 },
+    "selector": {
+      "minWidth": 120
+    },
     "spacing": 12,
     "spacingTight": 6,
     "spacingSmall": 4,
@@ -110,16 +113,70 @@
       "width": 440,
       "height": 180,
       "leftColumnRatio": 0.32
+    },
+    "button": {
+      "activeVisibleMin": 0.18
     }
   },
   "ui": {
     "iconSizeLarge": 28,
-    "border": { "width": 1 },
-    "separator": { "thickness": 1, "radius": 0, "diagonal": { "stripeOpacity": 0.9, "implicitWidth": 10, "implicitHeight": 28 } },
-    "ripple": { "opacity": 0.18 },
-    "icon": { "emphasisOpacity": 0.9 },
-    "anim": { "quickMs": 120, "rotateMs": 160, "rippleMs": 320, "easing": { "quick": "OutQuad", "rotate": "OutCubic", "ripple": "InOutCubic", "stdOut": "OutCubic", "stdIn": "InCubic", "inOut": "InOutQuad" } },
-    "spinner": { "durationMs": 1000 }
+    "border": {
+      "width": 1
+    },
+    "separator": {
+      "thickness": 1,
+      "radius": 0,
+      "diagonal": {
+        "stripeOpacity": 0.9,
+        "implicitWidth": 10,
+        "implicitHeight": 28,
+        "alpha": 0.05,
+        "thickness": 7,
+        "angleDeg": 30,
+        "inset": 4,
+        "stripeBrightness": 0.4,
+        "stripeRatio": 0.35
+      }
+    },
+    "ripple": {
+      "opacity": 0.18
+    },
+    "icon": {
+      "emphasisOpacity": 0.9
+    },
+    "anim": {
+      "quickMs": 120,
+      "rotateMs": 160,
+      "rippleMs": 320,
+      "easing": {
+        "quick": "OutQuad",
+        "rotate": "OutCubic",
+        "ripple": "InOutCubic",
+        "stdOut": "OutCubic",
+        "stdIn": "InCubic",
+        "inOut": "InOutQuad"
+      }
+    },
+    "spinner": {
+      "durationMs": 1000
+    },
+    "visibilityEpsilon": 0.01
+  },
+  "ws": {
+    "icon": {
+      "scale": 1.45,
+      "baselineOffset": 4,
+      "spacing": 1,
+      "innerPadding": 1
+    },
+    "submapBaselineAdjust": -5,
+    "submap": {
+      "icon": {
+        "baselineOffset": -5,
+        "scale": 1.0,
+        "color": "#006FCC"
+      }
+    }
   },
   "timers": {
     "timeTickMs": 1000,
@@ -131,12 +188,33 @@
   "network": {
     "vpnPollMs": 2500,
     "restartBackoffMs": 1500,
-    "linkPollMs": 4000
+    "linkPollMs": 4000,
+    "icon": {
+      "scale": 0.7,
+      "vAdjust": 0
+    }
   },
   "media": {
     "hover": {
       "openDelayMs": 320,
       "stillThresholdMs": 180
+    },
+    "iconScaleEmphasis": 1.15,
+    "time": {
+      "fontScale": 0.8,
+      "alpha": {
+        "playing": 1.0,
+        "paused": 0.8
+      }
+    },
+    "mpd": {
+      "flags": {
+        "fallbackMs": 2500,
+        "iconScale": 0.95
+      }
+    },
+    "albumArt": {
+      "fallbackOpacity": 0.4
     }
   },
   "spectrum": {
@@ -144,22 +222,123 @@
     "barAnimMs": 100,
     "barGap": 2,
     "minBarWidth": 2,
-    "peakOpacity": 0.7
+    "peakOpacity": 0.7,
+    "fillOpacity": 0.35
   },
   "calendar": {
     "rowSpacing": 2,
     "cellSpacing": 2,
     "sideMargin": 2,
-    "font": { "titlePx": 18, "dowPx": 15, "dayPx": 24 },
-    "opacity": { "title": 0.7, "dow": 0.9, "otherMonthDay": 0.3 },
-    "dow": { "spacing": 0, "sideMargin": 0 },
-    "grid": { "spacing": 0 }
+    "font": {
+      "titlePx": 18,
+      "dowPx": 15,
+      "dayPx": 24
+    },
+    "opacity": {
+      "title": 0.7,
+      "dow": 0.9,
+      "otherMonthDay": 0.3
+    },
+    "dow": {
+      "spacing": 0,
+      "sideMargin": 0
+    },
+    "grid": {
+      "spacing": 0
+    }
   },
-  "weather": { "headerScale": 0.75 },
+  "weather": {
+    "headerScale": 0.75,
+    "card": {
+      "opacity": 0.85
+    },
+    "centerOffset": -2
+  },
   "applauncher": {
     "clipboardPollMs": 1000,
-    "list": { "itemHeight": 48, "itemHeightLarge": 64 },
-    "preview": { "width": 200, "innerMargin": 14, "maxHeightRatio": 1.0 },
-    "content": { "margin": 32 }
+    "list": {
+      "itemHeight": 48,
+      "itemHeightLarge": 64,
+      "opacity": {
+        "clipboard": 0.8,
+        "command": 0.9,
+        "noMeta": 0.6
+      }
+    },
+    "preview": {
+      "width": 200,
+      "innerMargin": 14,
+      "maxHeightRatio": 1.0
+    },
+    "content": {
+      "margin": 32
+    }
+  },
+  "vpn": {
+    "connectedOpacity": 0.8,
+    "disconnectedOpacity": 0.45,
+    "icon": {
+      "scale": 1.0,
+      "vAdjust": 0,
+      "spacing": 4
+    },
+    "text": {
+      "padding": 4
+    },
+    "accent": {
+      "saturateBoost": 0.12,
+      "lightenTowardWhite": 0.2
+    },
+    "desaturateAmount": 0.45
+  },
+  "time": {
+    "font": {
+      "scale": 1.0,
+      "weight": 500
+    },
+    "text": {
+      "color": "#CBD6E5"
+    }
+  },
+  "keyboard": {
+    "height": 28,
+    "minWidth": 40,
+    "margin": 4,
+    "radius": 4,
+    "icon": {
+      "scale": 1.0,
+      "spacing": 4,
+      "padding": 4,
+      "baselineOffset": 0
+    },
+    "text": {
+      "padding": 1.5,
+      "baselineOffset": 0,
+      "bold": false
+    },
+    "opacity": {
+      "normal": 1.0,
+      "hover": 1.0
+    },
+    "font": {
+      "scale": 0.9
+    },
+    "colors": {
+      "bg": "#ef000000",
+      "hoverBg": "#14222f",
+      "text": "#CBD6E5",
+      "icon": "#AEB9C8"
+    }
+  },
+  "volume": {
+    "icon": {
+      "offThreshold": 0,
+      "downThreshold": 30,
+      "upThreshold": 50
+    },
+    "pill": {
+      "autoHidePauseMs": 2500,
+      "showDelayMs": 500
+    }
   }
 }

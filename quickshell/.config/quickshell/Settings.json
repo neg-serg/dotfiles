@@ -3,5 +3,8 @@
     "fontSizeMultiplier": 1.2,
     "showMediaInBar": true,
     "showMediaVisualizer": false,
-    "showWeatherInBar": false
+    "showWeatherInBar": false,
+    "strictThemeTokens": true,
+    "debugContrast": true,
+    "contrastWarnRatio": 4.5
 }
