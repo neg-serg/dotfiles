@@ -6,9 +6,7 @@ import "../../Helpers/Color.js" as Color
 import qs.Settings
 import "../../Helpers/Utils.js" as Utils
 
-// Amnezia VPN status indicator (basic)
-// - Polls `ip -j -br a` and considers VPN connected if any interface
-//   name contains "awg" or "amnez" and has at least one address.
+// Amnezia VPN status indicator (polls `ip -j -br a`)
 Item {
     id: root
 
@@ -27,11 +25,9 @@ Item {
     property bool   iconRounded: false
 
     // Colors
-    // Tuning for derived VPN accent (edit locally if you want stronger effect)
     property real accentSaturateBoost: Theme.vpnAccentSaturateBoost
     property real accentLightenTowardWhite: Theme.vpnAccentLightenTowardWhite
-    // Derive a slightly lighter/more saturated variant from the primary accent
-    // (approximate former accentSecondary without needing a separate palette token)
+    // Slightly lighter/more saturated variant of accent
     property color onColor:  Color.towardsWhite(Color.saturate(Theme.accentPrimary, accentSaturateBoost), accentLightenTowardWhite)
     property color offColor: useTheme ? Theme.textDisabled  : Theme.textDisabled
     // Accent derived from Theme; desaturated for subtle look
@@ -40,7 +36,7 @@ Item {
     property color accentBase: Color.saturate(Theme.accentPrimary, accentSaturateBoost)
     property color accentColor: desaturateColor(accentBase, desaturateAmount)
 
-    // Opacity tokens (from Theme)
+    // Opacity
     property real connectedOpacity: Theme.vpnConnectedOpacity
     property real disconnectedOpacity: Theme.vpnDisconnectedOpacity
     // Internal state
@@ -72,7 +68,7 @@ Item {
         labelColor: root.iconColor()
     }
 
-    // Poll every few seconds
+    // Poll
     Timer {
         id: poll
         interval: Theme.vpnPollMs
@@ -99,7 +95,7 @@ Item {
         }
     }
 
-    // --- Color helpers ---
+    // Color helpers
     function mixColor(a, b, t) {
         // a,b: colors; t in [0,1]
         return Qt.rgba(
@@ -140,7 +136,7 @@ Item {
     opacity: hovered ? 1.0 : (connected ? connectedOpacity : disconnectedOpacity)
     function iconColor() {
         if (!connected) return offColor
-        // Use workspace accent blue when connected (subtle); hover only affects opacity
+        // Use accent when connected; hover affects opacity only
         return accentColor
     }
 

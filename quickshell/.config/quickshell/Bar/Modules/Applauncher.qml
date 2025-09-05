@@ -16,7 +16,7 @@ PanelWithOverlay {
     Component.onCompleted: {
         try {
             var res = Helpers.Fuzzy.single('term', 'terminal');
-        // debug removed
+        
         } catch (e) {
             console.warn('[Applauncher] Fuzzy smoke failed:', e);
         }

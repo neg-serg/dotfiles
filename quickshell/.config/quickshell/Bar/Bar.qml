@@ -70,7 +70,7 @@ Scope {
                         anchors.left: parent.left
                     }
 
-                    // Hot zone visual removed; area is invisible
+                    
 
                     // Keep rootScope.barHeight in sync with actual bar height
                     Component.onCompleted: {
@@ -116,7 +116,7 @@ Scope {
                         DiagSep { stripeEnabled: false; visible: Settings.settings.showWeatherInBar === true }
                     }
 
-                    // SystemInfo removed from the bar; controlled via dedicated module
+                    
 
                     RowLayout {
                         id: rightWidgetsRow
@@ -145,7 +145,7 @@ Scope {
                             iconPx: Math.round(Theme.fontSizeSmall * Theme.scale(panel.screen) * Theme.mpdFlagsIconScale)
                             iconColor: Theme.textPrimary
                         }
-                        // Side panel button removed; track click toggles sidebarPopup
+                        
                         SystemTray {
                             id: systemTrayModule
                             shell: rootScope.shell
@@ -184,7 +184,7 @@ Scope {
                             }
                         } catch (e) { /* ignore */ }
                     }
-                    // removed: merged into the Component.onCompleted above
+                    
                     Connections {
                         target: MusicManager
                         function onTrackAlbumChanged()  { panel.maybeShowOnAlbumChange(); }

@@ -10,11 +10,10 @@ Item {
     id: volumeDisplay
     property int volume: 0
     property bool firstChange: true
-    // Track last non-muted icon category to add hysteresis between thresholds
-    // Values: 'off' | 'down' | 'up'
+    // Last non-muted icon category (hysteresis): 'off' | 'down' | 'up'
     property string lastVolIconCategory: 'up'
     visible: false
-    // Pleasant endpoint colors from Theme
+    // Gradient endpoints
     property color volLowColor: Theme.panelVolumeLowColor
     property color volHighColor: Theme.panelVolumeHighColor
     // Stub ioSelector to avoid reference errors if advanced UI isn't present
@@ -25,13 +24,12 @@ Item {
         function dismiss() { visible = false }
     }
 
-    // Collapse size when hidden so it doesn't leave a gap
-    // RowLayout relies on implicit sizes, so override them too
+    // Collapse size when hidden (RowLayout-friendly)
     width: visible ? pillIndicator.width : 0
     height: visible ? pillIndicator.height : 0
     implicitWidth: visible ? pillIndicator.width : 0
     implicitHeight: visible ? pillIndicator.height : 0
-    // Hint RowLayout to use these collapsed sizes
+    // Hint RowLayout
     Layout.preferredWidth: implicitWidth
     Layout.preferredHeight: implicitHeight
     Layout.minimumWidth: implicitWidth
@@ -39,7 +37,7 @@ Item {
     Layout.maximumWidth: implicitWidth
     Layout.maximumHeight: implicitHeight
 
-    // Hide the pill after ~800ms when volume sits exactly at 100%
+    // Auto-hide at 100%
     Timer {
         id: fullHideTimer
         interval: Theme.panelVolumeFullHideMs
@@ -53,7 +51,7 @@ Item {
     }
 
     function getVolumeColor() {
-        // Gradient from volLowColor at 0% to volHighColor at 100% (clamped)
+        // 0% -> lowColor, 100% -> highColor
         var t = Utils.clamp(volume / 100.0, 0, 1);
         return Qt.rgba(
             volLowColor.r + (volHighColor.r - volLowColor.r) * t,
@@ -63,15 +61,12 @@ Item {
         );
     }
 
-    function getIconColor() {
-        // Use the same gradient for the collapsed icon as well
-        return getVolumeColor();
-    }
+    function getIconColor() { return getVolumeColor(); }
 
     function resolveIconCategory(vol, muted) {
         if (muted) return 'off';
         if (vol <= Theme.volumeIconOffThreshold) return 'off';
-        // Hysteresis region between downThreshold and upThreshold retains last category
+        // Hysteresis between down/up thresholds
         if (vol < Theme.volumeIconDownThreshold) return 'down';
         if (vol >= Theme.volumeIconUpThreshold) return 'up';
         return lastVolIconCategory === 'down' ? 'down' : 'up';
@@ -96,7 +91,7 @@ Item {
         textColor: Theme.textPrimary
         collapsedIconColor: getIconColor()
         autoHide: true
-        // Use per-volume override if provided
+        
         autoHidePauseMs: Theme.volumePillAutoHidePauseMs
         showDelayMs: Theme.volumePillShowDelayMs
 
@@ -131,7 +126,7 @@ Item {
 
             volume = clampedVolume;
 
-            // Update pill content/icon from current state
+            // Update pill content/icon
             pillIndicator.text = volume + "%";
             const cat = resolveIconCategory(volume, Services.Audio.muted);
             if (cat !== 'off') lastVolIconCategory = cat;
@@ -139,8 +134,7 @@ Item {
 
             const atHundred = (volume === 100);
 
-            // First change: don't flash the pill if we're exactly at 100%
-            // to allow the module to remain hidden; otherwise reveal it.
+            // First change: avoid flash at exactly 100%
             if (firstChange) {
                 firstChange = false;
                 if (!atHundred) {
@@ -152,7 +146,7 @@ Item {
                 pillIndicator.show();
             }
 
-            // Schedule/stop full hide depending on current value, even on first change.
+            // Manage full-hide timer
             if (atHundred) {
                 fullHideTimer.restart();
             } else if (fullHideTimer.running) {
@@ -167,7 +161,7 @@ Item {
             const cat = resolveIconCategory(volume, Services.Audio.muted || false);
             if (cat !== 'off') lastVolIconCategory = cat;
             pillIndicator.icon = iconNameForCategory(cat);
-            // If we start at exactly 100%, schedule auto-hide by default
+            // Start hidden at 100%
             if (volume === 100) fullHideTimer.restart();
         }
     }

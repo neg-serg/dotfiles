@@ -34,6 +34,5 @@ Rectangle {
         screen: clockWidget.screen
         visible: false
     }
-
-    // Tooltip removed as requested
+    
 }

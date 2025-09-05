@@ -96,7 +96,7 @@ function writeCacheError(store, key, errorTtlMs) {
     store[key] = { errorUntil: now() + errorTtlMs };
 }
 
-// httpGetJson removed; use httpGetJson from Helpers/Http.js
+// Use httpGetJson from Helpers/Http.js
 
 function fetchCoordinates(city, callback, errorCallback, options) {
     options = options || {};
@@ -133,7 +133,6 @@ function fetchCoordinates(city, callback, errorCallback, options) {
     // Use shared HTTP helper with User-Agent
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
     var dbg = !!(options && options.debug);
-    if (dbg) try { console.debug('[Weather] GET', geoUrl); } catch (e) {}
     _httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
         try {
             if (geoData && geoData.results && geoData.results.length > 0) {
@@ -193,7 +192,6 @@ function fetchWeather(latitude, longitude, callback, errorCallback, options) {
     });
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
     var dbg = !!(options && options.debug);
-    if (dbg) try { console.debug('[Weather] GET', url); } catch (e) {}
     _httpGetJson(url, cfg.timeoutMs, function(weatherData) {
         if (cacheKey) writeCacheSuccess(_weatherCache, cacheKey, weatherData, cfg.weatherTtlMs);
         callback(weatherData);

@@ -1,8 +1,4 @@
-// Bar/Modules/KeyboardLayoutHypr.qml — keyboard layout indicator (QS-only, themed)
-// - Listens to Hyprland raw events and shows "deviceName,Layout" updates.
-// - Click toggles layout via `hyprctl switchxkblayout` (bash -lc for NixOS PATH).
-// - Font Awesome icon + label aligned by baseline (FontMetrics + baselineAligned).
-// - Tunable spacing/scale and tiny baseline nudges for perfect visual alignment.
+// Keyboard layout indicator (Hyprland)
 
 import QtQuick
 import QtQuick.Controls
@@ -15,20 +11,20 @@ import "../../Helpers/Utils.js" as Utils
 Item {
     id: kb
 
-    // === Public API ===
-    property string deviceMatch: ""       // substring to match keyboard device name
+    // Public API
+    property string deviceMatch: ""
     property alias  fontPixelSize: label.font.pixelSize
-    property int    desiredHeight: Math.round(Theme.keyboardHeight * Theme.scale(Screen))     // minimum capsule height
-    property var    screen: null          // pass panel.screen for Theme scaling
+    property int    desiredHeight: Math.round(Theme.keyboardHeight * Theme.scale(Screen))
+    property var    screen: null
     property bool   useTheme: true
-    property int    yNudge: 0             // ±px vertical tweak for the whole pill
+    property int    yNudge: 0
 
-    // Icon (match workspace look)
+    // Icon
     property real   iconScale: Theme.keyboardIconScale
     property int    iconSpacing: Theme.keyboardIconSpacing
     property color  iconColor: useTheme ? Theme.keyboardIconColor : Theme.textSecondary
 
-    // Fine baseline nudges (if needed, usually -2..+3 px)
+    // Baseline nudges
     property int    iconBaselineAdjust: Theme.keyboardIconBaselineOffset
     property int    textBaselineAdjust: Theme.keyboardTextBaselineOffset
 
@@ -37,12 +33,12 @@ Item {
     property color  textColor:    useTheme ? Theme.keyboardTextColor : Theme.textPrimary
     property color  hoverBgColor: useTheme ? Theme.keyboardHoverBgColor : Theme.surfaceHover
 
-    // === Internal state ===
+    // State
     property string layoutText: "??"
     property string deviceName: ""
     property var    knownKeyboards: []
 
-    // Theme scaling helper
+    // Theme scaling
     function sc() {
         const s = kb.screen || (Quickshell.screens && Quickshell.screens.length ? Quickshell.screens[0] : null)
         return s ? Theme.scale(s) : 1
@@ -50,11 +46,11 @@ Item {
 
     readonly property int margin: Math.round(Theme.keyboardMargin * sc())
 
-    // Size hints — IMPORTANT: implicitHeight tracks the capsule height
+    // Size hints
     implicitWidth:  Math.ceil(row.implicitWidth + 2 * margin)
     implicitHeight: capsule.height
 
-    // === Capsule UI ===
+    // Capsule UI
     Rectangle {
         id: capsule
         readonly property bool hovered: ma.containsMouse
@@ -90,7 +86,7 @@ Item {
                 color: kb.iconColor
                 verticalAlignment: Text.AlignVCenter
                 padding: Math.round(Theme.keyboardIconPadding * sc())
-                // Baseline from the top of this control (metrics + optional nudge)
+                // Baseline from ascent + nudge
                 baselineOffset: fmIcon.ascent + kb.iconBaselineAdjust
             }
 
@@ -103,7 +99,7 @@ Item {
                 font.weight: Theme.keyboardTextBold ? Font.DemiBold : Font.Medium
                 verticalAlignment: Text.AlignVCenter
                 padding: Math.round(Theme.keyboardTextPadding * sc())
-                // Baseline from the top of this control (metrics + optional nudge)
+                // Baseline from ascent + nudge
                 baselineOffset: fmText.ascent + kb.textBaselineAdjust
             }
         }
@@ -122,11 +118,11 @@ Item {
         }
     }
 
-    // === Hyprland raw events ===
+    // Hyprland raw events
     Connections {
         target: Hyprland
         function onRawEvent(a, b) {
-            // Accept either (a,b) strings, single string a, or object with .data
+            // Accept (a,b), a, or object with .data
             let payload =
                 (typeof a === "string" && typeof b === "string") ? b :
                 (typeof a === "string" && b === undefined)       ? a :
@@ -148,7 +144,7 @@ Item {
         }
     }
 
-    // === Initial snapshot before first event ===
+    // Initial snapshot
     Process {
         id: initProc
         command: ["bash", "-lc", "hyprctl -j devices"]
@@ -168,10 +164,10 @@ Item {
         }
     }
 
-    // Runner for click
+    // Click runner
     Process { id: switchProc }
 
-    // === Helpers ===
+    // Helpers
     function deviceAllowed(name) {
         const needle = (kb.deviceMatch || "").toLowerCase().trim()
         if (!needle) return true

@@ -11,7 +11,6 @@ Singleton {
     id: root
     // Set true after Theme.json is loaded/applied at least once
     property bool _themeLoaded: false
-    // Removed unused designScreenWidth
     // Per-monitor UI scaling (defaults to 1.0)
     function scale(currentScreen) {
         try {
@@ -106,13 +105,12 @@ Singleton {
             property string warning: "#FFBB66"
             // Highlights & Focus
             property string highlight:    "#94E1F9"
-            // Removed unused rippleEffect
             // Additional Theme Properties
             property string onAccent: "#FFFFFF"
             property string outline:  "#3B4C5C"
             // Shadows & Overlays
             property string shadow:  "#000000"
-            // Removed unused base overlay color; use overlayWeak/Strong derived tokens
+            
 
             // Panel metrics (logical px; scaled per-screen via Theme.scale(screen))
             property int panelHeight: 28
@@ -455,13 +453,13 @@ Singleton {
     property color warning: val('colors.status.warning', themeData.warning)
     // Highlights & Focus
     property color highlight: val('colors.highlight', themeData.highlight)
-    // Removed unused rippleEffect token
+    
     // Additional Theme Properties
     property color onAccent: val('colors.onAccent', themeData.onAccent)
     property color outline: val('colors.outline', themeData.outline)
     // Shadows & Overlays
     property color shadow: applyOpacity(val('colors.shadow', themeData.shadow), "B3")
-    // Removed unused base overlay token; use overlayWeak/overlayStrong
+    
     property string fontFamily: "Iosevka" // Font Properties
     // Font size multiplier - adjust this in Settings.json to scale all fonts
     property real fontSizeMultiplier: Settings.settings.fontSizeMultiplier || 1.0
@@ -783,7 +781,6 @@ Singleton {
     property real calendarOtherMonthDayOpacity: Utils.clamp(val('calendar.opacity.otherMonthDay', 0.3), 0, 1)
     // Tunable factor for dark accent on calendar highlights (today/selected/hover)
     property real calendarAccentDarken: Utils.clamp(val('calendar.accentDarken', themeData.calendarAccentDarken), 0, 1)
-    // Spectrum opacity for peaks
     // Spectrum opacities
     property real spectrumFillOpacity: Utils.clamp(val('spectrum.fillOpacity', 0.35), 0, 1)
     property real spectrumPeakOpacity: Utils.clamp(val('spectrum.peakOpacity', 0.7), 0, 1)
@@ -796,7 +793,6 @@ Singleton {
         ? val('colors.overrides.accentHover', themeData.accentHoverOverride) : Color.towardsWhite(accentPrimary, 0.2)
     property color accentActive: (val('colors.overrides.accentActive', themeData.accentActiveOverride) !== undefined)
         ? val('colors.overrides.accentActive', themeData.accentActiveOverride) : Color.towardsBlack(accentPrimary, 0.2)
-    // Removed unused accentDisabled token
     property color accentDarkStrong: (val('colors.overrides.accentDarkStrong', themeData.accentDarkStrongOverride) !== undefined)
         ? val('colors.overrides.accentDarkStrong', themeData.accentDarkStrongOverride) : Color.towardsBlack(accentPrimary, 0.8)
     property color surfaceHover: (val('colors.overrides.surfaceHover', themeData.surfaceHoverOverride) !== undefined)

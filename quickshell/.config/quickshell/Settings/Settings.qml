@@ -26,7 +26,6 @@ Singleton {
         Component.onCompleted: function() {
             reload()
         }
-        // onLoaded side-effects removed (no WallpaperManager integration)
         onLoadFailed: function(error) {
             settingAdapter = {}
             writeAdapter()
@@ -43,7 +42,6 @@ Singleton {
             // Strict Theme tokens: warn when Theme falls back to defaults
             property bool strictThemeTokens: false
             property bool useFahrenheit: false
-            // Wallpaper and video settings removed
             property bool showMediaInBar: false
             // Weather button in bar
             property bool showWeatherInBar: false
@@ -53,8 +51,6 @@ Singleton {
             property bool dimPanels: true
             property real fontSizeMultiplier: 1.0  // Font size multiplier (1.0 = normal, 1.2 = 20% larger, 0.8 = 20% smaller)
             property var pinnedExecs: [] // Added for AppLauncher pinned apps
-
-            // Removed unused dock/recording/encoder settings
 
             // Media spectrum / CAVA visualization
             // Reduced by one third from 128 -> ~86
@@ -102,7 +98,6 @@ Singleton {
             property string mediaTitleSeparator: "—"
 
             // Monitor/Display Settings
-            // Panel is fixed at bottom; remove configurable position
             property var barMonitors: [] // Array of monitor names to show the bar on
             property var dockMonitors: [] // Array of monitor names to show the dock on
             property var monitorScaleOverrides: {} // Map of monitor name -> scale override (e.g., 0.8..2.0). When set, Theme.scale() returns this value
@@ -140,17 +135,7 @@ Singleton {
             // Media visualizer (CAVA/LinearSpectrum) toggle
             property bool showMediaVisualizer: false
 
-            // Music player selection priority (ordered rules). Example presets:
-            //   - Default: prefer MPD playing, then any playing, then MPD recent, recent, manual, first
-            //   - Manual-first: ["manual", "recent", "first"]
-            //   - Any-playing-first (no MPD bias): ["anyPlaying", "recent", "manual", "first"]
-            // Allowed rule values:
-            //   "mpdPlaying"  -> most-recent MPD that is currently playing
-            //   "anyPlaying"  -> most-recent player that is currently playing
-            //   "mpdRecent"   -> most-recent MPD (playing or not)
-            //   "recent"      -> most-recent player (playing or not)
-            //   "manual"      -> respect manually selected index when available
-            //   "first"       -> fallback to the first available player
+            // Player selection priority (ordered rules): mpdPlaying, anyPlaying, mpdRecent, recent, manual, first
             property var playerSelectionPriority: [
                 "mpdPlaying",
                 "anyPlaying",
@@ -159,28 +144,22 @@ Singleton {
                 "manual",
                 "first"
             ]
-            // Optional preset. If `playerSelectionPriority` is empty or not set,
-            // MusicPlayers will use this preset to derive the rules.
-            // Supported presets: "default", "manualFirst", "playingFirst", "mpdBias"
+            // Preset if priority list is empty: "default", "manualFirst", "playingFirst", "mpdBias"
             property string playerSelectionPreset: "default"
 
-            // Music popup configuration
-            // Base logical sizes; scaled per-screen in MusicPopup
+            // Music popup sizing (logical; scaled per-screen)
             property int  musicPopupWidth: 840     // logical px, scaled
             property int  musicPopupHeight: 250    // logical px, scaled (used when content height unknown)
             property int  musicPopupPadding: 12    // logical px, scaled (inner content padding)
 
-            // Networking / connectivity
-            // Ping interval for internet reachability checks (ms)
+            // Networking
             property int  networkPingIntervalMs: 30000
-            // Colors for NetworkUsage icon states (strings parsed as colors)
-            // No Internet (link up, but no reachability): orange (Half-Life-like)
-            // Orange Box / TF vibe orange
+            // Colors for NetworkUsage icon states
             property string networkNoInternetColor: "#FF6E00"
             // No Link (interface down): raspberry/crimson-ish
             property string networkNoLinkColor: "#D81B60"
         }
     }
 
-    // Removed wallpaper-related Connections hooks
+    
 }

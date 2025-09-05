@@ -18,7 +18,7 @@ Item {
     property string cmd: "(mpc status || rmpc status)"
     property var activeFlags: [] // [{ key, icon, title }]
     property string mpdState: "unknown" // playing | paused | stopped | unknown
-    // Background visual matches bar background; helps reserve geometry cleanly
+    // Background padding
     property int padX: Math.round(Theme.panelRowSpacingSmall * Theme.scale(Screen))
     property int padY: Math.round(Theme.uiGapTiny * Theme.scale(Screen))
     property int radius: Math.round(Theme.cornerRadiusSmall * Theme.scale(Screen))
@@ -32,7 +32,7 @@ Item {
     function parseStatus(text) {
         try {
             const s = String(text || "");
-            // Prefer JSON output (rmpc); fallback to human text (mpc)
+            // Prefer JSON (rmpc); fallback to text (mpc)
             var trimmed = s.trim();
             const flags = [];
             function pushFlag(ok, key, icon, title) { if (ok) flags.push({ key, icon, title }); }
@@ -41,9 +41,9 @@ Item {
                 return t === "on" || t === "1" || t === "true" || t === "one";
             }
             if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
-                // JSON mode (rmpc)
+                // JSON mode
                 var obj = JSON.parse(trimmed);
-                // Some rmpc variants return object directly, others wrap — normalize
+                // Normalize variants
                 var stv = (obj.state || obj.State || "").toString().toLowerCase();
                 if (!stv && obj.mpd && obj.mpd.state) stv = String(obj.mpd.state).toLowerCase();
                 mpdState = stv || "unknown";
@@ -58,7 +58,7 @@ Item {
                 if (typeof xf === 'number') xfOn = xf > 0; else if (xf !== undefined && xf !== null) xfOn = !/^0$|^off$/i.test(String(xf));
                 pushFlag(xfOn, "xfade", "blur_linear", "Crossfade");
             } else {
-                // Text mode (mpc)
+                // Text mode
                 var st = "unknown";
                 var mbr = trimmed.match(/\[(playing|paused|stopped)\]/i);
                 if (mbr && mbr[1]) st = String(mbr[1]).toLowerCase();
@@ -107,13 +107,13 @@ Item {
         }
     }
 
-    // Event-driven updates via MPD idle on 'options' subsystem
+    // Updates via MPD idle on 'options' subsystem
     Process {
         id: idle
-        // Prefer mpc idle; fallback to rmpc idle
+        // Prefer mpc; fallback to rmpc
         command: ["bash", "-lc", "mpc -q idle options player 2>/dev/null || rmpc -q idle options player 2>/dev/null || true"]
         onExited: (code, status) => {
-            // After any options change, refresh flags and wait again (if still enabled)
+            // On options change: refresh and re-arm
             if (root.enabled) {
                 proc.running = true
                 // Re-arm idle after a tiny delay to avoid tight loops
@@ -122,12 +122,12 @@ Item {
         }
     }
 
-    // Fallback polling if idle misses or is unsupported; also runs when MPD is current even if not enabled
+    // Fallback polling if idle misses or unsupported
     Timer {
         id: fallback
         interval: root.fallbackIntervalMs
         repeat: true
-        // Only when enabled (active in media and MPD selected)
+        // Only when enabled
         running: root.enabled
         onTriggered: { root.refresh() }
     }
@@ -145,11 +145,7 @@ Item {
         }
     }
 
-    // Note: avoid Connections to MusicManager properties to prevent missing-signal warnings in this scene.
-
-    // No extra background; blend into the panel
-
-    // Content row of icons with spacing and padding via anchors
+    // Icon row
     Row {
         id: content
         anchors.left: parent.left

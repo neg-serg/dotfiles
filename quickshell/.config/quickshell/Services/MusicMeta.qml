@@ -59,7 +59,7 @@ Item {
 
     // Recalculate all public fields in one pass (debounced by caller if needed)
     function recalcAll() {
-        var t0 = 0; if (debugMetaLogging) { t0 = Date.now(); ++_recalcSeq; console.debug('[MusicMeta] recalc #' + _recalcSeq + ' begin'); }
+        var t0 = 0; if (debugMetaLogging) { t0 = Date.now(); ++_recalcSeq; }
         // Compute URL first to trigger introspection when it changes
         var newUrl = computeUrlStr();
         if (trackUrlStr !== newUrl) trackUrlStr = newUrl;
@@ -86,12 +86,7 @@ Item {
         // Depends on several of the above
         trackDsdRateStr     = computeDsdRateStr();
         trackQualitySummary = computeQualitySummary();
-        if (debugMetaLogging) {
-            var dt = Date.now() - t0;
-            var pl = (currentPlayer && (currentPlayer.name || currentPlayer.identity)) || '';
-            var title = (typeof trackTitle !== 'undefined' ? trackTitle : (currentPlayer && currentPlayer.trackTitle)) || '';
-            console.debug('[MusicMeta] recalc #' + _recalcSeq + ' done in ' + dt + 'ms', 'player=', pl, 'title=', title);
-        }
+        
     }
 
     // --- Helpers over currentPlayer -------------------------------------

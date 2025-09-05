@@ -13,7 +13,7 @@ Item {
     property int    desiredHeight: Math.round(Theme.panelHeight * Theme.scale(Screen))
     property int    fontPixelSize: 0
     property color  textColor: Theme.textPrimary
-    // Match media separators color (same blue as workspace accents)
+    // Separator color (matches workspace/media)
     property color  separatorColor: Theme.accentHover
     property color  bgColor:   "transparent"
     property int    iconSpacing: Theme.panelRowSpacingSmall
@@ -25,7 +25,7 @@ Item {
     property bool   hasLink: true
     property bool   hasInternet: true
 
-    // Icon tuning (from Theme tokens)
+    // Icon tuning
     property real   iconScale: Theme.networkIconScale
     // Base icon color (used when link+internet are OK)
     property color  iconColor: useTheme ? Theme.textSecondary : Theme.textSecondary
@@ -42,14 +42,14 @@ Item {
     width: inlineView.implicitWidth
     height: desiredHeight
 
-    // Background (optional)
+    // Optional background
     Rectangle {
         anchors.fill: parent
         color: bgColor
         visible: bgColor !== "transparent"
     }
 
-    // Computed font size tied to height
+    // Computed font size
     readonly property int computedFontPx: fontPixelSize > 0
         ? fontPixelSize
         : Utils.clamp(Math.round((desiredHeight - 2 * textPadding) * Theme.panelComputedFontScale), 16, 4096)
@@ -79,7 +79,7 @@ Item {
         labelFontFamily: Theme.fontFamily
     }
 
-    // External process runner
+    // External process
     Process {
         id: runner
         running: true
@@ -93,7 +93,7 @@ Item {
         onRunningChanged: if (!running) restartTimer.restart()
     }
 
-    // Backoff before restart
+    // Restart backoff
     Timer {
         id: restartTimer
         interval: Theme.networkRestartBackoffMs
@@ -101,7 +101,7 @@ Item {
         onTriggered: runner.running = true
     }
 
-    // --- Link detection: parse `ip -j -br a` ---
+    // Link detection via `ip -j -br a`
     Timer {
         id: linkPoll
         interval: Theme.networkLinkPollMs
@@ -123,19 +123,17 @@ Item {
                         if (!name || name === "lo") continue
                         const state = (it && it.operstate) ? String(it.operstate) : ""
                         const addrs = Array.isArray(it?.addr_info) ? it.addr_info : []
-                        // Treat as "link present" if operstate UP, or UNKNOWN but has an address (e.g., VPN)
+                        // Link present: UP, or UNKNOWN with an address (e.g., VPN)
                         if (state === "UP" || (state === "UNKNOWN" && addrs.length > 0)) { up = true; break }
                     }
                     root.hasLink = up
-                } catch (e) {
-                    // On parse error, assume unknown link (keep previous)
-                }
+                } catch (e) { }
                 linkProbe.running = false
             }
         }
     }
 
-    // --- Internet reachability: ping a well-known IP (1.1.1.1) ---
+    // Internet reachability: ping 1.1.1.1
     Timer {
         id: inetPoll
         interval: (function(){ var v = Utils.coerceInt(Settings.settings.networkPingIntervalMs, 30000); return Utils.clamp(v, 1000, 600000); })()
@@ -159,18 +157,14 @@ Item {
         }
     }
 
-    // JSON parsing from rsmetrx
+    // Parse rsmetrx JSON
     function parseJsonLine(line) {
         try {
             const data = JSON.parse(line)
             if (typeof data.rx_kib_s === "number" && typeof data.tx_kib_s === "number") {
                 root.displayText = formatData(data)
-            } else {
-                // ignore invalid line silently
-            }
-        } catch (e) {
-            // ignore parse errors
-        }
+            } else { /* ignore invalid line */ }
+        } catch (e) { /* ignore parse errors */ }
     }
 
     // "12.3/4.5K" (single K suffix) or "0"
@@ -183,7 +177,7 @@ Item {
 
     Component.onCompleted: {}
 
-    // Current icon color based on connectivity
+    // Icon color from connectivity
     function currentIconColor() {
         if (!root.hasLink) return (Settings.settings.networkNoLinkColor || Theme.error)
         if (!root.hasInternet) return (Settings.settings.networkNoInternetColor || Theme.warning)

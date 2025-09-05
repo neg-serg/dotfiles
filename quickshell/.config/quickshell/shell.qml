@@ -9,8 +9,7 @@ import qs.Services
 
 Scope {
     id: root
-    // Audio service is a singleton now; modules should import qs.Services.Audio directly
-    // Window mirroring removed; Hyprland exclusive zones handle panel space
+    
 
     Component.onCompleted: {
         Quickshell.shell = root;
@@ -18,7 +17,7 @@ Scope {
 
     // Overview {}
     Bar { id: bar; shell: root; }
-    // Remove noisy Connections with unknown signals; we can re-evaluate on demand or via UI events
+    
 
     Applauncher {
         id: appLauncherPanel

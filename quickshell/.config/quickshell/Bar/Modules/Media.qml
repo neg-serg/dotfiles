@@ -3,7 +3,6 @@ import "../../Helpers/Utils.js" as Utils
 import QtQuick.Controls
 import QtQuick.Layouts
 // Quickshell.Widgets not needed
-// (Io import removed)
 import QtQuick.Effects
 import "../../Helpers/Format.js" as Format
 import "../../Helpers/Time.js" as Time
@@ -105,11 +104,7 @@ Item {
             implicitWidth: trackText.implicitWidth
             implicitHeight: mediaControl.height
 
-            // (MPD detection centralized in MusicManager)
-
-            // Debug logging removed
-
-            // (MPD flags moved to Bar/Bar.qml as a separate section)
+            
 
             // Hover-to-open with dwell; click also opens
             MouseArea {
@@ -231,7 +226,7 @@ Item {
                 anchors.bottom: parent.bottom
                 clip: true
 
-                // Backdrop under text removed to avoid darkening the title area
+                
 
                 // Single rich text line: title + [cur/tot] inline; clipped by frame
                 Text {
@@ -310,7 +305,7 @@ Item {
         }
     }
 
-    // Tooltip removed
+    
 
-    // --- Fancy info builder removed -------------------------
+    
 }

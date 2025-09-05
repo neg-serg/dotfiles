@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
 import QtQuick.Window 2.15
-// (Io import removed)
 import qs.Settings
 import qs.Components
 import qs.Services
@@ -18,7 +17,7 @@ Rectangle {
     color: "transparent"
     implicitHeight: playerUI.implicitHeight
 
-    // Optional contrast warnings (debug only)
+    // Optional contrast warnings
     function warnContrast(bg, fg, label) {
         try {
             if (!(Settings.settings && Settings.settings.enforceContrastWarnings)) return;
@@ -88,10 +87,9 @@ Rectangle {
             Component.onCompleted: musicCard.warnContrast(card.color, musicTextColor, 'musicText')
             property int musicFontWeight: Font.Medium
 
-            // Fancy info removed
+            
 
-            // Player selector
-            // Build a de-duplicated list of players by identity/id
+            // Player selector (dedup by identity/id)
             property var uniquePlayers: []
             // Keep header area hidden to prevent layout jumps on player discovery
             readonly property bool showCombo: false
@@ -128,8 +126,7 @@ Rectangle {
                     // ignore
                 }
             }
-            // Triggered by periodic Timer and onCurrentPlayerChanged; initial call not required
-            // Component.onCompleted: playerUI.dedupePlayers()
+            // Refresh list periodically and on player change
             Timer { interval: 2000; running: true; repeat: true; onTriggered: playerUI.dedupePlayers() }
             Connections { target: MusicManager; function onCurrentPlayerChanged() { playerUI.dedupePlayers() } }
             ComboBox {
@@ -217,7 +214,7 @@ Rectangle {
                     background: Rectangle { color: highlighted ? Theme.surfaceHover : "transparent" }
                 }
 
-            // Single player label (when no need for ComboBox)
+            // Single player label (when only one player)
             Text {
                 visible: playerUI.showSingleLabel
                 Layout.preferredHeight: visible ? (28 * Theme.scale(screen)) : 0
@@ -245,7 +242,7 @@ Rectangle {
                     height: albumArtwork.height
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
 
-                    // (Visualizer removed for this view as per request)
+                    
 
                     // Album art image (square with slight rounding) — no outer fill/border
                     Rectangle {
@@ -308,7 +305,7 @@ Rectangle {
                     Layout.fillWidth: true
                     spacing: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(screen))
 
-                    // Title intentionally hidden per request
+                    
 
                     // (Upper two lines moved into details block)
 
@@ -336,7 +333,7 @@ Rectangle {
                             // (reverted) no category-colored quality block here
                             
 
-                            // Time intentionally hidden per request
+                    
 
                             // Artist
                             RowLayout {
@@ -407,7 +404,7 @@ Rectangle {
                                 }
                             }
 
-                            // Player line removed by request
+                            
 
                             // Genre (if available)
                             RowLayout {
@@ -701,13 +698,7 @@ Rectangle {
                             }
 
                             // Path (if available)
-                            // Path hidden by request
-                            // Row removed
-
-                            // Container hidden by request
-                            // Row removed
-
-                            // Size intentionally hidden per request
+                            
 
                             // Date (if available)
                             RowLayout {
@@ -732,7 +723,7 @@ Rectangle {
                                 }
                             }
 
-                            // Encoder row removed by request
+                            
 
                             // ReplayGain (if available)
                             RowLayout {
@@ -784,7 +775,7 @@ Rectangle {
                 }
             }
 
-            // (Progress bar and media controls removed as requested)
+            
         }
     }
 

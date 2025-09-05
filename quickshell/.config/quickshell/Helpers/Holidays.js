@@ -96,7 +96,7 @@ function writeCacheError(store, key, errorTtlMs) {
     store[key] = { errorUntil: now() + errorTtlMs };
 }
 
-// xhrGetJson removed; use httpGetJson from Helpers/Http.js
+// Use httpGetJson from Helpers/Http.js
 
 function getCountryCode(callback, errorCallback, options) {
     options = options || {};
@@ -112,7 +112,6 @@ function getCountryCode(callback, errorCallback, options) {
     }
 
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
-    var dbg = !!(options && options.debug);
     var url = buildUrl("https://nominatim.openstreetmap.org/search", {
         city: Settings.settings.weatherCity || "",
         country: "",
@@ -120,7 +119,7 @@ function getCountryCode(callback, errorCallback, options) {
         addressdetails: 1,
         extratags: 1
     });
-    if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
+    var dbg = !!(options && options.debug);
     _httpGetJson(url, cfg.timeoutMs, function(response) {
         try {
             _countryCode = (response && response[0] && response[0].address && response[0].address.country_code) ? response[0].address.country_code : "US";
@@ -163,7 +162,6 @@ function getHolidays(year, countryCode, callback, errorCallback, options) {
     var url = "https://date.nager.at/api/v3/PublicHolidays/" + year + "/" + countryCode;
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
     var dbg = !!(options && options.debug);
-    if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
     _httpGetJson(url, cfg.timeoutMs, function(list) {
         try {
             var augmented = filterHolidaysByRegion(list || []);

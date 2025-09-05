@@ -7,7 +7,7 @@ import "../Helpers/Color.js" as Color
 
 Rectangle {
     id: entry
-// Data for this entry (explicitly passed from ListView delegate)
+// Entry data and context
 required property var entryData
     // Reference to parent ListView for sibling submenu cleanup
     required property ListView listViewRef
@@ -16,23 +16,16 @@ required property var entryData
     // Parent menu window (PopupWindow) to attach submenus to
     required property var menuWindow
 
-    // Optional screen (for Theme.scale). If not provided, defaults to 1.0 scale.
+    // Optional screen (for Theme.scale)
     property var screen: (menuWindow && menuWindow.screen) ? menuWindow.screen : null
     readonly property int _computedPx: Math.max(1, Math.round(Theme.fontSizeSmall * Theme.scale(entry.screen) * Theme.panelMenuItemFontScale))
-    function _entryText() {
-        try {
-            var d = entryData; if (!d) return "";
-            var keys = ['text','label','title','name','id'];
-            for (var i=0;i<keys.length;i++) {
-                var k = keys[i]; var v = d[k];
-                if (v !== undefined && v !== null) {
-                    var s = String(v); if (s.length) return s;
-                }
-            }
-            // Fallback best-effort
-            return (d && d.toString) ? String(d) : '';
-        } catch (e) { return "" }
-    }
+    // Note: Use direct chained bindings so QML tracks changes to these properties.
+    readonly property string entryLabel:
+        (entryData && entryData.text  && String(entryData.text).length  ? String(entryData.text)  :
+         entryData && entryData.label && String(entryData.label).length ? String(entryData.label) :
+         entryData && entryData.title && String(entryData.title).length ? String(entryData.title) : "")
+
+    
     // Theming
     property color hoverBaseColor: Theme.surfaceHover
     property int   itemRadius: Theme.panelMenuItemRadius
@@ -74,7 +67,7 @@ required property var entryData
                 color: mouseArea.containsMouse
                        ? bg.hoverTextColor
                        : ((entryData?.enabled ?? true) ? Theme.textPrimary : Theme.textDisabled)
-                text: entry._entryText()
+                text: entry.entryLabel
                 font.family: Theme.fontFamily
                 font.pixelSize: entry._computedPx
                 font.weight: mouseArea.containsMouse ? Font.DemiBold : Font.Medium
@@ -154,6 +147,5 @@ required property var entryData
             onEntered: openSubmenu()
         }
     }
-    // Debug removed
-    // Note: modelData is a context property in delegate; not all engines expose change signals.
+    
 }

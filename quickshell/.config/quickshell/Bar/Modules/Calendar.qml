@@ -2,14 +2,14 @@ import "../../Helpers/Holidays.js" as Holidays
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-// Quickshell and Wayland imports not needed here
+ 
 import qs.Components
 import qs.Settings
 import "../../Helpers/Color.js" as Color
 
 PanelWithOverlay {
     id: calendarOverlay
-    // Disable dim overlay on activation
+    
     showOverlay: false
 
     Rectangle {
@@ -24,7 +24,7 @@ PanelWithOverlay {
         anchors.bottomMargin: Theme.calendarPopupMargin
         anchors.rightMargin: Theme.calendarPopupMargin
 
-        // Prevent closing when clicking in the panel bg
+        
         MouseArea {
             anchors.fill: parent
         }
@@ -34,7 +34,7 @@ PanelWithOverlay {
             anchors.margins: Theme.calendarSideMargin
             spacing: Theme.calendarRowSpacing
 
-            // Month/Year header with navigation
+            // Header with navigation
             RowLayout {
                 Layout.fillWidth: true
                 spacing: Theme.calendarCellSpacing
@@ -79,7 +79,7 @@ PanelWithOverlay {
             DayOfWeekRow {
                 Layout.fillWidth: true
                 spacing: Theme.calendarDowSpacing
-                Layout.leftMargin: Theme.calendarDowSideMargin // Align tighter with grid
+                Layout.leftMargin: Theme.calendarDowSideMargin
                 Layout.rightMargin: Theme.calendarDowSideMargin
 
                 delegate: Text {
@@ -101,12 +101,12 @@ PanelWithOverlay {
                 id: calendar
 
                 property var holidays: []
-                // Selected date tracking
+                // Selected date
                 property int selectedYear: -1
                 property int selectedMonth: -1
                 property int selectedDay: -1
 
-                // Fetch holidays when calendar is opened or month/year changes
+                // Fetch holidays on open and on month/year changes
                 function updateHolidays() {
                     Holidays.getHolidaysForMonth(calendar.year, calendar.month, function(holidays) {
                         calendar.holidays = holidays;
@@ -123,7 +123,7 @@ PanelWithOverlay {
                 onYearChanged: updateHolidays()
                 Component.onCompleted: updateHolidays()
 
-                // Optionally, update when the panel becomes visible
+                // Update when panel visibility changes
                 Connections {
                     function onVisibleChanged() {
                         if (calendarOverlay.visible) {
@@ -172,7 +172,7 @@ PanelWithOverlay {
                     Text {
                         anchors.centerIn: parent
                         text: model.day
-                        // Ensure readable text on today/selected/hover using contrastOn
+                        // Ensure readable text on highlight
                         color: (model.today || isSelected || mouseArea2.containsMouse)
                             ? Color.contrastOn(parent.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
                             : Theme.textPrimary
@@ -196,7 +196,7 @@ PanelWithOverlay {
                                 holidayTooltip.targetItem = parent;
                                 holidayTooltip.tooltipVisible = true;
                             }
-                            // Optional contrast warning when entering highlighted state
+                            // Optional contrast warning on highlight
                             if (Settings.settings && Settings.settings.enforceContrastWarnings) {
                                 try {
                                     var fg = Color.contrastOn(parent.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold);
@@ -223,7 +223,7 @@ PanelWithOverlay {
                         delay: Theme.tooltipDelayMs
                     }
 
-                    // Remove hover color animation for instant response
+                    
 
                 }
 

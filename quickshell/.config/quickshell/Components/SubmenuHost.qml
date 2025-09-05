@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts 1.15
 import Quickshell
 import qs.Components
 import qs.Settings
@@ -21,7 +22,7 @@ PopupWindow {
 
     anchor.item: anchorItem ? anchorItem : null
     anchor.rect.x: anchorX
-    anchor.rect.y: anchorY
+    anchor.rect.y: anchorY - Math.round(Theme.panelMenuAnchorYOffset * Theme.scale(Screen))
 
     function showAt(item, x, y) {
         if (!item) return;
@@ -44,7 +45,7 @@ PopupWindow {
         color: Theme.background
         border.color: Theme.borderSubtle
         border.width: Theme.uiBorderWidth
-        radius: Theme.panelMenuItemRadius
+        radius: Theme.panelMenuRadius
         z: 0
     }
 
@@ -57,19 +58,31 @@ PopupWindow {
         enabled: subMenu.visible
         clip: true
 
-        model: ScriptModel { id: subMenuModel; values: opener.children ? [...opener.children.values] : [] }
+        model: ScriptModel {
+            id: subMenuModel;
+            values: (function() {
+                try {
+                    const ch = opener && opener.children ? opener.children : null;
+                    if (!ch) return [];
+                    const v = ch.values;
+                    if (typeof v === 'function') return [...v.call(ch)];
+                    if (v && v.length !== undefined) return v;
+                    if (ch && ch.length !== undefined) return ch;
+                    return [];
+                } catch (_) { return [] }
+            })()
+        }
 
         delegate: Item {
-            id: wrap
-            width: listView.width; height: Theme.panelMenuItemHeight
-            property var payload: modelData
+            required property var modelData
+            width: listView.width
+            height: entryItem.height
             DelegateEntry {
-                anchors.fill: parent
-                entryData: (wrap && wrap.payload !== undefined) ? wrap.payload : modelData
+                id: entryItem
+                entryData: parent.modelData
                 listViewRef: listView
                 submenuHostComponent: subMenu.submenuHostComponent
                 menuWindow: subMenu
-                screen: subMenu.screen
             }
         }
     }

@@ -13,14 +13,13 @@ Item {
     // Public widget state
     property string wsName: "?"
     property int wsId: -1
-    // Hyprland keyboard submap name (shown to the left of workspace)
+    // Hyprland keyboard submap (left of workspace)
     property string submapName: ""
     // Fine-tune vertical alignment of submap icon (px; negative moves up)
     property int submapBaselineAdjust: Theme.wsSubmapIconBaselineOffset
     // Live-discovered submaps from Hyprland (via hyprctl -j binds)
     property var submapDynamicMap: ({})
-    // Map known submaps to clean, geometric Material Symbols
-    // Extend as you adopt new submaps.
+    // Known submaps → Material Symbols
     readonly property var submapIconMap: ({
         // movement / resizing
         "move":                "open_with",
@@ -69,12 +68,8 @@ Item {
     
     function geometricFallbackIcon(name) {
         const shapes = [
-            "crop_square",                // square
-            "radio_button_unchecked",    // circle
-            "change_history",            // triangle
-            "hexagon",                    // hexagon
-            "pentagon",                   // pentagon
-            "diamond"                     // diamond
+            "crop_square", "radio_button_unchecked", "change_history",
+            "hexagon", "pentagon", "diamond"
         ];
         let h = 0;
         const s = (name || "").toLowerCase();
@@ -83,11 +78,11 @@ Item {
     }
     function submapIconName(name) {
         const key = (name || "").toLowerCase().trim();
-        // Dynamic mapping from discovered submaps
+        // Dynamic mapping first
         if (submapDynamicMap && submapDynamicMap[key]) return submapDynamicMap[key];
-        // Static mapping table
+        // Then static table
         if (submapIconMap[key]) return submapIconMap[key];
-        // Heuristics for known patterns
+        // Heuristics
         if (/resiz/.test(key)) return "open_in_full";
         if (/move|drag/.test(key)) return "open_with";
         if (/swap/.test(key)) return "swap_horiz";
@@ -116,16 +111,16 @@ Item {
     property color gothicColor: Theme.textPrimary
     property color separatorColor: Theme.textSecondary
 
-    // Icon layout tuning
-    property real iconScale: Theme.wsIconScale            // icon size relative to label font
-    property int  iconBaselineOffset: Theme.wsIconBaselineOffset      // fine baseline tweak for icon (−2..+6 typical)
-    property int  iconSpacing: Theme.wsIconSpacing             // gap between items (tighter)
+    // Icon layout
+    property real iconScale: Theme.wsIconScale
+    property int  iconBaselineOffset: Theme.wsIconBaselineOffset
+    property int  iconSpacing: Theme.wsIconSpacing
 
     // Size follows the composed row
     implicitWidth: lineBox.implicitWidth
     implicitHeight: lineBox.implicitHeight
 
-    // Environment helpers
+    // Hyprland environment
     function hyprSig() { return Quickshell.env("HYPRLAND_INSTANCE_SIGNATURE") || ""; }
     function runtimeDir() { return Quickshell.env("XDG_RUNTIME_DIR") || ("/run/user/" + Quickshell.env("UID")); }
     function socketPath() { return runtimeDir() + "/hypr/" + hyprSig() + "/.socket2.sock"; }
@@ -134,7 +129,7 @@ Item {
         return sig ? ["HYPRLAND_INSTANCE_SIGNATURE=" + sig] : null;
     }
 
-    // HTML escape (compatible with older Qt without replaceAll)
+    // HTML escape
     function htmlEscape(s) {
         s = (s === undefined || s === null) ? "" : String(s);
         return s
@@ -145,7 +140,7 @@ Item {
         .replace(/'/g, "&#39;");
     }
 
-    // Character classifiers
+    // Char classifiers
     function isPUA(cp) { return cp >= 0xE000 && cp <= 0xF8FF; }          // Private Use Area (icon fonts)
     function isOldItalic(cp){ return cp >= 0x10300 && cp <= 0x1034F; }   // Old Italic block (e.g., 𐌰)
     function isSeparatorChar(ch){ return [":","·","|","/","-"] .indexOf(ch) !== -1; }
@@ -161,13 +156,13 @@ Item {
         }
         if (isSeparatorChar(ch)) {
             if (ch === "·") return " ";
-            // Unify separator coloring with network/media via accentHover
+            // Use accentHover for separators
             return Format.sepSpan(Theme.accentHover, ch);
         }
         return htmlEscape(ch);
     }
 
-    // Decorate whole string while preserving other text
+    // Decorate string with category spans
     function decorateName(name) {
         if (!name || typeof name !== "string") return htmlEscape(name || "");
         let out = "";
@@ -180,7 +175,7 @@ Item {
         return out;
     }
 
-    // Split leading PUA icon from the rest (so we can baseline-align it)
+    // Split leading PUA icon
     function leadingIcon(name) {
         if (!name || typeof name !== "string" || name.length === 0) return "";
         const cp = name.codePointAt(0);
@@ -191,8 +186,8 @@ Item {
         if (!name || typeof name !== "string" || name.length === 0) return "";
         const cp = name.codePointAt(0);
         if (!isPUA(cp)) return name;
-        const skip = (cp > 0xFFFF) ? 2 : 1; // skip surrogate pair if needed
-        // Trim any whitespace immediately following the icon to keep spacing consistent
+        const skip = (cp > 0xFFFF) ? 2 : 1;
+        // Trim immediate whitespace after icon
         return name.substring(skip).replace(/^\s+/, "");
     }
 
@@ -200,7 +195,7 @@ Item {
     property string iconGlyph: leadingIcon(wsName)
     property string restName: restAfterLeadingIcon(wsName)
 
-    // Detect terminal workspace (common PUA glyphs or name prefix)
+    // Detect terminal workspace
     readonly property var _terminalIcons: ["\uf120", "\ue795", "\ue7a2"]
     property bool isTerminalWs: (function(){
         const rn = (restName || "").toLowerCase().trim();
@@ -213,37 +208,36 @@ Item {
     // Fallback to workspace id if name is empty
     property string fallbackText: (wsId >= 0 ? String(wsId) : "?")
 
-    // RichText decoration for the rest of the name (or fallback)
+    // RichText decoration
     property string decoratedText: (restName && restName.length > 0)
                                    ? decorateName(restName)
                                    : decorateName(fallbackText)
 
-    // ---------------- UI ----------------
+    // UI
     Row {
         id: lineBox
-        // Use a small spacing regardless; individual items add their own padding
+        // Small spacing; children add padding
         spacing: iconSpacing
         anchors.fill: parent
         // implicit sizes come from children
 
-        // Metrics to compute consistent baseline offsets across fonts
+        // Metrics to align baselines
         FontMetrics { id: fmIcon; font: icon.font }
         FontMetrics { id: fmSub;  font: submapIcon.font }
 
-        // Submap icon aligned to the same baseline family as the workspace icon
+        // Submap icon aligned to label baseline
         MaterialIcon {
             id: submapIcon
             visible: root.submapName && root.submapName.length > 0
             icon: submapIconName(root.submapName)
             color: Theme.wsSubmapIconColor
             size: Math.round(label.font.pixelSize * Theme.wsSubmapIconScale)
-            // Align to label baseline like the workspace icon does,
-            // then compensate for font ascent differences + fine adjust
+            // Compensate ascent differences + fine adjust
             anchors.baseline: label.baseline
             anchors.baselineOffset: Math.round(iconBaselineOffset + (fmIcon.ascent - fmSub.ascent) + submapBaselineAdjust)
         }
 
-        // Icon as separate Text with baseline alignment to the label
+        // Workspace icon (PUA)
         Text {
             id: icon
             visible: iconGlyph.length > 0
@@ -251,17 +245,15 @@ Item {
             color: iconColor
             renderType: Text.NativeRendering
 
-            // Icon size scales from the label's font size
-            font.family: Theme.fontFamily   // replace with your icon font family if needed
+            font.family: Theme.fontFamily
             font.pixelSize: Math.round(label.font.pixelSize * iconScale)
 
-            // Baseline alignment (tweak offset for pixel-perfect visual centering)
             anchors.baseline: label.baseline
             anchors.baselineOffset: iconBaselineOffset
             padding: (root.isTerminalWs ? Theme.uiSpacingNone : Theme.wsIconInnerPadding)
         }
 
-        // Main text remains RichText with soft decoration
+        // Label (RichText)
         Label {
             id: label
             textFormat: Text.RichText
@@ -272,21 +264,19 @@ Item {
             font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
             color: Theme.textPrimary
             padding: Theme.wsLabelPadding
-            // Reduce left padding to tighten gap next to icon
+            // Tighter left gap next to icon
             leftPadding: (root.isTerminalWs ? Theme.wsLabelLeftPaddingTerminal : Theme.wsLabelLeftPadding)
 
-            // Optional: lock line box so icon never affects line height
-            // lineHeightMode: Text.FixedHeight
-            // lineHeight: Math.round(font.pixelSize * 1.1)
+            
         }
     }
 
-    // Live events via Hyprland socket2 (using socat). Replace with ncat -U if desired.
+    // Hyprland socket2 events (socat)
     Process {
         id: eventMonitor
         command: ["socat", "-u", "UNIX-CONNECT:" + socketPath(), "-"]
         running: true
-        property int consumed: 0  // cursor into cumulative stdout buffer
+        property int consumed: 0
 
         stdout: StdioCollector {
             waitForEnd: false
@@ -297,7 +287,7 @@ Item {
                 const chunk = all.substring(eventMonitor.consumed);
                 eventMonitor.consumed = all.length;
 
-                // Split into lines; if last is partial, roll back so it's read next time
+                // Split lines; carry partial to next tick
                 let lines = chunk.split("\n");
                 const last = lines.pop();
                 if (last && !chunk.endsWith("\n")) {
@@ -331,7 +321,6 @@ Item {
                             root.submapName = name;
                         }
                     } else if (line.startsWith("submapv2>>")) {
-                        // In case Hyprland emits v2 for submap as well: "submapv2>><name>"
                         const name = line.substring(10).trim();
                         if (!name || name === "default" || name === "reset") {
                             root.submapName = "";
@@ -339,7 +328,6 @@ Item {
                             root.submapName = name;
                         }
                     } else if (line.startsWith("focusedmon>>") || line.startsWith("focusedmonv2>>")) {
-                        // Monitor focus changed — refresh current workspace via hyprctl
                         refreshOnce.start();
                     }
                 }
