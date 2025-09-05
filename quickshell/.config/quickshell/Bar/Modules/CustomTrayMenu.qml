@@ -97,11 +97,11 @@ import "../../Helpers/Color.js" as Color
         delegate: Item {
             id: wrapper
             width: listView.width; height: Theme.panelMenuItemHeight
-            // Capture the delegate's modelData explicitly to avoid context collisions
-            property var data: modelData
+            // Capture the delegate's modelData explicitly to avoid context collisions; avoid 'data' name
+            property var payload: modelData
             DelegateEntry {
                 anchors.fill: parent
-                entryData: (wrapper && wrapper.data !== undefined) ? wrapper.data : modelData
+                entryData: (wrapper && wrapper.payload !== undefined) ? wrapper.payload : modelData
                 listViewRef: listView
                 submenuHostComponent: submenuHostComp
                 menuWindow: trayMenu
