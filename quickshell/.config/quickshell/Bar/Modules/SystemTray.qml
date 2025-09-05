@@ -214,7 +214,7 @@ Row {
         visible: false // hidden; tray reveals by hover in bottom-right hot zone
         anchors.verticalCenter: parent.verticalCenter
         // Keep compact size to match bar density
-        size: 24 * Theme.scale(Screen)
+        size: Math.round(Theme.panelIconSize * Theme.scale(Screen))
         // Reduce rounding specifically for tray button (half of default 8)
         cornerRadius: Theme.cornerRadiusSmall
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
