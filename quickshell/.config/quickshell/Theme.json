@@ -145,6 +145,7 @@
   "applauncher": {
     "clipboardPollMs": 1000,
     "list": { "itemHeight": 48, "itemHeightLarge": 64 },
-    "preview": { "width": 200 }
+    "preview": { "width": 200, "innerMargin": 14, "maxHeightRatio": 1.0 },
+    "content": { "margin": 32 }
   }
 }

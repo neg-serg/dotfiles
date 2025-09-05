@@ -484,13 +484,14 @@ PanelWithOverlay {
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: Theme.uiMarginLarge
+                anchors.margins: Math.round(Theme.applauncherContentMargin * Theme.scale(Screen))
                 spacing: Theme.uiSpacingLarge
 
         
                 Rectangle {
                     id: previewPanel
                     Layout.preferredWidth: Math.round(Theme.applauncherPreviewWidth * Theme.scale(Screen))
+                    Layout.maximumHeight: Math.round(parent.height * Theme.applauncherPreviewMaxHeightRatio)
                     Layout.fillHeight: true
                     color: Theme.surface
                     radius: Theme.panelOverlayRadius
@@ -498,7 +499,7 @@ PanelWithOverlay {
 
                     Rectangle {
                         anchors.fill: parent
-                    anchors.margins: Theme.uiMarginMedium
+                        anchors.margins: Math.round(Theme.applauncherPreviewInnerMargin * Theme.scale(Screen))
                         color: "transparent"
                         clip: true
 

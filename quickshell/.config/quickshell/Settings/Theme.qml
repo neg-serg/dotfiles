@@ -366,6 +366,10 @@ Singleton {
     property int applauncherListItemHeightLarge: Utils.clamp(val('applauncher.list.itemHeightLarge', 64), 24, 256)
     // Applauncher preview panel width
     property int applauncherPreviewWidth: Utils.clamp(val('applauncher.preview.width', 200), 100, 1000)
+    // Applauncher content/preview margins and max height ratio
+    property int applauncherContentMargin: Utils.clamp(val('applauncher.content.margin', themeData.uiMarginLarge), 0, 256)
+    property int applauncherPreviewInnerMargin: Utils.clamp(val('applauncher.preview.innerMargin', themeData.uiMarginMedium), 0, 256)
+    property real applauncherPreviewMaxHeightRatio: Utils.clamp(val('applauncher.preview.maxHeightRatio', 1.0), 0.1, 1.0)
     // Calendar metrics
     property int calendarRowSpacing: val('calendar.rowSpacing', themeData.calendarRowSpacing)
     property int calendarCellSpacing: val('calendar.cellSpacing', themeData.calendarCellSpacing)
