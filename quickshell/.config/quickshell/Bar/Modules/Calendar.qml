@@ -147,8 +147,10 @@ PanelWithOverlay {
                     width: Theme.calendarCellSize
                     height: Theme.calendarCellSize
                 radius: Math.round(Theme.cornerRadius / 3)
-                    // Today/selected/hover use Theme's derived dark accent
-                    color: (model.today || isSelected || mouseArea2.containsMouse) ? Theme.accentDarkStrong : "transparent"
+                    // Today/selected/hover use explicit darkened accent (tunable factor)
+                    color: (model.today || isSelected || mouseArea2.containsMouse)
+                        ? Color.towardsBlack(Theme.accentPrimary, Theme.calendarAccentDarken)
+                        : "transparent"
                     // Accent border on today/hover/selected
                     border.color: (model.today || isSelected || mouseArea2.containsMouse) ? Theme.accentPrimary : "transparent"
                     border.width: (model.today || isSelected || mouseArea2.containsMouse) ? 1 : 0

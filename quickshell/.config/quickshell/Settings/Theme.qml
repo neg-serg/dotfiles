@@ -236,6 +236,8 @@ Singleton {
             property int  calendarBorderWidth: 1
             property int  calendarCellSize: 28
             property int  calendarHolidayDotSize: 3
+            // Calendar highlight darken factor (0..1)
+            property real calendarAccentDarken: 0.8
         }
     }
     
@@ -394,6 +396,8 @@ Singleton {
     property int calendarBorderWidth: themeData.calendarBorderWidth
     property int calendarCellSize: Utils.clamp(themeData.calendarCellSize, 16, 64)
     property int calendarHolidayDotSize: themeData.calendarHolidayDotSize
+    // Tunable factor for dark accent on calendar highlights (today/selected/hover)
+    property real calendarAccentDarken: Utils.clamp(themeData.calendarAccentDarken, 0, 1)
     // Derived accent/surface/border tokens (formula-based)
     // Keep simple and perceptually stable; expose tokens for reuse
     // Each derived token may be overridden by matching *Override property in Theme.json
