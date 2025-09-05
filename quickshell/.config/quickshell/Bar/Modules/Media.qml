@@ -44,7 +44,8 @@ Item {
                 height: Math.round(Theme.panelIconSize * Theme.scale(Screen))
                 anchors.centerIn: parent
                 color: Theme.surface
-                border.color: Theme.borderSubtle
+                border.color: "transparent"
+                border.width: 0
                 clip: true
                 antialiasing: true
                 layer.enabled: true

@@ -34,8 +34,8 @@ Rectangle {
             anchors.fill: parent
             // Use primary background (no accent tint) for music card
             color: Theme.background
-            border.color: Theme.borderSubtle
-            border.width: 1
+            border.color: "transparent"
+            border.width: 0
             radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
 
         // Show fallback UI if no player is available
