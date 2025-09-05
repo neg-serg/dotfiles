@@ -159,7 +159,7 @@ Rectangle {
                         Text {
                             text: weatherData && weatherData.current_weather ? ((Settings.settings.useFahrenheit !== undefined ? Settings.settings.useFahrenheit : false) ? `${Math.round(weatherData.current_weather.temperature * 9/5 + 32)}°F` : `${Math.round(weatherData.current_weather.temperature)}°C`) : ((Settings.settings.useFahrenheit !== undefined ? Settings.settings.useFahrenheit : false) ? "--°F" : "--°C")
                             font.family: Theme.fontFamily
-                            font.pixelSize: Math.round(Theme.fontSizeHeader * 0.75 * Theme.scale(Screen))
+                            font.pixelSize: Math.round(Theme.fontSizeHeader * Theme.weatherHeaderScale * Theme.scale(Screen))
                             font.bold: true
                             color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
                             Component.onCompleted: weatherRoot.warnContrast(card.color, color, 'weather.current')

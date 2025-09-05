@@ -102,6 +102,9 @@
     "opacity": 0.98,
     "smallScaleRatio": 0.71
   },
+  "weather": {
+    "headerScale": 0.75
+  },
   "sidePanel": {
     "cornerRadius": 9,
     "innerRadius": 0,
@@ -156,6 +159,7 @@
       "width": 280,
       "height": 320
     },
+    "font": { "titlePx": 18, "dowPx": 15, "dayPx": 24 },
     "popupMargin": 2,
     "borderWidth": 1,
     "cellSize": 28,

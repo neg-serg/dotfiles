@@ -140,8 +140,10 @@
   "calendar": {
     "rowSpacing": 2,
     "cellSpacing": 2,
-    "sideMargin": 2
+    "sideMargin": 2,
+    "font": { "titlePx": 18, "dowPx": 15, "dayPx": 24 }
   },
+  "weather": { "headerScale": 0.75 },
   "applauncher": {
     "clipboardPollMs": 1000,
     "list": { "itemHeight": 48, "itemHeightLarge": 64 },

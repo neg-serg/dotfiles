@@ -57,7 +57,7 @@ PanelWithOverlay {
                     text: calendar.title
                     color: Theme.textPrimary
                     opacity: 0.7
-                    font.pixelSize: 18 * Theme.scale(screen)
+                    font.pixelSize: Math.round(Theme.calendarTitleFontPx * Theme.scale(screen))
                     font.family: Theme.fontFamily
                     font.weight: Font.Medium
                 }
@@ -86,7 +86,7 @@ PanelWithOverlay {
                     text: shortName
                     color: Theme.textSecondary
                     opacity: 0.9
-                    font.pixelSize: 15 * Theme.scale(screen)
+                    font.pixelSize: Math.round(Theme.calendarDowFontPx * Theme.scale(screen))
                     font.family: Theme.fontFamily
                     font.weight: Font.Normal
                     font.underline: true
@@ -177,7 +177,7 @@ PanelWithOverlay {
                             ? Color.contrastOn(parent.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
                             : Theme.textPrimary
                         opacity: model.month === calendar.month ? (mouseArea2.containsMouse ? 1 : 0.7) : 0.3
-                        font.pixelSize: 24 * Theme.scale(screen)
+                        font.pixelSize: Math.round(Theme.calendarDayFontPx * Theme.scale(screen))
                         font.family: Theme.fontFamily
                         font.weight: Font.Bold
                         font.underline: model.today

@@ -34,6 +34,8 @@ Additional UI tokens (nested)
   - Side panel: sidePanel.innerRadius (inner blocks)
   - Side panel button hover radius factor: sidePanel.buttonHoverRadiusFactor
   - Weather left column width ratio: sidePanel.weather.leftColumnRatio
+  - Weather header scale: weather.headerScale
+  - Calendar font sizes: calendar.font.titlePx, calendar.font.dowPx, calendar.font.dayPx
 
 Overrides (advanced)
 - You can override any derived token by adding an "Override" key in Theme.json:

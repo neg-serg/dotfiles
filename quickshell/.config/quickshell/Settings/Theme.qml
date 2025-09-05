@@ -315,6 +315,8 @@ Singleton {
     property int tooltipFontPx: val('tooltip.fontPx', themeData.tooltipFontPx)
     property real tooltipOpacity: val('tooltip.opacity', 0.98)
     property real tooltipSmallScaleRatio: val('tooltip.smallScaleRatio', 0.71)
+    // Weather header scale relative to Theme.fontSizeHeader
+    property real weatherHeaderScale: Utils.clamp(val('weather.headerScale', 0.75), 0.25, 1.5)
     // Pill indicator defaults
     property int panelPillHeight: val('panel.pill.height', themeData.panelPillHeight)
     property int panelPillIconSize: val('panel.pill.iconSize', themeData.panelPillIconSize)
@@ -441,6 +443,10 @@ Singleton {
     property int calendarBorderWidth: val('calendar.borderWidth', themeData.calendarBorderWidth)
     property int calendarCellSize: Utils.clamp(val('calendar.cellSize', themeData.calendarCellSize), 16, 64)
     property int calendarHolidayDotSize: val('calendar.holidayDotSize', themeData.calendarHolidayDotSize)
+    // Calendar font sizes (logical px before per-screen scaling)
+    property int calendarTitleFontPx: Utils.clamp(val('calendar.font.titlePx', 18), 8, 64)
+    property int calendarDowFontPx: Utils.clamp(val('calendar.font.dowPx', 15), 6, 48)
+    property int calendarDayFontPx: Utils.clamp(val('calendar.font.dayPx', 24), 8, 64)
     // Tunable factor for dark accent on calendar highlights (today/selected/hover)
     property real calendarAccentDarken: Utils.clamp(val('calendar.accentDarken', themeData.calendarAccentDarken), 0, 1)
     // Derived accent/surface/border tokens (formula-based)
