@@ -32,8 +32,8 @@ Rectangle {
         Rectangle {
             id: card
             anchors.fill: parent
-            // Dark accent background with alpha; unify with theme tokens
-            color: Color.withAlpha(Theme.accentDarkStrong, 0.90)
+            // Use secondary background (no accent tint) for music card
+            color: Theme.backgroundSecondary
             border.color: Theme.borderSubtle
             border.width: 1
             radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))

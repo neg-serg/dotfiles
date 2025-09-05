@@ -6,6 +6,7 @@ import Quickshell.Io
 import qs.Components
 import qs.Services
 import qs.Settings
+import "../../Helpers/Format.js" as Format
 
 Item {
     id: root
@@ -159,10 +160,9 @@ Item {
             return "<span style='color:" + gothicColor + "'>" + htmlEscape(ch) + "</span>";
         }
         if (isSeparatorChar(ch)) {
-            // Replace centered dot with a plain space; keep others as-is (no blue tint)
             if (ch === "·") return " ";
-            // For other separators, just echo the character without special coloring
-            return htmlEscape(ch);
+            // Unify separator coloring with network/media via accentHover
+            return Format.sepSpan(Theme.accentHover, ch);
         }
         return htmlEscape(ch);
     }
