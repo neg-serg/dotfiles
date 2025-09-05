@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Settings
+import "../../Helpers/Utils.js" as Utils
 
 Item {
     id: root
@@ -48,7 +49,7 @@ Item {
         Rectangle {
             id: stripe
             visible: root.stripeEnabled && root.stripeRatio > 0
-            width: Math.max(1, Math.round(line.width * Math.min(1, Math.max(0, root.stripeRatio))))
+            width: Math.max(1, Math.round(line.width * Utils.clamp(root.stripeRatio, 0, 1)))
             height: parent.height
             color: root.stripeColor
             opacity: root.stripeOpacity
