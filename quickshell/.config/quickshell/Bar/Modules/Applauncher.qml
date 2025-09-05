@@ -595,7 +595,8 @@ PanelWithOverlay {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         clip: true
-                        property int innerPadding: 16
+                        // Inner padding based on UI theme padding
+                        property int innerPadding: Math.round(Theme.uiPaddingMedium * Theme.scale(Screen))
 
                         ListView {
                             id: appList
@@ -607,7 +608,9 @@ PanelWithOverlay {
                             delegate: Item {
                                 id: appDelegate
                                 width: appList.width
-                                height: (modelData.isClipboard || modelData.isCommand) ? 64 : 48
+                                height: (modelData.isClipboard || modelData.isCommand)
+                                        ? Math.round(Theme.applauncherListItemHeightLarge * Theme.scale(Screen))
+                                        : Math.round(Theme.applauncherListItemHeight * Theme.scale(Screen))
                                 property bool hovered: mouseArea.containsMouse
                                 property bool isSelected: index === root.selectedIndex
 
@@ -790,7 +793,8 @@ PanelWithOverlay {
                                     anchors.left: parent.left
                                     anchors.right: parent.right
                                     anchors.bottom: parent.bottom
-                                    height: Theme.tooltipBorderWidth
+                                    height: Theme.uiSeparatorThickness
+                                    radius: Theme.uiSeparatorRadius
                                     color: Theme.borderSubtle
                                     opacity: index === appList.count - 1 ? 0 : 1.0
                                 }

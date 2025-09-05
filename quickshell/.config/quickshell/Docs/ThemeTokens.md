@@ -26,6 +26,7 @@ Additional UI tokens (nested)
   - Separator radius: ui.separator.radius
 - Media: media.iconScaleEmphasis
 - Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
+  - Applauncher list: applauncher.list.itemHeight, applauncher.list.itemHeightLarge
   - Menu item radius: panel.menu.itemRadius
   - Spectrum: spectrum.peakThickness
   - Side panel: sidePanel.innerRadius (inner blocks)

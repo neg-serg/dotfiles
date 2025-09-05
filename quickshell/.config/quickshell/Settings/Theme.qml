@@ -361,6 +361,9 @@ Singleton {
     property int applauncherOffscreenShift: val('applauncher.anim.offscreenShift', 12)
     property int applauncherEnterAnimMs: Utils.clamp(val('applauncher.anim.enterMs', 300), 0, 10000)
     property int applauncherScaleAnimMs: Utils.clamp(val('applauncher.anim.scaleMs', 200), 0, 10000)
+    // Applauncher list item heights
+    property int applauncherListItemHeight: Utils.clamp(val('applauncher.list.itemHeight', 48), 24, 256)
+    property int applauncherListItemHeightLarge: Utils.clamp(val('applauncher.list.itemHeightLarge', 64), 24, 256)
     // Calendar metrics
     property int calendarRowSpacing: val('calendar.rowSpacing', themeData.calendarRowSpacing)
     property int calendarCellSpacing: val('calendar.cellSpacing', themeData.calendarCellSpacing)

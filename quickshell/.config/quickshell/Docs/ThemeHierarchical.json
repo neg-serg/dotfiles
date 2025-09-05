@@ -193,6 +193,7 @@
     "size": { "width": 460, "height": 640 },
     "cornerRadius": 28,
     "margins": { "bottom": 16 },
-    "anim": { "enterMs": 300, "scaleMs": 200, "offscreenShift": 12 }
+    "anim": { "enterMs": 300, "scaleMs": 200, "offscreenShift": 12 },
+    "list": { "itemHeight": 48, "itemHeightLarge": 64 }
   }
 }
