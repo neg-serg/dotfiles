@@ -20,6 +20,15 @@ Overview
   - borderStrong: higher-emphasis border color
   - overlayWeak/overlayStrong: backdrop overlays
 
+Overrides (advanced)
+- You can override any derived token by adding an "Override" key in Theme.json:
+  - accentHoverOverride, accentActiveOverride, accentDisabledOverride, accentDarkStrongOverride
+  - surfaceHoverOverride, surfaceActiveOverride
+  - borderSubtleOverride, borderStrongOverride
+  - overlayWeakOverride, overlayStrongOverride
+- If an override is present, it wins; otherwise the token is computed by formula.
+- Keep Theme.json minimal; only add overrides if you truly need to diverge.
+
 Helper APIs (Helpers/Color.js)
 - contrastOn(bg, light, dark, threshold): choose a readable text color based on bg luminance.
 - withAlpha(color, a): return color with alpha (0..1).
