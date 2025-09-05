@@ -18,6 +18,8 @@ Item {
     property int intervalMs: 0
     // Parse stdout as JSON (single shot). When true, emits json(obj) on stream finish.
     property bool parseJson: false
+    // Control whether to auto-restart on exit in streaming mode (intervalMs==0)
+    property bool restartOnExit: true
     // Auto start when created
     property bool autoStart: true
     // Expose running state
@@ -87,9 +89,11 @@ Item {
                 // In poll mode, rely on timer to retrigger
             } else {
                 // Streaming mode: restart with backoff
-                backoff.restart();
+                if (root.restartOnExit) backoff.restart();
             }
         }
     }
-}
 
+    function start() { proc.running = true }
+    function stop()  { proc.running = false }
+}

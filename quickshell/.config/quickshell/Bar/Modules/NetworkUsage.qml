@@ -92,29 +92,26 @@ Item {
         interval: Theme.networkLinkPollMs
         repeat: true
         running: true
-        onTriggered: if (!linkProbe.running) linkProbe.running = true
+        onTriggered: linkProbe.start()
     }
-    Process {
+    ProcessRunner {
         id: linkProbe
-        command: ["bash", "-lc", "ip -j -br a"]
-        stdout: StdioCollector {
-            waitForEnd: true
-            onStreamFinished: {
-                try {
-                    const arr = JSON.parse(text)
-                    let up = false
-                    for (let it of arr) {
-                        const name = (it && it.ifname) ? String(it.ifname) : ""
-                        if (!name || name === "lo") continue
-                        const state = (it && it.operstate) ? String(it.operstate) : ""
-                        const addrs = Array.isArray(it?.addr_info) ? it.addr_info : []
-                        // Link present: UP, or UNKNOWN with an address (e.g., VPN)
-                        if (state === "UP" || (state === "UNKNOWN" && addrs.length > 0)) { up = true; break }
-                    }
-                    root.hasLink = up
-                } catch (e) { }
-                linkProbe.running = false
-            }
+        cmd: ["bash", "-lc", "ip -j -br a"]
+        parseJson: true
+        autoStart: false
+        restartOnExit: false
+        onJson: (arr) => {
+            try {
+                let up = false
+                for (let it of arr) {
+                    const name = (it && it.ifname) ? String(it.ifname) : ""
+                    if (!name || name === "lo") continue
+                    const state = (it && it.operstate) ? String(it.operstate) : ""
+                    const addrs = Array.isArray(it?.addr_info) ? it.addr_info : []
+                    if (state === "UP" || (state === "UNKNOWN" && addrs.length > 0)) { up = true; break }
+                }
+                root.hasLink = up
+            } catch (e) { }
         }
     }
 
@@ -126,20 +123,15 @@ Item {
         running: true
         onTriggered: {
             if (!root.hasLink) { root.hasInternet = false; return }
-            if (!inetProbe.running) inetProbe.running = true
+            inetProbe.start()
         }
     }
-    Process {
+    ProcessRunner {
         id: inetProbe
-        command: ["bash", "-lc", "ping -n -c1 -W1 1.1.1.1 >/dev/null && echo OK || echo FAIL"]
-        stdout: StdioCollector {
-            waitForEnd: true
-            onStreamFinished: {
-                const result = (text || "").trim()
-                root.hasInternet = (result.indexOf("OK") !== -1)
-                inetProbe.running = false
-            }
-        }
+        cmd: ["bash", "-lc", "ping -n -c1 -W1 1.1.1.1 >/dev/null && echo OK || echo FAIL"]
+        autoStart: false
+        restartOnExit: false
+        onLine: (line) => { if (String(line||"").trim().indexOf("OK") !== -1) root.hasInternet = true; else root.hasInternet = false }
     }
 
     // Parse rsmetrx JSON

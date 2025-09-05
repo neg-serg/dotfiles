@@ -282,129 +282,75 @@ Item {
     }
 
     // Hyprland socket2 events (socat)
-    Process {
+    ProcessRunner {
         id: eventMonitor
-        command: ["socat", "-u", "UNIX-CONNECT:" + socketPath(), "-"]
-        running: true
-        property int consumed: 0
-
-        stdout: StdioCollector {
-            waitForEnd: false
-            onTextChanged: {
-                const all = text;
-                if (eventMonitor.consumed >= all.length) return;
-
-                const chunk = all.substring(eventMonitor.consumed);
-                eventMonitor.consumed = all.length;
-
-                // Split lines; carry partial to next tick
-                let lines = chunk.split("\n");
-                const last = lines.pop();
-                if (last && !chunk.endsWith("\n")) {
-                    eventMonitor.consumed -= last.length;
-                } else if (last) {
-                    lines.push(last);
-                }
-
-                for (let line of lines) {
-                    line = (line || "").trim();
-                    if (!line) continue;
-
-                    if (line.startsWith("workspace>>")) {
-                        const id = parseInt(line.substring(11).trim());
-                        if (!isNaN(id)) { root.wsId = id; root.wsName = ""; }
-                    } else if (line.startsWith("workspacev2>>")) {
-                        // Format: "workspacev2>><id>,name:<name>"
-                        const payload = line.substring(13);
-                        const parts = payload.split(",", 2);
-                        const id = parseInt(parts[0]);
-                        if (!isNaN(id)) root.wsId = id;
-                        let name = (parts[1] || "").trim();
-                        if (name.startsWith("name:")) name = name.substring(5);
-                        root.wsName = name;
-                    } else if (line.startsWith("submap>>")) {
-                        // Keyboard submap changed
-                        const name = line.substring(8).trim();
-                        if (!name || name === "default" || name === "reset") {
-                            root.submapName = "";
-                        } else {
-                            root.submapName = name;
-                        }
-                    } else if (line.startsWith("submapv2>>")) {
-                        const name = line.substring(10).trim();
-                        if (!name || name === "default" || name === "reset") {
-                            root.submapName = "";
-                        } else {
-                            root.submapName = name;
-                        }
-                    } else if (line.startsWith("focusedmon>>") || line.startsWith("focusedmonv2>>")) {
-                        refreshOnce.start();
-                    }
-                }
+        cmd: ["socat", "-u", "UNIX-CONNECT:" + socketPath(), "-"]
+        backoffMs: Theme.networkRestartBackoffMs
+        onLine: (lineRaw) => {
+            let line = String(lineRaw || "").trim();
+            if (!line) return;
+            if (line.startsWith("workspace>>")) {
+                const id = parseInt(line.substring(11).trim());
+                if (!isNaN(id)) { root.wsId = id; root.wsName = ""; }
+            } else if (line.startsWith("workspacev2>>")) {
+                const payload = line.substring(13);
+                const parts = payload.split(",", 2);
+                const id = parseInt(parts[0]);
+                if (!isNaN(id)) root.wsId = id;
+                let name = (parts[1] || "").trim();
+                if (name.startsWith("name:")) name = name.substring(5);
+                root.wsName = name;
+            } else if (line.startsWith("submap>>")) {
+                const name = line.substring(8).trim();
+                root.submapName = (!name || name === "default" || name === "reset") ? "" : name;
+            } else if (line.startsWith("submapv2>>")) {
+                const name = line.substring(10).trim();
+                root.submapName = (!name || name === "default" || name === "reset") ? "" : name;
+            } else if (line.startsWith("focusedmon>>") || line.startsWith("focusedmonv2>>")) {
+                refreshOnce.start();
             }
         }
-
-        stderr: StdioCollector { waitForEnd: false }
-
-        onExited: { eventMonitor.consumed = 0; running = true }
-
-        Component.onCompleted: running = true
     }
 
     // One-shot refresh using hyprctl (JSON)
-    Process {
+    ProcessRunner {
         id: getCurrentWS
-        command: ["hyprctl", "-j", "activeworkspace"]
-        stdout: StdioCollector {
-            waitForEnd: true
-            onStreamFinished: {
-                try {
-                    const obj = JSON.parse(text);
-                    root.wsId = obj.id;
-                    root.wsName = obj.name;
-                } catch (e) { }
-            }
-        }
-        stderr: StdioCollector { waitForEnd: true }
-        environment: hyprEnvOrNull()
+        cmd: ["hyprctl", "-j", "activeworkspace"]
+        parseJson: true
+        autoStart: false
+        onJson: (obj) => { try { root.wsId = obj.id; root.wsName = obj.name; } catch (e) {} }
     }
 
     // Debounce before asking hyprctl again (used on monitor focus change)
     Timer {
         id: refreshOnce
         interval: Theme.wsRefreshDebounceMs
-        onTriggered: getCurrentWS.running = true
+        onTriggered: getCurrentWS.start()
     }
 
     // Discover submaps used in binds and derive icon mapping
-    Process {
+    ProcessRunner {
         id: getBinds
-        command: ["bash", "-lc", "hyprctl -j binds"]
-        environment: hyprEnvOrNull()
-        stdout: StdioCollector {
-            waitForEnd: true
-            onStreamFinished: {
-                try {
-                    const arr = JSON.parse(text);
-                    const dyn = {};
-                    for (let i = 0; i < arr.length; i++) {
-                        const sub = (arr[i] && arr[i].submap) ? String(arr[i].submap) : "";
-                        const n = sub.toLowerCase().trim();
-                        if (!n || n === "default" || n === "reset") continue;
-                        // Assign via heuristics so it's stable across restarts
-                        dyn[n] = submapIconName(n);
-                    }
-                    submapDynamicMap = dyn;
-                    try { const _ = Object.keys(dyn); } catch (_) {}
-                } catch (e) { }
-            }
+        cmd: ["bash", "-lc", "hyprctl -j binds"]
+        parseJson: true
+        onJson: (arr) => {
+            try {
+                const dyn = {};
+                for (let i = 0; i < arr.length; i++) {
+                    const sub = (arr[i] && arr[i].submap) ? String(arr[i].submap) : "";
+                    const n = sub.toLowerCase().trim();
+                    if (!n || n === "default" || n === "reset") continue;
+                    dyn[n] = submapIconName(n);
+                }
+                submapDynamicMap = dyn;
+                try { const _ = Object.keys(dyn); } catch (_) {}
+            } catch (e) { }
         }
-        stderr: StdioCollector { waitForEnd: true }
     }
 
     // Initial sync at component creation
     Component.onCompleted: {
-        getCurrentWS.running = true;
-        getBinds.running = true;
+        getCurrentWS.start();
+        getBinds.start();
     }
 }
