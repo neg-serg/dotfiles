@@ -15,6 +15,8 @@ Rectangle {
     // Parent menu window (PopupWindow) to attach submenus to
     required property var menuWindow
 
+    // Optional screen (for Theme.scale). If not provided, defaults to 1.0 scale.
+    property var screen: (menuWindow && menuWindow.screen) ? menuWindow.screen : null
     // Theming
     property color hoverBaseColor: Theme.surfaceHover
     property int   itemRadius: Theme.panelMenuItemRadius
@@ -55,7 +57,7 @@ Rectangle {
                 color: (rowData?.enabled ?? true) ? bg.hoverTextColor : Theme.textDisabled
                 text: rowData?.text ?? ""
                 font.family: Theme.fontFamily
-                font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * Theme.panelMenuItemFontScale)
+                font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(entry.screen) * Theme.panelMenuItemFontScale)
                 font.weight: mouseArea.containsMouse ? Font.DemiBold : Font.Medium
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -79,7 +81,7 @@ Rectangle {
             MaterialIcon {
                 // Chevron/right indicator for submenu
                 icon: rowData?.hasChildren ? "chevron_right" : ""
-                size: Math.round(Theme.panelMenuChevronSize * Theme.scale(screen))
+                size: Math.round(Theme.panelMenuChevronSize * Theme.scale(entry.screen))
                 visible: rowData?.hasChildren ?? false
                 color: Theme.textPrimary
             }

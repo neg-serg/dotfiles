@@ -101,6 +101,7 @@ import "../../Helpers/Color.js" as Color
             listViewRef: listView
             submenuHostComponent: submenuHostComp
             menuWindow: trayMenu
+            screen: trayMenu.screen
         }
     }
 

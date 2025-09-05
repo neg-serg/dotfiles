@@ -64,6 +64,7 @@ PopupWindow {
             listViewRef: listView
             submenuHostComponent: subMenu.submenuHostComponent
             menuWindow: subMenu
+            screen: subMenu.screen
         }
     }
 }
