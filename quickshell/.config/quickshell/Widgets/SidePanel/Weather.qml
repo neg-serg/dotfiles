@@ -1,4 +1,5 @@
 import QtQuick
+import "../../Helpers/Utils.js" as Utils
 import QtQuick.Layouts
 import QtQuick.Controls
 import qs.Settings
@@ -175,7 +176,7 @@ Rectangle {
  
             Rectangle {
                 width: parent.width
-                height: Math.max(1, Math.round(Theme.tooltipBorderWidth * Theme.scale(Screen)))
+                height: Utils.clamp(Math.round(Theme.tooltipBorderWidth * Theme.scale(Screen)), 1, 64)
                 // Use contrast-based subtle divider
                 color: Color.contrastOn(card.color, "#26FFFFFF", "#26000000")
                 Layout.fillWidth: true
