@@ -105,6 +105,15 @@ Window {
         y = proposedY;
         positionAbove = finalPositionAbove;
         visible = true;
+        // Optional low-contrast logging
+        try {
+            if (Settings.settings && Settings.settings.debugContrast) {
+                var fg = Color.contrastOn(tooltipBg.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold);
+                var ratio = Color.contrastRatio(tooltipBg.color, fg);
+                var req = (Settings.settings.contrastWarnRatio !== undefined) ? Settings.settings.contrastWarnRatio : 4.5;
+                if (ratio < req) console.warn('[Tooltip] Low contrast:', ratio.toFixed(2));
+            }
+        } catch (e) { }
     }
 
     // Safe screen geometry determination with multiple fallbacks

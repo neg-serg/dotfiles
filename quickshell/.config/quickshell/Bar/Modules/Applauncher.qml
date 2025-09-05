@@ -576,8 +576,8 @@ PanelWithOverlay {
                             }
                         }
 
-                        Behavior on border.color { ColorAnimation { duration: Theme.uiAnimQuickMs } }
-                        Behavior on border.width { NumberAnimation { duration: Theme.uiAnimQuickMs } }
+                        Behavior on border.color { ColorAnimation { duration: Theme.uiAnimQuickMs; easing.type: Theme.uiEasingQuick } }
+                        Behavior on border.width { NumberAnimation { duration: Theme.uiAnimQuickMs; easing.type: Theme.uiEasingQuick } }
                     }
 
             
@@ -617,9 +617,9 @@ PanelWithOverlay {
                                         : (hovered || isSelected ? Theme.accentPrimary : "transparent")
                                     border.width: appLauncherPanel.isPinned(modelData) ? 0 : (hovered || isSelected ? 2 : 0)
 
-                                    Behavior on color { ColorAnimation { duration: Theme.uiAnimQuickMs } }
-                                    Behavior on border.color { ColorAnimation { duration: Theme.uiAnimQuickMs } }
-                                    Behavior on border.width { NumberAnimation { duration: Theme.uiAnimQuickMs } }
+                                    Behavior on color { ColorAnimation { duration: Theme.uiAnimQuickMs; easing.type: Theme.uiEasingQuick } }
+                                    Behavior on border.color { ColorAnimation { duration: Theme.uiAnimQuickMs; easing.type: Theme.uiEasingQuick } }
+                                    Behavior on border.width { NumberAnimation { duration: Theme.uiAnimQuickMs; easing.type: Theme.uiEasingQuick } }
                                 }
 
                                 RowLayout {
@@ -759,7 +759,7 @@ PanelWithOverlay {
                                     onReleased: ripple.opacity = 0.0
                                 }
 
-                                    NumberAnimation { id: rippleNumberAnimation; target: ripple; property: "opacity"; to: 0.0; duration: Theme.uiAnimRippleMs }
+                                    NumberAnimation { id: rippleNumberAnimation; target: ripple; property: "opacity"; to: 0.0; duration: Theme.uiAnimRippleMs; easing.type: Theme.uiEasingRipple }
 
                                 Rectangle {
                                     anchors.left: parent.left

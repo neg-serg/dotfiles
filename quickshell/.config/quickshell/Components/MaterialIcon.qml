@@ -29,6 +29,5 @@ Text {
     horizontalAlignment: Text.AlignHCenter
     verticalAlignment: Text.AlignVCenter
 
-    Behavior on rotation { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+Behavior on rotation { NumberAnimation { duration: Theme.uiAnimRotateMs; easing.type: Theme.uiEasingRotate } }
 }
-
