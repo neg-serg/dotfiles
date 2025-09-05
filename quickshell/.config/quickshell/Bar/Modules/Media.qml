@@ -42,8 +42,8 @@ Item {
                 width: Math.round(Theme.panelIconSize * Theme.scale(Screen))
                 height: Math.round(Theme.panelIconSize * Theme.scale(Screen))
                 anchors.centerIn: parent
-                color: Qt.darker(Theme.surface, 1.1)
-                border.color: Qt.rgba(Theme.accentPrimary.r, Theme.accentPrimary.g, Theme.accentPrimary.b, 0.3)
+                color: Theme.surface
+                border.color: Theme.borderSubtle
                 clip: true
                 antialiasing: true
                 layer.enabled: true
@@ -63,21 +63,21 @@ Item {
                     anchors.centerIn: parent
                     icon: "music_note"
                     size: Math.round(Theme.panelGlyphSize * Theme.scale(Screen))
-                    color: Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.4)
+                    color: Color.withAlpha(Theme.textPrimary, 0.4)
                     visible: !cover.visible
                 }
 
                 Rectangle {
                     anchors.fill: parent
                     radius: parent.radius
-                    color: Qt.rgba(0, 0, 0, 0.5)
+                    color: Theme.overlayWeak
                     visible: playButton.containsMouse
                     z: 2
                     MaterialIcon {
                         anchors.centerIn: parent
                         icon: MusicManager.isPlaying ? "pause" : "play_arrow"
                         size: 14 * Theme.scale(Screen)
-                        color: "white"
+                        color: Theme.onAccent
                     }
                 }
 

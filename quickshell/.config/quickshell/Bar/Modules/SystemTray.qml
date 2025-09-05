@@ -80,7 +80,7 @@ Row {
         screen: root.screen
         visible: false
         showOverlay: false
-        overlayColor: showOverlay ? Qt.rgba(0, 0, 0, 0.5) : "transparent"
+        overlayColor: showOverlay ? Theme.overlayStrong : "transparent"
         // When overlay is dismissed by outside click, collapse tray
         onVisibleChanged: {
             if (!visible) {
@@ -157,7 +157,7 @@ Row {
                         width: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
                         height: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
                         radius: Theme.cornerRadiusSmall
-                        color: "transparent"
+                        color: mouseArea.containsMouse ? Theme.surfaceHover : "transparent"
                         clip: true
                         TrayIcon {
                             id: icon

@@ -26,7 +26,7 @@ Item {
     // Icon (match workspace look)
     property real   iconScale: 1.0
     property int    iconSpacing: 4
-    property color  iconColor: "#8d9eb2"
+    property color  iconColor: Theme.textSecondary
 
     // Fine baseline nudges (if needed, usually -2..+3 px)
     property int    iconBaselineAdjust: 0
@@ -35,7 +35,7 @@ Item {
     // Colors
     property color  bgColor:      useTheme ? Theme.backgroundPrimary : "#1e293b"
     property color  textColor:    useTheme ? Theme.textPrimary : "white"
-    property color  hoverBgColor: useTheme ? Qt.rgba(Theme.textPrimary.r, Theme.textPrimary.g, Theme.textPrimary.b, 0.06) : "#223043"
+    property color  hoverBgColor: useTheme ? Theme.surfaceHover : "#223043"
 
     // === Internal state ===
     property string layoutText: "??"

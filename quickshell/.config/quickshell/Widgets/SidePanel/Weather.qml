@@ -82,6 +82,16 @@ Rectangle {
     function stopWeatherFetch() {
         isVisible = false
     }
+
+    // Optional contrast warnings for debug
+    function warnContrast(bg, fg, label) {
+        try {
+            if (!(Settings.settings && Settings.settings.debugContrast)) return;
+            var ratio = Color.contrastRatio(bg, fg);
+            var th = (Settings.settings && Settings.settings.contrastWarnRatio) ? Settings.settings.contrastWarnRatio : 4.5;
+            if (ratio < th) console.warn('[Contrast]', label || 'text', 'ratio', ratio.toFixed(2));
+        } catch (e) {}
+    }
  
     Rectangle {
         id: card
@@ -151,6 +161,7 @@ Rectangle {
                             font.pixelSize: Math.round(Theme.fontSizeHeader * 0.75 * Theme.scale(Screen))
                             font.bold: true
                             color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary)
+                            Component.onCompleted: weatherRoot.warnContrast(card.color, color, 'weather.current')
                         }
                     }
                 }
@@ -199,13 +210,14 @@ Rectangle {
                             Layout.alignment: Qt.AlignHCenter
                         }
                         Text {
- 
+
                             text: weatherData && weatherData.daily ? ((Settings.settings.useFahrenheit !== undefined ? Settings.settings.useFahrenheit : false) ? `${Math.round(weatherData.daily.temperature_2m_max[index] * 9/5 + 32)}° / ${Math.round(weatherData.daily.temperature_2m_min[index] * 9/5 + 32)}°` : `${Math.round(weatherData.daily.temperature_2m_max[index])}° / ${Math.round(weatherData.daily.temperature_2m_min[index])}°`) : ((Settings.settings.useFahrenheit !== undefined ? Settings.settings.useFahrenheit : false) ? "--° / --°" : "--° / --°")
                             font.family: Theme.fontFamily
                             font.pixelSize: Math.round(Theme.fontSizeCaption * Theme.scale(Screen))
                             color: Theme.textPrimary
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
+                            Component.onCompleted: weatherRoot.warnContrast(card.color, color, 'weather.daily')
                         }
                     }
                 }

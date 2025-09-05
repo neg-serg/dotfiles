@@ -1,10 +1,11 @@
 import QtQuick
 import qs.Settings
+import "../../Helpers/Color.js" as Color
 import "../../Helpers/Utils.js" as Utils
 
 Item {
     id: root
-    property color color: "#BFC8D0"
+    property color color: Theme.borderSubtle
     property real alpha: 0.05
     property real thickness: 7.0
     property real angleDeg: 30
@@ -13,12 +14,7 @@ Item {
     property bool  stripeEnabled: true
     // Darken accent strongly towards black to reduce brightness
     property real  stripeBrightness: 0.4 // 0..1, lower = closer to black
-    property color stripeColor: Qt.rgba(
-        Theme.accentPrimary.r * stripeBrightness,
-        Theme.accentPrimary.g * stripeBrightness,
-        Theme.accentPrimary.b * stripeBrightness,
-        1
-    )
+    property color stripeColor: Color.towardsBlack(Theme.accentPrimary, 1 - stripeBrightness)
     property real  stripeOpacity: 0.9
     // Portion of thickness used by the accent stripe (0..1)
     property real  stripeRatio: 0.35

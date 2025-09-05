@@ -111,9 +111,9 @@ Item {
     }
 
     // Accent palette (override if needed)
-    property color iconColor: "#3b7bb3"
-    property color gothicColor: "#D6DFE6"
-    property color separatorColor: "#8d9eb2"
+    property color iconColor: Theme.accentHover
+    property color gothicColor: Theme.textPrimary
+    property color separatorColor: Theme.textSecondary
 
     // Icon layout tuning
     property real iconScale: 1.45            // icon size relative to label font

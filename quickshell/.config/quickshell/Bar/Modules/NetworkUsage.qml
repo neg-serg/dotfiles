@@ -12,7 +12,7 @@ Item {
     property int    fontPixelSize: 0
     property color  textColor: Theme.textPrimary
     // Match media separators color (same blue as workspace accents)
-    property color  separatorColor: "#3b7bb3"
+    property color  separatorColor: Theme.accentHover
     property color  bgColor:   "transparent"
     property int    iconSpacing: Theme.panelRowSpacingSmall
     property string deviceMatch: ""
@@ -26,7 +26,7 @@ Item {
     // Icon tuning
     property real   iconScale: 0.7
     // Base icon color (used when link+internet are OK)
-    property color  iconColor: useTheme && Theme.gothicColor ? Theme.gothicColor : "#8d9eb2"
+    property color  iconColor: useTheme && Theme.gothicColor ? Theme.gothicColor : Theme.textSecondary
     property int    iconVAdjust: 0                 // vertical nudge (px) for the icon
     property string iconText: ""                  // Font Awesome: network-wired
     property string iconFontFamily: "Font Awesome 6 Free"
