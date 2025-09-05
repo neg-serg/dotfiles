@@ -228,8 +228,7 @@ Item {
             labelRef: label
             scale: Theme.wsSubmapIconScale
             baselineOffset: submapBaselineAdjust
-            compensateMetrics: true
-            compensationFactor: 1.0
+            alignMode: "optical"
             icon: submapIconName(root.submapName)
             color: Theme.wsSubmapIconColor
         }
@@ -241,8 +240,7 @@ Item {
             labelRef: label
             scale: iconScale
             baselineOffset: iconBaselineOffset
-            compensateMetrics: true
-            compensationFactor: 1.0
+            alignMode: "optical"
             text: iconGlyph
             fontFamily: Theme.fontFamily
             color: iconColor
