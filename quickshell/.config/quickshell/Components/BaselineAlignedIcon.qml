@@ -26,6 +26,11 @@ Item {
     property bool rounded: false
     property var screen: null
 
+    // Optional ascent compensation to stabilize alignment across scales/fonts
+    // When true, adds (label.ascent - icon.ascent) * compensationFactor to baselineOffset
+    property bool compensateMetrics: true
+    property real compensationFactor: 1.0
+
     // Fallback base size when labelRef is not available
     readonly property int _labelPx: (labelRef && labelRef.font && labelRef.font.pixelSize)
         ? labelRef.font.pixelSize : Theme.fontSizeSmall
@@ -33,7 +38,8 @@ Item {
     implicitWidth: (mode === "material") ? materialItem.implicitWidth : textItem.implicitWidth
     implicitHeight: (mode === "material") ? materialItem.implicitHeight : textItem.implicitHeight
 
-    
+    // Label metrics for compensation
+    FontMetrics { id: fmLabel; font: (root.labelRef && root.labelRef.font) ? root.labelRef.font : Qt.font({ pixelSize: root._labelPx }) }
 
     // Text glyph mode
     Text {
@@ -47,7 +53,8 @@ Item {
         font.pixelSize: Math.max(1, Math.round(root._labelPx * root.scale))
         renderType: Text.NativeRendering
         anchors.baseline: (root.labelRef && root.labelRef.baseline !== undefined) ? root.labelRef.baseline : undefined
-        anchors.baselineOffset: root.baselineOffset
+        FontMetrics { id: fmText; font: textItem.font }
+        anchors.baselineOffset: Math.round(root.baselineOffset + (root.compensateMetrics ? (fmLabel.ascent - fmText.ascent) * root.compensationFactor : 0))
     }
 
     // Material icon mode
@@ -60,6 +67,7 @@ Item {
         color: root.color
         screen: root.screen
         anchors.baseline: (root.labelRef && root.labelRef.baseline !== undefined) ? root.labelRef.baseline : undefined
-        anchors.baselineOffset: root.baselineOffset
+        FontMetrics { id: fmMat; font: materialItem.font }
+        anchors.baselineOffset: Math.round(root.baselineOffset + (root.compensateMetrics ? (fmLabel.ascent - fmMat.ascent) * root.compensationFactor : 0))
     }
 }
