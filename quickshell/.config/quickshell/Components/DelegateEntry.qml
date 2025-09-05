@@ -8,7 +8,7 @@ import "../Helpers/Color.js" as Color
 Rectangle {
     id: entry
 // Data for this entry (explicitly passed from ListView delegate)
-required property var itemData
+required property var entryData
     // Reference to parent ListView for sibling submenu cleanup
     required property ListView listViewRef
     // Component to create submenu host
@@ -22,7 +22,7 @@ required property var itemData
     readonly property int _computedPx: Math.max(1, Math.round(Theme.fontSizeSmall * Theme.scale(entry.screen) * Theme.panelMenuItemFontScale))
     function _entryText() {
         try {
-            var d = itemData; if (!d) return "";
+            var d = entryData; if (!d) return "";
             var keys = ['text','label','title','name','id'];
             for (var i=0;i<keys.length;i++) {
                 var k = keys[i]; var v = d[k];
@@ -39,7 +39,7 @@ required property var itemData
     property int   itemRadius: Theme.panelMenuItemRadius
 
     width: listViewRef.width
-    height: (itemData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight
+    height: (entryData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight
     color: "transparent"
     radius: itemRadius
 
@@ -51,7 +51,7 @@ required property var itemData
         width: parent.width - (Theme.panelMenuDividerMargin * 2)
         height: Theme.uiSeparatorThickness
         color: Theme.borderSubtle
-        visible: itemData?.isSeparator ?? false
+        visible: entryData?.isSeparator ?? false
     }
 
     // Hover background for regular items
@@ -60,7 +60,7 @@ required property var itemData
         anchors.fill: parent
         color: mouseArea.containsMouse ? hoverBaseColor : "transparent"
         radius: itemRadius
-        visible: !(itemData?.isSeparator ?? false)
+        visible: !(entryData?.isSeparator ?? false)
         property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold) : Theme.textPrimary
 
         RowLayout {
@@ -74,7 +74,7 @@ required property var itemData
                 // Use primary text normally; switch to contrast-on-hover when hovered
                 color: mouseArea.containsMouse
                        ? bg.hoverTextColor
-                       : ((itemData?.enabled ?? true) ? Theme.textPrimary : Theme.textDisabled)
+                       : ((entryData?.enabled ?? true) ? Theme.textPrimary : Theme.textDisabled)
                 text: entry._entryText()
                 font.family: Theme.fontFamily
                 font.pixelSize: entry._computedPx
@@ -88,22 +88,22 @@ required property var itemData
                 id: menuIcon
                 Layout.preferredWidth: Theme.panelMenuIconSize
                 Layout.preferredHeight: Theme.panelMenuIconSize
-                source: itemData?.icon ?? ""
-                visible: (itemData?.icon ?? "") !== ""
+                source: entryData?.icon ?? ""
+                visible: (entryData?.icon ?? "") !== ""
                 fillMode: Image.PreserveAspectFit
             }
             // Fallback icon when provided source fails to load
             MaterialIcon {
-                visible: ((itemData?.icon ?? "") !== "") && (menuIcon.status === Image.Error)
+                visible: ((entryData?.icon ?? "") !== "") && (menuIcon.status === Image.Error)
                 icon: Settings.settings.trayFallbackIcon || "broken_image"
                 size: Math.round(Theme.panelMenuIconSize * Theme.scale(screen))
                 color: Theme.textSecondary
             }
             MaterialIcon {
                 // Chevron/right indicator for submenu
-                icon: itemData?.hasChildren ? "chevron_right" : ""
+                icon: entryData?.hasChildren ? "chevron_right" : ""
                 size: Math.round(Theme.panelMenuChevronSize * Theme.scale(entry.screen))
-                visible: itemData?.hasChildren ?? false
+                visible: entryData?.hasChildren ?? false
                 color: Theme.textPrimary
             }
         }
@@ -112,11 +112,11 @@ required property var itemData
             id: mouseArea
             anchors.fill: parent
             hoverEnabled: true
-            enabled: (itemData?.enabled ?? true) && !(itemData?.isSeparator ?? false) && (menuWindow && menuWindow.visible)
+            enabled: (entryData?.enabled ?? true) && !(entryData?.isSeparator ?? false) && (menuWindow && menuWindow.visible)
             cursorShape: Qt.PointingHandCursor
 
             function openSubmenu() {
-                if (!(itemData?.hasChildren)) return;
+                if (!(entryData?.hasChildren)) return;
                 // Close sibling submenus
                 for (let i = 0; i < listViewRef.contentItem.children.length; i++) {
                     const sibling = listViewRef.contentItem.children[i];
@@ -137,7 +137,7 @@ required property var itemData
                 var openLeft = (globalPos.x + entry.width + submenuWidth > Screen.width);
                 var anchorX = openLeft ? -submenuWidth - gap : entry.width + gap;
                 entry.subMenu = submenuHostComponent.createObject(menuWindow, {
-                    menu: itemData,
+                    menu: entryData,
                     anchorItem: entry,
                     anchorX: anchorX,
                     anchorY: 0
@@ -146,9 +146,9 @@ required property var itemData
             }
 
             onClicked: {
-                if (!itemData || itemData.isSeparator) return;
-                if (itemData.hasChildren) return; // submenu opens on hover
-                itemData.triggered();
+                if (!entryData || entryData.isSeparator) return;
+                if (entryData.hasChildren) return; // submenu opens on hover
+                entryData.triggered();
                 // Close the root menu
                 menuWindow.visible = false;
             }
@@ -157,7 +157,7 @@ required property var itemData
     }
     Component.onCompleted: {
         try {
-            var keys = []; var d=itemData; for (var k in d) keys.push(k);
+            var keys = []; var d=entryData; for (var k in d) keys.push(k);
             console.debug('[Menu][DelegateEntry] init keys=', keys.join(','), 'text=', entry._entryText(), 'px=', entry._computedPx,
                           'textPrimary=', String(Theme.textPrimary), 'hoverBase=', String(hoverBaseColor))
         } catch (e) {}

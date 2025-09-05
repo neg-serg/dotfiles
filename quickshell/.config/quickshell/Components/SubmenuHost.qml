@@ -60,11 +60,12 @@ PopupWindow {
         model: ScriptModel { id: subMenuModel; values: opener.children ? [...opener.children.values] : [] }
 
         delegate: Item {
+            id: wrap
             width: listView.width; height: Theme.panelMenuItemHeight
             property var data: modelData
             DelegateEntry {
                 anchors.fill: parent
-                itemData: parent.data
+                entryData: (wrap && wrap.data !== undefined) ? wrap.data : modelData
                 listViewRef: listView
                 submenuHostComponent: subMenu.submenuHostComponent
                 menuWindow: subMenu

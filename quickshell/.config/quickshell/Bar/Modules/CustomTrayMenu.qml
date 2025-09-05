@@ -95,12 +95,13 @@ import "../../Helpers/Color.js" as Color
         readonly property color _hoverColor: Theme.surfaceHover
 
         delegate: Item {
+            id: wrapper
             width: listView.width; height: Theme.panelMenuItemHeight
             // Capture the delegate's modelData explicitly to avoid context collisions
             property var data: modelData
             DelegateEntry {
                 anchors.fill: parent
-                itemData: parent.data
+                entryData: (wrapper && wrapper.data !== undefined) ? wrapper.data : modelData
                 listViewRef: listView
                 submenuHostComponent: submenuHostComp
                 menuWindow: trayMenu
