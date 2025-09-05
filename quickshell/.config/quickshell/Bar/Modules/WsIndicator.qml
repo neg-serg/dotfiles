@@ -227,7 +227,8 @@ Item {
             mode: "material"
             labelRef: label
             scale: Theme.wsSubmapIconScale
-            baselineOffset: iconBaselineOffset + submapBaselineAdjust
+            // Use dedicated submap baseline token; do not add workspace icon offset
+            baselineOffset: submapBaselineAdjust
             icon: submapIconName(root.submapName)
             color: Theme.wsSubmapIconColor
         }
