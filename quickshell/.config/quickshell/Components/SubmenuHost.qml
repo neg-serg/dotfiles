@@ -60,7 +60,7 @@ PopupWindow {
         model: ScriptModel { values: opener.children ? [...opener.children.values] : [] }
 
         delegate: DelegateEntry {
-            modelData: modelData
+            rowData: modelData
             listViewRef: listView
             submenuHostComponent: subMenu.submenuHostComponent
             menuWindow: subMenu

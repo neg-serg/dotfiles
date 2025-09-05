@@ -97,7 +97,7 @@ import "../../Helpers/Color.js" as Color
         readonly property color _hoverColor: Theme.surfaceHover
 
         delegate: DelegateEntry {
-            modelData: modelData
+            rowData: modelData
             listViewRef: listView
             submenuHostComponent: submenuHostComp
             menuWindow: trayMenu

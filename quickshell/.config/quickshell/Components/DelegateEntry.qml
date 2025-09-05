@@ -7,20 +7,20 @@ import "../Helpers/Color.js" as Color
 
 Rectangle {
     id: entry
-    required property var modelData
+    required property var rowData
     // Reference to parent ListView for sibling submenu cleanup
     required property ListView listViewRef
     // Component to create submenu host
     required property Component submenuHostComponent
     // Parent menu window (PopupWindow) to attach submenus to
-    required property Item menuWindow
+    required property var menuWindow
 
     // Theming
     property color hoverBaseColor: Theme.surfaceHover
     property int   itemRadius: Theme.panelMenuItemRadius
 
     width: listViewRef.width
-    height: (modelData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight
+    height: (rowData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight
     color: "transparent"
     radius: itemRadius
 
@@ -32,7 +32,7 @@ Rectangle {
         width: parent.width - (Theme.panelMenuDividerMargin * 2)
         height: Theme.uiSeparatorThickness
         color: Theme.borderSubtle
-        visible: modelData?.isSeparator ?? false
+        visible: rowData?.isSeparator ?? false
     }
 
     // Hover background for regular items
@@ -41,7 +41,7 @@ Rectangle {
         anchors.fill: parent
         color: mouseArea.containsMouse ? hoverBaseColor : "transparent"
         radius: itemRadius
-        visible: !(modelData?.isSeparator ?? false)
+        visible: !(rowData?.isSeparator ?? false)
         property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold) : Theme.textPrimary
 
         RowLayout {
@@ -52,8 +52,8 @@ Rectangle {
 
             Text {
                 Layout.fillWidth: true
-                color: (modelData?.enabled ?? true) ? bg.hoverTextColor : Theme.textDisabled
-                text: modelData?.text ?? ""
+                color: (rowData?.enabled ?? true) ? bg.hoverTextColor : Theme.textDisabled
+                text: rowData?.text ?? ""
                 font.family: Theme.fontFamily
                 font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * Theme.panelMenuItemFontScale)
                 font.weight: mouseArea.containsMouse ? Font.DemiBold : Font.Medium
@@ -65,22 +65,22 @@ Rectangle {
                 id: menuIcon
                 Layout.preferredWidth: Theme.panelMenuIconSize
                 Layout.preferredHeight: Theme.panelMenuIconSize
-                source: modelData?.icon ?? ""
-                visible: (modelData?.icon ?? "") !== ""
+                source: rowData?.icon ?? ""
+                visible: (rowData?.icon ?? "") !== ""
                 fillMode: Image.PreserveAspectFit
             }
             // Fallback icon when provided source fails to load
             MaterialIcon {
-                visible: ((modelData?.icon ?? "") !== "") && (menuIcon.status === Image.Error)
+                visible: ((rowData?.icon ?? "") !== "") && (menuIcon.status === Image.Error)
                 icon: Settings.settings.trayFallbackIcon || "broken_image"
                 size: Math.round(Theme.panelMenuIconSize * Theme.scale(screen))
                 color: Theme.textSecondary
             }
             MaterialIcon {
                 // Chevron/right indicator for submenu
-                icon: modelData?.hasChildren ? "chevron_right" : ""
+                icon: rowData?.hasChildren ? "chevron_right" : ""
                 size: Math.round(Theme.panelMenuChevronSize * Theme.scale(screen))
-                visible: modelData?.hasChildren ?? false
+                visible: rowData?.hasChildren ?? false
                 color: Theme.textPrimary
             }
         }
@@ -89,11 +89,11 @@ Rectangle {
             id: mouseArea
             anchors.fill: parent
             hoverEnabled: true
-            enabled: (modelData?.enabled ?? true) && !(modelData?.isSeparator ?? false) && menuWindow.visible
+            enabled: (rowData?.enabled ?? true) && !(rowData?.isSeparator ?? false) && (menuWindow && menuWindow.visible)
             cursorShape: Qt.PointingHandCursor
 
             function openSubmenu() {
-                if (!(modelData?.hasChildren)) return;
+                if (!(rowData?.hasChildren)) return;
                 // Close sibling submenus
                 for (let i = 0; i < listViewRef.contentItem.children.length; i++) {
                     const sibling = listViewRef.contentItem.children[i];
@@ -114,7 +114,7 @@ Rectangle {
                 var openLeft = (globalPos.x + entry.width + submenuWidth > Screen.width);
                 var anchorX = openLeft ? -submenuWidth - gap : entry.width + gap;
                 entry.subMenu = submenuHostComponent.createObject(menuWindow, {
-                    menu: modelData,
+                    menu: rowData,
                     anchorItem: entry,
                     anchorX: anchorX,
                     anchorY: 0
@@ -123,9 +123,9 @@ Rectangle {
             }
 
             onClicked: {
-                if (!modelData || modelData.isSeparator) return;
-                if (modelData.hasChildren) return; // submenu opens on hover
-                modelData.triggered();
+                if (!rowData || rowData.isSeparator) return;
+                if (rowData.hasChildren) return; // submenu opens on hover
+                rowData.triggered();
                 // Close the root menu
                 menuWindow.visible = false;
             }
