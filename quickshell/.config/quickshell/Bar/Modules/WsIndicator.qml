@@ -16,7 +16,7 @@ Item {
     // Hyprland keyboard submap name (shown to the left of workspace)
     property string submapName: ""
     // Fine-tune vertical alignment of submap icon (px; negative moves up)
-    property int submapBaselineAdjust: Theme.wsSubmapBaselineAdjust
+    property int submapBaselineAdjust: Theme.wsSubmapIconBaselineOffset
     // Live-discovered submaps from Hyprland (via hyprctl -j binds)
     property var submapDynamicMap: ({})
     // Map known submaps to clean, geometric Material Symbols

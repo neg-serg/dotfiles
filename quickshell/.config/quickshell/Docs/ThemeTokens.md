@@ -59,9 +59,10 @@ Additional UI tokens (nested)
    - keyboard.radius (defaults to shape.cornerRadiusSmall)
    - keyboard.opacity.normal, keyboard.opacity.hover
    - keyboard.text.bold (boolean)
-- Workspace indicator: ws.icon.scale, ws.icon.baselineOffset, ws.icon.spacing, ws.submapBaselineAdjust
+ - Workspace indicator: ws.icon.scale, ws.icon.baselineOffset, ws.icon.spacing, ws.submapBaselineAdjust
    - ws.label.padding, ws.label.leftPadding.normal, ws.label.leftPadding.terminal
    - ws.icon.innerPadding
+  - Optional nested submap baseline: ws.submap.icon.baselineOffset (fallback to ws.submapBaselineAdjust)
 - Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
   - Applauncher list: applauncher.list.itemHeight, applauncher.list.itemHeightLarge
   - Applauncher preview: applauncher.preview.width
