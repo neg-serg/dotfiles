@@ -56,6 +56,14 @@ Item {
             if (idx !== -1) arr.splice(idx, 1);
             arr.unshift(id);
             _lastActiveStack = arr;
+            // Persist small prefix to Settings (bounded)
+            try {
+                var maxN = 5;
+                var toSave = arr.slice(0, maxN);
+                if (Settings.settings && JSON.stringify(Settings.settings.lastActivePlayers || []) !== JSON.stringify(toSave)) {
+                    Settings.settings.lastActivePlayers = toSave;
+                }
+            } catch (e2) {}
         } catch (e) {}
     }
 
@@ -225,8 +233,8 @@ Item {
         }
     }
 
-    Component.onCompleted: updateCurrentPlayer()
     Component.onCompleted: {
+        updateCurrentPlayer();
         // Load persisted LIFO stack from settings
         try {
             var saved = (Settings.settings && Settings.settings.lastActivePlayers) ? Settings.settings.lastActivePlayers : [];
