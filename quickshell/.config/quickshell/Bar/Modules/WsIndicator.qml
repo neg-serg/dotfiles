@@ -221,35 +221,27 @@ Item {
         anchors.fill: parent
         // implicit sizes come from children
 
-        // Metrics to align baselines
-        FontMetrics { id: fmIcon; font: icon.font }
-        FontMetrics { id: fmSub;  font: submapIcon.font }
-
         // Submap icon aligned to label baseline
-        MaterialIcon {
-            id: submapIcon
+        BaselineAlignedIcon {
             visible: root.submapName && root.submapName.length > 0
+            mode: "material"
+            labelRef: label
+            scale: Theme.wsSubmapIconScale
+            baselineOffset: iconBaselineOffset + submapBaselineAdjust
             icon: submapIconName(root.submapName)
             color: Theme.wsSubmapIconColor
-            size: Math.round(label.font.pixelSize * Theme.wsSubmapIconScale)
-            // Compensate ascent differences + fine adjust
-            anchors.baseline: label.baseline
-            anchors.baselineOffset: Math.round(iconBaselineOffset + (fmIcon.ascent - fmSub.ascent) + submapBaselineAdjust)
         }
 
         // Workspace icon (PUA)
-        Text {
-            id: icon
+        BaselineAlignedIcon {
             visible: iconGlyph.length > 0
+            mode: "text"
+            labelRef: label
+            scale: iconScale
+            baselineOffset: iconBaselineOffset
             text: iconGlyph
+            fontFamily: Theme.fontFamily
             color: iconColor
-            renderType: Text.NativeRendering
-
-            font.family: Theme.fontFamily
-            font.pixelSize: Math.round(label.font.pixelSize * iconScale)
-
-            anchors.baseline: label.baseline
-            anchors.baselineOffset: iconBaselineOffset
             padding: (root.isTerminalWs ? Theme.uiSpacingNone : Theme.wsIconInnerPadding)
         }
 
