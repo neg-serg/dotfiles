@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Effects
 import Quickshell.Widgets
+import qs.Settings
 import qs.Components
 // QML requires import qualifiers to start with an uppercase letter
 import "../Helpers/Url.js" as Url
@@ -16,6 +17,8 @@ Item {
     property bool grayscale: false
     // Optional screen reference for scaling if needed by parent
     property var screen: null
+    // Custom fallback icon (Material Symbols name). If empty, uses Settings.settings.trayFallbackIcon
+    property string fallbackIcon: (Settings.settings && Settings.settings.trayFallbackIcon) ? Settings.settings.trayFallbackIcon : "broken_image"
 
     width: size
     height: size
@@ -82,7 +85,7 @@ Item {
     MaterialIcon {
         anchors.centerIn: parent
         size: root.size
-        icon: "broken_image"
+        icon: root.fallbackIcon && root.fallbackIcon.length > 0 ? root.fallbackIcon : "broken_image"
         color: Theme.textSecondary
         visible: (img.status === Image.Error) || (!img.source || img.source === "")
     }
