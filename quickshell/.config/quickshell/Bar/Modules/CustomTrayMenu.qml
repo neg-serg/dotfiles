@@ -133,7 +133,7 @@ import "../../Helpers/Color.js" as Color
                         color: (modelData?.enabled ?? true) ? bg.hoverTextColor : Theme.textDisabled;
                         text: modelData?.text ?? "";
                         font.family: Theme.fontFamily;
-                        font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * 0.90);
+                        font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * Theme.panelMenuItemFontScale);
                         font.weight: mouseArea.containsMouse ? Font.DemiBold : Font.Medium;
                         verticalAlignment: Text.AlignVCenter;
                         elide: Text.ElideRight;
@@ -380,7 +380,7 @@ import "../../Helpers/Color.js" as Color
                                 color: (modelData?.enabled ?? true) ? bg.hoverTextColor : Theme.textDisabled;
                                 text: modelData?.text ?? "";
                                 font.family: Theme.fontFamily;
-                                font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * 0.90);
+                                font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * Theme.panelMenuItemFontScale);
                                 font.weight: mouseArea.containsMouse ? Font.DemiBold : Font.Medium;
                                 verticalAlignment: Text.AlignVCenter;
                                 elide: Text.ElideRight;
