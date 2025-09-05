@@ -195,16 +195,13 @@
   },
   "ws": {
     "icon": {
-      "scale": 1.0,
       "baselineOffset": 0,
       "spacing": 1,
       "innerPadding": 1
     },
-    "submapBaselineAdjust": 0,
     "submap": {
       "icon": {
         "baselineOffset": 0,
-        "scale": 1.0,
         "color": "#006FCC"
       }
     },

@@ -112,7 +112,6 @@ Item {
     property color separatorColor: Theme.textSecondary
 
     // Icon layout
-    property real iconScale: Theme.wsIconScale
     property int  iconBaselineOffset: Theme.wsIconBaselineOffset
     property int  iconSpacing: Theme.wsIconSpacing
 

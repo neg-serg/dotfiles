@@ -670,16 +670,10 @@ Singleton {
     property real uiRippleOpacity: Utils.clamp(val('ui.ripple.opacity', 0.18), 0, 1)
     property real uiIconEmphasisOpacity: Utils.clamp(val('ui.icon.emphasisOpacity', 0.9), 0, 1)
     // Workspace indicator tuning
-    property real wsIconScale: val('ws.icon.scale', 1.45)
     property int  wsIconBaselineOffset: val('ws.icon.baselineOffset', 4)
     property int  wsIconSpacing: val('ws.icon.spacing', 1)
-    // Back-compat token (flat): ws.submapBaselineAdjust
-    property int  wsSubmapBaselineAdjust: val('ws.submapBaselineAdjust', -5)
-    // New nested tokens for submap icon
-    // Baseline vs. text; falls back to legacy flat key
-    property int  wsSubmapIconBaselineOffset: val('ws.submap.icon.baselineOffset', wsSubmapBaselineAdjust)
-    // Scale relative to label font size
-    property real wsSubmapIconScale: Utils.clamp(val('ws.submap.icon.scale', 1.0), 0.2, 3.0)
+    // Submap icon baseline vs. text
+    property int  wsSubmapIconBaselineOffset: val('ws.submap.icon.baselineOffset', 0)
     // Color of the submap icon
     property color wsSubmapIconColor: val('ws.submap.icon.color', accentPrimary)
     // Workspace label/icon paddings
