@@ -40,6 +40,9 @@ PanelWithOverlay {
 
                 IconButton {
                     icon: "chevron_left"
+                    accentColor: Theme.accentPrimary
+                    iconNormalColor: Theme.textPrimary
+                    iconHoverColor: Theme.onAccent
                     onClicked: {
                         let newDate = new Date(calendar.year, calendar.month - 1, 1);
                         calendar.year = newDate.getFullYear();
@@ -60,6 +63,9 @@ PanelWithOverlay {
 
                 IconButton {
                     icon: "chevron_right"
+                    accentColor: Theme.accentPrimary
+                    iconNormalColor: Theme.textPrimary
+                    iconHoverColor: Theme.onAccent
                     onClicked: {
                         let newDate = new Date(calendar.year, calendar.month + 1, 1);
                         calendar.year = newDate.getFullYear();
@@ -79,7 +85,7 @@ PanelWithOverlay {
                     text: shortName
                     color: Theme.textPrimary
                     opacity: 0.8
-                    font.pixelSize: 12 * Theme.scale(screen)
+                    font.pixelSize: 18 * Theme.scale(screen)
                     font.family: Theme.fontFamily
                     font.weight: Font.Normal
                     horizontalAlignment: Text.AlignHCenter
@@ -133,15 +139,14 @@ PanelWithOverlay {
                     width: Theme.calendarCellSize
                     height: Theme.calendarCellSize
                 radius: Theme.cornerRadius
-                    color: {
-                        if (model.today)
-                            return Theme.accentPrimary;
-
-                        if (mouseArea2.containsMouse)
-                            return Theme.backgroundTertiary;
-
-                        return "transparent";
-                    }
+                    // Background coloring: today uses full accent; hover uses dimmed accent (30% less brightness)
+                    property color _hoverColor: Qt.rgba(
+                        Theme.accentPrimary.r * 0.7,
+                        Theme.accentPrimary.g * 0.7,
+                        Theme.accentPrimary.b * 0.7,
+                        Theme.accentPrimary.a
+                    )
+                    color: model.today ? Theme.accentPrimary : (mouseArea2.containsMouse ? _hoverColor : "transparent")
 
                     // Holiday dot indicator
                     Rectangle {
@@ -164,7 +169,7 @@ PanelWithOverlay {
                         opacity: model.month === calendar.month ? (mouseArea2.containsMouse ? 1 : 0.7) : 0.3
                         font.pixelSize: 24 * Theme.scale(screen)
                         font.family: Theme.fontFamily
-                        font.weight: Font.Medium
+                        font.weight: Font.Bold
                     }
 
                     MouseArea {
