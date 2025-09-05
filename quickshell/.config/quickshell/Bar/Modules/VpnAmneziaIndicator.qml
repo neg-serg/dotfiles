@@ -50,49 +50,26 @@ Item {
     // Size / visibility
     visible: connected
     implicitHeight: desiredHeight
-    width: row.implicitWidth
+    width: inlineView.implicitWidth
     height: desiredHeight
 
-    // Background (optional)
-    Rectangle { anchors.fill: parent; color: bgColor; visible: bgColor !== "transparent" }
-
-    // Computed font size tied to height
-    readonly property int computedFontPx: fontPixelSize > 0
-        ? fontPixelSize
-        : Utils.clamp(Math.round((desiredHeight - 2 * textPadding) * Theme.panelComputedFontScale), 16, 4096)
-
-    Row {
-        id: row
-        spacing: iconSpacing
+    SmallInlineStat {
+        id: inlineView
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
-
-        // Icon container
-        Item {
-            id: iconBox
-            implicitHeight: root.desiredHeight
-            implicitWidth: iconGlyph.implicitWidth
-            MaterialIcon {
-                id: iconGlyph
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: iconVAdjust
-                icon: root.iconName
-                rounded: root.iconRounded
-                size: Utils.clamp(Math.round(root.computedFontPx * iconScale), 8, 2048)
-                color: iconColor()
-            }
-        }
-
-        Label {
-            id: label
-            visible: root.showLabel
-            text: "VPN"
-            color: iconColor()
-            font.family: Theme.fontFamily
-            font.pixelSize: root.computedFontPx
-            padding: textPadding
-            verticalAlignment: Text.AlignVCenter
-        }
+        desiredHeight: root.desiredHeight
+        fontPixelSize: root.fontPixelSize
+        textPadding: root.textPadding
+        iconSpacing: root.iconSpacing
+        iconMode: "material"
+        materialIconName: root.iconName
+        materialIconRounded: root.iconRounded
+        iconScale: root.iconScale
+        iconVAdjust: root.iconVAdjust
+        iconColor: iconColor()
+        labelVisible: root.showLabel
+        labelText: "VPN"
+        labelColor: iconColor()
     }
 
     // Poll every few seconds

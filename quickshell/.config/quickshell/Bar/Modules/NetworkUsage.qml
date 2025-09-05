@@ -4,6 +4,7 @@ import Quickshell.Io
 import qs.Settings
 import "../../Helpers/Format.js" as Format
 import "../../Helpers/Utils.js" as Utils
+import qs.Components
 
 Item {
     id: root
@@ -56,46 +57,27 @@ Item {
     // Font metrics for text (not icon)
     FontMetrics { id: fmText; font: label.font }
 
-    // Content row
-    Row {
-        id: lineBox
-        spacing: iconSpacing
+    SmallInlineStat {
+        id: inlineView
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
-
-        // Icon container: forces vertical centering of the glyph
-        Item {
-            id: iconBox
-            implicitHeight: root.desiredHeight
-            implicitWidth: iconGlyph.implicitWidth
-            // The actual glyph
-            Text {
-                id: iconGlyph
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: iconVAdjust
-                text: iconText
-                color: currentIconColor()
-                font.family: iconFontFamily
-                font.styleName: iconStyleName
-                font.weight: Font.Normal
-                font.pixelSize: Utils.clamp(Math.round(root.computedFontPx * iconScale), 8, 2048)
-                renderType: Text.NativeRendering
-            }
-        }
-
-        Label {
-            id: label
-            // Render slash with colored separator like in media widget
-            textFormat: Text.RichText
-            text: displayText && displayText.indexOf('/') !== -1
-                    ? displayText.replace('/', Format.sepSpan(separatorColor, '/'))
-                    : displayText
-            color: textColor
-            font.family: Theme.fontFamily
-            font.pixelSize: root.computedFontPx
-            padding: textPadding
-            verticalAlignment: Text.AlignVCenter
-        }
+        desiredHeight: root.desiredHeight
+        fontPixelSize: root.fontPixelSize
+        textPadding: root.textPadding
+        iconSpacing: root.iconSpacing
+        iconMode: "glyph"
+        iconGlyph: iconText
+        iconFontFamily: iconFontFamily
+        iconStyleName: iconStyleName
+        iconScale: root.iconScale
+        iconVAdjust: root.iconVAdjust
+        iconColor: currentIconColor()
+        labelIsRichText: true
+        labelText: displayText && displayText.indexOf('/') !== -1
+                   ? displayText.replace('/', Format.sepSpan(separatorColor, '/'))
+                   : displayText
+        labelColor: textColor
+        labelFontFamily: Theme.fontFamily
     }
 
     // External process runner
