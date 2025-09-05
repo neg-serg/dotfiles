@@ -152,7 +152,7 @@ Rectangle {
             
                 background: Rectangle {
                     implicitWidth: 120 * Theme.scale(screen)
-                    implicitHeight: 40 * Theme.scale(screen)
+                    implicitHeight: Math.round(Theme.uiControlHeight * Theme.scale(screen))
                     // Match window/card palette
                     color: card.color
                     border.color: "transparent"
@@ -161,7 +161,7 @@ Rectangle {
                 }
 
                 contentItem: Text {
-                    leftPadding: 6 * Theme.scale(screen)
+                    leftPadding: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                     rightPadding: playerSelector.indicator.width + playerSelector.spacing
                     text: playerSelector.displayText
                     font.pixelSize: playerUI.musicTextPx
@@ -171,7 +171,7 @@ Rectangle {
                 }
 
                 indicator: Text {
-                    x: playerSelector.width - width - 12 * Theme.scale(screen)
+                    x: playerSelector.width - width - Math.round(Theme.sidePanelSpacing * Theme.scale(screen))
                     y: playerSelector.topPadding + (playerSelector.availableHeight - height) / 2
                     text: "arrow_drop_down"
                     font.family: "Material Symbols Outlined"
@@ -234,7 +234,7 @@ Rectangle {
 
             // Album art with spectrum visualizer
             RowLayout {
-                spacing: 4 * Theme.scale(screen)
+                spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
                 Layout.fillWidth: true
 
                 // Album art container with circular spectrum overlay
@@ -268,7 +268,7 @@ Rectangle {
                             source: (MusicManager.coverUrl || "")
                             visible: source && source.toString() !== ""
 
-                            // Apply rounded-rect mask (small radius)
+                            // Apply rounded-rect mask (corner radius)
                             layer.enabled: true
                             layer.effect: MultiEffect {
                                 maskEnabled: true
@@ -593,7 +593,7 @@ Rectangle {
                             RowLayout {
                                 visible: false
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 Text {
                                     text: "Channels"
                                     color: playerUI.musicTextColor
@@ -615,7 +615,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackChannelLayout && !MusicManager.trackQualitySummary
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 Text {
                                     text: "Layout"
                                     color: playerUI.musicTextColor
@@ -640,7 +640,7 @@ Rectangle {
                             RowLayout {
                                 visible: false
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 Text {
                                     text: "Bitrate"
                                     color: playerUI.musicTextColor
@@ -662,7 +662,7 @@ Rectangle {
                             RowLayout {
                                 visible: false
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 Text {
                                     text: "Track"
                                     color: playerUI.musicTextColor
@@ -682,7 +682,7 @@ Rectangle {
                             RowLayout {
                                 visible: false
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 Text {
                                     text: "Disc"
                                     color: playerUI.musicTextColor
@@ -713,7 +713,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackDateStr
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 MaterialIcon {
                                     // Date icon
                                     icon: "calendar_month"
@@ -738,7 +738,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackRgTrackStr
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 Text {
                                     text: "RG track"
                                     color: playerUI.musicTextColor
