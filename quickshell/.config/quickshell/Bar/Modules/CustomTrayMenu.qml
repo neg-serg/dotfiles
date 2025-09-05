@@ -141,8 +141,8 @@ import "../../Helpers/Color.js" as Color
 
                     Image {
                         id: menuIcon
-                        Layout.preferredWidth: 16;
-                        Layout.preferredHeight: 16;
+                        Layout.preferredWidth: Theme.panelMenuIconSize;
+                        Layout.preferredHeight: Theme.panelMenuIconSize;
                         source: modelData?.icon ?? "";
                         visible: (modelData?.icon ?? "") !== "";
                         fillMode: Image.PreserveAspectFit;
@@ -152,14 +152,14 @@ import "../../Helpers/Color.js" as Color
                     MaterialIcon {
                         visible: ((modelData?.icon ?? "") !== "") && (menuIcon.status === Image.Error)
                         icon: Settings.settings.trayFallbackIcon || "broken_image"
-                        size: Math.round(16 * Theme.scale(screen))
+                        size: Math.round(Theme.panelMenuIconSize * Theme.scale(screen))
                         color: Theme.textSecondary
                     }
 
                     MaterialIcon {
                         // Chevron/right indicator for submenu
                         icon: modelData?.hasChildren ? "chevron_right" : ""
-                        size: Math.round(15 * Theme.scale(screen))
+                        size: Math.round(Theme.panelMenuChevronSize * Theme.scale(screen))
                         visible: modelData?.hasChildren ?? false
                         color: Theme.textPrimary
                     }

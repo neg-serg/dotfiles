@@ -19,9 +19,9 @@ Item {
     property var activeFlags: [] // [{ key, icon, title }]
     property string mpdState: "unknown" // playing | paused | stopped | unknown
     // Background visual matches bar background; helps reserve geometry cleanly
-    property int padX: Math.round(6 * Theme.scale(Screen))
-    property int padY: Math.round(2 * Theme.scale(Screen))
-    property int radius: Math.round(6 * Theme.scale(Screen))
+    property int padX: Math.round(Theme.panelRowSpacingSmall * Theme.scale(Screen))
+    property int padY: Math.round(Theme.uiGapTiny * Theme.scale(Screen))
+    property int radius: Math.round(Theme.cornerRadiusSmall * Theme.scale(Screen))
     implicitWidth: content.implicitWidth + 2 * padX
     implicitHeight: Utils.clamp(content.implicitHeight + 2 * padY, iconPx + 2 * padY, content.implicitHeight + 2 * padY)
     // Ensure the item actually occupies its implicit size
@@ -160,7 +160,7 @@ Item {
         anchors.rightMargin: root.padX
         anchors.topMargin: root.padY
         anchors.bottomMargin: root.padY
-        spacing: Math.round(6 * Theme.scale(Screen))
+        spacing: Math.round(Theme.panelRowSpacingSmall * Theme.scale(Screen))
         Repeater {
             model: activeFlags
             delegate: MaterialIcon {

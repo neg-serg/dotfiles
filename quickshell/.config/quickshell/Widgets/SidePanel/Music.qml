@@ -326,8 +326,8 @@ Rectangle {
                         ColumnLayout {
                             id: detailsCol
                             anchors.fill: parent
-                            anchors.leftMargin: 6 * Theme.scale(screen)
-                            anchors.rightMargin: 6 * Theme.scale(screen)
+                            anchors.leftMargin: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
+                            anchors.rightMargin: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
                             anchors.topMargin: 0
                             anchors.bottomMargin: 0
                             spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
@@ -760,7 +760,7 @@ Rectangle {
                             RowLayout {
                                 visible: !!MusicManager.trackRgAlbumStr
                                 Layout.fillWidth: true
-                                spacing: 6 * Theme.scale(screen)
+                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 Text {
                                     text: "RG album"
                                     color: playerUI.musicTextColor
