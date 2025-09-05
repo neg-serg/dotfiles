@@ -3,36 +3,34 @@ var _geoCache = {}; // key: cityLower -> { value: {lat, lon}, expiry: ts, errorU
 var _weatherCache = {}; // key: cityLower -> { value: weatherObject, expiry: ts, errorUntil?: ts }
 // Shared HTTP helper
 try { Qt.include("./Http.js"); } catch (e) { }
-// Fallback shim if httpGetJson is not provided by Http.js
-if (typeof httpGetJson !== "function") {
-    function httpGetJson(url, timeoutMs, success, fail, userAgent) {
+// Reliable local reference (with fallback shim)
+var _httpGetJson = (typeof httpGetJson === 'function') ? httpGetJson : function(url, timeoutMs, success, fail, userAgent) {
+    try {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        if (timeoutMs !== undefined && timeoutMs !== null) xhr.timeout = timeoutMs;
         try {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url, true);
-            if (timeoutMs !== undefined && timeoutMs !== null) xhr.timeout = timeoutMs;
-            try {
-                if (xhr.setRequestHeader) {
-                    try { xhr.setRequestHeader('Accept', 'application/json'); } catch (e1) {}
-                    if (userAgent) { try { xhr.setRequestHeader('User-Agent', String(userAgent)); } catch (e2) {} }
-                }
-            } catch (e3) {}
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState !== XMLHttpRequest.DONE) return;
-                var status = xhr.status;
-                if (status === 200) {
-                    try { success && success(JSON.parse(xhr.responseText)); }
-                    catch (e) { fail && fail({ type: 'parse', message: 'Failed to parse JSON' }); }
-                } else {
-                    var retryAfter = 0; try { var ra = xhr.getResponseHeader && xhr.getResponseHeader('Retry-After'); if (ra) retryAfter = Number(ra) * 1000; } catch (e4) {}
-                    fail && fail({ type: 'http', status: status, retryAfter: retryAfter });
-                }
-            };
-            xhr.ontimeout = function(){ fail && fail({ type: 'timeout' }); };
-            xhr.onerror = function(){ fail && fail({ type: 'network' }); };
-            xhr.send();
-        } catch (e) { fail && fail({ type: 'exception', message: String(e) }); }
-    }
-}
+            if (xhr.setRequestHeader) {
+                try { xhr.setRequestHeader('Accept', 'application/json'); } catch (e1) {}
+                if (userAgent) { try { xhr.setRequestHeader('User-Agent', String(userAgent)); } catch (e2) {} }
+            }
+        } catch (e3) {}
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState !== XMLHttpRequest.DONE) return;
+            var status = xhr.status;
+            if (status === 200) {
+                try { success && success(JSON.parse(xhr.responseText)); }
+                catch (e) { fail && fail({ type: 'parse', message: 'Failed to parse JSON' }); }
+            } else {
+                var retryAfter = 0; try { var ra = xhr.getResponseHeader && xhr.getResponseHeader('Retry-After'); if (ra) retryAfter = Number(ra) * 1000; } catch (e4) {}
+                fail && fail({ type: 'http', status: status, retryAfter: retryAfter });
+            }
+        };
+        xhr.ontimeout = function(){ fail && fail({ type: 'timeout' }); };
+        xhr.onerror = function(){ fail && fail({ type: 'network' }); };
+        xhr.send();
+    } catch (e) { fail && fail({ type: 'exception', message: String(e) }); }
+};
 
 
 // Defaults (can be overridden via options argument)
@@ -132,37 +130,11 @@ function fetchCoordinates(city, callback, errorCallback, options) {
         count: 1
     });
 
-    // Use shared httpGetJson with User-Agent
+    // Use shared HTTP helper with User-Agent
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
-    if (typeof httpGetJson === 'function') {
-        var dbg = !!(options && options.debug);
-    if (dbg) try { console.debug('[Weather] GET', geoUrl); } catch (e) {}
-    httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
-            try {
-                if (geoData && geoData.results && geoData.results.length > 0) {
-                    var lat = geoData.results[0].latitude;
-                    var lon = geoData.results[0].longitude;
-                    writeCacheSuccess(_geoCache, key, { lat: lat, lon: lon }, cfg.geocodeTtlMs);
-                    callback(lat, lon);
-                } else {
-                    writeCacheError(_geoCache, key, cfg.errorTtlMs);
-                    errorCallback && errorCallback("City not found");
-                }
-            } catch (e) {
-                writeCacheError(_geoCache, key, cfg.errorTtlMs);
-                errorCallback && errorCallback("Failed to parse geocoding data");
-            }
-        }, function(err) {
-            if (err && (err.status === 429 || (err.status >= 500 && err.status <= 599))) {
-                writeCacheError(_geoCache, key, cfg.errorTtlMs);
-            }
-            errorCallback && errorCallback("Geocoding error: " + (err.status || err.type || "unknown"));
-        }, _ua);
-        return;
-    }
     var dbg = !!(options && options.debug);
     if (dbg) try { console.debug('[Weather] GET', geoUrl); } catch (e) {}
-    httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
+    _httpGetJson(geoUrl, cfg.timeoutMs, function(geoData) {
         try {
             if (geoData && geoData.results && geoData.results.length > 0) {
                 var lat = geoData.results[0].latitude;
@@ -184,7 +156,7 @@ function fetchCoordinates(city, callback, errorCallback, options) {
             if (backoff) writeCacheError(_geoCache, key, backoff);
         }
         errorCallback && errorCallback("Geocoding error: " + (err.status || err.type || "unknown"));
-    });
+    }, _ua);
 }
 
 function fetchWeather(latitude, longitude, callback, errorCallback, options) {
@@ -220,8 +192,9 @@ function fetchWeather(latitude, longitude, callback, errorCallback, options) {
         timezone: "auto"
     });
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
+    var dbg = !!(options && options.debug);
     if (dbg) try { console.debug('[Weather] GET', url); } catch (e) {}
-    httpGetJson(url, cfg.timeoutMs, function(weatherData) {
+    _httpGetJson(url, cfg.timeoutMs, function(weatherData) {
         if (cacheKey) writeCacheSuccess(_weatherCache, cacheKey, weatherData, cfg.weatherTtlMs);
         callback(weatherData);
     }, function(err) {
