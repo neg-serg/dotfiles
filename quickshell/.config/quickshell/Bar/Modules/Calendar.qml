@@ -162,7 +162,7 @@ PanelWithOverlay {
                         text: model.day
                         color: model.today ? Theme.onAccent : Theme.textPrimary
                         opacity: model.month === calendar.month ? (mouseArea2.containsMouse ? 1 : 0.7) : 0.3
-                        font.pixelSize: 18 * Theme.scale(screen)
+                        font.pixelSize: 20 * Theme.scale(screen)
                         font.family: Theme.fontFamily
                         font.weight: Font.Medium
                     }
