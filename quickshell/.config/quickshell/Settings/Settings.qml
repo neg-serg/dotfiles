@@ -95,6 +95,9 @@ Singleton {
             // Options: "round" (( )), "tortoise" (〔 〕), "lenticular" (〖 〗), "lenticular_black" (【 】),
             //          "angle" (⟨ ⟩), "square" ([ ])
             property string timeBracketStyle: "round"
+            // Media title separator character between artist and title
+            // Examples: "—" (em dash, default), "–" (en dash), "-" (hyphen)
+            property string mediaTitleSeparator: "—"
 
             // Monitor/Display Settings
             // Panel is fixed at bottom; remove configurable position

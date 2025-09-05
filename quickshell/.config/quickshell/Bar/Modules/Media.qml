@@ -244,12 +244,6 @@ Item {
                         + Math.round(Theme.accentDarkStrong.g * 255) + ","
                         + Math.round(Theme.accentDarkStrong.b * 255) + ",1)"
                     )
-                    property string sepColor: (
-                        "rgba(" 
-                        + Math.round(Theme.accentHover.r * 255) + ","
-                        + Math.round(Theme.accentHover.g * 255) + ","
-                        + Math.round(Theme.accentHover.b * 255) + ",1)"
-                    )
                     // Time color: dim and desaturate when paused
                     property string timeColor: (function(){
                         var c = MusicManager.isPlaying ? Theme.textPrimary : Theme.textSecondary;
@@ -277,8 +271,11 @@ Item {
                     }
                     text: (function(){
                         if (!trackText.titlePart) return "";
+                        const sepChar = (Settings.settings.mediaTitleSeparator || '—');
                         const t = trackText.esc(trackText.titlePart)
-                                   .replace(/\s(?:-|–|—)\s/g, "&#8201;<span style='color:" + trackText.sepColor + "; font-weight:bold'>—</span>&#8201;");
+                                   .replace(/\s(?:-|–|—)\s/g, function(){
+                                       return "&#8201;" + Format.sepSpan(Theme.accentHover, sepChar) + "&#8201;";
+                                   });
                         const cur = Format.fmtTime(MusicManager.currentPosition || 0);
                         const tot = Format.fmtTime(Time.mprisToMs(MusicManager.trackLength || 0));
                         const timeSize = Utils.clamp(Math.round(trackText.font.pixelSize * 0.8), 1, 2048);
@@ -286,7 +283,7 @@ Item {
                         return t
                                + " &#8201;<span style='color:" + trackText.bracketColor + "'>" + bp.l + "</span>"
                                + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + cur + "</span>"
-                               + Format.sepSpan(trackText.sepColor, '/')
+                               + Format.sepSpan(Theme.accentHover, '/')
                                + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + tot + "</span>"
                                + "<span style='color:" + trackText.bracketColor + "'>" + bp.r + "</span>";
                     })()
