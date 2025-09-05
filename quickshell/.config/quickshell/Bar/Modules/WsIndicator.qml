@@ -228,7 +228,8 @@ Item {
             visible: root.submapName && root.submapName.length > 0
             mode: "material"
             labelRef: label
-            scale: Theme.wsSubmapIconScale
+            // Use 1.0 to avoid scale-driven drift
+            scale: 1.0
             baselineOffset: submapBaselineAdjust
             alignMode: "optical"
             icon: submapIconName(root.submapName)
@@ -240,7 +241,8 @@ Item {
             visible: iconGlyph.length > 0
             mode: "text"
             labelRef: label
-            scale: iconScale
+            // Use 1.0 to avoid scale-driven drift
+            scale: 1.0
             baselineOffset: iconBaselineOffset
             alignMode: "optical"
             text: iconGlyph
