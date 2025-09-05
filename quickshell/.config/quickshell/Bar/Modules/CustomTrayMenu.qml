@@ -71,7 +71,7 @@ import "../../Helpers/Color.js" as Color
     Rectangle {
         id: bg;
         anchors.fill: parent;
-        color: Theme.background || "#222";
+        color: Theme.background;
         border.color: Theme.borderSubtle;
         border.width: Theme.uiBorderWidth;
         radius: Theme.panelMenuRadius;
@@ -201,8 +201,8 @@ import "../../Helpers/Color.js" as Color
                                 entry.subMenu = null;
                             }
                             var globalPos = entry.mapToGlobal(0, 0);
-                            var submenuWidth = 180;
-                            var gap = 12;
+                            var submenuWidth = Theme.panelSubmenuWidth;
+                            var gap = Theme.panelSubmenuGap;
                             var openLeft = (globalPos.x + entry.width + submenuWidth > Screen.width);
                             var anchorX = openLeft ? -submenuWidth - gap : entry.width + gap;
 
@@ -318,7 +318,7 @@ import "../../Helpers/Color.js" as Color
             Rectangle {
                 id: bg;
                 anchors.fill: parent;
-                color: Theme.background || "#222";
+                color: Theme.background;
                 border.color: Theme.borderSubtle;
                 border.width: Theme.uiBorderWidth;
                 radius: Theme.panelMenuItemRadius;

@@ -33,9 +33,9 @@ Item {
     property int    textBaselineAdjust: Theme.keyboardTextBaselineOffset
 
     // Colors
-    property color  bgColor:      useTheme ? Theme.keyboardBgColor : "#1e293b"
-    property color  textColor:    useTheme ? Theme.keyboardTextColor : "white"
-    property color  hoverBgColor: useTheme ? Theme.keyboardHoverBgColor : "#223043"
+    property color  bgColor:      useTheme ? Theme.keyboardBgColor : Theme.background
+    property color  textColor:    useTheme ? Theme.keyboardTextColor : Theme.textPrimary
+    property color  hoverBgColor: useTheme ? Theme.keyboardHoverBgColor : Theme.surfaceHover
 
     // === Internal state ===
     property string layoutText: "??"
