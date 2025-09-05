@@ -6,6 +6,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
 import qs.Components
+import "../../Helpers/Utils.js" as Utils
 import qs.Settings
 
 import "../../Helpers" as Helpers
@@ -239,7 +240,7 @@ PanelWithOverlay {
             property int selectedIndex: 0
             // Bottom-docked animation: slide from offscreen bottom to bottom with small margin
             property int bottomMargin: 16
-            property int targetY: Math.max(0, parent.height - height - bottomMargin)
+            property int targetY: Utils.clamp(parent.height - height - bottomMargin, 0, parent.height)
             property int offscreenYBottom: parent.height + 12
             y: appLauncherPanelRect.shouldBeVisible ? targetY : offscreenYBottom
             Behavior on y {
@@ -445,12 +446,12 @@ PanelWithOverlay {
 
             function selectNext() {
                 if (filteredApps.length > 0)
-                    selectedIndex = Math.min(selectedIndex + 1, filteredApps.length - 1);
+                    selectedIndex = Utils.clamp(selectedIndex + 1, 0, filteredApps.length - 1);
             }
 
             function selectPrev() {
                 if (filteredApps.length > 0)
-                    selectedIndex = Math.max(selectedIndex - 1, 0);
+                    selectedIndex = Utils.clamp(selectedIndex - 1, 0, filteredApps.length - 1);
             }
 
             function activateSelected() {
