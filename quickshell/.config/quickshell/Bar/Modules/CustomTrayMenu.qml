@@ -66,6 +66,8 @@ import "../../Helpers/Color.js" as Color
         id: opener;
         menu: trayMenu.menu;
     }
+    // Shared submenu host component for delegates
+    Component { id: submenuHostComp; SubmenuHost {} }
 
     // Base background: compact; radius configured by Theme
     Rectangle {
@@ -94,164 +96,11 @@ import "../../Helpers/Color.js" as Color
         // Hover color: use derived surface hover token
         readonly property color _hoverColor: Theme.surfaceHover
 
-        delegate: Rectangle {
-            id: entry;
-            required property var modelData;
-
-            width: listView.width;
-            height: (modelData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight;
-            color: "transparent";
-            radius: Theme.panelMenuItemRadius;
-
-            property var subMenu: null;
-
-            Rectangle {
-                anchors.centerIn: parent;
-                width: parent.width - (Theme.panelMenuDividerMargin * 2);
-                height: Theme.uiSeparatorThickness;
-                color: Theme.borderSubtle;
-                visible: modelData?.isSeparator ?? false;
-            }
-
-            Rectangle {
-                id: bg;
-                anchors.fill: parent;
-                // Hover color: derived surface hover
-                color: mouseArea.containsMouse ? listView._hoverColor : "transparent";
-                radius: Theme.panelMenuItemRadius;
-                visible: !(modelData?.isSeparator ?? false);
-                property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold) : Theme.textPrimary;
-
-                RowLayout {
-                    anchors.fill: parent;
-                    anchors.leftMargin: Theme.panelMenuPadding;
-                    anchors.rightMargin: Theme.panelMenuPadding;
-                    spacing: Theme.panelMenuItemSpacing;
-
-                    Text {
-                        Layout.fillWidth: true;
-                        color: (modelData?.enabled ?? true) ? bg.hoverTextColor : Theme.textDisabled;
-                        text: modelData?.text ?? "";
-                        font.family: Theme.fontFamily;
-                        font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * Theme.panelMenuItemFontScale);
-                        font.weight: mouseArea.containsMouse ? Font.DemiBold : Font.Medium;
-                        verticalAlignment: Text.AlignVCenter;
-                        elide: Text.ElideRight;
-                    }
-
-                    Image {
-                        id: menuIcon
-                        Layout.preferredWidth: Theme.panelMenuIconSize;
-                        Layout.preferredHeight: Theme.panelMenuIconSize;
-                        source: modelData?.icon ?? "";
-                        visible: (modelData?.icon ?? "") !== "";
-                        fillMode: Image.PreserveAspectFit;
-                    }
-
-                    // Fallback icon when provided source fails to load
-                    MaterialIcon {
-                        visible: ((modelData?.icon ?? "") !== "") && (menuIcon.status === Image.Error)
-                        icon: Settings.settings.trayFallbackIcon || "broken_image"
-                        size: Math.round(Theme.panelMenuIconSize * Theme.scale(screen))
-                        color: Theme.textSecondary
-                    }
-
-                    MaterialIcon {
-                        // Chevron/right indicator for submenu
-                        icon: modelData?.hasChildren ? "chevron_right" : ""
-                        size: Math.round(Theme.panelMenuChevronSize * Theme.scale(screen))
-                        visible: modelData?.hasChildren ?? false
-                        color: Theme.textPrimary
-                    }
-                }
-
-                MouseArea {
-                    id: mouseArea;
-                    anchors.fill: parent;
-                    hoverEnabled: true;
-                    enabled: (modelData?.enabled ?? true) && !(modelData?.isSeparator ?? false) && trayMenu.visible;
-
-                    onClicked: {
-                        if (modelData && !modelData.isSeparator) {
-                            if (modelData.hasChildren) {
-                                // Submenus open on hover; ignore click here
-                                return;
-                            }
-                            modelData.triggered();
-                            trayMenu.hideMenu();
-                        }
-                    }
-
-                    onEntered: {
-                        if (!trayMenu.visible) return;
-
-                        if (modelData?.hasChildren) {
-                            // Close sibling submenus immediately
-                            for (let i = 0; i < listView.contentItem.children.length; i++) {
-                                const sibling = listView.contentItem.children[i];
-                                if (sibling !== entry && sibling.subMenu) {
-                                    sibling.subMenu.hideMenu();
-                                    sibling.subMenu.destroy();
-                                    sibling.subMenu = null;
-                                }
-                            }
-                            if (entry.subMenu) {
-                                entry.subMenu.hideMenu();
-                                entry.subMenu.destroy();
-                                entry.subMenu = null;
-                            }
-                            var globalPos = entry.mapToGlobal(0, 0);
-                            var submenuWidth = Theme.panelSubmenuWidth;
-                            var gap = Theme.panelSubmenuGap;
-                            var openLeft = (globalPos.x + entry.width + submenuWidth > Screen.width);
-                            var anchorX = openLeft ? -submenuWidth - gap : entry.width + gap;
-
-                            entry.subMenu = subMenuComponent.createObject(trayMenu, {
-                                menu: modelData,
-                                anchorItem: entry,
-                                anchorX: anchorX,
-                                anchorY: 0
-                            });
-                            entry.subMenu.showAt(entry, anchorX, 0);
-                        } else {
-                            // Hovered item without submenu; close siblings
-                            for (let i = 0; i < listView.contentItem.children.length; i++) {
-                                const sibling = listView.contentItem.children[i];
-                                if (sibling.subMenu) {
-                                    sibling.subMenu.hideMenu();
-                                    sibling.subMenu.destroy();
-                                    sibling.subMenu = null;
-                                }
-                            }
-                            if (entry.subMenu) {
-                                entry.subMenu.hideMenu();
-                                entry.subMenu.destroy();
-                                entry.subMenu = null;
-                            }
-                        }
-                    }
-
-                    onExited: {
-                        if (entry.subMenu && !entry.subMenu.containsMouse()) {
-                            entry.subMenu.hideMenu();
-                            entry.subMenu.destroy();
-                            entry.subMenu = null;
-                        }
-                    }
-                }
-            }
-
-            // Simplified containsMouse without recursive calls to avoid stack overflow
-            function containsMouse() {
-                return mouseArea.containsMouse;
-            }
-
-            Component.onDestruction: {
-                if (subMenu) {
-                    subMenu.destroy();
-                    subMenu = null;
-                }
-            }
+        delegate: DelegateEntry {
+            modelData: modelData
+            listViewRef: listView
+            submenuHostComponent: submenuHostComp
+            menuWindow: trayMenu
         }
     }
 
