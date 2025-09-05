@@ -7,6 +7,7 @@ import "../Helpers/Time.js" as Time
 import qs.Services
 import qs.Settings
 import qs.Components
+import "../Helpers/Utils.js" as Utils
 
 Singleton {
     id: manager
@@ -97,7 +98,6 @@ Singleton {
 
     // Audio spectrum (bars count from settings)
     // Prefer active profile bars, then settings, then fallback
-    import "../Helpers/Utils.js" as Utils
     Cava {
         id: cava
         count: (
