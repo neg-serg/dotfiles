@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts 1.15
 import qs.Settings
 import qs.Components
 import "../Helpers/Color.js" as Color
@@ -132,4 +133,3 @@ Rectangle {
         }
     }
 }
-
