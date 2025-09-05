@@ -180,15 +180,15 @@ Window {
         }
     }
 
-    // Tooltip background
+    // Tooltip background (use derived tokens)
     Rectangle {
         id: tooltipBg
         anchors.fill: parent
         radius: Theme.tooltipRadius * scaleFactor
-        color: Theme.backgroundTertiary || "#222"
-        border.color: Theme.outline || "#444"
+        color: Theme.surfaceActive
+        border.color: Theme.borderSubtle
         border.width: Theme.tooltipBorderWidth * scaleFactor
-        opacity: 0.97
+        opacity: 0.98
         z: 1
     }
 
