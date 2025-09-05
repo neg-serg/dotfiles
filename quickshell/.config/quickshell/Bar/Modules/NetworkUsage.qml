@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import Quickshell.Io
 import qs.Settings
 import "../../Helpers/Format.js" as Format
 import "../../Helpers/Utils.js" as Utils
@@ -79,26 +78,12 @@ Item {
         labelFontFamily: Theme.fontFamily
     }
 
-    // External process
-    Process {
+    // External process (streaming lines)
+    ProcessRunner {
         id: runner
-        running: true
-        command: cmd
-        stdout: SplitParser {
-            onRead: (data) => {
-                const line = (data || "").trim()
-                if (line.length) parseJsonLine(line)
-            }
-        }
-        onRunningChanged: if (!running) restartTimer.restart()
-    }
-
-    // Restart backoff
-    Timer {
-        id: restartTimer
-        interval: Theme.networkRestartBackoffMs
-        repeat: false
-        onTriggered: runner.running = true
+        cmd: root.cmd
+        backoffMs: Theme.networkRestartBackoffMs
+        onLine: (line) => parseJsonLine(line)
     }
 
     // Link detection via `ip -j -br a`

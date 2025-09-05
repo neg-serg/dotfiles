@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import Quickshell.Io
 import qs.Components
 import "../../Helpers/Color.js" as Color
 import qs.Settings
@@ -68,30 +67,15 @@ Item {
         labelColor: root.iconColor()
     }
 
-    // Poll
-    Timer {
-        id: poll
-        interval: Theme.vpnPollMs
-        repeat: true
-        running: true
-        onTriggered: if (!runner.running) runner.running = true
-    }
-
-    Process {
+    // Poll JSON output
+    ProcessRunner {
         id: runner
-        command: ["bash", "-lc", "ip -j -br a"]
-        stdout: StdioCollector {
-            waitForEnd: true
-            onStreamFinished: {
-                try {
-                    const arr = JSON.parse(text)
-                    checkInterfaces(arr)
-                } catch (e) {
-                    root.connected = false
-                    root.matchedIf = ""
-                }
-                runner.running = false
-            }
+        cmd: ["bash", "-lc", "ip -j -br a"]
+        intervalMs: Theme.vpnPollMs
+        parseJson: true
+        onJson: (obj) => {
+            try { checkInterfaces(obj) }
+            catch (e) { root.connected = false; root.matchedIf = "" }
         }
     }
 
@@ -149,5 +133,5 @@ Item {
         cursorShape: Qt.ArrowCursor
     }
 
-    Component.onCompleted: runner.running = true
+    Component.onCompleted: { /* poller starts automatically via intervalMs */ }
 }
