@@ -332,7 +332,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Artist icon
                                     icon: "person"
-                                    color: "#004E4E"
+                                    color: Theme.accentHover
                                     size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
@@ -355,7 +355,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Album artist icon
                                     icon: "person"
-                                    color: "#004E4E"
+                                    color: Theme.accentHover
                                     size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
@@ -378,7 +378,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Album icon
                                     icon: "album"
-                                    color: "#004E4E"
+                                    color: Theme.accentHover
                                     size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
@@ -403,7 +403,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Genre icon
                                     icon: "category"
-                                    color: "#004E4E"
+                                    color: Theme.accentHover
                                     size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
@@ -506,7 +506,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Quality icon
                                     icon: "high_quality"
-                                    color: "#004E4E"
+                                    color: Theme.accentHover
                                     size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
@@ -537,7 +537,7 @@ Rectangle {
                                 MaterialIcon {
                                     // DSD rate icon
                                     icon: "speed"
-                                    color: "#004E4E"
+                                    color: Theme.accentHover
                                     size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
@@ -703,7 +703,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Date icon
                                     icon: "calendar_month"
-                                    color: "#004E4E"
+                                    color: Theme.accentHover
                                     size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
