@@ -211,7 +211,12 @@ Rectangle {
                     }
                     highlighted: playerSelector.highlightedIndex === index
 
-                    background: Rectangle { color: highlighted ? Theme.surfaceHover : "transparent" }
+                    background: ThemedHoverRect {
+                        colorToken: Theme.surfaceHover
+                        radiusFactor: 0
+                        epsToken: Theme.uiVisibilityEpsilon
+                        intensity: highlighted ? 1.0 : 0.0
+                    }
                 }
 
             // Single player label (when only one player)
