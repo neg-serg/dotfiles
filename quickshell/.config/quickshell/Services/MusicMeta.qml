@@ -185,7 +185,8 @@ Item {
         _lastPath = p;
         _pendingPath = "";
         ffprobeProcess.targetPath = p;
-        ffprobeProcess.running = true;
+        ffprobeProcess.cmd = ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_streams", "-show_format", p];
+        ffprobeProcess.start();
     }
     function processChainFinished() {
         // If a new path was queued while busy, start it now
@@ -224,51 +225,57 @@ Item {
     onFileAudioMetaChanged: scheduleRecalc()
 
     // Processes: ffprobe → mediainfo → sox --i
-    Process {
+    ProcessRunner {
         id: ffprobeProcess
         property string targetPath: ""
-        command: ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_streams", "-show_format", targetPath]
-        stdout: StdioCollector { id: ffprobeStdout }
-        onExited: (code, status) => {
-            if (code === 0) {
-                try {
-                    const obj = JSON.parse(String(ffprobeStdout.text));
-                    const meta = parseFfprobe(obj);
-                    if (meta) { fileAudioMeta = meta; processChainFinished(); return; }
-                } catch (e) { }
-            }
+        cmd: ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_streams", "-show_format"]
+        parseJson: true
+        autoStart: false
+        onJson: (obj) => {
+            try {
+                const meta = parseFfprobe(obj);
+                if (meta) { fileAudioMeta = meta; processChainFinished(); return; }
+            } catch (e) { }
             mediainfoProcess.targetPath = targetPath;
-            mediainfoProcess.running = true;
+            mediainfoProcess.start();
+        }
+        onExited: (code, status) => {
+            if (code !== 0) { mediainfoProcess.targetPath = targetPath; mediainfoProcess.start(); }
         }
     }
-    Process {
+    ProcessRunner {
         id: mediainfoProcess
         property string targetPath: ""
-        command: ["mediainfo", "--Output=JSON", targetPath]
-        stdout: StdioCollector { id: mediainfoStdout }
-        onExited: (code, status) => {
-            if (code === 0) {
-                try {
-                    const obj = JSON.parse(String(mediainfoStdout.text));
-                    const meta = parseMediainfo(obj);
-                    if (meta) { fileAudioMeta = meta; processChainFinished(); return; }
-                } catch (e) { }
-            }
+        cmd: ["mediainfo", "--Output=JSON"]
+        parseJson: true
+        autoStart: false
+        onJson: (obj) => {
+            try {
+                const meta = parseMediainfo(obj);
+                if (meta) { fileAudioMeta = meta; processChainFinished(); return; }
+            } catch (e) { }
             soxinfoProcess.targetPath = targetPath;
-            soxinfoProcess.running = true;
+            soxinfoProcess.start();
+        }
+        onExited: (code, status) => {
+            if (code !== 0) { soxinfoProcess.targetPath = targetPath; soxinfoProcess.start(); }
         }
     }
-    Process {
+    ProcessRunner {
         id: soxinfoProcess
         property string targetPath: ""
-        command: ["sox", "--i", targetPath]
-        stdout: StdioCollector { id: soxinfoStdout }
+        property string _buf: ""
+        cmd: ["sox", "--i"]
+        autoStart: false
+        restartOnExit: false
+        onLine: (s) => { _buf += (s + "\n") }
         onExited: (code, status) => {
             if (code === 0) {
-                const text = String(soxinfoStdout.text || "");
+                const text = String(_buf || "");
                 const meta = parseSoxInfo(text);
-                if (meta) { fileAudioMeta = meta; processChainFinished(); return; }
+                if (meta) { fileAudioMeta = meta; processChainFinished(); _buf = ""; return; }
             }
+            _buf = "";
             resetFileMeta();
             processChainFinished();
         }

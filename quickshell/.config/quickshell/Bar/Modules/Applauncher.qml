@@ -35,41 +35,46 @@ PanelWithOverlay {
     property var clipboardHistory: []
     property bool clipboardInitialized: false
 
-    Process {
+    ProcessRunner {
         id: clipboardTypeProcess
         property bool isLoading: false
         property var currentTypes: []
+        property string _buf: ""
 
+        onLine: (s) => { _buf += (s + "\n") }
         onExited: (exitCode, exitStatus) => {
             if (exitCode === 0) {
-                currentTypes = String(stdout.text).trim().split('\n').filter(t => t);
+                currentTypes = String(_buf).trim().split('\n').filter(t => t);
 
                 const imageType = currentTypes.find(t => t.startsWith('image/'));
                 if (imageType) {
                     clipboardImageProcess.mimeType = imageType;
-                    clipboardImageProcess.command = ["sh", "-c", `wl-paste -n -t "${imageType}" | base64 -w 0`];
-                    clipboardImageProcess.running = true;
+                    clipboardImageProcess.cmd = ["sh", "-c", `wl-paste -n -t "${imageType}" | base64 -w 0`];
+                    clipboardImageProcess.start();
                 } else {
 
-                    clipboardHistoryProcess.command = ["wl-paste", "-n", "--type", "text/plain"];
-                    clipboardHistoryProcess.running = true;
+                    clipboardHistoryProcess.cmd = ["wl-paste", "-n", "--type", "text/plain"];
+                    clipboardHistoryProcess.start();
                 }
             } else {
 
                 clipboardTypeProcess.isLoading = false;
             }
+            _buf = "";
         }
-
-        stdout: StdioCollector {}
+        autoStart: false
+        restartOnExit: false
     }
 
-    Process {
+    ProcessRunner {
         id: clipboardImageProcess
         property string mimeType: ""
+        property string _buf: ""
 
+        onLine: (s) => { _buf += (s + "\n") }
         onExited: (exitCode, exitStatus) => {
             if (exitCode === 0) {
-                const base64 = stdout.text.trim();
+                const base64 = String(_buf).trim();
                 if (base64) {
                     const entry = {
                         type: 'image',
@@ -94,18 +99,21 @@ PanelWithOverlay {
                 clipboardInitialized = true;
             }
             clipboardTypeProcess.isLoading = false;
+            _buf = "";
         }
-
-        stdout: StdioCollector {}
+        autoStart: false
+        restartOnExit: false
     }
 
-    Process {
+    ProcessRunner {
         id: clipboardHistoryProcess
         property bool isLoading: false
+        property string _buf: ""
 
+        onLine: (s) => { _buf += (s + "\n") }
         onExited: (exitCode, exitStatus) => {
             if (exitCode === 0) {
-                const content = String(stdout.text).trim();
+                const content = String(_buf).trim();
                 if (content && !content.startsWith("vscode-file://")) {
                     const entry = {
                         type: 'text',
@@ -145,9 +153,10 @@ PanelWithOverlay {
             clipboardInitialized = true;
             clipboardTypeProcess.isLoading = false;
             root.updateFilter();
+            _buf = "";
         }
-
-        stdout: StdioCollector {}
+        autoStart: false
+        restartOnExit: false
     }
 
     
@@ -155,8 +164,8 @@ PanelWithOverlay {
     function updateClipboardHistory() {
         if (!clipboardTypeProcess.isLoading && !clipboardHistoryProcess.isLoading) {
             clipboardTypeProcess.isLoading = true;
-            clipboardTypeProcess.command = ["wl-paste", "-l"];
-            clipboardTypeProcess.running = true;
+            clipboardTypeProcess.cmd = ["wl-paste", "-l"];
+            clipboardTypeProcess.start();
         }
     }
 

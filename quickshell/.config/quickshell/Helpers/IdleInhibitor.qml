@@ -1,37 +1,14 @@
-import Quickshell.Io
+import qs.Components
 
-Process {
+ProcessRunner {
     id: idleRoot
-    
     // Uses systemd-inhibit to prevent idle/sleep
-    command: ["systemd-inhibit", "--what=idle:sleep", "--who=noctalia", "--why=User requested", "sleep", "infinity"]
-    
+    cmd: ["systemd-inhibit", "--what=idle:sleep", "--who=noctalia", "--why=User requested", "sleep", "infinity"]
+    restartOnExit: false
+    autoStart: false
     // Track background process state
     property bool isRunning: running
-    
-    onStarted: {}
-    
-    onExited: function(exitCode, exitStatus) {}
-
-
-    function start() {
-        if (!running) {
-            running = true
-        }
-    }
-    
-    function stop() {
-        if (running) {
-            // Force stop the process by setting running to false
-            running = false
-        }
-    }
-    
-    function toggle() {
-        if (running) {
-            stop()
-        } else {
-            start()
-        }
-    }
+    function start() { if (!running) idleRoot.running = true }
+    function stop()  { if (running) idleRoot.running = false }
+    function toggle(){ if (running) stop(); else start(); }
 }
