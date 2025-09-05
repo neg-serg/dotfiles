@@ -18,7 +18,6 @@ required property var entryData
 
     // Optional screen (for Theme.scale). If not provided, defaults to 1.0 scale.
     property var screen: (menuWindow && menuWindow.screen) ? menuWindow.screen : null
-    // Debug: computed font px
     readonly property int _computedPx: Math.max(1, Math.round(Theme.fontSizeSmall * Theme.scale(entry.screen) * Theme.panelMenuItemFontScale))
     function _entryText() {
         try {
@@ -155,12 +154,6 @@ required property var entryData
             onEntered: openSubmenu()
         }
     }
-    Component.onCompleted: {
-        try {
-            var keys = []; var d=entryData; for (var k in d) keys.push(k);
-            console.debug('[Menu][DelegateEntry] init keys=', keys.join(','), 'text=', entry._entryText(), 'px=', entry._computedPx,
-                          'textPrimary=', String(Theme.textPrimary), 'hoverBase=', String(hoverBaseColor))
-        } catch (e) {}
-    }
+    // Debug removed
     // Note: modelData is a context property in delegate; not all engines expose change signals.
 }
