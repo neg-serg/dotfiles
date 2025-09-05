@@ -26,11 +26,11 @@ Item {
     property bool   iconRounded: false
 
     // Colors
-    property color onColor:  useTheme ? Theme.accentPrimary : Theme.accentSecondary
+    property color onColor:  Theme.accentPrimary
     property color offColor: useTheme ? Theme.textDisabled  : Theme.textDisabled
     // Accent derived from Theme; desaturated for subtle look
     property real  desaturateAmount: 0.45   // 0..1, higher = less saturated
-    property color accentBase: Theme.accentSecondary
+    property color accentBase: Theme.accentPrimary
     property color accentColor: desaturateColor(accentBase, desaturateAmount)
 
     // Internal state

@@ -5,7 +5,7 @@ Overview
   - background
   - surface/surfaceVariant
   - textPrimary/Secondary/Disabled
-  - accentPrimary/Secondary/Tertiary, onAccent
+  - accentPrimary, onAccent
   - outline, shadow, overlay
   - error, warning, highlight, rippleEffect
 

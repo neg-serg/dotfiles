@@ -161,7 +161,7 @@ PanelWithOverlay {
                         width: Theme.calendarHolidayDotSize
                         height: Theme.calendarHolidayDotSize
                         radius: Math.round(Theme.cornerRadiusSmall / 3)
-                        color: Theme.accentSecondary
+                        color: Theme.accentPrimary
                         anchors.top: parent.top
                         anchors.right: parent.right
                         anchors.topMargin: Theme.calendarPopupMargin

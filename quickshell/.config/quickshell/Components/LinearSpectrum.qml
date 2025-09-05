@@ -19,7 +19,7 @@ Item {
     // Coloring: default to a neutral/darker theme color (no gradient)
     property bool useGradient: false
     property color barColor: Theme.outline
-    property color colorStart: Theme.accentSecondary
+    property color colorStart: Theme.accentPrimary
     property color colorMid: Theme.accentPrimary
     property color colorEnd: Theme.highlight
     // Selective halves
