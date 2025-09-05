@@ -19,6 +19,9 @@ Item {
     property var screen: null
     // Custom fallback icon (Material Symbols name). If empty, uses Settings.settings.trayFallbackIcon
     property string fallbackIcon: (Settings.settings && Settings.settings.trayFallbackIcon) ? Settings.settings.trayFallbackIcon : "broken_image"
+    // Optional fallback styling overrides
+    property color fallbackColor: Theme.textSecondary
+    property int   fallbackSize: size
 
     width: size
     height: size
@@ -84,9 +87,9 @@ Item {
     // Render a generic Material icon instead of leaving a blank spot
     MaterialIcon {
         anchors.centerIn: parent
-        size: root.size
+        size: root.fallbackSize
         icon: root.fallbackIcon && root.fallbackIcon.length > 0 ? root.fallbackIcon : "broken_image"
-        color: Theme.textSecondary
+        color: root.fallbackColor
         visible: (img.status === Image.Error) || (!img.source || img.source === "")
     }
 }
