@@ -47,6 +47,7 @@ function contrastOn(bg, light, dark, threshold) {
         var rgb = _toRgb(bg);
         var lum = rgb ? _luminance(rgb) : 0.5;
         var th = (threshold === undefined || threshold === null) ? 0.5 : Number(threshold);
+        if (!(th >= 0 && th <= 1)) { th = 0.5; }
         var lightColor = light || '#FFFFFF';
         var darkColor = dark || '#000000';
         return (lum < th) ? lightColor : darkColor;
@@ -54,4 +55,3 @@ function contrastOn(bg, light, dark, threshold) {
         return light || '#FFFFFF';
     }
 }
-

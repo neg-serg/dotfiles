@@ -109,6 +109,10 @@ Singleton {
             // Uses Material Symbols name; e.g., "broken_image", "help", "image".
             property string trayFallbackIcon: "broken_image"
 
+            // Global contrast threshold (0..1) for Color.contrastOn
+            // Lower = чаще выбирается светлый текст; выше = чаще тёмный
+            property real contrastThreshold: 0.5
+
             // Music player selection helpers
             // Optional lists of player IDs to pin or ignore.
             // ID format matches internal detection: service || busName || name || identity (first non-empty).

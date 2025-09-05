@@ -125,7 +125,7 @@ import "../../Helpers/Color.js" as Color
                 color: mouseArea.containsMouse ? listView._hoverColor : "transparent";
                 radius: 0;
                 visible: !(modelData?.isSeparator ?? false);
-                property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary) : Theme.textPrimary;
+                property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary, (Settings.settings && Settings.settings.contrastThreshold) ? Settings.settings.contrastThreshold : 0.5) : Theme.textPrimary;
 
                 RowLayout {
                     anchors.fill: parent;
@@ -371,7 +371,7 @@ import "../../Helpers/Color.js" as Color
                         color: mouseArea.containsMouse ? _hoverColor : "transparent";
                         radius: Theme.panelMenuRadius;
                         visible: !(modelData?.isSeparator ?? false);
-                        property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary) : Theme.textPrimary;
+                        property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary, (Settings.settings && Settings.settings.contrastThreshold) ? Settings.settings.contrastThreshold : 0.5) : Theme.textPrimary;
 
                         RowLayout {
                             anchors.fill: parent;
