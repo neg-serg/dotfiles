@@ -34,8 +34,7 @@
     "overlayRadius": 20,
     "icons": {
       "iconSize": 24,
-      "iconSizeSmall": 16,
-      "glyphSize": 14
+      "iconSizeSmall": 16
     },
     "hotzone": {
       "width": 16,

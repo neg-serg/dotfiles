@@ -64,7 +64,7 @@ Item {
                     id: fallbackIcon
                     anchors.centerIn: parent
                     icon: "music_note"
-                    size: Math.round(Theme.panelGlyphSize * Theme.scale(Screen))
+                    size: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
                     color: Color.withAlpha(Theme.textPrimary, 0.4)
                     visible: !cover.visible
                 }
@@ -78,7 +78,7 @@ Item {
                     MaterialIcon {
                         anchors.centerIn: parent
                         icon: MusicManager.isPlaying ? "pause" : "play_arrow"
-                        size: Math.round(Theme.panelGlyphSize * Theme.scale(Screen))
+                        size: Math.round(Theme.panelIconSizeSmall * Theme.scale(Screen))
                         color: Theme.onAccent
                     }
                 }

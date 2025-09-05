@@ -98,7 +98,6 @@ Singleton {
             // Panel icon sizing (logical)
             property int panelIconSize: 24          // typical icon/button size in bar
             property int panelIconSizeSmall: 16     // small icon or inner icon
-            property int panelGlyphSize: 14         // glyphs inside overlays/buttons
 
             // Panel hover hot-zone (logical)
             property int panelHotzoneWidth: 16
@@ -297,7 +296,6 @@ Singleton {
     // Panel icon sizing
     property int panelIconSize: val('panel.icons.iconSize', themeData.panelIconSize)
     property int panelIconSizeSmall: val('panel.icons.iconSizeSmall', themeData.panelIconSizeSmall)
-    property int panelGlyphSize: val('panel.icons.glyphSize', themeData.panelGlyphSize)
     // Panel hot-zone
     property int panelHotzoneWidth: Utils.clamp(val('panel.hotzone.width', themeData.panelHotzoneWidth), 4, 64)
     property int panelHotzoneHeight: Utils.clamp(val('panel.hotzone.height', themeData.panelHotzoneHeight), 2, 64)
