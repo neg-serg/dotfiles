@@ -9,7 +9,6 @@ with {
   dots = "${config.home.homeDirectory}/.dotfiles";
 }; {
   home.packages = with pkgs; [
-    inori # alternative cli mpd client
     rmpc # alternative tui client with album cover
   ];
 
