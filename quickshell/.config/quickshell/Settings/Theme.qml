@@ -173,9 +173,9 @@ Singleton {
             property int spectrumBarAnimMs: 100
 
             // Calendar metrics
-            property int calendarRowSpacing: 12
-            property int calendarCellSpacing: 8
-            property int calendarSideMargin: 8
+            property int calendarRowSpacing: 2
+            property int calendarCellSpacing: 2
+            property int calendarSideMargin: 2
 
             // Side-panel popup timings/margins (MusicPopup)
             property int  sidePanelPopupSlideMs: 220
@@ -229,12 +229,12 @@ Singleton {
             property int  uiControlHeight: 48
 
             // Calendar popup sizing
-            property int  calendarWidth: 340
-            property int  calendarHeight: 380
-            property int  calendarPopupMargin: 4
+            property int  calendarWidth: 280
+            property int  calendarHeight: 320
+            property int  calendarPopupMargin: 2
             property int  calendarBorderWidth: 1
-            property int  calendarCellSize: 32
-            property int  calendarHolidayDotSize: 4
+            property int  calendarCellSize: 28
+            property int  calendarHolidayDotSize: 3
         }
     }
     

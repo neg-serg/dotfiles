@@ -92,8 +92,8 @@
   "musicPositionPollMs": 1000,
   "musicPlayersPollMs": 5000,
   "musicMetaRecalcDebounceMs": 80,
-  "calendarRowSpacing": 12,
-  "calendarCellSpacing": 8,
-  "calendarSideMargin": 8,
+  "calendarRowSpacing": 2,
+  "calendarCellSpacing": 2,
+  "calendarSideMargin": 2,
   "applauncherClipboardPollMs": 1000
 }
