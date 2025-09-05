@@ -1,6 +1,9 @@
 // Minimal shared HTTP helper for JSON GET with optional headers
 // Usage from QML JS: Qt.include("Http.js"); httpGetJson(url, timeoutMs, onSuccess, onError, userAgent)
 
+// Track which hosts we've warned for to avoid log spam
+var _uaWarnedHosts = {};
+
 function _coerceUA(ua) {
     try {
         var s = (ua === undefined || ua === null) ? '' : String(ua).trim();
@@ -32,10 +35,14 @@ function httpGetJson(url, timeoutMs, success, fail, userAgent) {
             var needsContactUA = (host.indexOf('nominatim.openstreetmap.org') !== -1);
             if (needsContactUA) {
                 var uastr = String(userAgent || '').trim();
-                if (!uastr || /^quickshell$/i.test(uastr) || /^negpanel$/i.test(uastr)) {
-                    try {
-                        console.warn('[Http] Geocoding service recommends a descriptive User-Agent with contact. Set Settings.userAgent, e.g.: "NegPanel/1.0 (contact: you@example.com)"');
-                    } catch (_e) {}
+                var key = host + '|' + uastr.toLowerCase();
+                if (!(_uaWarnedHosts[key])) {
+                    if (!uastr || /^quickshell$/i.test(uastr) || /^negpanel$/i.test(uastr)) {
+                        try {
+                            console.warn('[Http] Geocoding service recommends a descriptive User-Agent with contact. Set Settings.userAgent, e.g.: "NegPanel/1.0 (contact: you@example.com)"');
+                        } catch (_e) {}
+                    }
+                    _uaWarnedHosts[key] = true;
                 }
             }
         } catch (e4) {}
