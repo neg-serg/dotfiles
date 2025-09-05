@@ -57,10 +57,10 @@ PopupWindow {
         enabled: subMenu.visible
         clip: true
 
-        model: ScriptModel { values: opener.children ? [...opener.children.values] : [] }
+        model: ScriptModel { id: subMenuModel; values: opener.children ? [...opener.children.values] : [] }
 
         delegate: DelegateEntry {
-            rowData: modelData
+            rowData: (subMenuModel && subMenuModel.values && subMenuModel.values.length > index) ? subMenuModel.values[index] : modelData
             listViewRef: listView
             submenuHostComponent: subMenu.submenuHostComponent
             menuWindow: subMenu

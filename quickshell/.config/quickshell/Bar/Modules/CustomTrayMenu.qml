@@ -89,15 +89,13 @@ import "../../Helpers/Color.js" as Color
         enabled: trayMenu.visible;
         clip: true;
 
-        model: ScriptModel {
-            values: opener.children ? [...opener.children.values] : []
-        }
+        model: ScriptModel { id: rootMenuModel; values: opener.children ? [...opener.children.values] : [] }
 
         // Hover color: use derived surface hover token
         readonly property color _hoverColor: Theme.surfaceHover
 
         delegate: DelegateEntry {
-            rowData: modelData
+            rowData: (rootMenuModel && rootMenuModel.values && rootMenuModel.values.length > index) ? rootMenuModel.values[index] : modelData
             listViewRef: listView
             submenuHostComponent: submenuHostComp
             menuWindow: trayMenu
