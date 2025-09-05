@@ -254,7 +254,7 @@ Rectangle {
                             width: Math.round(Theme.sidePanelAlbumArtSize * Theme.scale(screen))
                             height: Math.round(Theme.sidePanelAlbumArtSize * Theme.scale(screen))
                             anchors.fill: parent
-                            radius: Math.round(Theme.cornerRadius * Theme.scale(screen))
+                            radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(screen))
                             color: "transparent"
                             border.color: "transparent"
                             border.width: 0
@@ -286,7 +286,7 @@ Rectangle {
                             Rectangle {
                                 width: albumArt.width
                                 height: albumArt.height
-                                radius: Math.round(Theme.cornerRadius * Theme.scale(screen))
+                                radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(screen))
                             }
                         }
 

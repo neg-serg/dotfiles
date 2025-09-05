@@ -36,7 +36,7 @@ Item {
         color: hoverColor
         // Use color alpha directly; animate opacity for hover
         opacity: isActive ? 1.0 : hoverOpacity
-        radius: height / 2
+        radius: Math.round(height * Theme.sidePanelButtonHoverRadiusFactor)
         z: 0
         visible: (isActive ? 0.18 : hoverOpacity) > 0.01
     }

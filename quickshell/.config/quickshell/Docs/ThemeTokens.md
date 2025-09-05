@@ -29,6 +29,7 @@ Additional UI tokens (nested)
   - Menu item radius: panel.menu.itemRadius
   - Spectrum: spectrum.peakThickness
   - Side panel: sidePanel.innerRadius (inner blocks)
+  - Side panel button hover radius factor: sidePanel.buttonHoverRadiusFactor
 
 Overrides (advanced)
 - You can override any derived token by adding an "Override" key in Theme.json:

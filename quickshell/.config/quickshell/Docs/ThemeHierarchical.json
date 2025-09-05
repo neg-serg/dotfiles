@@ -105,6 +105,7 @@
   "sidePanel": {
     "cornerRadius": 9,
     "innerRadius": 0,
+    "buttonHoverRadiusFactor": 0.5,
     "spacing": 12,
     "spacingTight": 6,
     "spacingSmall": 4,

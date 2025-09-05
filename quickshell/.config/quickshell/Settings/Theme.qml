@@ -396,6 +396,8 @@ Singleton {
     property int sidePanelAlbumArtSize: val('sidePanel.albumArtSize', themeData.sidePanelAlbumArtSize)
     // Inner blocks radius for side panel cards/sections
     property int sidePanelInnerRadius: Utils.clamp(val('sidePanel.innerRadius', 0), 0, 32)
+    // Hover background radius factor for side panel buttons (0..1 of height)
+    property real sidePanelButtonHoverRadiusFactor: Utils.clamp(val('sidePanel.buttonHoverRadiusFactor', 0.5), 0, 1)
     property int sidePanelWeatherWidth: val('sidePanel.weather.width', themeData.sidePanelWeatherWidth)
     property int sidePanelWeatherHeight: val('sidePanel.weather.height', themeData.sidePanelWeatherHeight)
     property int uiIconSizeLarge: val('ui.iconSizeLarge', themeData.uiIconSizeLarge)
