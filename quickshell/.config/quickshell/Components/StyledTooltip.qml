@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Window 2.15
 import qs.Settings
+import "../Helpers/Color.js" as Color
 
 Window {
     id: tooltipWindow
@@ -181,6 +182,7 @@ Window {
 
     // Tooltip background
     Rectangle {
+        id: tooltipBg
         anchors.fill: parent
         radius: Theme.tooltipRadius * scaleFactor
         color: Theme.backgroundTertiary || "#222"
@@ -194,7 +196,7 @@ Window {
     Text {
         id: tooltipText
         text: tooltipWindow.text
-        color: Theme.textPrimary
+        color: Color.contrastOn(tooltipBg.color, Theme.textPrimary, Theme.textSecondary)
         font.family: Theme.fontFamily || "Arial"
         font.pixelSize: Theme.tooltipFontPx * scaleFactor
         anchors.centerIn: parent

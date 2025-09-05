@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.15
 import Quickshell
 import qs.Settings
 import qs.Components
+import "../../Helpers/Color.js" as Color
 
     PopupWindow {
         id: trayMenu
@@ -124,7 +125,7 @@ import qs.Components
                 color: mouseArea.containsMouse ? listView._hoverColor : "transparent";
                 radius: 0;
                 visible: !(modelData?.isSeparator ?? false);
-                property color hoverTextColor: mouseArea.containsMouse ? Theme.textPrimary : Theme.textPrimary;
+                property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary) : Theme.textPrimary;
 
                 RowLayout {
                     anchors.fill: parent;
@@ -370,7 +371,7 @@ import qs.Components
                         color: mouseArea.containsMouse ? _hoverColor : "transparent";
                         radius: Theme.panelMenuRadius;
                         visible: !(modelData?.isSeparator ?? false);
-                        property color hoverTextColor: mouseArea.containsMouse ? Theme.textPrimary : Theme.textPrimary;
+                        property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary) : Theme.textPrimary;
 
                         RowLayout {
                             anchors.fill: parent;
