@@ -27,14 +27,17 @@ Item {
     property bool   iconRounded: false
 
     // Colors
+    // Tuning for derived VPN accent (edit locally if you want stronger effect)
+    property real accentSaturateBoost: 0.12   // can be increased beyond 0.12
+    property real accentLightenTowardWhite: 0.20
     // Derive a slightly lighter/more saturated variant from the primary accent
     // (approximate former accentSecondary without needing a separate palette token)
-    property color onColor:  Color.towardsWhite(Color.saturate(Theme.accentPrimary, 0.12), 0.20)
+    property color onColor:  Color.towardsWhite(Color.saturate(Theme.accentPrimary, accentSaturateBoost), accentLightenTowardWhite)
     property color offColor: useTheme ? Theme.textDisabled  : Theme.textDisabled
     // Accent derived from Theme; desaturated for subtle look
     property real  desaturateAmount: 0.45   // 0..1, higher = less saturated
     // Base accent for subtle styling (then desaturated by desaturateAmount below)
-    property color accentBase: Color.saturate(Theme.accentPrimary, 0.12)
+    property color accentBase: Color.saturate(Theme.accentPrimary, accentSaturateBoost)
     property color accentColor: desaturateColor(accentBase, desaturateAmount)
 
     // Internal state
