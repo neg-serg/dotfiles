@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import qs.Settings
 import qs.Components
+import "../../Helpers/Color.js" as Color
 import "../../Helpers/Weather.js" as WeatherHelper
  
 Rectangle {
@@ -146,13 +147,13 @@ Rectangle {
                                 font.family: Theme.fontFamily
                                 font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
                                 font.bold: true
-                                color: Theme.textPrimary
+                                color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary)
                             }
                             Text {
                                 text: weatherData && weatherData.timezone_abbreviation ? `(${weatherData.timezone_abbreviation})` : ""
                                 font.family: Theme.fontFamily
                                 font.pixelSize: Math.round(Theme.tooltipFontPx * 0.71 * Theme.scale(Screen))
-                                color: Theme.textSecondary
+                                color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary)
                                 leftPadding: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(Screen))
                             }
                         }
@@ -161,7 +162,7 @@ Rectangle {
                             font.family: Theme.fontFamily
                             font.pixelSize: Math.round(Theme.fontSizeHeader * 0.75 * Theme.scale(Screen))
                             font.bold: true
-                            color: Theme.textPrimary
+                            color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary)
                         }
                     }
                 }
@@ -198,7 +199,7 @@ Rectangle {
                             text: Qt.formatDateTime(new Date(weatherData.daily.time[index]), "ddd")
                             font.family: Theme.fontFamily
                             font.pixelSize: Math.round(Theme.fontSizeCaption * Theme.scale(Screen))
-                            color: Theme.textSecondary
+                            color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary)
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }
