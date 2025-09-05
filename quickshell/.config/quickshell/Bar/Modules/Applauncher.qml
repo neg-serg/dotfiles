@@ -246,14 +246,14 @@ PanelWithOverlay {
             Behavior on y {
                 NumberAnimation {
                     duration: Theme.applauncherEnterAnimMs
-                    easing.type: Easing.OutCubic
+                    easing.type: Theme.uiEasingQuick
                 }
             }
             scale: appLauncherPanelRect.shouldBeVisible ? 1 : 0
             Behavior on scale {
                 NumberAnimation {
                     duration: Theme.applauncherScaleAnimMs
-                    easing.type: Easing.InOutCubic
+                    easing.type: Theme.uiEasingInOut
                 }
             }
             onScaleChanged: {
@@ -558,12 +558,12 @@ PanelWithOverlay {
                                 onTextChanged: root.updateFilter()
                                 selectedTextColor: Theme.onAccent
                                 selectionColor: Theme.accentPrimary
-                                padding: 0
+                                padding: Theme.uiSpacingNone
                                 verticalAlignment: TextInput.AlignVCenter
-                                leftPadding: 0
-                                rightPadding: 0
-                                topPadding: 0
-                                bottomPadding: 0
+                                leftPadding: Theme.uiSpacingNone
+                                rightPadding: Theme.uiSpacingNone
+                                topPadding: Theme.uiSpacingNone
+                                bottomPadding: Theme.uiSpacingNone
                                 font.bold: true
                                 Component.onCompleted: contentItem.cursorColor = Theme.textPrimary
                                 onActiveFocusChanged: contentItem.cursorColor = Theme.textPrimary
@@ -576,17 +576,8 @@ PanelWithOverlay {
                             }
                         }
 
-                        Behavior on border.color {
-                            ColorAnimation {
-                                duration: 120
-                            }
-                        }
-
-                        Behavior on border.width {
-                            NumberAnimation {
-                                duration: 120
-                            }
-                        }
+                        Behavior on border.color { ColorAnimation { duration: Theme.uiAnimQuickMs } }
+                        Behavior on border.width { NumberAnimation { duration: Theme.uiAnimQuickMs } }
                     }
 
             
@@ -626,23 +617,9 @@ PanelWithOverlay {
                                         : (hovered || isSelected ? Theme.accentPrimary : "transparent")
                                     border.width: appLauncherPanel.isPinned(modelData) ? 0 : (hovered || isSelected ? 2 : 0)
 
-                                    Behavior on color {
-                                        ColorAnimation {
-                                            duration: 120
-                                        }
-                                    }
-
-                                    Behavior on border.color {
-                                        ColorAnimation {
-                                            duration: 120
-                                        }
-                                    }
-
-                                    Behavior on border.width {
-                                        NumberAnimation {
-                                            duration: 120
-                                        }
-                                    }
+                                    Behavior on color { ColorAnimation { duration: Theme.uiAnimQuickMs } }
+                                    Behavior on border.color { ColorAnimation { duration: Theme.uiAnimQuickMs } }
+                                    Behavior on border.width { NumberAnimation { duration: Theme.uiAnimQuickMs } }
                                 }
 
                                 RowLayout {
@@ -772,23 +749,17 @@ PanelWithOverlay {
                                             appLauncherPanel.togglePin(modelData);
                                             return;
                                         }
-                                        ripple.opacity = 0.18;
+                                        ripple.opacity = Theme.uiRippleOpacity;
                                         rippleNumberAnimation.start();
                                         root.selectedIndex = index;
                                         root.activateSelected();
                                     }
                                     cursorShape: Qt.PointingHandCursor
-                                    onPressed: ripple.opacity = 0.18
+                                    onPressed: ripple.opacity = Theme.uiRippleOpacity
                                     onReleased: ripple.opacity = 0.0
                                 }
 
-                                NumberAnimation {
-                                    id: rippleNumberAnimation
-                                    target: ripple
-                                    property: "opacity"
-                                    to: 0.0
-                                    duration: 320
-                                }
+                                    NumberAnimation { id: rippleNumberAnimation; target: ripple; property: "opacity"; to: 0.0; duration: Theme.uiAnimRippleMs }
 
                                 Rectangle {
                                     anchors.left: parent.left

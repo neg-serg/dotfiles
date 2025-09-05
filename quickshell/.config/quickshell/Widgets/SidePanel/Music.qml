@@ -36,7 +36,7 @@ Rectangle {
             // Use primary background (no accent tint) for music card
             color: Theme.background
             border.color: "transparent"
-            border.width: 0
+            border.width: Theme.uiBorderNone
             radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
 
         // Show fallback UI if no player is available
@@ -72,10 +72,10 @@ Rectangle {
         ColumnLayout {
             id: playerUI
             anchors.fill: parent
-            anchors.leftMargin: 0
-            anchors.rightMargin: 0
-            anchors.topMargin: 0
-            anchors.bottomMargin: 0
+            anchors.leftMargin: Theme.uiMarginNone
+            anchors.rightMargin: Theme.uiMarginNone
+            anchors.topMargin: Theme.uiMarginNone
+            anchors.bottomMargin: Theme.uiMarginNone
             spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
             visible: !!MusicManager.currentPlayer
 
@@ -156,7 +156,7 @@ Rectangle {
                     // Match window/card palette
                     color: card.color
                     border.color: "transparent"
-                    border.width: 0
+                    border.width: Theme.uiBorderNone
                     radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
                 }
 
@@ -197,7 +197,7 @@ Rectangle {
                     background: Rectangle {
                         color: card.color
                         border.color: "transparent"
-                        border.width: 0
+                        border.width: Theme.uiBorderNone
                         radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
                     }
                 }
@@ -257,12 +257,12 @@ Rectangle {
                             radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(screen))
                             color: "transparent"
                             border.color: "transparent"
-                            border.width: 0
+                            border.width: Theme.uiBorderNone
 
                         HiDpiImage {
                             id: albumArt
                             anchors.fill: parent
-                            anchors.margins: 0
+                            anchors.margins: Theme.uiMarginNone
                             fillMode: Image.PreserveAspectCrop
                             cache: false
                             source: (MusicManager.coverUrl || "")
@@ -319,17 +319,17 @@ Rectangle {
                         // Match card background; radius and border from Theme
                         color: card.color
                         radius: Theme.sidePanelInnerRadius
-                        border.width: 0
-                        anchors.leftMargin: 0
-                        anchors.rightMargin: 0
+                        border.width: Theme.uiBorderNone
+                        anchors.leftMargin: Theme.uiMarginNone
+                        anchors.rightMargin: Theme.uiMarginNone
 
                         ColumnLayout {
                             id: detailsCol
                             anchors.fill: parent
                             anchors.leftMargin: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
                             anchors.rightMargin: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
-                            anchors.topMargin: 0
-                            anchors.bottomMargin: 0
+                            anchors.topMargin: Theme.uiMarginNone
+                            anchors.bottomMargin: Theme.uiMarginNone
                             spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
                             // (rollback) no special table-like layout properties
 
