@@ -1,58 +1,46 @@
 import QtQuick
+import qs.Components
 import qs.Settings
 import "../../Helpers/Color.js" as Color
-import "../../Helpers/Utils.js" as Utils
 
+// Backward-compatible wrapper around ThemedSeparator with kind: 'diagonal'.
+// Keeps the existing API (alpha/thickness/angleDeg/inset/stripe* props).
 Item {
     id: root
+    // Expose legacy properties
     property color color: Theme.borderSubtle
     property real alpha: Theme.uiSeparatorDiagonalAlpha
     property real thickness: Theme.uiSeparatorDiagonalThickness
     property real angleDeg: Theme.uiSeparatorDiagonalAngleDeg
     property real inset: Theme.uiSeparatorDiagonalInset
-    // Accent stripe options
-    property bool  stripeEnabled: true
-    // Darken accent strongly towards black to reduce brightness
-    property real  stripeBrightness: Theme.uiSeparatorDiagonalStripeBrightness // 0..1, lower = closer to black
+    property bool stripeEnabled: true
+    property real stripeBrightness: Theme.uiSeparatorDiagonalStripeBrightness
     property color stripeColor: Color.towardsBlack(Theme.accentPrimary, 1 - stripeBrightness)
-    property real  stripeOpacity: Theme.uiSeparatorStripeOpacity
-    // Portion of thickness used by the accent stripe (0..1)
-    property real  stripeRatio: Theme.uiSeparatorDiagonalStripeRatio
-    // Which side to draw the stripe on: true = right edge, false = left edge
-    property bool  stripeOnRight: true
+    property real stripeOpacity: Theme.uiSeparatorStripeOpacity
+    property real stripeRatio: Theme.uiSeparatorDiagonalStripeRatio
+    property bool stripeOnRight: true
 
+    // Keep same implicit size defaults
     implicitWidth: Theme.uiDiagonalSeparatorImplicitWidth
     implicitHeight: Theme.uiDiagonalSeparatorImplicitHeight
 
-    Rectangle {
-        id: line
-        width: Math.round(thickness * Theme.scale(panel.screen))
-        // Snap height to whole pixels to avoid subpixel blur when rotated
-        height: Math.round(Math.hypot(root.width, root.height) - inset*2)
-        radius: Theme.uiSeparatorRadius
-        // Apply alpha in color so children (accent stripe) are not faded
-        color: Qt.rgba(root.color.r, root.color.g, root.color.b, root.alpha)
-        anchors.centerIn: parent
-        anchors.verticalCenter: parent.verticalCenter
-        rotation: angleDeg
-        transformOrigin: Item.Center
-        // Make edges crisper by avoiding smoothing/antialiasing on rotated texture
-        antialiasing: false
-        layer.enabled: true
-        layer.smooth: false
-
-        // Accent stripe along one edge of the diagonal line
-        Rectangle {
-            id: stripe
-            visible: root.stripeEnabled && root.stripeRatio > 0
-            width: Math.max(1, Math.round(line.width * Utils.clamp(root.stripeRatio, 0, 1)))
-            height: parent.height
-            color: root.stripeColor
-            opacity: root.stripeOpacity
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: root.stripeOnRight ? undefined : parent.left
-            anchors.right: root.stripeOnRight ? parent.right : undefined
-            antialiasing: false
-        }
+    ThemedSeparator {
+        id: sep
+        anchors.fill: parent
+        kind: "diagonal"
+        // Pass the panel screen if available on a parent chain
+        screen: (typeof panel !== 'undefined') ? panel.screen : undefined
+        color: root.color
+        sepOpacity: root.alpha
+        thickness: root.thickness
+        angleDeg: root.angleDeg
+        inset: root.inset
+        stripeEnabled: root.stripeEnabled
+        // Allow explicit stripeColor override via wrapper property
+        stripeBrightness: root.stripeBrightness
+        stripeColor: root.stripeColor
+        stripeOpacity: root.stripeOpacity
+        stripeRatio: root.stripeRatio
+        stripeOnRight: root.stripeOnRight
     }
 }
