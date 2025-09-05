@@ -40,6 +40,8 @@ Singleton {
             property string profileImage: Quickshell.env("HOME") + "/.face"
             // Debug toggles
             property bool debugNetwork: false
+            // Strict Theme tokens: warn when Theme falls back to defaults
+            property bool strictThemeTokens: false
             property bool useFahrenheit: false
             // Wallpaper and video settings removed
             property bool showMediaInBar: false

@@ -54,7 +54,11 @@ Singleton {
         path: Settings.themeFile
         watchChanges: true
         onFileChanged: reload()
-        onAdapterUpdated: writeAdapter()
+        // After adapter updates (file written/loaded), write and check deprecated tokens
+        onAdapterUpdated: {
+            writeAdapter();
+            try { root._checkDeprecatedTokens(); } catch (e) {}
+        }
         onLoadFailed: function(error) {
             if (error.toString().includes("No such file") || error === 2) {
                 writeAdapter() // File doesn't exist, create it with default values
@@ -237,6 +241,9 @@ Singleton {
     }
 
     // --- Nested reader helpers (support hierarchical Theme.json with backward-compat) ---
+    // Internal cache of tokens we've already warned about (strict mode)
+    property var _strictWarned: ({})
+
     function _getNested(path) {
         try {
             var obj = themeData; var parts = String(path).split('.');
@@ -250,7 +257,48 @@ Singleton {
     }
     function val(path, fallback) {
         var v = _getNested(path);
-        return (v !== undefined && v !== null) ? v : fallback;
+        if (v !== undefined && v !== null) return v;
+        // Strict mode: warn once per missing token
+        try {
+            if (Settings.settings && Settings.settings.strictThemeTokens) {
+                var key = String(path);
+                if (!root._strictWarned[key]) {
+                    console.warn('[ThemeStrict] Missing token', key, '→ using fallback', fallback);
+                    root._strictWarned[key] = true;
+                }
+            }
+        } catch (e) { /* ignore */ }
+        return fallback;
+    }
+
+    // --- Deprecated/unused token warnings ---
+    function _checkDeprecatedTokens() {
+        try {
+            if (!(Settings.settings && Settings.settings.strictThemeTokens)) return;
+            var deprecated = [
+                { path: 'rippleEffect', note: 'Use ui.ripple.opacity' },
+                { path: 'accentDisabled', note: 'Use colors.text.disabled / Theme.textDisabled' },
+                { path: 'panelHoverOpacity', note: 'Use surfaceHover/surfaceActive for states' },
+                { path: 'overlay', note: 'Use colors.overrides.overlayWeak/overlayStrong or derived tokens' },
+                { path: 'baseOverlay', note: 'Use colors.overrides.overlayWeak/overlayStrong' }
+            ];
+            for (var i=0;i<deprecated.length;i++) {
+                var d = deprecated[i];
+                var v = _getNested(d.path);
+                if (v !== undefined && v !== null) {
+                    var key = 'dep::' + d.path;
+                    if (!root._strictWarned[key]) {
+                        console.warn('[ThemeStrict] Deprecated token', d.path, 'present; ' + d.note);
+                        root._strictWarned[key] = true;
+                    }
+                }
+            }
+        } catch (e) { /* ignore */ }
+    }
+
+    // Initial deprecated check
+    Component.onCompleted: {
+        try { root._checkDeprecatedTokens(); } catch (e) {}
     }
 
         // Map string or numeric to a QML Easing.Type
@@ -343,8 +391,13 @@ Singleton {
     property int tooltipFontPx: val('tooltip.fontPx', themeData.tooltipFontPx)
     property real tooltipOpacity: val('tooltip.opacity', 0.98)
     property real tooltipSmallScaleRatio: val('tooltip.smallScaleRatio', 0.71)
-    // Weather header scale relative to Theme.fontSizeHeader
+    // Weather tokens
+    // Header scale relative to Theme.fontSizeHeader
     property real weatherHeaderScale: Utils.clamp(val('weather.headerScale', 0.75), 0.25, 1.5)
+    // Card background opacity atop accentDarkStrong
+    property real weatherCardOpacity: Utils.clamp(val('weather.card.opacity', 0.85), 0, 1)
+    // Optional horizontal center offset tweak
+    property int  weatherCenterOffset: Utils.clamp(val('weather.centerOffset', -2), -100, 100)
     // Pill indicator defaults
     property int panelPillHeight: val('panel.pill.height', themeData.panelPillHeight)
     property int panelPillIconSize: val('panel.pill.iconSize', themeData.panelPillIconSize)
@@ -360,6 +413,8 @@ Singleton {
     property int panelTrayShortHoldMs: Utils.clamp(val('panel.tray.shortHoldMs', themeData.panelTrayShortHoldMs), 0, 10000)
     property int panelTrayGuardMs: Utils.clamp(val('panel.tray.guardMs', themeData.panelTrayGuardMs), 0, 2000)
     property int panelTrayOverlayDismissDelayMs: Utils.clamp(val('panel.tray.overlayDismissDelayMs', themeData.panelTrayOverlayDismissDelayMs), 0, 600000)
+    // Inline expanded tray background extra padding (unscaled px)
+    property int panelTrayInlinePadding: val('panel.tray.inlinePadding', 6)
     // Generic row spacing
     property int panelRowSpacing: val('panel.rowSpacing', themeData.panelRowSpacing)
     property int panelRowSpacingSmall: val('panel.rowSpacingSmall', themeData.panelRowSpacingSmall)
@@ -367,6 +422,14 @@ Singleton {
     property int panelVolumeFullHideMs: val('panel.volume.fullHideMs', themeData.panelVolumeFullHideMs)
     property color panelVolumeLowColor: val('panel.volume.lowColor', themeData.panelVolumeLowColor)
     property color panelVolumeHighColor: val('panel.volume.highColor', themeData.panelVolumeHighColor)
+    // Volume icon thresholds
+    property int volumeIconOffThreshold: Utils.clamp(val('volume.icon.offThreshold', 0), 0, 100)
+    property int volumeIconDownThreshold: Utils.clamp(val('volume.icon.downThreshold', 30), 0, 100)
+    property int volumeIconUpThreshold: Utils.clamp(val('volume.icon.upThreshold', 50), 0, 100)
+    // Volume-specific pill override (falls back to panel.pill.autoHidePauseMs)
+    property int volumePillAutoHidePauseMs: Utils.clamp(val('volume.pill.autoHidePauseMs', panelPillAutoHidePauseMs), 0, 600000)
+    // Volume-specific show delay override (falls back to panel.pill.showDelayMs)
+    property int volumePillShowDelayMs: Utils.clamp(val('volume.pill.showDelayMs', panelPillShowDelayMs), 0, 600000)
     // Core module timings
     property int timeTickMs: Utils.clamp(val('timers.timeTickMs', themeData.timeTickMs), 100, 60000)
     property int wsRefreshDebounceMs: Utils.clamp(val('timers.wsRefreshDebounceMs', themeData.wsRefreshDebounceMs), 0, 10000)
@@ -375,6 +438,8 @@ Singleton {
     property int networkLinkPollMs: Utils.clamp(val('network.linkPollMs', themeData.networkLinkPollMs), 500, 600000)
     property int mediaHoverOpenDelayMs: Utils.clamp(val('media.hover.openDelayMs', themeData.mediaHoverOpenDelayMs), 0, 5000)
     property int mediaHoverStillThresholdMs: Utils.clamp(val('media.hover.stillThresholdMs', themeData.mediaHoverStillThresholdMs), 0, 10000)
+    // Media time text font scale (relative to track title font size)
+    property real mediaTimeFontScale: Utils.clamp(val('media.time.fontScale', 0.8), 0.1, 2.0)
     property int spectrumPeakDecayIntervalMs: Utils.clamp(val('spectrum.peakDecayIntervalMs', themeData.spectrumPeakDecayIntervalMs), 10, 1000)
     property int spectrumBarAnimMs: Utils.clamp(val('spectrum.barAnimMs', themeData.spectrumBarAnimMs), 0, 5000)
     property int spectrumPeakThickness: Utils.clamp(val('spectrum.peakThickness', 2), 1, 12)
@@ -431,6 +496,8 @@ Singleton {
     property int  panelSubmenuGap: val('panel.menu.submenuGap', themeData.panelSubmenuGap)
     property int  panelMenuChevronSize: val('panel.menu.chevronSize', themeData.panelMenuChevronSize)
     property int  panelMenuIconSize: val('panel.menu.iconSize', themeData.panelMenuIconSize)
+    // Panel menu item font scale (relative to Theme.fontSizeSmall)
+    property real panelMenuItemFontScale: Utils.clamp(val('panel.menu.itemFontScale', 0.90), 0.5, 1.5)
     // Side panel exports
     property int sidePanelCornerRadius: val('sidePanel.cornerRadius', themeData.sidePanelCornerRadius)
     property int sidePanelSpacing: val('sidePanel.spacing', themeData.sidePanelSpacing)
@@ -468,12 +535,30 @@ Singleton {
     property int uiBorderWidth: Utils.clamp(val('ui.border.width', 1), 0, 8)
     property int uiSeparatorThickness: Utils.clamp(val('ui.separator.thickness', 1), 1, 8)
     property int uiSeparatorRadius: Utils.clamp(val('ui.separator.radius', 0), 0, 8)
+    // UI "none" tokens for consistency
+    property int uiMarginNone: val('ui.margin.none', 0)
+    property int uiSpacingNone: val('ui.spacing.none', 0)
+    property int uiBorderNone: val('ui.border.noneWidth', 0)
+    property int uiRadiusNone: val('ui.radius.none', 0)
     // Diagonal separator implicit size
     property int uiDiagonalSeparatorImplicitWidth: Utils.clamp(val('ui.separator.diagonal.implicitWidth', 10), 1, 512)
     property int uiDiagonalSeparatorImplicitHeight: Utils.clamp(val('ui.separator.diagonal.implicitHeight', 28), 1, 1024)
     // UI common opacities
     property real uiRippleOpacity: Utils.clamp(val('ui.ripple.opacity', 0.18), 0, 1)
     property real uiIconEmphasisOpacity: Utils.clamp(val('ui.icon.emphasisOpacity', 0.9), 0, 1)
+    // Workspace indicator tuning
+    property real wsIconScale: val('ws.icon.scale', 1.45)
+    property int  wsIconBaselineOffset: val('ws.icon.baselineOffset', 4)
+    property int  wsIconSpacing: val('ws.icon.spacing', 1)
+    property int  wsSubmapBaselineAdjust: val('ws.submapBaselineAdjust', -5)
+    // Workspace label/icon paddings
+    property int  wsLabelPadding: Utils.clamp(val('ws.label.padding', 6), 0, 64)
+    property int  wsLabelLeftPadding: Utils.clamp(val('ws.label.leftPadding.normal', 2), -32, 64)
+    property int  wsLabelLeftPaddingTerminal: Utils.clamp(val('ws.label.leftPadding.terminal', -2), -64, 64)
+    property int  wsIconInnerPadding: Utils.clamp(val('ws.icon.innerPadding', 1), 0, 32)
+    // NetworkUsage icon tuning
+    property real networkIconScale: Utils.clamp(val('network.icon.scale', 0.7), 0.2, 3.0)
+    property int  networkIconVAdjust: Utils.clamp(val('network.icon.vAdjust', 0), -100, 100)
     // VPN indicator opacities
     property real vpnConnectedOpacity: Utils.clamp(val('vpn.connectedOpacity', 0.8), 0, 1)
     property real vpnDisconnectedOpacity: Utils.clamp(val('vpn.disconnectedOpacity', 0.45), 0, 1)
@@ -485,6 +570,35 @@ Singleton {
     property int uiSpinnerDurationMs: Utils.clamp(val('ui.spinner.durationMs', 1000), 100, 600000)
     // Media emphasis scaling for icons
     property real mediaIconScaleEmphasis: val('media.iconScaleEmphasis', 1.15)
+    // Media album art fallback icon opacity
+    property real mediaAlbumArtFallbackOpacity: Utils.clamp(val('media.albumArt.fallbackOpacity', 0.4), 0, 1)
+    // MPD flags polling (fallback interval)
+    property int mpdFlagsFallbackMs: Utils.clamp(val('media.mpd.flags.fallbackMs', 2500), 200, 600000)
+    // Time/Clock module
+    property real timeFontScale: Utils.clamp(val('time.font.scale', 1.0), 0.5, 3.0)
+    property int  timeFontWeight: val('time.font.weight', Font.Medium)
+    property color timeTextColor: val('time.text.color', textPrimary)
+    // Keyboard layout module
+    property int  keyboardHeight: Utils.clamp(val('keyboard.height', themeData.panelHeight), 16, 128)
+    property int  keyboardMargin: Utils.clamp(val('keyboard.margin', 4), 0, 64)
+    property int  keyboardMinWidth: Utils.clamp(val('keyboard.minWidth', 40), 0, 512)
+    property real keyboardIconScale: Utils.clamp(val('keyboard.icon.scale', 1.0), 0.2, 3.0)
+    property int  keyboardIconSpacing: Utils.clamp(val('keyboard.icon.spacing', 4), 0, 64)
+    property int  keyboardIconPadding: Utils.clamp(val('keyboard.icon.padding', 4), 0, 64)
+    property real keyboardTextPadding: Utils.clamp(val('keyboard.text.padding', 1.5), 0, 32)
+    property int  keyboardIconBaselineOffset: Utils.clamp(val('keyboard.icon.baselineOffset', 0), -20, 20)
+    property int  keyboardTextBaselineOffset: Utils.clamp(val('keyboard.text.baselineOffset', 0), -20, 20)
+    property real keyboardFontScale: Utils.clamp(val('keyboard.font.scale', 0.9), 0.5, 2.0)
+    property int  keyboardRadius: Utils.clamp(val('keyboard.radius', cornerRadiusSmall), 0, 64)
+    // Keyboard opacity + text emphasis
+    property real keyboardNormalOpacity: Utils.clamp(val('keyboard.opacity.normal', 1.0), 0, 1)
+    property real keyboardHoverOpacity: Utils.clamp(val('keyboard.opacity.hover', 1.0), 0, 1)
+    property bool keyboardTextBold: !!val('keyboard.text.bold', false)
+    // Keyboard colors
+    property color keyboardBgColor: val('keyboard.colors.bg', background)
+    property color keyboardHoverBgColor: val('keyboard.colors.hoverBg', surfaceHover)
+    property color keyboardTextColor: val('keyboard.colors.text', textPrimary)
+    property color keyboardIconColor: val('keyboard.colors.icon', textSecondary)
     // UI easing (configurable via string names)
     property int uiEasingQuick: easingType(val('ui.anim.easing.quick', 'OutQuad'), 'OutQuad')
     property int uiEasingRotate: easingType(val('ui.anim.easing.rotate', 'OutCubic'), 'OutCubic')

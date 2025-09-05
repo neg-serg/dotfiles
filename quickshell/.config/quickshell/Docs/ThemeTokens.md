@@ -24,11 +24,44 @@ Additional UI tokens (nested)
 - UI shadow: ui.shadow.opacity, ui.shadow.blur, ui.shadow.offsetX, ui.shadow.offsetY
 - UI border/separators: ui.border.width, ui.separator.thickness
   - Separator radius: ui.separator.radius
-- UI animation: ui.anim.quickMs, ui.anim.rotateMs, ui.anim.rippleMs
+  - UI animation: ui.anim.quickMs, ui.anim.rotateMs, ui.anim.rippleMs
   - UI easing: ui.anim.easing.quick|rotate|ripple|stdOut|stdIn|inOut (string names like "OutCubic")
   - UI spinner: ui.spinner.durationMs
   - UI opacities: ui.ripple.opacity, ui.icon.emphasisOpacity
-- Media: media.iconScaleEmphasis
+ - Media: media.iconScaleEmphasis
+  - Time text: media.time.fontScale
+  - MPD flags polling: media.mpd.flags.fallbackMs
+  - Album art fallback opacity: media.albumArt.fallbackOpacity
+- System tray: panel.tray.inlinePadding (px)
+  - Menu: panel.menu.itemFontScale (font size multiplier)
+ - Network icon: network.icon.scale, network.icon.vAdjust
+ - Volume:
+  - panel.volume.lowColor, panel.volume.highColor
+  - panel.volume.fullHideMs (hide at exactly 100%)
+  - Uses generic pill timings: panel.pill.showDelayMs, panel.pill.autoHidePauseMs
+  - Optional override: volume.pill.autoHidePauseMs (Volume-only)
+  - Optional override: volume.pill.showDelayMs (Volume-only)
+  - Icon thresholds: volume.icon.offThreshold (default 0), volume.icon.downThreshold (default 30)
+  - Optional upper threshold for hysteresis: volume.icon.upThreshold (default 50)
+ - Time/Clock:
+   - time.font.scale (multiplier for Theme.fontSizeSmall)
+   - time.font.weight (Qt Font weight enum/int)
+   - time.text.color
+ - Keyboard:
+   - keyboard.height (defaults to panel.height)
+   - keyboard.minWidth
+   - keyboard.margin
+   - keyboard.icon.scale, keyboard.icon.spacing, keyboard.icon.padding
+   - keyboard.text.padding
+   - keyboard.icon.baselineOffset, keyboard.text.baselineOffset
+   - keyboard.font.scale (icon font factor vs. label)
+   - keyboard.colors.bg, keyboard.colors.hoverBg, keyboard.colors.text, keyboard.colors.icon
+   - keyboard.radius (defaults to shape.cornerRadiusSmall)
+   - keyboard.opacity.normal, keyboard.opacity.hover
+   - keyboard.text.bold (boolean)
+- Workspace indicator: ws.icon.scale, ws.icon.baselineOffset, ws.icon.spacing, ws.submapBaselineAdjust
+   - ws.label.padding, ws.label.leftPadding.normal, ws.label.leftPadding.terminal
+   - ws.icon.innerPadding
 - Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
   - Applauncher list: applauncher.list.itemHeight, applauncher.list.itemHeightLarge
   - Applauncher preview: applauncher.preview.width
@@ -41,6 +74,8 @@ Additional UI tokens (nested)
   - Side panel popup spacing: sidePanel.popup.spacing
   - Weather left column width ratio: sidePanel.weather.leftColumnRatio
   - Weather header scale: weather.headerScale
+  - Weather card opacity: weather.card.opacity
+  - Weather center offset: weather.centerOffset
 - Calendar font sizes: calendar.font.titlePx, calendar.font.dowPx, calendar.font.dayPx
   - Calendar DOW style: calendar.dow.italic, calendar.dow.underline
   - Calendar shape: calendar.cell.radiusFactor, calendar.holidayDot.radiusFactor
@@ -87,3 +122,5 @@ Examples
 - Menu item hover: Theme.surfaceHover
 - Selected day (calendar): Theme.accentDarkStrong background + Theme.accentPrimary border
 - Media separators: bracket = Theme.accentDarkStrong; separator = Theme.accentHover
+Debugging
+- Strict token warnings: set `Settings.settings.strictThemeTokens` to true to log a warning whenever a Theme token is missing and a fallback is used. Helps ensure themes define all tokens you rely on.
