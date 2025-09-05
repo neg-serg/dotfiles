@@ -42,7 +42,7 @@ Rectangle {
                     text: "music_note"
                     font.family: "Material Symbols Outlined"
                     font.pixelSize: Theme.fontSizeHeader * Theme.scale(screen)
-                    color: Color.contrastOn(card.color, Theme.textSecondary, Theme.textPrimary)
+                    color: Color.contrastOn(card.color, Theme.textSecondary, Theme.textPrimary, Theme.contrastThreshold)
                     Layout.alignment: Qt.AlignHCenter
                 }
 
@@ -72,7 +72,7 @@ Rectangle {
             property int musicFontPx: Math.round(13 * Theme.scale(screen))
             // Exact text size to match the rest of the panel
             property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(screen))
-            property color musicTextColor: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary)
+            property color musicTextColor: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
             property int musicFontWeight: Font.Medium
 
             // Fancy info removed
@@ -282,7 +282,7 @@ Rectangle {
                             text: "album"
                             font.family: "Material Symbols Outlined"
                             font.pixelSize: Theme.fontSizeBody * Theme.scale(screen)
-                            color: Color.contrastOn(card.color, Theme.textSecondary, Theme.textPrimary)
+                            color: Color.contrastOn(card.color, Theme.textSecondary, Theme.textPrimary, Theme.contrastThreshold)
                             visible: !albumArt.visible
                         }
                     }

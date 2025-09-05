@@ -269,6 +269,9 @@ Singleton {
     property string fontFamily: "Iosevka" // Font Properties
     // Font size multiplier - adjust this in Settings.json to scale all fonts
     property real fontSizeMultiplier: Settings.settings.fontSizeMultiplier || 1.0
+    // Global contrast threshold used by Color.contrastOn callers
+    property real contrastThreshold: (Settings.settings && Settings.settings.contrastThreshold !== undefined)
+        ? Settings.settings.contrastThreshold : 0.5
     // Base font sizes (multiplied by fontSizeMultiplier)
     property int fontSizeHeader: Math.round(32 * fontSizeMultiplier)     // Headers and titles
     property int fontSizeBody: Math.round(16 * fontSizeMultiplier)       // Body text and general content

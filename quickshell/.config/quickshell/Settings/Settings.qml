@@ -112,6 +112,9 @@ Singleton {
             // Global contrast threshold (0..1) for Color.contrastOn
             // Lower = prefers light text more often; higher = prefers dark
             property real contrastThreshold: 0.5
+            // Debug: enforce contrast warnings if ratios fall below threshold
+            // Components may opt-in and use Color.contrastRatio()
+            property bool enforceContrastWarnings: false
             // Debug: log low-contrast warnings when components opt-in
             property bool debugContrast: false
             // Target contrast ratio for warnings (WCAG AA for normal text ~4.5)

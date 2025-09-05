@@ -145,13 +145,13 @@ Rectangle {
                                 font.family: Theme.fontFamily
                                 font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
                                 font.bold: true
-                                color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary)
+                                color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
                             }
                             Text {
                                 text: weatherData && weatherData.timezone_abbreviation ? `(${weatherData.timezone_abbreviation})` : ""
                                 font.family: Theme.fontFamily
                                 font.pixelSize: Math.round(Theme.tooltipFontPx * 0.71 * Theme.scale(Screen))
-                                color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary)
+                                color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
                                 leftPadding: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(Screen))
                             }
                         }
@@ -160,7 +160,7 @@ Rectangle {
                             font.family: Theme.fontFamily
                             font.pixelSize: Math.round(Theme.fontSizeHeader * 0.75 * Theme.scale(Screen))
                             font.bold: true
-                            color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary)
+                            color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
                             Component.onCompleted: weatherRoot.warnContrast(card.color, color, 'weather.current')
                         }
                     }
@@ -199,7 +199,7 @@ Rectangle {
                             text: Qt.formatDateTime(new Date(weatherData.daily.time[index]), "ddd")
                             font.family: Theme.fontFamily
                             font.pixelSize: Math.round(Theme.fontSizeCaption * Theme.scale(Screen))
-                            color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary)
+                            color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }

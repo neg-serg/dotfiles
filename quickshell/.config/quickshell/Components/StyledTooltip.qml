@@ -196,7 +196,7 @@ Window {
     Text {
         id: tooltipText
         text: tooltipWindow.text
-        color: Color.contrastOn(tooltipBg.color, Theme.textPrimary, Theme.textSecondary, (Settings.settings && Settings.settings.contrastThreshold) ? Settings.settings.contrastThreshold : 0.5)
+        color: Color.contrastOn(tooltipBg.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
         font.family: Theme.fontFamily || "Arial"
         font.pixelSize: Theme.tooltipFontPx * scaleFactor
         anchors.centerIn: parent
