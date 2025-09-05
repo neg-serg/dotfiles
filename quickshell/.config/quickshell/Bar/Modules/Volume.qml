@@ -4,6 +4,7 @@ import qs.Settings
 import qs.Components
 import qs.Bar.Modules
 import qs.Services as Services
+import "../../Helpers/Utils.js" as Utils
 
 Item {
     id: volumeDisplay
@@ -50,7 +51,7 @@ Item {
 
     function getVolumeColor() {
         // Gradient from volLowColor at 0% to volHighColor at 100% (clamped)
-        var t = Math.max(0, Math.min(1, volume / 100.0));
+        var t = Utils.clamp(volume / 100.0, 0, 1);
         return Qt.rgba(
             volLowColor.r + (volHighColor.r - volLowColor.r) * t,
             volLowColor.g + (volHighColor.g - volLowColor.g) * t,
@@ -104,7 +105,7 @@ Item {
     Connections {
         target: Services.Audio
         function onVolumeChanged() {
-            const clampedVolume = Math.max(0, Math.min(100, Services.Audio.volume));
+            const clampedVolume = Utils.clamp(Services.Audio.volume, 0, 100);
             if (clampedVolume === volume) return;
 
             volume = clampedVolume;
@@ -141,7 +142,7 @@ Item {
 
     Component.onCompleted: {
         if (Services.Audio && Services.Audio.volume !== undefined) {
-            volume = Math.max(0, Math.min(100, Services.Audio.volume));
+            volume = Utils.clamp(Services.Audio.volume, 0, 100);
             // If we start at exactly 100%, schedule auto-hide by default
             if (volume === 100) fullHideTimer.restart();
         }

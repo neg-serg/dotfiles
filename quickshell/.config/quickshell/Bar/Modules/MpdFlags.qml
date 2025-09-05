@@ -4,6 +4,7 @@ import Quickshell.Io
 import qs.Settings
 import qs.Services
 import qs.Components
+import "../../Helpers/Utils.js" as Utils
 
 Item {
     id: root
@@ -22,7 +23,7 @@ Item {
     property int padY: Math.round(2 * Theme.scale(Screen))
     property int radius: Math.round(6 * Theme.scale(Screen))
     implicitWidth: content.implicitWidth + 2 * padX
-    implicitHeight: Math.max(content.implicitHeight + 2 * padY, iconPx + 2 * padY)
+    implicitHeight: Utils.clamp(content.implicitHeight + 2 * padY, iconPx + 2 * padY, content.implicitHeight + 2 * padY)
     // Ensure the item actually occupies its implicit size
     width: implicitWidth
     height: implicitHeight

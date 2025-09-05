@@ -791,8 +791,8 @@ PanelWithOverlay {
                                     anchors.right: parent.right
                                     anchors.bottom: parent.bottom
                                     height: Theme.tooltipBorderWidth
-                                    color: Theme.outline
-                                    opacity: index === appList.count - 1 ? 0 : 0.10
+                                    color: Theme.borderSubtle
+                                    opacity: index === appList.count - 1 ? 0 : 1.0
                                 }
 
         

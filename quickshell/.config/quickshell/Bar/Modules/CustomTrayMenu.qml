@@ -319,8 +319,8 @@ import "../../Helpers/Color.js" as Color
                 id: bg;
                 anchors.fill: parent;
                 color: Theme.backgroundPrimary || "#222";
-                border.color: "transparent";
-                border.width: 0;
+                border.color: Theme.borderSubtle;
+                border.width: 1;
                 radius: 0;
                 z: 0;
             }
