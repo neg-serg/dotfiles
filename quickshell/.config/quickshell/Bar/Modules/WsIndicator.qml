@@ -218,7 +218,9 @@ Item {
         id: lineBox
         // Small spacing; children add padding
         spacing: iconSpacing
-        anchors.fill: parent
+        // Center the whole row vertically so label doesn't appear to move
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: parent.left
         // implicit sizes come from children
 
         // Submap icon aligned to label baseline
