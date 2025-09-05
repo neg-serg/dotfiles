@@ -79,7 +79,8 @@
     "overlayRadius": 20,
     "netCluster": {
       "spacing": 6
-    }
+    },
+    "computedFontScale": 0.6
   },
   "shape": {
     "cornerRadius": 8,
@@ -93,11 +94,16 @@
     "padding": 8,
     "borderWidth": 1,
     "radius": 2,
-    "fontPx": 14
+    "fontPx": 14,
+    "opacity": 0.98,
+    "smallScaleRatio": 0.71
   },
   "sidePanel": {
     "popup": {
-      "spacing": 0
+      "spacing": 0,
+      "slideMs": 220,
+      "autoHideMs": 4000,
+      "outerMargin": 4
     },
     "cornerRadius": 9,
     "innerRadius": 0,
@@ -116,12 +122,14 @@
     },
     "button": {
       "activeVisibleMin": 0.18
-    }
+    },
+    "spacingMedium": 8
   },
   "ui": {
     "iconSizeLarge": 28,
     "border": {
-      "width": 1
+      "width": 1,
+      "noneWidth": 0
     },
     "separator": {
       "thickness": 1,
@@ -160,7 +168,30 @@
     "spinner": {
       "durationMs": 1000
     },
-    "visibilityEpsilon": 0.01
+    "visibilityEpsilon": 0.01,
+    "margin": {
+      "large": 32,
+      "medium": 16,
+      "none": 0
+    },
+    "padding": {
+      "medium": 14
+    },
+    "spacing": {
+      "large": 18,
+      "small": 10,
+      "xsmall": 2,
+      "none": 0
+    },
+    "gap": {
+      "tiny": 1
+    },
+    "control": {
+      "height": 48
+    },
+    "radius": {
+      "none": 0
+    }
   },
   "ws": {
     "icon": {
@@ -175,6 +206,13 @@
         "baselineOffset": -5,
         "scale": 1.0,
         "color": "#006FCC"
+      }
+    },
+    "label": {
+      "padding": 6,
+      "leftPadding": {
+        "normal": 2,
+        "terminal": -2
       }
     }
   },
@@ -223,7 +261,8 @@
     "barGap": 2,
     "minBarWidth": 2,
     "peakOpacity": 0.7,
-    "fillOpacity": 0.35
+    "fillOpacity": 0.35,
+    "peakThickness": 2
   },
   "calendar": {
     "rowSpacing": 2,
@@ -272,6 +311,19 @@
     },
     "content": {
       "margin": 32
+    },
+    "size": {
+      "width": 460,
+      "height": 640
+    },
+    "cornerRadius": 28,
+    "margins": {
+      "bottom": 16
+    },
+    "anim": {
+      "offscreenShift": 12,
+      "enterMs": 300,
+      "scaleMs": 200
     }
   },
   "vpn": {

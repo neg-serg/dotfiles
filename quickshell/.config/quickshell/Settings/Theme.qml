@@ -67,6 +67,25 @@ Singleton {
         JsonAdapter {
             id: themeData
             // Defaults aligned with Theme.json; file values override these
+            // Declare nested group roots so nested tokens in Theme.json are readable
+            property var colors: ({})
+            property var panel: ({})
+            property var shape: ({})
+            property var tooltip: ({})
+            property var weather: ({})
+            property var sidePanel: ({})
+            property var ui: ({})
+            property var ws: ({})
+            property var timers: ({})
+            property var network: ({})
+            property var media: ({})
+            property var spectrum: ({})
+            property var time: ({})
+            property var calendar: ({})
+            property var vpn: ({})
+            property var volume: ({})
+            property var applauncher: ({})
+            property var keyboard: ({})
 
             // Backgrounds
             property string background:  "#ef000000"
@@ -258,13 +277,99 @@ Singleton {
     function val(path, fallback) {
         var v = _getNested(path);
         if (v !== undefined && v !== null) return v;
-        // Strict mode: warn once per missing token
+        // Strict mode: warn once per missing token, but be quiet for known legacy-compatible paths
         try {
             if (Settings.settings && Settings.settings.strictThemeTokens) {
                 var key = String(path);
-                if (!root._strictWarned[key]) {
-                    console.warn('[ThemeStrict] Missing token', key, '→ using fallback', fallback);
-                    root._strictWarned[key] = true;
+                // Optional override keys: do not warn when absent
+                if (!/^colors\.overrides\./.test(key)) {
+                    // Legacy flat-compat mapping: if a corresponding flat key exists, suppress warning
+                    var compat = ({
+                        'colors.background': 'background',
+                        'colors.surface': 'surface',
+                        'colors.surfaceVariant': 'surfaceVariant',
+                        'colors.text.primary': 'textPrimary',
+                        'colors.text.secondary': 'textSecondary',
+                        'colors.text.disabled': 'textDisabled',
+                        'colors.accent.primary': 'accentPrimary',
+                        'colors.status.error': 'error',
+                        'colors.status.warning': 'warning',
+                        'colors.highlight': 'highlight',
+                        'colors.onAccent': 'onAccent',
+                        'colors.outline': 'outline',
+                        'colors.shadow': 'shadow',
+                        'panel.height': 'panelHeight',
+                        'panel.sideMargin': 'panelSideMargin',
+                        'panel.widgetSpacing': 'panelWidgetSpacing',
+                        'panel.sepOvershoot': 'panelSepOvershoot',
+                        'panel.icons.iconSize': 'panelIconSize',
+                        'panel.icons.iconSizeSmall': 'panelIconSizeSmall',
+                        'panel.hotzone.width': 'panelHotzoneWidth',
+                        'panel.hotzone.height': 'panelHotzoneHeight',
+                        'panel.hotzone.rightShift': 'panelHotzoneRightShift',
+                        'panel.moduleHeight': 'panelModuleHeight',
+                        'panel.menuYOffset': 'panelMenuYOffset',
+                        'shape.cornerRadius': 'cornerRadius',
+                        'shape.cornerRadiusSmall': 'cornerRadiusSmall',
+                        'shape.cornerRadiusLarge': 'cornerRadiusLarge',
+                        'tooltip.delayMs': 'tooltipDelayMs',
+                        'tooltip.minSize': 'tooltipMinSize',
+                        'tooltip.margin': 'tooltipMargin',
+                        'tooltip.padding': 'tooltipPadding',
+                        'tooltip.borderWidth': 'tooltipBorderWidth',
+                        'tooltip.radius': 'tooltipRadius',
+                        'tooltip.fontPx': 'tooltipFontPx',
+                        'panel.pill.height': 'panelPillHeight',
+                        'panel.pill.iconSize': 'panelPillIconSize',
+                        'panel.pill.paddingH': 'panelPillPaddingH',
+                        'panel.pill.showDelayMs': 'panelPillShowDelayMs',
+                        'panel.pill.autoHidePauseMs': 'panelPillAutoHidePauseMs',
+                        'panel.pill.background': 'panelPillBackground',
+                        'panel.animations.stdMs': 'panelAnimStdMs',
+                        'panel.animations.fastMs': 'panelAnimFastMs',
+                        'panel.tray.longHoldMs': 'panelTrayLongHoldMs',
+                        'panel.tray.shortHoldMs': 'panelTrayShortHoldMs',
+                        'panel.tray.guardMs': 'panelTrayGuardMs',
+                        'panel.tray.overlayDismissDelayMs': 'panelTrayOverlayDismissDelayMs',
+                        'panel.rowSpacing': 'panelRowSpacing',
+                        'panel.rowSpacingSmall': 'panelRowSpacingSmall',
+                        'panel.volume.fullHideMs': 'panelVolumeFullHideMs',
+                        'panel.volume.lowColor': 'panelVolumeLowColor',
+                        'panel.volume.highColor': 'panelVolumeHighColor',
+                        'timers.timeTickMs': 'timeTickMs',
+                        'timers.wsRefreshDebounceMs': 'wsRefreshDebounceMs',
+                        'network.vpnPollMs': 'vpnPollMs',
+                        'network.restartBackoffMs': 'networkRestartBackoffMs',
+                        'network.linkPollMs': 'networkLinkPollMs',
+                        'media.hover.openDelayMs': 'mediaHoverOpenDelayMs',
+                        'media.hover.stillThresholdMs': 'mediaHoverStillThresholdMs',
+                        'spectrum.peakDecayIntervalMs': 'spectrumPeakDecayIntervalMs',
+                        'spectrum.barAnimMs': 'spectrumBarAnimMs',
+                        'calendar.rowSpacing': 'calendarRowSpacing',
+                        'calendar.cellSpacing': 'calendarCellSpacing',
+                        'calendar.sideMargin': 'calendarSideMargin',
+                        'panel.hover.fadeMs': 'panelHoverFadeMs',
+                        'panel.menu.width': 'panelMenuWidth',
+                        'panel.menu.submenuWidth': 'panelSubmenuWidth',
+                        'panel.menu.padding': 'panelMenuPadding',
+                        'panel.menu.itemSpacing': 'panelMenuItemSpacing',
+                        'panel.menu.itemHeight': 'panelMenuItemHeight',
+                        'panel.menu.separatorHeight': 'panelMenuSeparatorHeight',
+                        'panel.menu.dividerMargin': 'panelMenuDividerMargin',
+                        'panel.menu.radius': 'panelMenuRadius',
+                        'panel.menu.heightExtra': 'panelMenuHeightExtra',
+                        'panel.menu.anchorYOffset': 'panelMenuAnchorYOffset',
+                        'panel.menu.submenuGap': 'panelSubmenuGap',
+                        'panel.menu.chevronSize': 'panelMenuChevronSize',
+                        'panel.menu.iconSize': 'panelMenuIconSize'
+                    })[key];
+                    var hasCompat = compat && (themeData[compat] !== undefined);
+                    if (!hasCompat) {
+                        if (!root._strictWarned[key]) {
+                            console.warn('[ThemeStrict] Missing token', key, '→ using fallback', fallback);
+                            root._strictWarned[key] = true;
+                        }
+                    }
                 }
             }
         } catch (e) { /* ignore */ }
