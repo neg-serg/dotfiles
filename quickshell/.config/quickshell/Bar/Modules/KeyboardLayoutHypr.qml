@@ -10,6 +10,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 import qs.Settings
+import "../../Helpers/Utils.js" as Utils
 
 Item {
     id: kb
@@ -58,8 +59,8 @@ Item {
         id: capsule
         readonly property bool hovered: ma.containsMouse
         // Capsule height follows content but won't go below desiredHeight
-        height: Math.max(kb.desiredHeight, row.implicitHeight + 2 * kb.margin)
-        width:  Math.max(40 * sc(), row.implicitWidth + 2 * kb.margin)
+        height: Utils.clamp(row.implicitHeight + 2 * kb.margin, kb.desiredHeight, row.implicitHeight + 2 * kb.margin)
+        width:  Utils.clamp(row.implicitWidth + 2 * kb.margin, 40 * sc(), row.implicitWidth + 2 * kb.margin)
         color:  hovered ? kb.hoverBgColor : kb.bgColor
         antialiasing: true
 
