@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import Quickshell.Io
 import qs.Settings
+import "../../Helpers/Utils.js" as Utils
 
 Item {
     id: root
@@ -49,7 +50,7 @@ Item {
     // Computed font size tied to height
     readonly property int computedFontPx: fontPixelSize > 0
         ? fontPixelSize
-        : Math.max(16, Math.round((desiredHeight - 2 * textPadding) * 0.6))
+        : Utils.clamp(Math.round((desiredHeight - 2 * textPadding) * 0.6), 16, 4096)
 
     // Font metrics for text (not icon)
     FontMetrics { id: fmText; font: label.font }
@@ -76,7 +77,7 @@ Item {
                 font.family: iconFontFamily
                 font.styleName: iconStyleName
                 font.weight: Font.Normal
-                font.pixelSize: Math.max(8, Math.round(root.computedFontPx * iconScale))
+                font.pixelSize: Utils.clamp(Math.round(root.computedFontPx * iconScale), 8, 2048)
                 renderType: Text.NativeRendering
             }
         }
@@ -155,7 +156,7 @@ Item {
     // --- Internet reachability: ping a well-known IP (1.1.1.1) ---
     Timer {
         id: inetPoll
-        interval: (function(){ var v = Number(Settings.settings.networkPingIntervalMs); if (!isFinite(v)) v = 30000; return Math.max(1000, Math.min(600000, Math.round(v))); })()
+        interval: (function(){ var v = Utils.coerceInt(Settings.settings.networkPingIntervalMs, 30000); return Utils.clamp(v, 1000, 600000); })()
         repeat: true
         running: true
         onTriggered: {
