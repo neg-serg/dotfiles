@@ -228,7 +228,6 @@ Item {
             mode: "material"
             labelRef: label
             // Token-style API
-            scaleToken: 1.0
             baselineOffsetToken: submapBaselineAdjust
             alignMode: "optical"
             icon: submapIconName(root.submapName)
@@ -241,7 +240,6 @@ Item {
             mode: "text"
             labelRef: label
             // Token-style API
-            scaleToken: 1.0
             baselineOffsetToken: iconBaselineOffset
             alignMode: "optical"
             text: iconGlyph
