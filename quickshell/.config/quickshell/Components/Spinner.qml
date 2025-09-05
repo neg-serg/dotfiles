@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Settings
+import "../Helpers/Utils.js" as Utils
 
 Item {
     id: root
@@ -8,7 +9,7 @@ Item {
     property color color: "white"
     property int size: Theme.panelIconSizeSmall
     // Stroke width derived from size to avoid relying on Screen context
-    property int strokeWidth: Math.max(1, Math.round(size / 8))
+    property int strokeWidth: Utils.clamp(Math.round(size / 8), 1, 256)
     property int duration: 1000
     
     implicitWidth: size
