@@ -169,13 +169,14 @@ PanelWithOverlay {
                         z: 2
                     }
 
+                    // Contrast guard for highlighted cells
+                    ContrastGuard { id: dayCg; bg: parent.color; label: 'CalendarDay' }
+
                     Text {
                         anchors.centerIn: parent
                         text: model.day
                         // Ensure readable text on highlight
-                        color: (model.today || isSelected || mouseArea2.containsMouse)
-                            ? Color.contrastOn(parent.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
-                            : Theme.textPrimary
+                        color: (model.today || isSelected || mouseArea2.containsMouse) ? dayCg.fg : Theme.textPrimary
                         opacity: model.month === calendar.month ? (mouseArea2.containsMouse ? 1 : Theme.calendarTitleOpacity) : Theme.calendarOtherMonthDayOpacity
                         font.pixelSize: Math.round(Theme.calendarDayFontPx * Theme.scale(screen))
                         font.family: Theme.fontFamily
@@ -196,15 +197,7 @@ PanelWithOverlay {
                                 holidayTooltip.targetItem = parent;
                                 holidayTooltip.tooltipVisible = true;
                             }
-                            // Optional contrast warning on highlight
-                            if (Settings.settings && Settings.settings.enforceContrastWarnings) {
-                                try {
-                                    var fg = Color.contrastOn(parent.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold);
-                                    var ratio = Color.contrastRatio(parent.color, fg);
-                                    var req = (Settings.settings.contrastWarnRatio !== undefined) ? Settings.settings.contrastWarnRatio : 4.5;
-                                    if (ratio < req) console.warn('[Calendar] Low contrast on highlight:', ratio.toFixed(2));
-                                } catch (e) {}
-                            }
+                            // ContrastGuard handles optional warnings when debugContrast is set
                         }
                         onExited: holidayTooltip.tooltipVisible = false
                         onClicked: {

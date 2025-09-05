@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Window 2.15
 import qs.Settings
+import qs.Components
 import "../Helpers/Utils.js" as Utils
 import "../Helpers/Color.js" as Color
 
@@ -105,15 +106,6 @@ Window {
         y = proposedY;
         positionAbove = finalPositionAbove;
         visible = true;
-        // Optional low-contrast logging
-        try {
-            if (Settings.settings && Settings.settings.debugContrast) {
-                var fg = Color.contrastOn(tooltipBg.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold);
-                var ratio = Color.contrastRatio(tooltipBg.color, fg);
-                var req = (Settings.settings.contrastWarnRatio !== undefined) ? Settings.settings.contrastWarnRatio : 4.5;
-                if (ratio < req) console.warn('[Tooltip] Low contrast:', ratio.toFixed(2));
-            }
-        } catch (e) { }
     }
 
     // Safe screen geometry determination with multiple fallbacks
@@ -202,10 +194,13 @@ Window {
     }
 
     // Tooltip text content
+    // Contrast guard for readable text color
+    ContrastGuard { id: ttContrast; bg: tooltipBg.color; label: 'Tooltip' }
+
     Text {
         id: tooltipText
         text: tooltipWindow.text
-        color: Color.contrastOn(tooltipBg.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
+        color: ttContrast.fg
         font.family: Theme.fontFamily || "Arial"
         font.pixelSize: Theme.tooltipFontPx * scaleFactor
         anchors.centerIn: parent

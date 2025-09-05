@@ -53,7 +53,9 @@ required property var entryData
         color: mouseArea.containsMouse ? hoverBaseColor : "transparent"
         radius: itemRadius
         visible: !(entryData?.isSeparator ?? false)
-        property color hoverTextColor: mouseArea.containsMouse ? Color.contrastOn(bg.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold) : Theme.textPrimary
+        // Pick readable hover text color using guard
+        ContrastGuard { id: menuCg; bg: bg.color; label: 'MenuItem' }
+        property color hoverTextColor: mouseArea.containsMouse ? menuCg.fg : Theme.textPrimary
 
         RowLayout {
             anchors.fill: parent
