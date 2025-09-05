@@ -286,7 +286,7 @@ Item {
                         return t
                                + " &#8201;<span style='color:" + trackText.bracketColor + "'>" + bp.l + "</span>"
                                + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + cur + "</span>"
-                               + "<span style='color:" + trackText.sepColor + "; font-weight:bold'>/</span>"
+                               + Format.sepSpan(trackText.sepColor, '/')
                                + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + tot + "</span>"
                                + "<span style='color:" + trackText.bracketColor + "'>" + bp.r + "</span>";
                     })()

@@ -2,6 +2,23 @@
 
 // Helpers/Format.js — common lightweight formatting utilities
 
+function htmlEscape(s) {
+    s = (s === undefined || s === null) ? "" : String(s);
+    return s
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+// Return a colored inline separator span (default '/') for rich text
+function sepSpan(colorCss, ch) {
+    var c = (colorCss === undefined || colorCss === null) ? "inherit" : String(colorCss);
+    var s = (ch === undefined || ch === null) ? '/' : String(ch);
+    return "<span style='color:" + c + "'>" + htmlEscape(s) + "</span>";
+}
+
 // Format milliseconds to m:ss or h:mm:ss
 // - Negative/invalid values clamp to 0:00
 // - Rounds down to whole seconds for stability in UIs

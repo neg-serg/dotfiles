@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import Quickshell.Io
 import qs.Settings
+import "../../Helpers/Format.js" as Format
 import "../../Helpers/Utils.js" as Utils
 
 Item {
@@ -87,7 +88,7 @@ Item {
             // Render slash with colored separator like in media widget
             textFormat: Text.RichText
             text: displayText && displayText.indexOf('/') !== -1
-                    ? displayText.replace('/', "<span style='color:" + root.separatorColor + "'>/</span>")
+                    ? displayText.replace('/', Format.sepSpan(separatorColor, '/'))
                     : displayText
             color: textColor
             font.family: Theme.fontFamily
