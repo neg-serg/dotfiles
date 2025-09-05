@@ -108,6 +108,13 @@ Singleton {
             // Fallback icon for tray entries when source fails to load
             // Uses Material Symbols name; e.g., "broken_image", "help", "image".
             property string trayFallbackIcon: "broken_image"
+
+            // Music player selection helpers
+            // Optional lists of player IDs to pin or ignore.
+            // ID format matches internal detection: service || busName || name || identity (first non-empty).
+            // Examples: "org.mpris.MediaPlayer2.mpd", "spotify", "vlc".
+            property var pinnedPlayers: []
+            property var ignoredPlayers: []
             property string trayAccentColor: "#3b7bb3" // Accent color for tray button/icon
             // Tray popup background darkness blend (0 = surfaceVariant, 1 = backgroundPrimary)
             property real trayPopupDarkness: 0.65

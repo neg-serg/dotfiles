@@ -7,9 +7,11 @@ import Quickshell.Services.Mpris
 // Player selection policy
 // - Configured via Settings.settings.playerSelectionPriority (array of rules)
 // - Supported rules (checked in order until a match):
+//   "pinnedPlaying" -> most-recent pinned player that is currently playing
 //   "mpdPlaying"  -> most-recent MPD that is currently playing
 //   "anyPlaying"  -> most-recent player that is currently playing (any backend)
 //   "mpdRecent"   -> most-recent MPD (regardless of playing)
+//   "pinned"      -> most-recent pinned player (regardless of playing)
 //   "recent"      -> most-recent player (regardless of playing)
 //   "manual"      -> respect manually selected index if within range
 //   "first"       -> fallback to the first available
@@ -69,13 +71,31 @@ Item {
         } catch (e) {}
     }
 
+    function _isIgnored(p) {
+        try {
+            var list = (Settings.settings && Settings.settings.ignoredPlayers) ? Settings.settings.ignoredPlayers : [];
+            if (!list || !list.length) return false;
+            var id = playerId(p);
+            for (var i = 0; i < list.length; i++) if (String(list[i]) === id) return true;
+            return false;
+        } catch (e) { return false; }
+    }
+    function _isPinned(p) {
+        try {
+            var list = (Settings.settings && Settings.settings.pinnedPlayers) ? Settings.settings.pinnedPlayers : [];
+            if (!list || !list.length) return false;
+            var id = playerId(p);
+            for (var i = 0; i < list.length; i++) if (String(list[i]) === id) return true;
+            return false;
+        } catch (e) { return false; }
+    }
     function getAvailablePlayers() {
         if (!Mpris.players || !Mpris.players.values) return [];
         let all = Mpris.players.values;
         let res = [];
         for (let i = 0; i < all.length; i++) {
             let p = all[i];
-            if (p && p.canControl) res.push(p);
+            if (p && p.canControl && !_isIgnored(p)) res.push(p);
         }
         return res;
     }
@@ -90,6 +110,14 @@ Item {
 
         function pick(rule) {
             switch (String(rule)) {
+            case "pinnedPlaying":
+                for (let i = 0; i < _lastActiveStack.length; i++) {
+                    let p = byId[_lastActiveStack[i]];
+                    if (p && p.isPlaying && _isPinned(p)) return p;
+                }
+                // Fallback: any pinned & playing in avail
+                for (let j = 0; j < avail.length; j++) if (avail[j] && avail[j].isPlaying && _isPinned(avail[j])) return avail[j];
+                return null;
             case "mpdPlaying":
                 for (let i = 0; i < _lastActiveStack.length; i++) {
                     let p = byId[_lastActiveStack[i]];
@@ -112,6 +140,14 @@ Item {
                 // Fallback: first MPD in avail
                 for (let j = 0; j < avail.length; j++) if (isPlayerMpd(avail[j])) return avail[j];
                 return null;
+            case "pinned":
+                for (let i = 0; i < _lastActiveStack.length; i++) {
+                    let p = byId[_lastActiveStack[i]];
+                    if (p && _isPinned(p)) return p;
+                }
+                // Fallback: first pinned in avail
+                for (let j = 0; j < avail.length; j++) if (_isPinned(avail[j])) return avail[j];
+                return null;
             case "recent":
                 for (let i = 0; i < _lastActiveStack.length; i++) {
                     let p = byId[_lastActiveStack[i]];
@@ -129,7 +165,7 @@ Item {
         }
 
         // Derive rules: explicit array wins; otherwise use preset
-        const _allowedRules = ["mpdPlaying","anyPlaying","mpdRecent","recent","manual","first"];
+        const _allowedRules = ["pinnedPlaying","mpdPlaying","anyPlaying","mpdRecent","pinned","recent","manual","first"];
         function _sanitizeRules(arr) {
             var out = [];
             try {
@@ -149,17 +185,17 @@ Item {
             var n = String(name || "default");
             switch (n) {
             case "manualFirst":
-                return ["manual", "anyPlaying", "recent", "first"]; // honor manual, then any playing, then recents
+                return ["manual", "pinnedPlaying", "anyPlaying", "pinned", "recent", "first"]; // honor manual, then pinned/playing, then recents
             case "playingFirst":
-                return ["anyPlaying", "mpdPlaying", "manual", "recent", "first"]; // prefer playing, then mpdPlaying
+                return ["pinnedPlaying", "anyPlaying", "mpdPlaying", "pinned", "manual", "recent", "first"]; // prefer playing, then mpdPlaying, prefer pinned
             case "mpdBias":
-                return ["mpdPlaying", "anyPlaying", "mpdRecent", "recent", "manual", "first"]; // default with explicit mpd bias
+                return ["pinnedPlaying", "mpdPlaying", "anyPlaying", "mpdRecent", "pinned", "recent", "manual", "first"]; // mpd + pinned
             case "default":
             default:
                 if (n !== "default") {
                     try { console.warn('[MusicPlayers] Unknown playerSelectionPreset:', n, '; using default'); } catch (e1) {}
                 }
-                return ["mpdPlaying", "anyPlaying", "mpdRecent", "recent", "manual", "first"]; // sane default
+                return ["pinnedPlaying", "mpdPlaying", "anyPlaying", "mpdRecent", "pinned", "recent", "manual", "first"]; // sane default
             }
         }
         let cfg = (Settings.settings && Settings.settings.playerSelectionPriority) || null;
