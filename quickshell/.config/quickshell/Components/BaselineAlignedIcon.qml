@@ -7,10 +7,12 @@ Item {
     id: root
     // Reference label whose baseline we align to
     property var labelRef
-    // Size relative to labelRef font pixel size
+    // Preferred token-style API (use these when available)
+    property real scaleToken: 1.0
+    property int  baselineOffsetToken: 0
+    // Legacy direct props (kept for compatibility)
     property real scale: 1.0
-    // Additional baseline offset (px)
-    property int baselineOffset: 0
+    property int  baselineOffset: 0
     // Mode: "text" | "material"
     property string mode: "text"
 
@@ -32,6 +34,10 @@ Item {
     property bool compensateMetrics: false
     property real compensationFactor: 1.0
 
+    // Effective inputs (prefer token-style when provided)
+    readonly property real _effScale: (scaleToken !== undefined && scaleToken !== null) ? scaleToken : scale
+    readonly property int  _effBaselineOffset: (baselineOffsetToken !== undefined && baselineOffsetToken !== null) ? baselineOffsetToken : baselineOffset
+
     // Fallback base size when labelRef is not available
     readonly property int _labelPx: (labelRef && labelRef.font && labelRef.font.pixelSize)
         ? labelRef.font.pixelSize : Theme.fontSizeSmall
@@ -46,7 +52,7 @@ Item {
         return (descent - ascent) / 2.0;
     }
     function computeOffset(iconAscent, iconDescent) {
-        var off = root.baselineOffset;
+        var off = root._effBaselineOffset;
         if (root.alignMode === "optical") {
             var labelCenter = centerOffsetFromBaseline(fmLabel.ascent, fmLabel.descent);
             var iconCenter  = centerOffsetFromBaseline(iconAscent, iconDescent);
@@ -66,7 +72,7 @@ Item {
         padding: root.padding
         font.family: root.fontFamily || Theme.fontFamily
         font.styleName: root.fontStyleName
-        font.pixelSize: Math.max(1, Math.round(root._labelPx * root.scale))
+        font.pixelSize: Math.max(1, Math.round(root._labelPx * root._effScale))
         renderType: Text.NativeRendering
         anchors.baseline: (root.labelRef && root.labelRef.baseline !== undefined) ? root.labelRef.baseline : undefined
         FontMetrics { id: fmText; font: textItem.font }
@@ -79,7 +85,7 @@ Item {
         visible: root.mode === "material"
         icon: root.icon
         rounded: root.rounded
-        size: Math.max(1, Math.round(root._labelPx * root.scale))
+        size: Math.max(1, Math.round(root._labelPx * root._effScale))
         color: root.color
         screen: root.screen
         anchors.baseline: (root.labelRef && root.labelRef.baseline !== undefined) ? root.labelRef.baseline : undefined

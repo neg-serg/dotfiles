@@ -227,9 +227,9 @@ Item {
             visible: root.submapName && root.submapName.length > 0
             mode: "material"
             labelRef: label
-            // Use 1.0 to avoid scale-driven drift
-            scale: 1.0
-            baselineOffset: submapBaselineAdjust
+            // Token-style API
+            scaleToken: 1.0
+            baselineOffsetToken: submapBaselineAdjust
             alignMode: "optical"
             icon: submapIconName(root.submapName)
             color: Theme.wsSubmapIconColor
@@ -240,9 +240,9 @@ Item {
             visible: iconGlyph.length > 0
             mode: "text"
             labelRef: label
-            // Use 1.0 to avoid scale-driven drift
-            scale: 1.0
-            baselineOffset: iconBaselineOffset
+            // Token-style API
+            scaleToken: 1.0
+            baselineOffsetToken: iconBaselineOffset
             alignMode: "optical"
             text: iconGlyph
             fontFamily: Theme.fontFamily
