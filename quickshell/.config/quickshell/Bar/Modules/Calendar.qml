@@ -13,7 +13,7 @@ PanelWithOverlay {
 
     Rectangle {
         color: Theme.backgroundPrimary
-        radius: Math.round(Theme.cornerRadiusLarge / 2)
+        radius: Math.round(Theme.cornerRadiusLarge / 3)
         border.color: Theme.backgroundTertiary
         border.width: Theme.calendarBorderWidth
         width: Theme.calendarWidth
@@ -145,7 +145,7 @@ PanelWithOverlay {
 
                     width: Theme.calendarCellSize
                     height: Theme.calendarCellSize
-                radius: Math.round(Theme.cornerRadius / 2)
+                radius: Math.round(Theme.cornerRadius / 3)
                     // Background coloring: today uses full accent; hover uses significantly darkened accent (~80% closer to black)
                     property color _hoverColor: Qt.rgba(
                         Theme.accentPrimary.r * 0.2,
@@ -164,7 +164,7 @@ PanelWithOverlay {
                         visible: isHoliday
                         width: Theme.calendarHolidayDotSize
                         height: Theme.calendarHolidayDotSize
-                        radius: Math.round(Theme.cornerRadiusSmall / 2)
+                        radius: Math.round(Theme.cornerRadiusSmall / 3)
                         color: Theme.accentTertiary
                         anchors.top: parent.top
                         anchors.right: parent.right
