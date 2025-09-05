@@ -539,7 +539,7 @@ PanelWithOverlay {
 
                             MaterialIcon {
                                 icon: "search"
-                                size: Theme.fontSizeHeader * Theme.scale(screen)
+                                size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen))
                                 color: searchField.activeFocus ? Theme.accentPrimary : Theme.textSecondary
                                 Layout.alignment: Qt.AlignVCenter
                             }
@@ -697,7 +697,7 @@ PanelWithOverlay {
                                             anchors.centerIn: parent
                                             visible: !modelData.isCalculator && !modelData.isClipboard && !modelData.isCommand && !parent.iconLoaded && modelData.type !== 'image'
                                             icon: Settings.settings.trayFallbackIcon || "broken_image"
-                                            size: Theme.fontSizeHeader * Theme.scale(screen)
+                                            size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen))
                                             color: Theme.accentPrimary
                                         }
                                     }
@@ -741,7 +741,7 @@ PanelWithOverlay {
 
                                     MaterialIcon {
                                         icon: modelData.isCalculator ? "content_copy" : "chevron_right"
-                                        size: Theme.fontSizeBody * Theme.scale(screen)
+                                        size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen))
                                         color: (hovered || isSelected)
                                             ? Theme.onAccent
                                             : (appLauncherPanel.isPinned(modelData) ? Theme.textPrimary : Theme.textSecondary)
