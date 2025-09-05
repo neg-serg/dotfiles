@@ -391,7 +391,6 @@ Singleton {
     property int calendarBorderWidth: themeData.calendarBorderWidth
     property int calendarCellSize: Utils.clamp(themeData.calendarCellSize, 16, 64)
     property int calendarHolidayDotSize: themeData.calendarHolidayDotSize
-}
     // Derived accent/surface/border tokens (formula-based)
     // Keep simple and perceptually stable; expose tokens for reuse
     property color accentHover: Color.towardsWhite(accentPrimary, 0.2)
@@ -404,3 +403,4 @@ Singleton {
     property color borderStrong: Color.withAlpha(textPrimary, 0.30)
     property color overlayWeak: Color.withAlpha(shadow, 0.08)
     property color overlayStrong: Color.withAlpha(shadow, 0.18)
+}
