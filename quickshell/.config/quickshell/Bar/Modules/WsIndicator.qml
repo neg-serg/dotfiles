@@ -65,6 +65,7 @@ Item {
         "special":             "view_in_ar",
         "wallpaper":           "wallpaper",
     })
+
     
     function geometricFallbackIcon(name) {
         const shapes = [
@@ -190,6 +191,7 @@ Item {
         return name.substring(skip).replace(/^\s+/, "");
     }
 
+
     // Final values for display
     property string iconGlyph: leadingIcon(wsName)
     property string restName: restAfterLeadingIcon(wsName)
@@ -222,25 +224,35 @@ Item {
         anchors.left: parent.left
         // implicit sizes come from children
 
-        // Submap icon aligned to label baseline
+        // Submap icon aligned to WS icon's offset via alignTarget
         BaselineAlignedIcon {
             visible: root.submapName && root.submapName.length > 0
             mode: "material"
             labelRef: label
+            // Center wrapper to the row center
+            anchors.verticalCenter: lineBox.verticalCenter
+            // Slightly reduce Material icon visual size and align to baseline
+            scale: 0.88
             // Token-style API
             baselineOffsetToken: submapBaselineAdjust
             alignMode: "baseline"
+            // Align vertical offset exactly to wsIcon's computed offset (no magic pixels)
+            alignTarget: wsIcon
             icon: submapIconName(root.submapName)
             color: Theme.wsSubmapIconColor
+            screen: Screen
         }
 
-        // Workspace icon (PUA)
+        // Workspace icon from name (PUA / Font Awesome glyphs)
         BaselineAlignedIcon {
+            id: wsIcon
             visible: iconGlyph.length > 0
             mode: "text"
             labelRef: label
-            // Slightly larger than label for better prominence
-            scale: 1.15
+            // Center wrapper to the row center
+            anchors.verticalCenter: lineBox.verticalCenter
+            // Larger than label for better prominence
+            scale: 1.40
             // Token-style API
             baselineOffsetToken: iconBaselineOffset
             alignMode: "baseline"
@@ -263,8 +275,9 @@ Item {
             padding: Theme.wsLabelPadding
             // Tighter left gap next to icon
             leftPadding: (root.isTerminalWs ? Theme.wsLabelLeftPaddingTerminal : Theme.wsLabelLeftPadding)
-
-            
+            // Match text vertical offset to ws icon criteria
+            anchors.verticalCenter: lineBox.verticalCenter
+            anchors.verticalCenterOffset: (wsIcon && wsIcon.currentOffset !== undefined) ? wsIcon.currentOffset : 0
         }
     }
 
