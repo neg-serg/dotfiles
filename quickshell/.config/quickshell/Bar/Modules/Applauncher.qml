@@ -689,12 +689,11 @@ PanelWithOverlay {
                                             visible: (modelData.isCalculator || modelData.isClipboard || modelData.isCommand || parent.iconLoaded) && modelData.type !== 'image'
                                         }
                                         
-                                        Text {
+                                        MaterialIcon {
                                             anchors.centerIn: parent
                                             visible: !modelData.isCalculator && !modelData.isClipboard && !modelData.isCommand && !parent.iconLoaded && modelData.type !== 'image'
-                                            text: "broken_image"
-                                            font.family: "Material Symbols Outlined"
-                                            font.pixelSize: Theme.fontSizeHeader * Theme.scale(screen)
+                                            icon: Settings.settings.trayFallbackIcon || "broken_image"
+                                            size: Theme.fontSizeHeader * Theme.scale(screen)
                                             color: Theme.accentPrimary
                                         }
                                     }
