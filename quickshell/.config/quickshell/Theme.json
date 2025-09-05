@@ -196,14 +196,14 @@
   "ws": {
     "icon": {
       "scale": 1.45,
-      "baselineOffset": 4,
+      "baselineOffset": 6,
       "spacing": 1,
       "innerPadding": 1
     },
     "submapBaselineAdjust": -5,
     "submap": {
       "icon": {
-        "baselineOffset": -5,
+        "baselineOffset": 2,
         "scale": 1.0,
         "color": "#006FCC"
       }
