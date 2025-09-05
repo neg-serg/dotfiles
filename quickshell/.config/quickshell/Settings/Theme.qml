@@ -292,18 +292,18 @@ Singleton {
 
     // Panel metrics (logical)
     property int panelHeight: Utils.clamp(val('panel.height', themeData.panelHeight), 16, 64)
-    property int panelSideMargin: themeData.panelSideMargin
-    property int panelWidgetSpacing: themeData.panelWidgetSpacing
-    property int panelSepOvershoot: themeData.panelSepOvershoot
+    property int panelSideMargin: val('panel.sideMargin', themeData.panelSideMargin)
+    property int panelWidgetSpacing: val('panel.widgetSpacing', themeData.panelWidgetSpacing)
+    property int panelSepOvershoot: val('panel.sepOvershoot', themeData.panelSepOvershoot)
     // Panel icon sizing
-    property int panelIconSize: themeData.panelIconSize
-    property int panelIconSizeSmall: themeData.panelIconSizeSmall
-    property int panelGlyphSize: themeData.panelGlyphSize
+    property int panelIconSize: val('panel.icons.iconSize', themeData.panelIconSize)
+    property int panelIconSizeSmall: val('panel.icons.iconSizeSmall', themeData.panelIconSizeSmall)
+    property int panelGlyphSize: val('panel.icons.glyphSize', themeData.panelGlyphSize)
     // Panel hot-zone
-    property int panelHotzoneWidth: Utils.clamp(themeData.panelHotzoneWidth, 4, 64)
-    property int panelHotzoneHeight: Utils.clamp(themeData.panelHotzoneHeight, 2, 64)
-    property real panelHotzoneRightShift: Utils.clamp(themeData.panelHotzoneRightShift, 0.5, 3.0)
-    property int panelModuleHeight: themeData.panelModuleHeight
+    property int panelHotzoneWidth: Utils.clamp(val('panel.hotzone.width', themeData.panelHotzoneWidth), 4, 64)
+    property int panelHotzoneHeight: Utils.clamp(val('panel.hotzone.height', themeData.panelHotzoneHeight), 2, 64)
+    property real panelHotzoneRightShift: Utils.clamp(val('panel.hotzone.rightShift', themeData.panelHotzoneRightShift), 0.5, 3.0)
+    property int panelModuleHeight: val('panel.moduleHeight', themeData.panelModuleHeight)
     property int panelMenuYOffset: val('panel.menuYOffset', themeData.panelMenuYOffset)
     // Corners
     property int cornerRadius: val('shape.cornerRadius', themeData.cornerRadius)
@@ -324,29 +324,29 @@ Singleton {
     property int panelPillAutoHidePauseMs: themeData.panelPillAutoHidePauseMs
     property color panelPillBackground: themeData.panelPillBackground
     // Animation timings
-    property int panelAnimStdMs: Utils.clamp(themeData.panelAnimStdMs, 0, 5000)
-    property int panelAnimFastMs: Utils.clamp(themeData.panelAnimFastMs, 0, 5000)
+    property int panelAnimStdMs: Utils.clamp(val('panel.animations.stdMs', themeData.panelAnimStdMs), 0, 5000)
+    property int panelAnimFastMs: Utils.clamp(val('panel.animations.fastMs', themeData.panelAnimFastMs), 0, 5000)
     // Tray behavior timings
-    property int panelTrayLongHoldMs: Utils.clamp(themeData.panelTrayLongHoldMs, 0, 10000)
-    property int panelTrayShortHoldMs: Utils.clamp(themeData.panelTrayShortHoldMs, 0, 10000)
-    property int panelTrayGuardMs: Utils.clamp(themeData.panelTrayGuardMs, 0, 2000)
-    property int panelTrayOverlayDismissDelayMs: Utils.clamp(themeData.panelTrayOverlayDismissDelayMs, 0, 600000)
+    property int panelTrayLongHoldMs: Utils.clamp(val('panel.tray.longHoldMs', themeData.panelTrayLongHoldMs), 0, 10000)
+    property int panelTrayShortHoldMs: Utils.clamp(val('panel.tray.shortHoldMs', themeData.panelTrayShortHoldMs), 0, 10000)
+    property int panelTrayGuardMs: Utils.clamp(val('panel.tray.guardMs', themeData.panelTrayGuardMs), 0, 2000)
+    property int panelTrayOverlayDismissDelayMs: Utils.clamp(val('panel.tray.overlayDismissDelayMs', themeData.panelTrayOverlayDismissDelayMs), 0, 600000)
     // Generic row spacing
-    property int panelRowSpacing: themeData.panelRowSpacing
-    property int panelRowSpacingSmall: themeData.panelRowSpacingSmall
+    property int panelRowSpacing: val('panel.rowSpacing', themeData.panelRowSpacing)
+    property int panelRowSpacingSmall: val('panel.rowSpacingSmall', themeData.panelRowSpacingSmall)
     // Volume behavior
-    property int panelVolumeFullHideMs: themeData.panelVolumeFullHideMs
-    property color panelVolumeLowColor: themeData.panelVolumeLowColor
-    property color panelVolumeHighColor: themeData.panelVolumeHighColor
+    property int panelVolumeFullHideMs: val('panel.volume.fullHideMs', themeData.panelVolumeFullHideMs)
+    property color panelVolumeLowColor: val('panel.volume.lowColor', themeData.panelVolumeLowColor)
+    property color panelVolumeHighColor: val('panel.volume.highColor', themeData.panelVolumeHighColor)
     // Core module timings
     property int timeTickMs: Utils.clamp(val('timers.timeTickMs', themeData.timeTickMs), 100, 60000)
-    property int wsRefreshDebounceMs: Utils.clamp(themeData.wsRefreshDebounceMs, 0, 10000)
-    property int vpnPollMs: Utils.clamp(themeData.vpnPollMs, 500, 600000)
-    property int networkRestartBackoffMs: Utils.clamp(themeData.networkRestartBackoffMs, 0, 600000)
-    property int networkLinkPollMs: Utils.clamp(themeData.networkLinkPollMs, 500, 600000)
-    property int mediaHoverOpenDelayMs: Utils.clamp(themeData.mediaHoverOpenDelayMs, 0, 5000)
-    property int mediaHoverStillThresholdMs: Utils.clamp(themeData.mediaHoverStillThresholdMs, 0, 10000)
-    property int spectrumPeakDecayIntervalMs: Utils.clamp(themeData.spectrumPeakDecayIntervalMs, 10, 1000)
+    property int wsRefreshDebounceMs: Utils.clamp(val('timers.wsRefreshDebounceMs', themeData.wsRefreshDebounceMs), 0, 10000)
+    property int vpnPollMs: Utils.clamp(val('network.vpnPollMs', themeData.vpnPollMs), 500, 600000)
+    property int networkRestartBackoffMs: Utils.clamp(val('network.restartBackoffMs', themeData.networkRestartBackoffMs), 0, 600000)
+    property int networkLinkPollMs: Utils.clamp(val('network.linkPollMs', themeData.networkLinkPollMs), 500, 600000)
+    property int mediaHoverOpenDelayMs: Utils.clamp(val('media.hover.openDelayMs', themeData.mediaHoverOpenDelayMs), 0, 5000)
+    property int mediaHoverStillThresholdMs: Utils.clamp(val('media.hover.stillThresholdMs', themeData.mediaHoverStillThresholdMs), 0, 10000)
+    property int spectrumPeakDecayIntervalMs: Utils.clamp(val('spectrum.peakDecayIntervalMs', themeData.spectrumPeakDecayIntervalMs), 10, 1000)s, 10, 1000)
     property int spectrumBarAnimMs: Utils.clamp(themeData.spectrumBarAnimMs, 0, 5000)
     property int musicPositionPollMs: Utils.clamp(themeData.musicPositionPollMs, 100, 600000)
     property int musicPlayersPollMs: Utils.clamp(themeData.musicPlayersPollMs, 100, 600000)
