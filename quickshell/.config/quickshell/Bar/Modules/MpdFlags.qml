@@ -10,7 +10,7 @@ Item {
     id: root
     property bool enabled: false
     // Polling even when not enabled but MPD is current player
-    property int  fallbackIntervalMs: 2500
+    property int  fallbackIntervalMs: Theme.mpdFlagsFallbackMs
     // Colors from theme for readability on panel background
     property color iconColor: Theme.textPrimary
     property int iconPx: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
@@ -167,7 +167,7 @@ Item {
                 icon: modelData.icon
                 color: root.iconColor
                 size: root.iconPx
-                opacity: 0.9
+                opacity: Theme.uiIconEmphasisOpacity
             }
         }
     }
