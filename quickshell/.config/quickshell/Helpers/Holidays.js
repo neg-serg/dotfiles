@@ -1,34 +1,32 @@
 try { Qt.include("./Http.js"); } catch (e) { }
-// Fallback shim if httpGetJson is not provided by Http.js
-if (typeof httpGetJson !== 'function') {
-    function httpGetJson(url, timeoutMs, success, fail, userAgent) {
+// Reliable local reference to HTTP helper (with fallback shim)
+var _httpGetJson = (typeof httpGetJson === 'function') ? httpGetJson : function(url, timeoutMs, success, fail, userAgent) {
+    try {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        if (timeoutMs !== undefined && timeoutMs !== null) xhr.timeout = timeoutMs;
         try {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url, true);
-            if (timeoutMs !== undefined && timeoutMs !== null) xhr.timeout = timeoutMs;
-            try {
-                if (xhr.setRequestHeader) {
-                    try { xhr.setRequestHeader('Accept', 'application/json'); } catch (e1) {}
-                    if (userAgent) { try { xhr.setRequestHeader('User-Agent', String(userAgent)); } catch (e2) {} }
-                }
-            } catch (e3) {}
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState !== XMLHttpRequest.DONE) return;
-                var status = xhr.status;
-                if (status === 200) {
-                    try { success && success(JSON.parse(xhr.responseText)); }
-                    catch (e) { fail && fail({ type: 'parse' }); }
-                } else {
-                    var retryAfter = 0; try { var ra = xhr.getResponseHeader && xhr.getResponseHeader('Retry-After'); if (ra) retryAfter = Number(ra) * 1000; } catch (e4) {}
-                    fail && fail({ type: 'http', status: status, retryAfter: retryAfter });
-                }
-            };
-            xhr.ontimeout = function(){ fail && fail({ type: 'timeout' }); };
-            xhr.onerror = function(){ fail && fail({ type: 'network' }); };
-            xhr.send();
-        } catch (e) { fail && fail({ type: 'exception' }); }
-    }
-}
+            if (xhr.setRequestHeader) {
+                try { xhr.setRequestHeader('Accept', 'application/json'); } catch (e1) {}
+                if (userAgent) { try { xhr.setRequestHeader('User-Agent', String(userAgent)); } catch (e2) {} }
+            }
+        } catch (e3) {}
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState !== XMLHttpRequest.DONE) return;
+            var status = xhr.status;
+            if (status === 200) {
+                try { success && success(JSON.parse(xhr.responseText)); }
+                catch (e) { fail && fail({ type: 'parse' }); }
+            } else {
+                var retryAfter = 0; try { var ra = xhr.getResponseHeader && xhr.getResponseHeader('Retry-After'); if (ra) retryAfter = Number(ra) * 1000; } catch (e4) {}
+                fail && fail({ type: 'http', status: status, retryAfter: retryAfter });
+            }
+        };
+        xhr.ontimeout = function(){ fail && fail({ type: 'timeout' }); };
+        xhr.onerror = function(){ fail && fail({ type: 'network' }); };
+        xhr.send();
+    } catch (e) { fail && fail({ type: 'exception' }); }
+};
 var _countryCode = null;
 var _regionCode = null;
 var _regionName = null;
@@ -123,7 +121,7 @@ function getCountryCode(callback, errorCallback, options) {
         extratags: 1
     });
     if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
-    httpGetJson(url, cfg.timeoutMs, function(response) {
+    _httpGetJson(url, cfg.timeoutMs, function(response) {
         try {
             _countryCode = (response && response[0] && response[0].address && response[0].address.country_code) ? response[0].address.country_code : "US";
             _regionCode = (response && response[0] && response[0].address && response[0].address["ISO3166-2-lvl4"]) ? response[0].address["ISO3166-2-lvl4"] : "";
@@ -163,9 +161,10 @@ function getHolidays(year, countryCode, callback, errorCallback, options) {
     }
 
     var url = "https://date.nager.at/api/v3/PublicHolidays/" + year + "/" + countryCode;
-
+    var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
+    var dbg = !!(options && options.debug);
     if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
-    httpGetJson(url, cfg.timeoutMs, function(list) {
+    _httpGetJson(url, cfg.timeoutMs, function(list) {
         try {
             var augmented = filterHolidaysByRegion(list || []);
             writeCacheSuccess(_holidaysCache, cacheKey, augmented, cfg.holidaysTtlMs);
