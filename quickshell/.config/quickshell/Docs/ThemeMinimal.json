@@ -1,0 +1,24 @@
+{
+  "accentPrimary": "#006FCC",
+  "accentSecondary": "#0077DB",
+  "accentTertiary": "#0064B8",
+
+  "backgroundPrimary": "#ef000000",
+  "backgroundTertiary": "#1B1F2B",
+  "surface": "#181C25",
+  "surfaceVariant": "#242A35",
+
+  "overlay": "#10141A",
+  "outline": "#3B4C5C",
+  "shadow": "#000000",
+
+  "textPrimary": "#CBD6E5",
+  "textSecondary": "#AEB9C8",
+  "textDisabled": "#6B718A",
+  "onAccent": "#FFFFFF",
+
+  "error": "#FF6B81",
+  "warning": "#FFBB66",
+  "highlight": "#94E1F9",
+  "rippleEffect": "#D6F3FF"
+}

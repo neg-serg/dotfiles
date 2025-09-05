@@ -66,7 +66,6 @@ Singleton {
 
             // Backgrounds
             property string backgroundPrimary:  "#ef000000"
-            property string backgroundSecondary: "#12151F"
             property string backgroundTertiary:  "#1B1F2B"
             // Surfaces & Elevation
             property string surface:        "#181C25"
@@ -243,7 +242,6 @@ Singleton {
     
     // Backgrounds
     property color backgroundPrimary: themeData.backgroundPrimary
-    property color backgroundSecondary: themeData.backgroundSecondary
     property color backgroundTertiary: themeData.backgroundTertiary
     // Surfaces & Elevation
     property color surface: themeData.surface
