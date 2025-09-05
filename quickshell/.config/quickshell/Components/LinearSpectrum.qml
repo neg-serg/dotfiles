@@ -12,8 +12,8 @@ Item {
     property real barGap: Math.round(Theme.spectrumBarGap * Theme.scale(Screen))
     property real minBarWidth: Math.round(Theme.spectrumMinBarWidth * Theme.scale(Screen))
     property bool mirror: true               // draw above and below center
-    property real fillOpacity: 0.85
-    property real peakOpacity: 1.0
+    property real fillOpacity: Theme.spectrumFillOpacity
+    property real peakOpacity: Theme.spectrumPeakOpacity
     // Simpler look by default: no peak caps
     property bool showPeaks: false
     // Coloring: default to a neutral/darker theme color (no gradient)

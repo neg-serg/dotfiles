@@ -253,6 +253,7 @@
     "barAnimMs": 100,
     "barGap": 2,
     "minBarWidth": 2,
+    "fillOpacity": 0.35,
     "peakOpacity": 0.7
   },
   "applauncher": {

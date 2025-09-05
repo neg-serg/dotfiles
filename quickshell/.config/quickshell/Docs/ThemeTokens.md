@@ -83,8 +83,8 @@ Additional UI tokens (nested)
   - Calendar DOW style: calendar.dow.italic, calendar.dow.underline
   - Calendar shape: calendar.cell.radiusFactor, calendar.holidayDot.radiusFactor
   - Calendar layout: calendar.dow.spacing, calendar.dow.sideMargin, calendar.grid.spacing
-- Spectrum bars: spectrum.barGap, spectrum.minBarWidth
-  - Spectrum peak opacity: spectrum.peakOpacity
+ - Spectrum bars: spectrum.barGap, spectrum.minBarWidth
+  - Spectrum opacities: spectrum.fillOpacity, spectrum.peakOpacity
   - Diagonal separator stripe: ui.separator.diagonal.stripeOpacity
   - Diagonal separator implicit size: ui.separator.diagonal.implicitWidth, ui.separator.diagonal.implicitHeight
   - VPN opacities: vpn.connectedOpacity, vpn.disconnectedOpacity

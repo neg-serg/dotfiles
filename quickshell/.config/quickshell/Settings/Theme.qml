@@ -652,6 +652,8 @@ Singleton {
     // Tunable factor for dark accent on calendar highlights (today/selected/hover)
     property real calendarAccentDarken: Utils.clamp(val('calendar.accentDarken', themeData.calendarAccentDarken), 0, 1)
     // Spectrum opacity for peaks
+    // Spectrum opacities
+    property real spectrumFillOpacity: Utils.clamp(val('spectrum.fillOpacity', 0.35), 0, 1)
     property real spectrumPeakOpacity: Utils.clamp(val('spectrum.peakOpacity', 0.7), 0, 1)
     // Diagonal separator stripe opacity
     property real uiSeparatorStripeOpacity: Utils.clamp(val('ui.separator.diagonal.stripeOpacity', 0.9), 0, 1)
