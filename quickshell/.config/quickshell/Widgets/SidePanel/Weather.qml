@@ -195,13 +195,14 @@ Rectangle {
                         spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(Screen))
                         Layout.alignment: Qt.AlignHCenter
                         Text {
- 
+
                             text: Qt.formatDateTime(new Date(weatherData.daily.time[index]), "ddd")
                             font.family: Theme.fontFamily
                             font.pixelSize: Math.round(Theme.fontSizeCaption * Theme.scale(Screen))
                             color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
+                            Component.onCompleted: weatherRoot.warnContrast(card.color, color, 'weather.dailyLabel')
                         }
                         MaterialIcon {
                             icon: materialSymbolForCode(weatherData.daily.weathercode[index])

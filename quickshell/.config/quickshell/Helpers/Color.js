@@ -104,3 +104,81 @@ function towardsBlack(c, t) {
 function towardsWhite(c, t) {
     return mix(c, Qt.rgba(1,1,1,1), t);
 }
+
+// --- HSL conversions and adjustments ---
+function _clamp01(x){ x = Number(x); if (!(x>=0)) x = 0; if (x>1) x = 1; return x }
+
+function _rgbToHsl(rgb) {
+    var r = _clamp01(rgb.r), g = _clamp01(rgb.g), b = _clamp01(rgb.b);
+    var max = Math.max(r,g,b), min = Math.min(r,g,b);
+    var h = 0, s = 0, l = (max + min) / 2;
+    if (max !== min) {
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+    return { h: h, s: s, l: l, a: (rgb.a !== undefined ? _clamp01(rgb.a) : 1) };
+}
+
+function _hslToRgb(hsl) {
+    var h = hsl.h - Math.floor(hsl.h); if (h<0) h += 1; // wrap
+    var s = _clamp01(hsl.s), l = _clamp01(hsl.l), a = (hsl.a !== undefined ? _clamp01(hsl.a) : 1);
+    function hue2rgb(p, q, t){
+        if (t < 0) t += 1; if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+    }
+    if (s === 0) { return Qt.rgba(l, l, l, a); }
+    var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    var p = 2 * l - q;
+    var r = hue2rgb(p, q, h + 1/3);
+    var g = hue2rgb(p, q, h);
+    var b = hue2rgb(p, q, h - 1/3);
+    return Qt.rgba(r, g, b, a);
+}
+
+function toHsl(c) {
+    try { var rgb = _toRgb(c); if (!rgb) return null; return _rgbToHsl(rgb); } catch(e){ return null }
+}
+function fromHsl(h, s, l, a) { try { return _hslToRgb({ h: Number(h)/360, s: s, l: l, a: a }); } catch(e){ return c } }
+
+function lighten(c, t) {
+    try {
+        var hsl = toHsl(c); if (!hsl) return c; hsl.l = _clamp01(hsl.l + Number(t)); return _hslToRgb(hsl);
+    } catch(e){ return c }
+}
+function darken(c, t) {
+    try {
+        var hsl = toHsl(c); if (!hsl) return c; hsl.l = _clamp01(hsl.l - Number(t)); return _hslToRgb(hsl);
+    } catch(e){ return c }
+}
+function saturate(c, t) {
+    try {
+        var hsl = toHsl(c); if (!hsl) return c; hsl.s = _clamp01(hsl.s + Number(t)); return _hslToRgb(hsl);
+    } catch(e){ return c }
+}
+function desaturate(c, t) {
+    try {
+        var hsl = toHsl(c); if (!hsl) return c; hsl.s = _clamp01(hsl.s - Number(t)); return _hslToRgb(hsl);
+    } catch(e){ return c }
+}
+function shiftHue(c, deg) {
+    try {
+        var hsl = toHsl(c); if (!hsl) return c; hsl.h = hsl.h + (Number(deg)/360); return _hslToRgb(hsl);
+    } catch(e){ return c }
+}
+
+// OKLCH stubs with HSL fallback to keep API stable
+function toOklch(c) {
+    try { var hsl = toHsl(c); if (!hsl) return null; return { l: hsl.l, c: hsl.s, h: hsl.h*360, a: (hsl.a!==undefined?hsl.a:1) }; } catch(e){ return null }
+}
+function fromOklch(l, c, h, a) {
+    try { return fromHsl(h, Math.max(0, Math.min(1, c)), Math.max(0, Math.min(1, l)), a); } catch(e){ return Qt.rgba(0,0,0,1) }
+}

@@ -15,7 +15,7 @@ PanelWithOverlay {
     Rectangle {
         color: Theme.backgroundPrimary
         radius: Math.round(Theme.cornerRadiusLarge / 3)
-        border.color: Theme.backgroundTertiary
+        border.color: Theme.borderSubtle
         border.width: Theme.calendarBorderWidth
         width: Theme.calendarWidth
         height: Theme.calendarHeight
