@@ -18,24 +18,24 @@ Item {
     // === Public API ===
     property string deviceMatch: ""       // substring to match keyboard device name
     property alias  fontPixelSize: label.font.pixelSize
-    property int    desiredHeight: 28     // minimum capsule height
+    property int    desiredHeight: Math.round(Theme.keyboardHeight * Theme.scale(Screen))     // minimum capsule height
     property var    screen: null          // pass panel.screen for Theme scaling
     property bool   useTheme: true
     property int    yNudge: 0             // ±px vertical tweak for the whole pill
 
     // Icon (match workspace look)
-    property real   iconScale: 1.0
-    property int    iconSpacing: 4
-    property color  iconColor: Theme.textSecondary
+    property real   iconScale: Theme.keyboardIconScale
+    property int    iconSpacing: Theme.keyboardIconSpacing
+    property color  iconColor: useTheme ? Theme.keyboardIconColor : Theme.textSecondary
 
     // Fine baseline nudges (if needed, usually -2..+3 px)
-    property int    iconBaselineAdjust: 0
-    property int    textBaselineAdjust: 0
+    property int    iconBaselineAdjust: Theme.keyboardIconBaselineOffset
+    property int    textBaselineAdjust: Theme.keyboardTextBaselineOffset
 
     // Colors
-    property color  bgColor:      useTheme ? Theme.background : "#1e293b"
-    property color  textColor:    useTheme ? Theme.textPrimary : "white"
-    property color  hoverBgColor: useTheme ? Theme.surfaceHover : "#223043"
+    property color  bgColor:      useTheme ? Theme.keyboardBgColor : "#1e293b"
+    property color  textColor:    useTheme ? Theme.keyboardTextColor : "white"
+    property color  hoverBgColor: useTheme ? Theme.keyboardHoverBgColor : "#223043"
 
     // === Internal state ===
     property string layoutText: "??"
@@ -48,7 +48,7 @@ Item {
         return s ? Theme.scale(s) : 1
     }
 
-    readonly property int margin: Math.round(4 * sc())
+    readonly property int margin: Math.round(Theme.keyboardMargin * sc())
 
     // Size hints — IMPORTANT: implicitHeight tracks the capsule height
     implicitWidth:  Math.ceil(row.implicitWidth + 2 * margin)
@@ -60,8 +60,10 @@ Item {
         readonly property bool hovered: ma.containsMouse
         // Capsule height follows content but won't go below desiredHeight
         height: Utils.clamp(row.implicitHeight + 2 * kb.margin, kb.desiredHeight, row.implicitHeight + 2 * kb.margin)
-        width:  Utils.clamp(row.implicitWidth + 2 * kb.margin, 40 * sc(), row.implicitWidth + 2 * kb.margin)
+        width:  Utils.clamp(row.implicitWidth + 2 * kb.margin, Math.round(Theme.keyboardMinWidth * sc()), row.implicitWidth + 2 * kb.margin)
         color:  hovered ? kb.hoverBgColor : kb.bgColor
+        radius: Math.round(Theme.keyboardRadius * sc())
+        opacity: hovered ? Theme.keyboardHoverOpacity : Theme.keyboardNormalOpacity
         antialiasing: true
 
         anchors.verticalCenter: parent.verticalCenter
@@ -84,10 +86,10 @@ Item {
                 font.family: "Font Awesome 6 Free"
                 font.styleName: "Regular"
                 font.weight: Font.Normal
-                font.pixelSize: Math.round(kb.fontPixelSize * kb.iconScale * 0.9)
+                font.pixelSize: Math.round(kb.fontPixelSize * kb.iconScale * Theme.keyboardFontScale)
                 color: kb.iconColor
                 verticalAlignment: Text.AlignVCenter
-                padding: 4
+                padding: Math.round(Theme.keyboardIconPadding * sc())
                 // Baseline from the top of this control (metrics + optional nudge)
                 baselineOffset: fmIcon.ascent + kb.iconBaselineAdjust
             }
@@ -98,9 +100,9 @@ Item {
                 text: kb.layoutText
                 color: kb.textColor
                 font.family: Theme.fontFamily
-                font.weight: Font.Medium
+                font.weight: Theme.keyboardTextBold ? Font.DemiBold : Font.Medium
                 verticalAlignment: Text.AlignVCenter
-                padding: 1.5 * sc()
+                padding: Math.round(Theme.keyboardTextPadding * sc())
                 // Baseline from the top of this control (metrics + optional nudge)
                 baselineOffset: fmText.ascent + kb.textBaselineAdjust
             }
