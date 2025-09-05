@@ -33,12 +33,15 @@ Item {
     // Misc
     property var screen: null
     property color bgColor: "transparent"
+    // Fine vertical nudge for whole block (px)
+    property int centerOffset: 0
 
     readonly property int computedFontPx: fontPixelSize > 0
         ? fontPixelSize
         : Utils.clamp(Math.round((desiredHeight - 2 * textPadding) * Theme.panelComputedFontScale), 16, 4096)
 
     implicitHeight: desiredHeight
+    implicitWidth: lineBox.implicitWidth
     width: lineBox.implicitWidth
     height: desiredHeight
 
@@ -48,6 +51,7 @@ Item {
         id: lineBox
         spacing: iconSpacing
         anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: root.centerOffset
         anchors.left: parent.left
 
         // Icon container keeps vertical centering consistent
