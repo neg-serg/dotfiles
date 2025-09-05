@@ -83,11 +83,12 @@ PanelWithOverlay {
 
                 delegate: Text {
                     text: shortName
-                    color: Theme.textPrimary
-                    opacity: 0.8
-                    font.pixelSize: 18 * Theme.scale(screen)
+                    color: Theme.textSecondary
+                    opacity: 0.9
+                    font.pixelSize: 14 * Theme.scale(screen)
                     font.family: Theme.fontFamily
                     font.weight: Font.Normal
+                    font.underline: true
                     horizontalAlignment: Text.AlignHCenter
                     width: Theme.calendarCellSize
                 }
@@ -139,14 +140,17 @@ PanelWithOverlay {
                     width: Theme.calendarCellSize
                     height: Theme.calendarCellSize
                 radius: Theme.cornerRadius
-                    // Background coloring: today uses full accent; hover uses dimmed accent (30% less brightness)
+                    // Background coloring: today uses full accent; hover uses significantly darkened accent (~80% closer to black)
                     property color _hoverColor: Qt.rgba(
-                        Theme.accentPrimary.r * 0.7,
-                        Theme.accentPrimary.g * 0.7,
-                        Theme.accentPrimary.b * 0.7,
+                        Theme.accentPrimary.r * 0.2,
+                        Theme.accentPrimary.g * 0.2,
+                        Theme.accentPrimary.b * 0.2,
                         Theme.accentPrimary.a
                     )
                     color: model.today ? Theme.accentPrimary : (mouseArea2.containsMouse ? _hoverColor : "transparent")
+                    // Accent border on hover
+                    border.color: mouseArea2.containsMouse ? Theme.accentPrimary : "transparent"
+                    border.width: mouseArea2.containsMouse ? 1 : 0
 
                     // Holiday dot indicator
                     Rectangle {
