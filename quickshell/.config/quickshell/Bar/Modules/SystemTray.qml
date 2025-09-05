@@ -220,15 +220,8 @@ Row {
         icon: Settings.settings.collapsedTrayIcon || "expand_more"
         // Rotate to point towards tray content when expanded (left)
         iconRotation: expanded ? 90 : 0
-        // Derive accent from calendar's accent with low brightness
-        property real ab: (Settings.settings.trayAccentBrightness !== undefined ? Settings.settings.trayAccentBrightness : 0.25)
-        property color derivedAccent: Qt.rgba(
-            Theme.accentPrimary.r * ab,
-            Theme.accentPrimary.g * ab,
-            Theme.accentPrimary.b * ab,
-            1
-        )
-        accentColor: derivedAccent
+        // Use derived accent token for hover/active
+        accentColor: Theme.accentHover
         // Neutral icon normally, readable light icon on hover (dark accent)
         iconNormalColor: Theme.textPrimary
         iconHoverColor: Theme.textPrimary

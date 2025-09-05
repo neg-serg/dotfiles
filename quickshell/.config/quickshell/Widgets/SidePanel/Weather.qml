@@ -175,8 +175,8 @@ Rectangle {
             Rectangle {
                 width: parent.width
                 height: Utils.clamp(Math.round(Theme.tooltipBorderWidth * Theme.scale(Screen)), 1, 64)
-                // Use contrast-based subtle divider
-                color: Color.contrastOn(card.color, "#26FFFFFF", "#26000000")
+                // Use theme subtle border for divider
+                color: Theme.borderSubtle
                 Layout.fillWidth: true
                 Layout.topMargin: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(Screen))
                 Layout.bottomMargin: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(Screen))

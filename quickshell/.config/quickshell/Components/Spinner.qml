@@ -6,7 +6,7 @@ Item {
     id: root
     
     property bool running: false
-    property color color: "white"
+    property color color: Theme.textPrimary
     property int size: Theme.panelIconSizeSmall
     // Stroke width derived from size to avoid relying on Screen context
     property int strokeWidth: Utils.clamp(Math.round(size / 8), 1, 256)
