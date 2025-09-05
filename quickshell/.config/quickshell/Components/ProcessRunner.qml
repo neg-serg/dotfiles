@@ -54,7 +54,7 @@ Item {
     Process {
         id: proc
         command: root.cmd
-        environment: root.env
+        environment: (root.env && typeof root.env === 'object') ? root.env : ({})
         running: root.intervalMs === 0 ? root.autoStart : false
 
         stdout: StdioCollector {
@@ -87,9 +87,9 @@ Item {
 
         stderr: StdioCollector { waitForEnd: true }
 
-        onExited: {
+        onExited: function(exitCode, exitStatus) {
             root._consumed = 0;
-            root.exited(code, status);
+            root.exited(exitCode, exitStatus);
             if (root.intervalMs > 0) {
                 // In poll mode, rely on timer to retrigger
             } else {

@@ -100,7 +100,7 @@ Item {
     // One-shot status parser
     ProcessRunner {
         id: proc
-        cmd: ["bash", "-lc", cmd + " 2>/dev/null || true"]
+        cmd: ["bash", "-lc", root.cmd + " 2>/dev/null || true"]
         autoStart: false
         restartOnExit: false
         // Consume entire output via onLine accumulation; sufficient for our parser
