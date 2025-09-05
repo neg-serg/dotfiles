@@ -226,15 +226,22 @@ Item {
     }
 
     Component.onCompleted: updateCurrentPlayer()
+    Component.onCompleted: {
+        // Load persisted LIFO stack from settings
+        try {
+            var saved = (Settings.settings && Settings.settings.lastActivePlayers) ? Settings.settings.lastActivePlayers : [];
+            if (saved && saved.length) _lastActiveStack = saved.filter(function(x){ return typeof x === 'string' && x.length > 0; });
+        } catch (e) { }
+    }
 
     // Primary: react to MPRIS players list changes via Connections
     // Keep it under data: [...] to satisfy Item's default property list
-    data: [
+    // Use child objects (avoid assigning default property 'data' twice)
         Connections {
             target: Mpris.players
             ignoreUnknownSignals: true
             function onValuesChanged() { root.pruneStack(); root.updateCurrentPlayer() }
-        },
+        }
         // Track playback state changes per player to maintain LIFO order
         Instantiator {
             active: true
@@ -246,7 +253,6 @@ Item {
                 function onIsPlayingChanged()     { if (target && target.isPlaying) { root.touchActive(target); root.updateCurrentPlayer(); } }
             }
         }
-    ]
 
     // Fallback: light polling in case Connections are not delivered in this env
     Timer {

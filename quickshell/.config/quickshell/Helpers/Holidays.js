@@ -83,7 +83,7 @@ function getCountryCode(callback, errorCallback, options) {
     }
 
     var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
-
+    var dbg = !!(options && options.debug);
     var url = buildUrl("https://nominatim.openstreetmap.org/search", {
         city: Settings.settings.weatherCity || "",
         country: "",
@@ -91,25 +91,6 @@ function getCountryCode(callback, errorCallback, options) {
         addressdetails: 1,
         extratags: 1
     });
-
-    var _ua = (options && options.userAgent) ? String(options.userAgent) : "Quickshell";
-    if (typeof httpGetJson === 'function') {
-        httpGetJson(url, cfg.timeoutMs, function(response) {
-            try {
-                _countryCode = (response && response[0] && response[0].address && response[0].address.country_code) ? response[0].address.country_code : "US";
-                _regionCode = (response && response[0] && response[0].address && response[0].address["ISO3166-2-lvl4"]) ? response[0].address["ISO3166-2-lvl4"] : "";
-                _regionName = (response && response[0] && response[0].address && response[0].address.state) ? response[0].address.state : "";
-                _locationExpiry = now() + cfg.locationTtlMs;
-                callback(_countryCode);
-            } catch (e) {
-                errorCallback && errorCallback("Failed to parse location data");
-            }
-        }, function(err) {
-            errorCallback && errorCallback("Location lookup error: " + (err.status || err.type || "unknown"));
-        }, _ua);
-        return;
-    }
-    var dbg = !!(options && options.debug);
     if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
     httpGetJson(url, cfg.timeoutMs, function(response) {
         try {
@@ -152,23 +133,6 @@ function getHolidays(year, countryCode, callback, errorCallback, options) {
 
     var url = "https://date.nager.at/api/v3/PublicHolidays/" + year + "/" + countryCode;
 
-    if (typeof httpGetJson === 'function') {
-        httpGetJson(url, cfg.timeoutMs, function(list) {
-            try {
-                var augmented = filterHolidaysByRegion(list || []);
-                writeCacheSuccess(_holidaysCache, cacheKey, augmented, cfg.holidaysTtlMs);
-                callback(augmented);
-            } catch (e) {
-                errorCallback && errorCallback("Failed to process holidays");
-            }
-        }, function(err) {
-            if (err && (err.status === 429 || (err.status >= 500 && err.status <= 599))) {
-                writeCacheError(_holidaysCache, cacheKey, cfg.errorTtlMs);
-            }
-            errorCallback && errorCallback("Holidays fetch error: " + (err.status || err.type || "unknown"));
-        }, _ua);
-        return;
-    }
     if (dbg) try { console.debug('[Holidays] GET', url); } catch (e) {}
     httpGetJson(url, cfg.timeoutMs, function(list) {
         try {
