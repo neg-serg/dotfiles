@@ -30,7 +30,7 @@ PanelWithOverlay {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: Theme.uiMarginMedium
+            anchors.margins: Theme.calendarSideMargin
             spacing: Theme.calendarRowSpacing
 
             // Month/Year header with navigation
@@ -53,9 +53,9 @@ PanelWithOverlay {
                     text: calendar.title
                     color: Theme.textPrimary
                     opacity: 0.7
-                    font.pixelSize: 13 * Theme.scale(screen)
+                    font.pixelSize: 18 * Theme.scale(screen)
                     font.family: Theme.fontFamily
-                    font.bold: true
+                    font.weight: Font.Medium
                 }
 
                 IconButton {
@@ -72,16 +72,16 @@ PanelWithOverlay {
             DayOfWeekRow {
                 Layout.fillWidth: true
                 spacing: 0
-                Layout.leftMargin: Theme.calendarSideMargin // Align with grid
-                Layout.rightMargin: Theme.calendarSideMargin
+                Layout.leftMargin: 0 // Align tighter with grid
+                Layout.rightMargin: 0
 
                 delegate: Text {
                     text: shortName
                     color: Theme.textPrimary
                     opacity: 0.8
-                    font.pixelSize: 13 * Theme.scale(screen)
+                    font.pixelSize: 12 * Theme.scale(screen)
                     font.family: Theme.fontFamily
-                    font.bold: true
+                    font.weight: Font.Normal
                     horizontalAlignment: Text.AlignHCenter
                     width: Theme.calendarCellSize
                 }
@@ -162,9 +162,9 @@ PanelWithOverlay {
                         text: model.day
                         color: model.today ? Theme.onAccent : Theme.textPrimary
                         opacity: model.month === calendar.month ? (mouseArea2.containsMouse ? 1 : 0.7) : 0.3
-                        font.pixelSize: 13 * Theme.scale(screen)
+                        font.pixelSize: 18 * Theme.scale(screen)
                         font.family: Theme.fontFamily
-                        font.bold: model.today ? true : false
+                        font.weight: Font.Medium
                     }
 
                     MouseArea {
