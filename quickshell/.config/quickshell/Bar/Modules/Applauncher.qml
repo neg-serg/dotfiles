@@ -490,7 +490,7 @@ PanelWithOverlay {
         
                 Rectangle {
                     id: previewPanel
-                    Layout.preferredWidth: Math.round(200 * Theme.scale(Screen))
+                    Layout.preferredWidth: Math.round(Theme.applauncherPreviewWidth * Theme.scale(Screen))
                     Layout.fillHeight: true
                     color: Theme.surface
                     radius: Theme.panelOverlayRadius

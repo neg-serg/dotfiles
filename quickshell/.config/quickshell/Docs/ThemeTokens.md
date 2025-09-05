@@ -27,6 +27,7 @@ Additional UI tokens (nested)
 - Media: media.iconScaleEmphasis
 - Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
   - Applauncher list: applauncher.list.itemHeight, applauncher.list.itemHeightLarge
+  - Applauncher preview: applauncher.preview.width
   - Menu item radius: panel.menu.itemRadius
   - Spectrum: spectrum.peakThickness
   - Side panel: sidePanel.innerRadius (inner blocks)
