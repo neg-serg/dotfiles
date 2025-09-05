@@ -153,10 +153,11 @@ PanelWithOverlay {
                         Theme.accentPrimary.b * 0.2,
                         Theme.accentPrimary.a
                     )
-                    color: model.today ? Theme.accentPrimary : ((isSelected || mouseArea2.containsMouse) ? _hoverColor : "transparent")
-                    // Accent border on hover/selected
-                    border.color: (isSelected || mouseArea2.containsMouse) ? Theme.accentPrimary : "transparent"
-                    border.width: (isSelected || mouseArea2.containsMouse) ? 1 : 0
+                    // Today uses same dark-accent style and border as hover/selected
+                    color: (model.today || isSelected || mouseArea2.containsMouse) ? _hoverColor : "transparent"
+                    // Accent border on today/hover/selected
+                    border.color: (model.today || isSelected || mouseArea2.containsMouse) ? Theme.accentPrimary : "transparent"
+                    border.width: (model.today || isSelected || mouseArea2.containsMouse) ? 1 : 0
 
                     // Holiday dot indicator
                     Rectangle {
