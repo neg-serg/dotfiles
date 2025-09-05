@@ -134,8 +134,13 @@
     "separator": {
       "thickness": 1,
       "radius": 0,
+      "opacity": 0.05,
+      "stripe": {
+        "opacity": 0.9,
+        "brightness": 0.4,
+        "ratio": 0.35
+      },
       "diagonal": {
-        "stripeOpacity": 0.9,
         "implicitWidth": 10,
         "implicitHeight": 28,
         "alpha": 0.05,

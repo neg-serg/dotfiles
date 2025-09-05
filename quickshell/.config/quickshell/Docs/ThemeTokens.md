@@ -24,6 +24,7 @@ Additional UI tokens (nested)
 - UI shadow: ui.shadow.opacity, ui.shadow.blur, ui.shadow.offsetX, ui.shadow.offsetY
 - UI border/separators: ui.border.width, ui.separator.thickness
   - Separator radius: ui.separator.radius
+  - Separator opacity: ui.separator.opacity
   - UI animation: ui.anim.quickMs, ui.anim.rotateMs, ui.anim.rippleMs
   - UI easing: ui.anim.easing.quick|rotate|ripple|stdOut|stdIn|inOut (string names like "OutCubic")
   - UI spinner: ui.spinner.durationMs
@@ -86,7 +87,7 @@ Additional UI tokens (nested)
   - Calendar layout: calendar.dow.spacing, calendar.dow.sideMargin, calendar.grid.spacing
  - Spectrum bars: spectrum.barGap, spectrum.minBarWidth
   - Spectrum opacities: spectrum.fillOpacity, spectrum.peakOpacity
-  - Diagonal separator stripe: ui.separator.diagonal.stripeOpacity
+  - Separator stripe (generic): ui.separator.stripe.opacity, ui.separator.stripe.brightness, ui.separator.stripe.ratio
   - Diagonal separator implicit size: ui.separator.diagonal.implicitWidth, ui.separator.diagonal.implicitHeight
   - VPN opacities: vpn.connectedOpacity, vpn.disconnectedOpacity
   - VPN icon/layout: vpn.icon.scale, vpn.icon.vAdjust, vpn.icon.spacing; vpn.text.padding

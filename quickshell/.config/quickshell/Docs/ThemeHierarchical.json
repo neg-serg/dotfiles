@@ -156,7 +156,13 @@
   "ui": {
     "iconSizeLarge": 28,
     "border": { "width": 1 },
-    "separator": { "thickness": 1, "radius": 0, "diagonal": { "stripeOpacity": 0.9, "implicitWidth": 10, "implicitHeight": 28, "alpha": 0.05, "thickness": 7, "angleDeg": 30, "inset": 4, "stripeBrightness": 0.4, "stripeRatio": 0.35 } },
+    "separator": {
+      "thickness": 1,
+      "radius": 0,
+      "opacity": 0.05,
+      "stripe": { "opacity": 0.9, "brightness": 0.4, "ratio": 0.35 },
+      "diagonal": { "implicitWidth": 10, "implicitHeight": 28, "alpha": 0.05, "thickness": 7, "angleDeg": 30, "inset": 4, "stripeBrightness": 0.4, "stripeRatio": 0.35 }
+    },
     "ripple": { "opacity": 0.18 },
     "icon": { "emphasisOpacity": 0.9 },
     "visibilityEpsilon": 0.01,
