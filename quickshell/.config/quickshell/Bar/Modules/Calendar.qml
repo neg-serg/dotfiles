@@ -146,15 +146,8 @@ PanelWithOverlay {
                     width: Theme.calendarCellSize
                     height: Theme.calendarCellSize
                 radius: Math.round(Theme.cornerRadius / 3)
-                    // Background coloring: today uses full accent; hover uses significantly darkened accent (~80% closer to black)
-                    property color _hoverColor: Qt.rgba(
-                        Theme.accentPrimary.r * 0.2,
-                        Theme.accentPrimary.g * 0.2,
-                        Theme.accentPrimary.b * 0.2,
-                        Theme.accentPrimary.a
-                    )
-                    // Today uses same dark-accent style and border as hover/selected
-                    color: (model.today || isSelected || mouseArea2.containsMouse) ? _hoverColor : "transparent"
+                    // Today/selected/hover use Theme's derived dark accent
+                    color: (model.today || isSelected || mouseArea2.containsMouse) ? Theme.accentDarkStrong : "transparent"
                     // Accent border on today/hover/selected
                     border.color: (model.today || isSelected || mouseArea2.containsMouse) ? Theme.accentPrimary : "transparent"
                     border.width: (model.today || isSelected || mouseArea2.containsMouse) ? 1 : 0

@@ -1,5 +1,9 @@
 // Small color helpers
 // contrastOn(bg[, light, dark, threshold]): returns light or dark color string based on bg luminance
+// withAlpha(color, a): returns Qt.rgba with alpha 0..1
+// mix(a,b,t): linear blend between two colors, t in [0,1]
+// towardsBlack(color,t): mix color toward black by t
+// towardsWhite(color,t): mix color toward white by t
 
 function _toRgb(obj) {
     try {
@@ -54,4 +58,36 @@ function contrastOn(bg, light, dark, threshold) {
     } catch(e) {
         return light || '#FFFFFF';
     }
+}
+
+function withAlpha(c, a) {
+    try {
+        var rgb = _toRgb(c);
+        var alpha = Number(a);
+        if (!(alpha >= 0 && alpha <= 1)) alpha = (alpha && alpha > 1) ? (alpha / 255.0) : 1.0;
+        if (!rgb) return c;
+        return Qt.rgba(rgb.r, rgb.g, rgb.b, alpha);
+    } catch (e) { return c; }
+}
+
+function mix(a, b, t) {
+    try {
+        var ca = _toRgb(a), cb = _toRgb(b);
+        var tt = Number(t); if (!(tt >= 0 && tt <= 1)) tt = 0.5;
+        if (!ca || !cb) return a;
+        return Qt.rgba(
+            ca.r * (1-tt) + cb.r * tt,
+            ca.g * (1-tt) + cb.g * tt,
+            ca.b * (1-tt) + cb.b * tt,
+            ca.a * (1-tt) + cb.a * tt
+        );
+    } catch (e) { return a; }
+}
+
+function towardsBlack(c, t) {
+    return mix(c, Qt.rgba(0,0,0,1), t);
+}
+
+function towardsWhite(c, t) {
+    return mix(c, Qt.rgba(1,1,1,1), t);
 }

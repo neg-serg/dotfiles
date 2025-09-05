@@ -2,6 +2,7 @@
 pragma Singleton
 import QtQuick
 import "../Helpers/Utils.js" as Utils
+import "../Helpers/Color.js" as Color
 import Quickshell
 import Quickshell.Io
 import qs.Settings
@@ -391,3 +392,15 @@ Singleton {
     property int calendarCellSize: Utils.clamp(themeData.calendarCellSize, 16, 64)
     property int calendarHolidayDotSize: themeData.calendarHolidayDotSize
 }
+    // Derived accent/surface/border tokens (formula-based)
+    // Keep simple and perceptually stable; expose tokens for reuse
+    property color accentHover: Color.towardsWhite(accentPrimary, 0.2)
+    property color accentActive: Color.towardsBlack(accentPrimary, 0.2)
+    property color accentDisabled: Color.withAlpha(accentPrimary, 0.4)
+    property color accentDarkStrong: Color.towardsBlack(accentPrimary, 0.8)
+    property color surfaceHover: Color.withAlpha(textPrimary, 0.06)
+    property color surfaceActive: Color.withAlpha(textPrimary, 0.10)
+    property color borderSubtle: Color.withAlpha(textPrimary, 0.15)
+    property color borderStrong: Color.withAlpha(textPrimary, 0.30)
+    property color overlayWeak: Color.withAlpha(shadow, 0.08)
+    property color overlayStrong: Color.withAlpha(shadow, 0.18)
