@@ -8,6 +8,5 @@ import qs.Settings
 QtObject {
     id: fade
     property color value: "transparent"
-    Behavior on value { ColorAnimation { duration: Theme.panelAnimFastMs; easing.type: Theme.uiEasingRipple } }
+    Behavior on value { ColorRippleBehavior {} }
 }
-

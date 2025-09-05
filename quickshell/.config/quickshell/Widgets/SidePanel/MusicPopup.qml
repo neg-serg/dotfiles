@@ -99,7 +99,7 @@ Item {
         // --- Slide animation (animate inner content, not the window)
         property bool _hiding: false
         property real slideX: 0
-        NumberAnimation {
+        NumberFadeBehavior {
             id: slide
             target: toast
             property: "slideX"

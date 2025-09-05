@@ -43,7 +43,7 @@ Item {
             requestPaint()
         }
         
-        NumberAnimation {
+        NumberFadeBehavior {
             target: spinnerCanvas
             property: "rotationAngle"
             running: root.running
