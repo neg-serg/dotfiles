@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Components
+import qs.Settings
 
 // Baseline-aligned icon helper. Aligns either a text glyph or a Material icon
 // to the baseline (or optical center) of a reference label, with adjustable scale and baseline offset.
@@ -47,15 +48,13 @@ Item {
 
     // Label metrics
     FontMetrics { id: fmLabel; font: (root.labelRef && root.labelRef.font) ? root.labelRef.font : Qt.font({ pixelSize: root._labelPx }) }
-    // Helpers to compute center offsets relative to baselines (positive is downward)
-    function centerOffsetFromBaseline(ascent, descent) {
-        return (descent - ascent) / 2.0;
-    }
-    function computeOffset(iconAscent, iconDescent) {
+    // Helpers to compute vertical center offsets (positive is downward)
+    function centerOffset(ascent, descent) { return (descent - ascent) / 2.0 }
+    function computeCenterOffset(iconAscent, iconDescent) {
         var off = root._effBaselineOffset;
         if (root.alignMode === "optical") {
-            var labelCenter = centerOffsetFromBaseline(fmLabel.ascent, fmLabel.descent);
-            var iconCenter  = centerOffsetFromBaseline(iconAscent, iconDescent);
+            var labelCenter = centerOffset(fmLabel.ascent, fmLabel.descent);
+            var iconCenter  = centerOffset(iconAscent, iconDescent);
             off = off + (labelCenter - iconCenter);
         } else if (root.compensateMetrics) {
             off = off + (fmLabel.ascent - iconAscent) * root.compensationFactor;
@@ -74,9 +73,9 @@ Item {
         font.styleName: root.fontStyleName
         font.pixelSize: Math.max(1, Math.round(root._labelPx * root._effScale))
         renderType: Text.NativeRendering
-        anchors.baseline: (root.labelRef && root.labelRef.baseline !== undefined) ? root.labelRef.baseline : undefined
+        anchors.verticalCenter: parent.verticalCenter
         FontMetrics { id: fmText; font: textItem.font }
-        anchors.baselineOffset: computeOffset(fmText.ascent, fmText.descent)
+        anchors.verticalCenterOffset: computeCenterOffset(fmText.ascent, fmText.descent)
     }
 
     // Material icon mode
@@ -88,8 +87,8 @@ Item {
         size: Math.max(1, Math.round(root._labelPx * root._effScale))
         color: root.color
         screen: root.screen
-        anchors.baseline: (root.labelRef && root.labelRef.baseline !== undefined) ? root.labelRef.baseline : undefined
+        anchors.verticalCenter: parent.verticalCenter
         FontMetrics { id: fmMat; font: materialItem.font }
-        anchors.baselineOffset: computeOffset(fmMat.ascent, fmMat.descent)
+        anchors.verticalCenterOffset: computeCenterOffset(fmMat.ascent, fmMat.descent)
     }
 }
