@@ -16,7 +16,7 @@ Item {
     // Hyprland keyboard submap name (shown to the left of workspace)
     property string submapName: ""
     // Fine-tune vertical alignment of submap icon (px; negative moves up)
-    property int submapBaselineAdjust: -5
+    property int submapBaselineAdjust: Theme.wsSubmapBaselineAdjust
     // Live-discovered submaps from Hyprland (via hyprctl -j binds)
     property var submapDynamicMap: ({})
     // Map known submaps to clean, geometric Material Symbols
@@ -117,9 +117,9 @@ Item {
     property color separatorColor: Theme.textSecondary
 
     // Icon layout tuning
-    property real iconScale: 1.45            // icon size relative to label font
-    property int  iconBaselineOffset: 4      // fine baseline tweak for icon (−2..+6 typical)
-    property int  iconSpacing: 1             // gap between items (tighter)
+    property real iconScale: Theme.wsIconScale            // icon size relative to label font
+    property int  iconBaselineOffset: Theme.wsIconBaselineOffset      // fine baseline tweak for icon (−2..+6 typical)
+    property int  iconSpacing: Theme.wsIconSpacing             // gap between items (tighter)
 
     // Size follows the composed row
     implicitWidth: lineBox.implicitWidth
@@ -258,7 +258,7 @@ Item {
             // Baseline alignment (tweak offset for pixel-perfect visual centering)
             anchors.baseline: label.baseline
             anchors.baselineOffset: iconBaselineOffset
-            padding: (root.isTerminalWs ? 0 : 1)
+            padding: (root.isTerminalWs ? Theme.uiSpacingNone : Theme.wsIconInnerPadding)
         }
 
         // Main text remains RichText with soft decoration
@@ -271,9 +271,9 @@ Item {
             font.weight: Font.Medium
             font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
             color: Theme.textPrimary
-            padding: 6
+            padding: Theme.wsLabelPadding
             // Reduce left padding to tighten gap next to icon
-            leftPadding: (root.isTerminalWs ? -2 : 2)
+            leftPadding: (root.isTerminalWs ? Theme.wsLabelLeftPaddingTerminal : Theme.wsLabelLeftPadding)
 
             // Optional: lock line box so icon never affects line height
             // lineHeightMode: Text.FixedHeight
