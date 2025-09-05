@@ -18,7 +18,13 @@ Overview
   - surfaceActive: slightly stronger overlay for pressed states
   - borderSubtle: low-emphasis border color
   - borderStrong: higher-emphasis border color
-  - overlayWeak/overlayStrong: backdrop overlays
+- overlayWeak/overlayStrong: backdrop overlays
+
+Additional UI tokens (nested)
+- Tooltip: tooltip.opacity, tooltip.smallScaleRatio
+- UI shadow: ui.shadow.opacity, ui.shadow.blur, ui.shadow.offsetX, ui.shadow.offsetY
+- Media: media.iconScaleEmphasis
+- Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
 
 Overrides (advanced)
 - You can override any derived token by adding an "Override" key in Theme.json:
@@ -45,6 +51,7 @@ Guidance
   - Dark accent tint blocks: Theme.accentDarkStrong
 - Text on dynamic backgrounds: Color.contrastOn(bg, Theme.textPrimary, Theme.textSecondary, Settings.settings.contrastThreshold)
 - Avoid hardcoded Qt.rgba mixes for state colors; use derived tokens or Color helpers.
+  - For CSS strings use Helpers/Format.colorCss(color, alpha?) instead of manual rgba() building.
 
 Accessibility
 - Settings.settings.contrastThreshold controls light/dark flip in contrastOn.
