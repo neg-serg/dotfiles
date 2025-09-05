@@ -106,7 +106,10 @@ import "../../Helpers/Color.js" as Color
 
     Component {
         id: subMenuComponent;
+        SubmenuHost { submenuHostComponent: submenuHostComp }
+    }
 
+    /* Legacy inline submenu removed
         PopupWindow {
             id: subMenu;
             implicitWidth: Theme.panelSubmenuWidth;
@@ -347,5 +350,5 @@ import "../../Helpers/Color.js" as Color
                 }
             }
         }
-    }
+    */
 }
