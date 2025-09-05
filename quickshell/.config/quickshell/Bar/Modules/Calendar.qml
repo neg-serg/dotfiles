@@ -78,9 +78,9 @@ PanelWithOverlay {
 
             DayOfWeekRow {
                 Layout.fillWidth: true
-                spacing: 0
-                Layout.leftMargin: 0 // Align tighter with grid
-                Layout.rightMargin: 0
+                spacing: Theme.calendarDowSpacing
+                Layout.leftMargin: Theme.calendarDowSideMargin // Align tighter with grid
+                Layout.rightMargin: Theme.calendarDowSideMargin
 
                 delegate: Text {
                     text: shortName
@@ -116,7 +116,7 @@ PanelWithOverlay {
                 Layout.fillWidth: true
                 Layout.leftMargin: Theme.calendarSideMargin
                 Layout.rightMargin: Theme.calendarSideMargin
-                spacing: 0
+                spacing: Theme.calendarGridSpacing
                 month: Time.date.getMonth()
                 year: Time.date.getFullYear()
                 onMonthChanged: updateHolidays()

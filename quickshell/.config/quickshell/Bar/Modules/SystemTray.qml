@@ -119,8 +119,8 @@ Row {
             border.color: Theme.borderSubtle
             border.width: Theme.uiBorderWidth
             // No animated width — show full content immediately
-            width: collapsedRow.implicitWidth + 6
-            height: collapsedRow.implicitHeight + 6
+            width: collapsedRow.implicitWidth + Theme.panelTrayInlinePadding
+            height: collapsedRow.implicitHeight + Theme.panelTrayInlinePadding
             anchors.verticalCenter: parent.verticalCenter
             clip: true
         }

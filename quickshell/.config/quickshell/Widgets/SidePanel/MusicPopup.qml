@@ -104,7 +104,7 @@ Item {
             target: toast
             property: "slideX"
             duration: Theme.sidePanelPopupSlideMs
-            easing.type: Easing.InOutCubic
+            easing.type: Theme.uiEasingRipple
             onStopped: {
                 if (toast._hiding) {
                     toast.visible = false;
@@ -219,7 +219,7 @@ Item {
             ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: toast.contentPaddingPx
-                spacing: 0
+                spacing: Theme.sidePanelPopupSpacing
 
                 RowLayout {
                     spacing: Math.round(Theme.sidePanelSpacingMedium * Theme.scale(Screen))

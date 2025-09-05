@@ -39,6 +39,6 @@ PanelWindow {
 
     Behavior on color {
         enabled: showOverlay
-        ColorAnimation { duration: 200; easing.type: Easing.InOutCubic }
+        ColorAnimation { duration: Theme.panelAnimFastMs; easing.type: Theme.uiEasingRipple }
     }
 }

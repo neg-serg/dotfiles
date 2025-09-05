@@ -10,7 +10,7 @@ Item {
     property int size: Theme.panelIconSizeSmall
     // Stroke width derived from size to avoid relying on Screen context
     property int strokeWidth: Utils.clamp(Math.round(size / 8), 1, 256)
-    property int duration: 1000
+    property int duration: Theme.uiSpinnerDurationMs
     
     implicitWidth: size
     implicitHeight: size
