@@ -98,6 +98,7 @@
       "outerMargin": 4
     },
     "cornerRadius": 9,
+    "innerRadius": 0,
     "spacing": 12,
     "spacingTight": 6,
     "spacingSmall": 4,

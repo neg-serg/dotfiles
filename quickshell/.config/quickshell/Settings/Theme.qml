@@ -394,6 +394,8 @@ Singleton {
     property int sidePanelSpacingTight: val('sidePanel.spacingTight', themeData.sidePanelSpacingTight)
     property int sidePanelSpacingSmall: val('sidePanel.spacingSmall', themeData.sidePanelSpacingSmall)
     property int sidePanelAlbumArtSize: val('sidePanel.albumArtSize', themeData.sidePanelAlbumArtSize)
+    // Inner blocks radius for side panel cards/sections
+    property int sidePanelInnerRadius: Utils.clamp(val('sidePanel.innerRadius', 0), 0, 32)
     property int sidePanelWeatherWidth: val('sidePanel.weather.width', themeData.sidePanelWeatherWidth)
     property int sidePanelWeatherHeight: val('sidePanel.weather.height', themeData.sidePanelWeatherHeight)
     property int uiIconSizeLarge: val('ui.iconSizeLarge', themeData.uiIconSizeLarge)

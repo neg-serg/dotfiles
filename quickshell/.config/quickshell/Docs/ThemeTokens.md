@@ -28,6 +28,7 @@ Additional UI tokens (nested)
 - Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
   - Menu item radius: panel.menu.itemRadius
   - Spectrum: spectrum.peakThickness
+  - Side panel: sidePanel.innerRadius (inner blocks)
 
 Overrides (advanced)
 - You can override any derived token by adding an "Override" key in Theme.json:

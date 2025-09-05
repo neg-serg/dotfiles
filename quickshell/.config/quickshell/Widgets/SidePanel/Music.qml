@@ -316,9 +316,9 @@ Rectangle {
                     Rectangle {
                         Layout.fillWidth: true
                         implicitHeight: detailsCol.implicitHeight
-                        // Match card background, no rounded corners, no border
+                        // Match card background; radius and border from Theme
                         color: card.color
-                        radius: 0
+                        radius: Theme.sidePanelInnerRadius
                         border.width: 0
                         anchors.leftMargin: 0
                         anchors.rightMargin: 0
