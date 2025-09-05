@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import Quickshell.Io
 import qs.Components
+import "../../Helpers/Color.js" as Color
 import qs.Settings
 import "../../Helpers/Utils.js" as Utils
 
@@ -26,11 +27,14 @@ Item {
     property bool   iconRounded: false
 
     // Colors
-    property color onColor:  Theme.accentPrimary
+    // Derive a slightly lighter/more saturated variant from the primary accent
+    // (approximate former accentSecondary without needing a separate palette token)
+    property color onColor:  Color.towardsWhite(Color.saturate(Theme.accentPrimary, 0.08), 0.05)
     property color offColor: useTheme ? Theme.textDisabled  : Theme.textDisabled
     // Accent derived from Theme; desaturated for subtle look
     property real  desaturateAmount: 0.45   // 0..1, higher = less saturated
-    property color accentBase: Theme.accentPrimary
+    // Base accent for subtle styling (then desaturated by desaturateAmount below)
+    property color accentBase: Color.saturate(Theme.accentPrimary, 0.08)
     property color accentColor: desaturateColor(accentBase, desaturateAmount)
 
     // Internal state
