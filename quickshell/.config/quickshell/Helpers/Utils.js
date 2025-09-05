@@ -44,14 +44,5 @@ function computedInlineFontPx(height, padding, scaleToken) {
     }
 }
 
-// Export helpers for QML import
-var Utils = {
-    clamp,
-    coerceInt,
-    coerceReal,
-    computedInlineFontPx,
-};
-
-// QML JS engine exposes top-level functions; also export for clarity
-// (Some environments may rely on the named exports pattern.)
-export { clamp, coerceInt, coerceReal, computedInlineFontPx };
+// Note: QML JavaScript does not use ES module exports.
+// Functions above are available via `import ".../Utils.js" as Utils`.
