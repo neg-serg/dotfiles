@@ -1,5 +1,6 @@
 pragma Singleton
 import QtQuick
+import "../Helpers/Utils.js" as Utils
 import Quickshell
 import Quickshell.Services.Pipewire
 
@@ -32,7 +33,7 @@ Item {
 
     // Set absolute volume in percent (0..100), quantized to `step`
     function setVolume(vol) {
-        var clamped = Math.max(0, Math.min(100, Math.round(vol)))
+        var clamped = Utils.clamp(Math.round(vol), 0, 100)
         var stepped = roundToStep(clamped)
         if (_audio) {
             _audio.volume = stepped / 100.0
