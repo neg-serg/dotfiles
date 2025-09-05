@@ -13,6 +13,8 @@ PopupWindow {
     color: "transparent"
 
     required property var menu
+    // Component used to spawn deeper submenus (injected from parent context)
+    required property Component submenuHostComponent
     property var anchorItem: null
     property real anchorX
     property real anchorY
@@ -60,10 +62,8 @@ PopupWindow {
         delegate: DelegateEntry {
             modelData: modelData
             listViewRef: listView
-            submenuHostComponent: submenuHostComp
+            submenuHostComponent: subMenu.submenuHostComponent
             menuWindow: subMenu
         }
     }
-
-    Component { id: submenuHostComp; SubmenuHost {} }
 }

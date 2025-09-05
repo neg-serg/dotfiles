@@ -66,8 +66,8 @@ import "../../Helpers/Color.js" as Color
         id: opener;
         menu: trayMenu.menu;
     }
-    // Shared submenu host component for delegates
-    Component { id: submenuHostComp; SubmenuHost {} }
+    // Shared submenu host component for delegates; pass itself for deeper submenus
+    Component { id: submenuHostComp; SubmenuHost { submenuHostComponent: submenuHostComp } }
 
     // Base background: compact; radius configured by Theme
     Rectangle {
