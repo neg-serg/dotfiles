@@ -96,6 +96,7 @@ Item {
         id: rsStream
         cmd: ["rsmetrx"]
         backoffMs: Theme.networkRestartBackoffMs
+        debounceMs: 100
         jsonLine: true
         onJson: (data) => {
             try {
