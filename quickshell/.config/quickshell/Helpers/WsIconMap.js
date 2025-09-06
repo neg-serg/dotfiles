@@ -27,7 +27,7 @@ function _defaultMap() {
     system: "settings",
     tools: "build_circle",
     gaps: "crop_square",
-    // text / edit / select / clipboard
+    // text / edit / select
     select: "select_all",
     edit: "edit",
     copy: "content_copy",
