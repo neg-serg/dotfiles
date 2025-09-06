@@ -477,6 +477,8 @@ PanelWithOverlay {
                                 onActiveFocusChanged: contentItem.cursorColor = Theme.textPrimary
 
                                 // Emacs-style editing/navigation helpers
+                                property string killBuffer: ""
+                                property bool lastWasKill: false
                                 function isWordChar(ch) { return /[A-Za-z0-9_]/.test(ch); }
                                 function nextWordPos(pos) {
                                     var s = text; var L = s.length; var i = Math.max(0, Math.min(L, pos));
@@ -492,8 +494,24 @@ PanelWithOverlay {
                                     else { while (i > 0 && !isWordChar(s[i-1])) i--; while (i > 0 && isWordChar(s[i-1])) i--; }
                                     return i;
                                 }
+                                function insertAtCursor(str) {
+                                    var cp = searchField.cursorPosition; var s = searchField.text;
+                                    searchField.text = s.slice(0, cp) + str + s.slice(cp);
+                                    searchField.cursorPosition = cp + String(str).length;
+                                }
+                                function killRange(startPos, endPos) {
+                                    var s = searchField.text; var a = Math.max(0, Math.min(s.length, startPos)); var b = Math.max(0, Math.min(s.length, endPos));
+                                    if (b < a) { var tmp = a; a = b; b = tmp; }
+                                    var killed = s.slice(a, b);
+                                    if (searchField.lastWasKill) searchField.killBuffer += killed; else searchField.killBuffer = killed;
+                                    searchField.text = s.slice(0, a) + s.slice(b);
+                                    searchField.cursorPosition = a;
+                                    searchField.lastWasKill = true;
+                                }
 
                                 Keys.onPressed: function(event) {
+                                    // reset kill chain by default on any key; will set true for kill operations
+                                    searchField.lastWasKill = false;
                                     // Control-based navigation
                                     if (event.modifiers & Qt.ControlModifier) {
                                         switch (event.key) {
@@ -502,17 +520,33 @@ PanelWithOverlay {
                                             case Qt.Key_G: appLauncherPanel.hidePanel(); event.accepted = true; return;
                                             case Qt.Key_A: searchField.cursorPosition = 0; event.accepted = true; return;
                                             case Qt.Key_E: searchField.cursorPosition = searchField.text.length; event.accepted = true; return;
-                                            case Qt.Key_K: searchField.text = searchField.text.slice(0, searchField.cursorPosition); event.accepted = true; return;
-                                            case Qt.Key_U: searchField.text = searchField.text.slice(searchField.cursorPosition); searchField.cursorPosition = 0; event.accepted = true; return;
+                                            case Qt.Key_K: {
+                                                // kill to end of line (single-line)
+                                                var cp = searchField.cursorPosition;
+                                                killRange(cp, searchField.text.length);
+                                                event.accepted = true; return;
+                                            }
+                                            case Qt.Key_U: {
+                                                // kill to beginning of line
+                                                var cp2 = searchField.cursorPosition;
+                                                killRange(0, cp2);
+                                                event.accepted = true; return;
+                                            }
                                             case Qt.Key_B: searchField.cursorPosition = Math.max(0, searchField.cursorPosition - 1); event.accepted = true; return;
                                             case Qt.Key_F: searchField.cursorPosition = Math.min(searchField.text.length, searchField.cursorPosition + 1); event.accepted = true; return;
                                             case Qt.Key_W: {
                                                 var p = prevWordPos(searchField.cursorPosition);
-                                                searchField.text = searchField.text.slice(0, p) + searchField.text.slice(searchField.cursorPosition);
-                                                searchField.cursorPosition = p;
+                                                killRange(p, searchField.cursorPosition);
                                                 event.accepted = true; return;
                                             }
-                                            case Qt.Key_Y: if (searchField.paste) { searchField.paste(); event.accepted = true; return; } break;
+                                            case Qt.Key_Y: {
+                                                if (searchField.killBuffer && searchField.killBuffer.length > 0) {
+                                                    insertAtCursor(searchField.killBuffer);
+                                                    event.accepted = true; return;
+                                                }
+                                                if (searchField.paste) { searchField.paste(); event.accepted = true; return; }
+                                                break;
+                                            }
                                             case Qt.Key_D: { // delete char under cursor
                                                 var cp = searchField.cursorPosition; var s = searchField.text;
                                                 if (cp < s.length) { searchField.text = s.slice(0, cp) + s.slice(cp+1); }
@@ -525,11 +559,8 @@ PanelWithOverlay {
                                         switch (event.key) {
                                             case Qt.Key_F: searchField.cursorPosition = nextWordPos(searchField.cursorPosition); event.accepted = true; return;
                                             case Qt.Key_B: searchField.cursorPosition = prevWordPos(searchField.cursorPosition); event.accepted = true; return;
-                                            case Qt.Key_D: {
-                                                var n = nextWordPos(searchField.cursorPosition);
-                                                searchField.text = searchField.text.slice(0, searchField.cursorPosition) + searchField.text.slice(n);
-                                                event.accepted = true; return;
-                                            }
+                                            case Qt.Key_D: { var n = nextWordPos(searchField.cursorPosition); killRange(searchField.cursorPosition, n); event.accepted = true; return; }
+                                            case Qt.Key_Backspace: { var p2 = prevWordPos(searchField.cursorPosition); killRange(p2, searchField.cursorPosition); event.accepted = true; return; }
                                         }
                                     }
                                 }
