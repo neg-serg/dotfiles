@@ -4,7 +4,7 @@ import QtQuick
 import qs.Settings
 import qs.Services
 
-Singleton {
+Item {
     id: root
 
     property var date: new Date()

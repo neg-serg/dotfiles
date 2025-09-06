@@ -3,7 +3,7 @@ import QtQuick
 import qs.Settings
 
 // Centralized tick timers for multiple consumers
-Singleton {
+Item {
     id: root
 
     // Signals emitted on each interval
@@ -62,4 +62,3 @@ Singleton {
         onTriggered: root.tick2s()
     }
 }
-

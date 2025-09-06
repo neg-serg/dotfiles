@@ -9,7 +9,7 @@ import qs.Settings
 import qs.Components
 import "../Helpers/Utils.js" as Utils
 
-Singleton {
+Item {
     id: manager
 
     // Identify whether a player is MPD-like (mpd/mpdris/mopidy)
