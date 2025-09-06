@@ -4,6 +4,7 @@ import qs.Components
 import Quickshell.Wayland
 import qs.Settings
 import qs.Widgets.SidePanel
+import qs.Services as Services
 
 Item {
     id: root
@@ -41,13 +42,7 @@ Item {
         id: weatherOverlay
         visible: false
         WlrLayershell.namespace: "sideleft-weather"
-        onVisibleChanged: {
-            if (visible) {
-                try { weather.startWeatherFetch(); } catch (e) {}
-            } else {
-                try { weather.stopWeatherFetch(); } catch (e) {}
-            }
-        }
+        onVisibleChanged: { if (visible) { try { Services.Weather.start() } catch (e) {} } else { try { Services.Weather.stop() } catch (e) {} } }
         Rectangle {
             id: popup
             radius: Math.round(Theme.panelOverlayRadius * Theme.scale(Screen))
@@ -84,7 +79,7 @@ Item {
     function tooltipText() {
         try {
             const city = Settings.settings.weatherCity || "";
-            const data = weather.weatherData;
+            const data = Services.Weather.weatherData;
             if (data && data.current_weather && typeof data.current_weather.temperature === 'number') {
                 const c = Math.round(data.current_weather.temperature);
                 const useF = Settings.settings.useFahrenheit || false;
@@ -97,8 +92,5 @@ Item {
         }
     }
 
-    Connections {
-        target: weather
-        function onWeatherDataChanged() { weatherTip.text = root.tooltipText(); }
-    }
+    Connections { target: Services.Weather; function onWeatherDataChanged() { weatherTip.text = root.tooltipText(); } }
 }

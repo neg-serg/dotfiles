@@ -5,7 +5,7 @@ import QtQuick.Controls
 import qs.Settings
 import qs.Components
 import "../../Helpers/Color.js" as Color
-import "../../Helpers/Weather.js" as WeatherHelper
+import qs.Services as Services
  
 Rectangle {
     id: weatherRoot
@@ -15,68 +15,21 @@ Rectangle {
     anchors.horizontalCenterOffset: Theme.weatherCenterOffset
  
     property string city: Settings.settings.weatherCity !== undefined ? Settings.settings.weatherCity : ""
-    property var weatherData: null
-    property string errorString: ""
+    property var weatherData: Services.Weather.weatherData
+    property string errorString: Services.Weather.errorString
     property bool isVisible: false
     property int lastFetchTime: 0
-    property bool isLoading: false
+    property bool isLoading: Services.Weather.isLoading
  
-    Connections {
-        target: Settings.settings
-        function onWeatherCityChanged() {
-            if (isVisible && city !== "") {
-                lastFetchTime = 0;
-                fetchCityWeather();
-            }
-        }
-    }
+    Connections { target: Services.Weather; function onWeatherDataChanged() { weatherRoot.weatherData = Services.Weather.weatherData } }
  
-    Component.onCompleted: {
-        if (isVisible) {
-            fetchCityWeather()
-        }
-    }
+    Component.onCompleted: { if (isVisible) Services.Weather.start() }
  
-    function fetchCityWeather() {
-        if (!city || city.trim() === "") {
-            errorString = "No city configured";
-            return;
-        }
+    function fetchCityWeather() { Services.Weather.start() }
  
-        var currentTime = Date.now();
-        var timeSinceLastFetch = currentTime - lastFetchTime;
-
-        if (lastFetchTime > 0 && timeSinceLastFetch < 60000) { // 1 minute
-            return;
-        }
+    function startWeatherFetch() { isVisible = true; Services.Weather.start() }
  
-        isLoading = true;
-        errorString = "";
- 
-        WeatherHelper.fetchCityWeather(city,
-            function(result) {
-                weatherData = result.weather;
-                lastFetchTime = currentTime;
-                errorString = "";
-                isLoading = false;
-            },
-            function(err) {
-                errorString = err;
-                isLoading = false;
-            },
-            { userAgent: Settings.settings.userAgent, debug: Settings.settings.debugNetwork }
-        );
-    }
- 
-    function startWeatherFetch() {
-        isVisible = true
-        lastFetchTime = 0;
-        fetchCityWeather();
-    }
- 
-    function stopWeatherFetch() {
-        isVisible = false
-    }
+    function stopWeatherFetch() { isVisible = false; Services.Weather.stop() }
 
     function warnContrast(bg, fg, label) {
         try {
