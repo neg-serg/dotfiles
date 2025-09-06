@@ -535,10 +535,12 @@ PanelWithOverlay {
                                             source: (function(){
                                                 if (modelData.isCalculator) return "qrc:/icons/calculate.svg";
                                                 if (modelData.isClipboard || modelData.isCommand) return "qrc:/icons/" + modelData.icon + ".svg";
-                                                const name = modelData.icon || "";
-                                                if (!name) return "image://icon/application-x-executable";
+                                                let name = modelData.icon || "";
+                                                if (!name) return ""; // let MaterialIcon fallback handle empty
                                                 if (name.startsWith("qrc:") || name.startsWith("file:") || name.startsWith("image://")) return name;
                                                 if (name.indexOf('/') !== -1) return "file://" + name;
+                                                // Strip reverse-DNS prefixes (e.g., net.veloren.airshipper -> airshipper)
+                                                if (name.indexOf('.') !== -1) name = name.split('.').pop();
                                                 return "image://icon/" + name;
                                             })()
                                             visible: (modelData.isCalculator || modelData.isClipboard || modelData.isCommand || parent.iconLoaded) && modelData.type !== 'image'
