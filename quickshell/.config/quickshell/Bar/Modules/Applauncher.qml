@@ -171,7 +171,7 @@ PanelWithOverlay {
                 return false;
             }
 
-            // No icon/clipboard special-cases anymore
+            // No special-cases anymore
 
             function updateFilterNow() {
                 var query = searchField.text ? searchField.text.toLowerCase() : "";
@@ -179,118 +179,7 @@ PanelWithOverlay {
                 var results = [];
                 
 
-                if (query === ">") {
-                    results.push({
-                        isCommand: true,
-                        name: ">calc",
-                        content: "Calculator - evaluate mathematical expressions",
-                        icon: "calculate",
-                        execute: function() {
-                            searchField.text = ">calc ";
-                            searchField.cursorPosition = searchField.text.length;
-                        }
-                    });
-                    
-                    results.push({
-                        isCommand: true,
-                        name: ">clip",
-                        content: "Clipboard history - browse and restore clipboard items",
-                        icon: "content_paste",
-                        execute: function() {
-                            searchField.text = ">clip ";
-                            searchField.cursorPosition = searchField.text.length;
-                        }
-                    });
-                    
-                    root.filteredApps = results;
-                    return;
-                }
-                
-
-                if (query.startsWith(">clip")) {
-                    Services.Clipboard.enabled = appLauncherPanel.visible;
-                    const searchTerm = query.slice(5).trim();
-                    
-                    clipboardHistory.forEach(function(clip, index) {
-                        let searchContent = clip.type === 'image' ? clip.mimeType : (clip.content || clip);
-                            
-                        if (!searchTerm || searchContent.toLowerCase().includes(searchTerm)) {
-                            let entry;
-                            if (clip.type === 'image') {
-                                entry = {
-                                    isClipboard: true,
-                                    name: "Image from " + new Date(clip.timestamp).toLocaleTimeString(),
-                                    content: "Image: " + clip.mimeType,
-                                    icon: "image",
-                                    type: 'image',
-                                    data: clip.data,
-                                    execute: function() {
-                                        const base64Data = clip.data.split(',')[1];
-                                        Quickshell.execDetached(["sh", "-c", `echo '${base64Data}' | base64 -d | wl-copy -t '${clip.mimeType}'`]);
-                                    }
-                                };
-                            } else {
-                                const textContent = clip.content || clip;
-                                let displayContent = textContent;
-                                let previewContent = "";
-                                
-                                // Clean up whitespace for display
-                                displayContent = displayContent.replace(/\s+/g, ' ').trim();
-                                
-                                // Truncate long content and show preview
-                                if (displayContent.length > 50) {
-                                    previewContent = displayContent;
-                                    // Show first line or first 50 characters as title
-                                    displayContent = displayContent.split('\n')[0].substring(0, 50) + "...";
-                                }
-                                
-                                entry = {
-                                    isClipboard: true,
-                                    name: displayContent,
-                                    content: previewContent || textContent,
-                                    icon: "content_paste",
-                                    execute: function() {
-                                        Quickshell.execDetached(["sh", "-c", "echo -n '" + textContent.replace(/'/g, "'\\''") + "' | wl-copy"]);
-                                    }
-                                };
-                            }
-                            results.push(entry);
-                        }
-                    });
-                    
-                    if (results.length === 0) {
-                        results.push({
-                            isClipboard: true,
-                            name: "No clipboard history",
-                            content: "No matching clipboard entries found",
-                            icon: "content_paste_off"
-                        });
-                    }
-                    
-                    root.filteredApps = results;
-                    return;
-                }
-                
-
-                if (query.startsWith(">calc")) {
-                    var expr = searchField.text.slice(5).trim();
-                    if (expr && isMathExpression(expr)) {
-                        var value = safeEval(expr);
-                        if (value !== undefined && value !== null && value !== "") {
-                            results.push({
-                                isCalculator: true,
-                                name: `Calculator: ${expr} = ${value}`,
-                                result: value,
-                                expr: expr,
-                                icon: "calculate"
-                            });
-                        }
-                    }
-                    
-                    root.filteredApps = results;
-                    root.selectedIndex = 0;
-                    return;
-                }
+                // No special '>' commands; clipboard/calculator removed
                 if (!query) {
                     results = results.concat(apps.sort(function (a, b) {
                         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
@@ -545,12 +434,7 @@ PanelWithOverlay {
                             delegate: Item {
                                 id: appDelegate
                                 width: appList.width
-                                // Hide entries without icons by collapsing height
-                                height: (visible)
-                                        ? ((modelData.isClipboard || modelData.isCommand)
-                                            ? Math.round(Theme.applauncherListItemHeightLarge * Theme.scale(Screen) * appLauncherPanelRect.compactScale * 0.85)
-                                            : Math.round(Theme.applauncherListItemHeight * Theme.scale(Screen) * appLauncherPanelRect.compactScale * 0.85))
-                                        : 0
+                                height: Math.round(Theme.applauncherListItemHeight * Theme.scale(Screen) * appLauncherPanelRect.compactScale * 0.85)
                                 property bool hovered: mouseArea.containsMouse
                                 property bool isSelected: index === root.selectedIndex
 
@@ -606,19 +490,7 @@ PanelWithOverlay {
                                         }
                                     }
 
-                                    Item {
-                                        Layout.fillWidth: true
-                                    }
-
-                                    MaterialIcon {
-                                        icon: modelData.isCalculator ? "content_copy" : "chevron_right"
-                                        size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen) * appLauncherPanelRect.compactScale)
-                                        color: (hovered || isSelected) ? Theme.onAccent : Theme.textSecondary
-                                        Layout.rightMargin: Theme.panelRowSpacingSmall
-                                    }
-
-            
-                                    Item { width: Theme.panelRowSpacingSmall; height: Theme.uiGapTiny }
+                                    // trailing space removed (no icons)
                                 }
                                 // All entries visible; icons removed
                                 visible: true

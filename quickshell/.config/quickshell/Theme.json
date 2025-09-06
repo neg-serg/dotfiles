@@ -303,10 +303,7 @@
     "list": {
       "itemHeight": 48,
       "itemHeightLarge": 64,
-      "opacity": {
-        "command": 0.9,
-        "noMeta": 0.6
-      }
+      "opacity": { "noMeta": 0.6 }
     },
     "content": {
       "margin": 32

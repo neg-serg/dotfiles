@@ -623,7 +623,6 @@ Singleton {
     property int uiEasingStdIn: easingType(val('ui.anim.easing.stdIn', 'InCubic'), 'InCubic')
     property int uiEasingInOut: easingType(val('ui.anim.easing.inOut', 'InOutQuad'), 'InOutQuad')
     // Applauncher entry opacities
-    property real applauncherCommandEntryOpacity: Utils.clamp(val('applauncher.list.opacity.command', 0.9), 0, 1)
     property real applauncherNoMetaOpacity: Utils.clamp(val('applauncher.list.opacity.noMeta', 0.6), 0, 1)
     // Calendar popup sizing
     property int calendarWidth: Utils.clamp(val('calendar.size.width', 280), 200, 800)
