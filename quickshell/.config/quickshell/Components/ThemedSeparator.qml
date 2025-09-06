@@ -38,8 +38,7 @@ Item {
     // For horizontal: true = bottom edge, false = top edge
     property bool  stripeOnBottom: true
 
-    // Back-compat alias: allow using 'alpha' like DiagonalSeparatorRect
-    property alias alpha: root.sepOpacity
+    // Note: legacy 'alpha' alias removed; use sepOpacity
 
     // Implicit sizing defaults per kind
     implicitWidth: (kind === "diagonal") ? Theme.uiDiagonalSeparatorImplicitWidth
