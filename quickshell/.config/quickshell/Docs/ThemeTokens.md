@@ -131,6 +131,12 @@ Examples
 Debugging
 - Strict token warnings: set `Settings.settings.strictThemeTokens` to true to log a warning whenever a Theme token is missing and a fallback is used. Helps ensure themes define all tokens you rely on.
 
+Tools
+- Validation: `node Tools/validate-theme.mjs [--theme Theme.json] [--schema Docs/ThemeHierarchical.json] [--strict]`
+  - Reports unknown (extra), flat (legacy), deprecated, and missing tokens (missing is informational unless `--strict`).
+- Generate example schema: `node Tools/generate-theme-schema.mjs`
+  - Rebuilds `Docs/ThemeHierarchical.json` from the repository `Theme.json` (single source for docs), preventing drift.
+
 Deprecations and Migration
 - Deprecated (removed): media.time.fontScale — removed in Sep 2025 as time spans follow main text size. Remove from Theme.json; no replacement needed.
 - Flat (legacy) tokens: compatibility remains until 2025-11-01. After this date, flat keys stop working. Migrate to hierarchical tokens in Theme.json.
