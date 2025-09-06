@@ -476,6 +476,64 @@ PanelWithOverlay {
                                 Component.onCompleted: contentItem.cursorColor = Theme.textPrimary
                                 onActiveFocusChanged: contentItem.cursorColor = Theme.textPrimary
 
+                                // Emacs-style editing/navigation helpers
+                                function isWordChar(ch) { return /[A-Za-z0-9_]/.test(ch); }
+                                function nextWordPos(pos) {
+                                    var s = text; var L = s.length; var i = Math.max(0, Math.min(L, pos));
+                                    if (i >= L) return L;
+                                    if (isWordChar(s[i])) { while (i < L && isWordChar(s[i])) i++; }
+                                    else { while (i < L && !isWordChar(s[i])) i++; while (i < L && isWordChar(s[i])) i++; }
+                                    return i;
+                                }
+                                function prevWordPos(pos) {
+                                    var s = text; var i = Math.max(0, Math.min(s.length, pos));
+                                    if (i <= 0) return 0;
+                                    if (isWordChar(s[i-1])) { while (i > 0 && isWordChar(s[i-1])) i--; }
+                                    else { while (i > 0 && !isWordChar(s[i-1])) i--; while (i > 0 && isWordChar(s[i-1])) i--; }
+                                    return i;
+                                }
+
+                                Keys.onPressed: function(event) {
+                                    // Control-based navigation
+                                    if (event.modifiers & Qt.ControlModifier) {
+                                        switch (event.key) {
+                                            case Qt.Key_N: root.selectNext(); event.accepted = true; return;
+                                            case Qt.Key_P: root.selectPrev(); event.accepted = true; return;
+                                            case Qt.Key_G: appLauncherPanel.hidePanel(); event.accepted = true; return;
+                                            case Qt.Key_A: searchField.cursorPosition = 0; event.accepted = true; return;
+                                            case Qt.Key_E: searchField.cursorPosition = searchField.text.length; event.accepted = true; return;
+                                            case Qt.Key_K: searchField.text = searchField.text.slice(0, searchField.cursorPosition); event.accepted = true; return;
+                                            case Qt.Key_U: searchField.text = searchField.text.slice(searchField.cursorPosition); searchField.cursorPosition = 0; event.accepted = true; return;
+                                            case Qt.Key_B: searchField.cursorPosition = Math.max(0, searchField.cursorPosition - 1); event.accepted = true; return;
+                                            case Qt.Key_F: searchField.cursorPosition = Math.min(searchField.text.length, searchField.cursorPosition + 1); event.accepted = true; return;
+                                            case Qt.Key_W: {
+                                                var p = prevWordPos(searchField.cursorPosition);
+                                                searchField.text = searchField.text.slice(0, p) + searchField.text.slice(searchField.cursorPosition);
+                                                searchField.cursorPosition = p;
+                                                event.accepted = true; return;
+                                            }
+                                            case Qt.Key_Y: if (searchField.paste) { searchField.paste(); event.accepted = true; return; } break;
+                                            case Qt.Key_D: { // delete char under cursor
+                                                var cp = searchField.cursorPosition; var s = searchField.text;
+                                                if (cp < s.length) { searchField.text = s.slice(0, cp) + s.slice(cp+1); }
+                                                event.accepted = true; return;
+                                            }
+                                        }
+                                    }
+                                    // Alt-based word navigation
+                                    if (event.modifiers & Qt.AltModifier) {
+                                        switch (event.key) {
+                                            case Qt.Key_F: searchField.cursorPosition = nextWordPos(searchField.cursorPosition); event.accepted = true; return;
+                                            case Qt.Key_B: searchField.cursorPosition = prevWordPos(searchField.cursorPosition); event.accepted = true; return;
+                                            case Qt.Key_D: {
+                                                var n = nextWordPos(searchField.cursorPosition);
+                                                searchField.text = searchField.text.slice(0, searchField.cursorPosition) + searchField.text.slice(n);
+                                                event.accepted = true; return;
+                                            }
+                                        }
+                                    }
+                                }
+
                                 Keys.onDownPressed: root.selectNext()
                                 Keys.onUpPressed: root.selectPrev()
                                 Keys.onEnterPressed: root.activateSelected()
