@@ -25,6 +25,9 @@ Item {
                  || (MusicManager.trackTitle && MusicManager.trackTitle.length > 0))
 
     property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
+    // Accent derived from current cover art (dominant color)
+    property color mediaAccent: Theme.accentPrimary
+    property string mediaAccentCss: Format.colorCss(mediaAccent, 1)
 
     RowLayout {
         id: mediaRow
@@ -57,6 +60,40 @@ Item {
                     source: (MusicManager.coverUrl || "")
                     fillMode: Image.PreserveAspectCrop
                     visible: status === Image.Ready
+                    onStatusChanged: { if (status === Image.Ready) colorSampler.requestPaint() }
+                }
+
+                // Offscreen canvas to sample dominant color from cover art
+                Canvas {
+                    id: colorSampler
+                    width: 24; height: 24; visible: false
+                    onPaint: {
+                        try {
+                            var ctx = getContext('2d');
+                            ctx.reset();
+                            if (!cover.source || cover.source.toString() === '') return;
+                            ctx.drawImage(cover.source, 0, 0, width, height);
+                            var img = ctx.getImageData(0, 0, width, height);
+                            var data = img.data; var len = data.length;
+                            var rs=0, gs=0, bs=0, n=0;
+                            for (var i=0; i<len; i+=4) {
+                                var a = data[i+3]; if (a < 128) continue;
+                                var r = data[i], g = data[i+1], b = data[i+2];
+                                var maxv = Math.max(r,g,b), minv = Math.min(r,g,b);
+                                var sat = maxv - minv; if (sat < 15) continue; // skip near-gray
+                                var lum = (r+g+b)/3; if (lum < 30 || lum > 230) continue; // skip extremes
+                                rs += r; gs += g; bs += b; ++n;
+                            }
+                            if (n > 0) {
+                                var rr = Math.min(255, Math.round(rs/n));
+                                var gg = Math.min(255, Math.round(gs/n));
+                                var bb = Math.min(255, Math.round(bs/n));
+                                mediaControl.mediaAccent = Qt.rgba(rr/255.0, gg/255.0, bb/255.0, 1);
+                            } else {
+                                mediaControl.mediaAccent = Theme.accentPrimary;
+                            }
+                        } catch (e) { /* ignore */ }
+                    }
                 }
 
                 MaterialIcon {
@@ -206,7 +243,7 @@ Item {
                 })()
                 peakOpacity: Theme.spectrumPeakOpacity
                 useGradient: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient : Settings.settings.spectrumUseGradient
-                barColor: Theme.accentPrimary
+                barColor: mediaControl.mediaAccent
                 z: -1
             }
 
@@ -230,8 +267,8 @@ Item {
                     textFormat: Text.RichText
                     renderType: Text.NativeRendering
                     wrapMode: Text.NoWrap
-                    // Brackets use the standard accent color
-                    property string bracketColor: Format.colorCss(Theme.accentPrimary, 1)
+                    // Brackets use the dominant cover accent color
+                    property string bracketColor: mediaControl.mediaAccentCss
                     property string timeColor: (function(){
                         var c = MusicManager.isPlaying ? Theme.textPrimary : Theme.textSecondary;
                         var a = MusicManager.isPlaying ? Theme.mediaTimeAlphaPlaying : Theme.mediaTimeAlphaPaused;
@@ -245,7 +282,7 @@ Item {
                         const sepChar = (Settings.settings.mediaTitleSeparator || '—');
                         const t = Rich.esc(trackText.titlePart)
                                    .replace(/\s(?:-|–|—)\s/g, function(){
-                                       return "&#8201;" + Rich.sepSpan(Theme.accentHover, sepChar) + "&#8201;";
+                                       return "&#8201;" + Rich.sepSpan(mediaControl.mediaAccentCss, sepChar) + "&#8201;";
                                    });
                         const cur = Format.fmtTime(MusicManager.currentPosition || 0);
                         const tot = Format.fmtTime(Time.mprisToMs(MusicManager.trackLength || 0));
@@ -253,7 +290,7 @@ Item {
                         return t
                                + " &#8201;" + Rich.bracketSpan(trackText.bracketColor, bp.l)
                                + Rich.timeSpan(trackText.timeColor, cur)
-                               + Rich.sepSpan(Theme.accentHover, '/')
+                               + Rich.sepSpan(mediaControl.mediaAccentCss, '/')
                                + Rich.timeSpan(trackText.timeColor, tot)
                                + Rich.bracketSpan(trackText.bracketColor, bp.r);
                     })()
