@@ -23,7 +23,7 @@ PanelWithOverlay {
         }
     }
     // Clipboard integration via service
-    property alias clipboardHistory: Services.Clipboard.history
+    readonly property var clipboardHistory: Services.Clipboard.history
     Connections { target: Services.Clipboard; function onHistoryChanged() { root.updateFilter() } }
 
     // Old clipboard ProcessRunners removed; use Services.Clipboard instead
