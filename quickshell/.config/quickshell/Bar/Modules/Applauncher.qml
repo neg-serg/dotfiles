@@ -437,13 +437,6 @@ PanelWithOverlay {
                         anchors.rightMargin: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
                         spacing: Math.round(Theme.uiSpacingXSmall * appLauncherPanelRect.compactScale)
 
-                            MaterialIcon {
-                                icon: "search"
-                                size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen) * appLauncherPanelRect.compactScale)
-                                color: searchField.activeFocus ? Theme.accentPrimary : Theme.textSecondary
-                                Layout.alignment: Qt.AlignVCenter
-                            }
-
                             TextField {
                                 id: searchField
                                 placeholderText: "Search apps..."
@@ -527,74 +520,7 @@ PanelWithOverlay {
                                     anchors.leftMargin: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
                                     anchors.rightMargin: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
                                     spacing: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
-
-                                    Item {
-                                        id: iconCell
-                                        width: Math.round(Theme.panelIconSize * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
-                                        height: Math.round(Theme.panelIconSize * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
-                                        property bool iconLoaded: !modelData.isCalculator && !modelData.isClipboard && !modelData.isCommand && iconImg.status === Image.Ready && iconImg.source !== "" && iconImg.status !== Image.Error
-                                        
-                                        Image {
-                                            id: clipboardImage
-                                            anchors.fill: parent
-                                            visible: modelData.type === 'image'
-                                            source: modelData.data || ""
-                                            fillMode: Image.PreserveAspectCrop
-                                            asynchronous: true
-                                            cache: true
-
-                                            MouseArea {
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-                                                propagateComposedEvents: true
-                                                onContainsMouseChanged: {
-                                                    if (containsMouse && modelData.type === 'image') {
-                                                        previewImage.source = modelData.data;
-                                                        previewPanel.visible = true;
-                                                    } else {
-                                                        previewPanel.visible = false;
-                                                    }
-                                                }
-                                                onMouseXChanged: mouse.accepted = false
-                                                onMouseYChanged: mouse.accepted = false
-                                                onClicked: mouse.accepted = false
-                                            }
-                                        }
-
-                                        IconImage {
-                                            id: iconImg
-                                            anchors.fill: parent
-                                            asynchronous: true
-                                            // Resolve icons robustly: qrc/svg for commands, theme icons via image provider, or fallback
-                                            source: (function(){
-                                                if (modelData.isCalculator) return "qrc:/icons/calculate.svg";
-                                                if (modelData.isClipboard || modelData.isCommand) return "qrc:/icons/" + modelData.icon + ".svg";
-                                                let name = modelData.icon || "";
-                                                if (!name || name === "application-x-executable") return ""; // force fallback icon
-                                                if (name.startsWith("qrc:") || name.startsWith("file:") || name.startsWith("image://")) return name;
-                                                if (name.indexOf('/') !== -1) {
-                                                    // Prefer theme icon by basename over direct file path to avoid file:// warnings
-                                                    let base = name.substring(name.lastIndexOf('/') + 1);
-                                                    if (base.endsWith('.png') || base.endsWith('.svg') || base.endsWith('.xpm')) {
-                                                        base = base.replace(/\.(png|svg|xpm)$/i, '');
-                                                    }
-                                                    return "image://icon/" + base.toLowerCase().replace(/[\s_]+/g, '-');
-                                                }
-                                                // Strip reverse-DNS prefixes (e.g., net.veloren.airshipper -> airshipper)
-                                                if (name.indexOf('.') !== -1) name = name.split('.').pop();
-                                                return "image://icon/" + name.toLowerCase().replace(/[\s_]+/g, '-');
-                                            })()
-                                            visible: (modelData.isCalculator || modelData.isClipboard || modelData.isCommand || parent.iconLoaded) && modelData.type !== 'image'
-                                        }
-                                        
-                                        MaterialIcon {
-                                            anchors.centerIn: parent
-                                            visible: !modelData.isCalculator && !modelData.isClipboard && !modelData.isCommand && !parent.iconLoaded && modelData.type !== 'image'
-                                            icon: Settings.settings.trayFallbackIcon || "broken_image"
-                                            size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen) * appLauncherPanelRect.compactScale)
-                                            color: Theme.accentPrimary
-                                        }
-                                    }
+                                    // No icon cell — compact text-only layout
 
                                     ColumnLayout {
                                         Layout.fillWidth: true
@@ -645,8 +571,8 @@ PanelWithOverlay {
             
                                     Item { width: Theme.panelRowSpacingSmall; height: Theme.uiGapTiny }
                                 }
-                                // Filter out entries without a real icon (commands/clipboard allowed)
-                                visible: modelData.isCalculator || modelData.isClipboard || modelData.isCommand || iconCell.iconLoaded
+                                // All entries visible; icons removed
+                                visible: true
 
                                 Rectangle {
                                     id: ripple
