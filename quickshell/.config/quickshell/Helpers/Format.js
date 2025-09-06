@@ -1,31 +1,14 @@
 .pragma library
 // Bridge to RichText helpers for consistency
-// Use Qt.include to avoid dupe logic; fallback remains available
+// Use Qt.include to rely on Helpers/RichText.js for rich text utilities
 try { Qt.include("./RichText.js"); } catch (e) {}
 
 // Helpers/Format.js — common lightweight formatting utilities
 
-function htmlEscape(s) {
-    s = (s === undefined || s === null) ? "" : String(s);
-    return s
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-}
-
 // Return a colored inline separator span (default '/') for rich text
+// Delegates to Helpers/RichText.js
 function sepSpan(colorCss, ch) {
-    try {
-        if (typeof RichRT !== 'undefined' && RichRT && typeof RichRT.sepSpan === 'function') {
-            return RichRT.sepSpan(colorCss, ch);
-        }
-    } catch (e) {}
-    // Fallback implementation
-    var c = (colorCss === undefined || colorCss === null) ? "inherit" : String(colorCss);
-    var s = (ch === undefined || ch === null) ? '/' : String(ch);
-    return "<span style='color:" + c + "'>" + htmlEscape(s) + "</span>";
+    return RichRT.sepSpan(colorCss, ch);
 }
 
 // Convert a QML color (or CSS color string) to CSS rgba() string.
