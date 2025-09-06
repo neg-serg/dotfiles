@@ -1,6 +1,7 @@
 Theme Color Tokens and Derivations
 
 Overview
+See also: Docs/RichText.md for helpers used to color separators, brackets, and time spans in rich text labels (Media, NetworkUsage, WsIndicator).
 - Base palette (user-configurable in Theme.json):
   - background
   - surface/surfaceVariant
