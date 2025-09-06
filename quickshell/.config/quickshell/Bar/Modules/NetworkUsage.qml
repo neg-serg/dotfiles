@@ -4,56 +4,46 @@ import qs.Settings
 import "../../Helpers/Format.js" as Format
 import "../../Helpers/Utils.js" as Utils
 import qs.Components
+import qs.Services as Services
 
 Item {
     id: root
-    // Public props
     property var    screen: null
     property int    desiredHeight: Math.round(Theme.panelHeight * Theme.scale(Screen))
-    property int    fontPixelSize: 0
+    // Use standard small font size to match other bar text
+    property int    fontPixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
     property color  textColor: Theme.textPrimary
-    // Separator color (matches workspace/media)
     property color  separatorColor: Theme.accentHover
     property color  bgColor:   "transparent"
     property int    iconSpacing: Theme.panelRowSpacingSmall
     property string deviceMatch: ""
-    property var    cmd: ["rsmetrx"]
-    property string displayText: "0/0K"
+    property string displayText: "0"
     property bool   useTheme: true
-    // Connectivity state
-    property bool   hasLink: true
-    property bool   hasInternet: true
+    property bool   hasLink: Services.Connectivity.hasLink
+    property bool   hasInternet: Services.Connectivity.hasInternet
 
-    // Icon tuning
     property real   iconScale: Theme.networkIconScale
-    // Base icon color (used when link+internet are OK)
     property color  iconColor: useTheme ? Theme.textSecondary : Theme.textSecondary
-    property int    iconVAdjust: Theme.networkIconVAdjust   // vertical nudge (px) for the icon
-    property string iconText: ""                  // Font Awesome: network-wired
+    property int    iconVAdjust: Theme.networkIconVAdjust   // vertical nudge (px)
+    property string iconText: ""
     property string iconFontFamily: "Font Awesome 6 Free"
     property string iconStyleName: "Solid"
 
-    // Text padding
     property int    textPadding: Theme.panelRowSpacingSmall
 
-    // Sizing
     implicitHeight: desiredHeight
     width: inlineView.implicitWidth
     height: desiredHeight
 
-    // Optional background
     Rectangle {
         anchors.fill: parent
         color: bgColor
         visible: bgColor !== "transparent"
     }
 
-    // Computed font size
     readonly property int computedFontPx: fontPixelSize > 0
         ? fontPixelSize
         : Utils.computedInlineFontPx(desiredHeight, textPadding, Theme.panelComputedFontScale)
-
-    // Font metrics no longer needed after refactor
 
     SmallInlineStat {
         id: inlineView
@@ -78,83 +68,21 @@ Item {
         labelFontFamily: Theme.fontFamily
     }
 
-    // External process (streaming lines)
-    ProcessRunner {
-        id: runner
-        cmd: root.cmd
-        backoffMs: Theme.networkRestartBackoffMs
-        onLine: (line) => parseJsonLine(line)
-    }
-
-    // Link detection via `ip -j -br a`
-    Timer {
-        id: linkPoll
-        interval: Theme.networkLinkPollMs
-        repeat: true
-        running: true
-        onTriggered: linkProbe.start()
-    }
-    ProcessRunner {
-        id: linkProbe
-        cmd: ["bash", "-lc", "ip -j -br a"]
-        parseJson: true
-        autoStart: false
-        restartOnExit: false
-        onJson: (arr) => {
-            try {
-                let up = false
-                for (let it of arr) {
-                    const name = (it && it.ifname) ? String(it.ifname) : ""
-                    if (!name || name === "lo") continue
-                    const state = (it && it.operstate) ? String(it.operstate) : ""
-                    const addrs = Array.isArray(it?.addr_info) ? it.addr_info : []
-                    if (state === "UP" || (state === "UNKNOWN" && addrs.length > 0)) { up = true; break }
-                }
-                root.hasLink = up
-            } catch (e) { }
-        }
-    }
-
-    // Internet reachability: ping 1.1.1.1
-    Timer {
-        id: inetPoll
-        interval: (function(){ var v = Utils.coerceInt(Settings.settings.networkPingIntervalMs, 30000); return Utils.clamp(v, 1000, 600000); })()
-        repeat: true
-        running: true
-        onTriggered: {
-            if (!root.hasLink) { root.hasInternet = false; return }
-            inetProbe.start()
-        }
-    }
-    ProcessRunner {
-        id: inetProbe
-        cmd: ["bash", "-lc", "ping -n -c1 -W1 1.1.1.1 >/dev/null && echo OK || echo FAIL"]
-        autoStart: false
-        restartOnExit: false
-        onLine: (line) => { if (String(line||"").trim().indexOf("OK") !== -1) root.hasInternet = true; else root.hasInternet = false }
-    }
-
-    // Parse rsmetrx JSON
-    function parseJsonLine(line) {
-        try {
-            const data = JSON.parse(line)
-            if (typeof data.rx_kib_s === "number" && typeof data.tx_kib_s === "number") {
-                root.displayText = formatData(data)
-            } else { /* ignore invalid line */ }
-        } catch (e) { /* ignore parse errors */ }
-    }
-
-    // "12.3/4.5K" (single K suffix) or "0"
-    function formatData(data) {
-        if (data.rx_kib_s === 0 && data.tx_kib_s === 0) return "0"
-        return `${fmtKiBps(data.rx_kib_s)}/${fmtKiBps(data.tx_kib_s)}K`
-    }
-
     function fmtKiBps(kib) { return kib.toFixed(1) }
+    function formatRxTx(rx, tx) {
+        try {
+            if (!isFinite(rx)) rx = 0; if (!isFinite(tx)) tx = 0;
+            if (rx === 0 && tx === 0) return "0";
+            return `${fmtKiBps(rx)}/${fmtKiBps(tx)}K`;
+        } catch (e) { return "0"; }
+    }
+    Connections {
+        target: Services.Connectivity
+        function onRxKiBpsChanged() { root.displayText = formatRxTx(Services.Connectivity.rxKiBps, Services.Connectivity.txKiBps) }
+        function onTxKiBpsChanged() { root.displayText = formatRxTx(Services.Connectivity.rxKiBps, Services.Connectivity.txKiBps) }
+    }
+    Component.onCompleted: { displayText = formatRxTx(Services.Connectivity.rxKiBps, Services.Connectivity.txKiBps) }
 
-    Component.onCompleted: {}
-
-    // Icon color from connectivity
     function currentIconColor() {
         if (!root.hasLink) return (Settings.settings.networkNoLinkColor || Theme.error)
         if (!root.hasInternet) return (Settings.settings.networkNoInternetColor || Theme.warning)

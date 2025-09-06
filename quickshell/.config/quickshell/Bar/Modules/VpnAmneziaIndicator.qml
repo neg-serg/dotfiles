@@ -4,14 +4,15 @@ import qs.Components
 import "../../Helpers/Color.js" as Color
 import qs.Settings
 import "../../Helpers/Utils.js" as Utils
+import qs.Services as Services
 
 // Amnezia VPN status indicator (polls `ip -j -br a`)
 Item {
     id: root
 
-    // Public API
     property int   desiredHeight: Math.round(Theme.panelHeight * Theme.scale(Screen))
-    property int   fontPixelSize: 0
+    // Match network usage label size with standard small font
+    property int   fontPixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
     property bool  useTheme: true
     property bool  showLabel: true
     property int   iconSpacing: Theme.vpnIconSpacing
@@ -19,30 +20,22 @@ Item {
     property int   iconVAdjust: Theme.vpnIconVAdjust
     property real  iconScale: Theme.vpnIconScale
     property color bgColor: "transparent"
-    // Material Symbols icon
     property string iconName: "verified_user"
     property bool   iconRounded: false
 
-    // Colors
     property real accentSaturateBoost: Theme.vpnAccentSaturateBoost
     property real accentLightenTowardWhite: Theme.vpnAccentLightenTowardWhite
-    // Slightly lighter/more saturated variant of accent
     property color onColor:  Color.towardsWhite(Color.saturate(Theme.accentPrimary, accentSaturateBoost), accentLightenTowardWhite)
     property color offColor: useTheme ? Theme.textDisabled  : Theme.textDisabled
-    // Accent derived from Theme; desaturated for subtle look
-    property real  desaturateAmount: Theme.vpnDesaturateAmount   // 0..1, higher = less saturated
-    // Base accent for subtle styling (then desaturated by desaturateAmount below)
+    property real  desaturateAmount: Theme.vpnDesaturateAmount
     property color accentBase: Color.saturate(Theme.accentPrimary, accentSaturateBoost)
     property color accentColor: desaturateColor(accentBase, desaturateAmount)
 
-    // Opacity
     property real connectedOpacity: Theme.vpnConnectedOpacity
     property real disconnectedOpacity: Theme.vpnDisconnectedOpacity
-    // Internal state
     property bool connected: false
     property string matchedIf: ""
 
-    // Size / visibility
     visible: connected
     implicitHeight: desiredHeight
     width: inlineView.implicitWidth
@@ -67,21 +60,15 @@ Item {
         labelColor: root.iconColor()
     }
 
-    // Poll JSON output
-    ProcessRunner {
-        id: runner
-        cmd: ["bash", "-lc", "ip -j -br a"]
-        intervalMs: Theme.vpnPollMs
-        parseJson: true
-        onJson: (obj) => {
-            try { checkInterfaces(obj) }
+    Connections {
+        target: Services.Connectivity
+        function onInterfacesChanged() {
+            try { checkInterfaces(Services.Connectivity.interfaces) }
             catch (e) { root.connected = false; root.matchedIf = "" }
         }
     }
 
-    // Color helpers
     function mixColor(a, b, t) {
-        // a,b: colors; t in [0,1]
         return Qt.rgba(
             a.r * (1 - t) + b.r * t,
             a.g * (1 - t) + b.g * t,
@@ -114,13 +101,11 @@ Item {
         root.matchedIf = name
     }
 
-    // Subtle styling
     property bool  muted: true
     property bool  hovered: false
     opacity: hovered ? 1.0 : (connected ? connectedOpacity : disconnectedOpacity)
     function iconColor() {
         if (!connected) return offColor
-        // Use accent when connected; hover affects opacity only
         return accentColor
     }
 
@@ -133,5 +118,5 @@ Item {
         cursorShape: Qt.ArrowCursor
     }
 
-    Component.onCompleted: { /* poller starts automatically via intervalMs */ }
+    Component.onCompleted: { try { checkInterfaces(Services.Connectivity.interfaces) } catch (_) {} }
 }
