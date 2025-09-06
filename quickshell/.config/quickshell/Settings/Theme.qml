@@ -48,6 +48,15 @@ Singleton {
             return color; // conservative fallback
         }
     }
+
+    // Convenience: choose readable text color for a background
+    function textOn(bg, preferLight, preferDark) {
+        try {
+            var light = (preferLight !== undefined) ? preferLight : textPrimary;
+            var dark  = (preferDark  !== undefined) ? preferDark  : textSecondary;
+            return Color.contrastOn(bg, light, dark, contrastThreshold);
+        } catch (e) { return textPrimary; }
+    }
     
     // FileView to load theme data from JSON file
     FileView {
@@ -532,6 +541,8 @@ Singleton {
     // Workspace indicator tuning
     property int  wsIconBaselineOffset: val('ws.icon.baselineOffset', 4)
     property int  wsIconSpacing: val('ws.icon.spacing', 1)
+    // Optional overrides for submap icon mapping
+    property var  wsSubmapIconOverrides: (function(){ var v = val('ws.submap.icon.overrides', undefined); return (v && typeof v === 'object') ? v : ({}); })()
     // Submap icon baseline vs. text
     property int  wsSubmapIconBaselineOffset: val('ws.submap.icon.baselineOffset', 0)
     // Color of the submap icon

@@ -7,6 +7,7 @@ import qs.Components
 import qs.Services
 import qs.Settings
 import "../../Helpers/Format.js" as Format
+import "../../Helpers/WsIconMap.js" as WsMap
 
 Item {
     id: root
@@ -16,92 +17,11 @@ Item {
     // Vertical alignment of submap icon (px; negative moves up)
     property int submapBaselineAdjust: Theme.wsSubmapIconBaselineOffset
     property var submapDynamicMap: ({})
-    // Known submaps → Material Symbols
-    readonly property var submapIconMap: ({
-        // movement / resizing
-        "move":                "open_with",
-        "moving":              "open_with",
-        "resize":              "open_in_full",
-        "swap":                "swap_horiz",
-        "swap_ws":             "swap_horiz",
-        // launching / apps
-        "launcher":            "apps",
-        "launch":              "apps",
-        // media / volume / brightness
-        "media":               "play_circle",
-        "volume":              "volume_up",
-        "brightness":          "brightness_6",
-        // windows / tiling / workspaces / monitors
-        "window":              "web_asset",
-        "windows":             "web_asset",
-        "tile":                "grid_on",
-        "tiling":              "grid_on",
-        "ws":                  "grid_view",
-        "workspace":           "grid_view",
-        "monitor":             "monitor",
-        "display":             "monitor",
-        // tools / system
-        "system":              "settings",
-        "tools":               "build_circle",
-        "gaps":                "crop_square",
-        // text / edit / select / clipboard
-        "select":              "select_all",
-        "edit":                "edit",
-        "copy":                "content_copy",
-        "paste":               "content_paste",
-        // terminals / code / search / screenshot
-        "terminal":            "terminal",
-        "shell":               "terminal",
-        "code":                "code",
-        "search":              "search",
-        "screenshot":          "screenshot",
-        // browsers
-        "browser":             "language",
-        "web":                 "language",
-        // explicit mappings for discovered submaps
-        "special":             "view_in_ar",
-        "wallpaper":           "wallpaper",
-    })
-
-    
-    function geometricFallbackIcon(name) {
-        const shapes = [
-            "crop_square", "radio_button_unchecked", "change_history",
-            "hexagon", "pentagon", "diamond"
-        ];
-        let h = 0;
-        const s = (name || "").toLowerCase();
-        for (let i = 0; i < s.length; i++) h = (h * 33 + s.charCodeAt(i)) >>> 0;
-        return shapes[h % shapes.length];
-    }
+    // Map submap name to icon via helper + overrides + dynamic mapping
     function submapIconName(name) {
         const key = (name || "").toLowerCase().trim();
-        // Dynamic mapping first
         if (submapDynamicMap && submapDynamicMap[key]) return submapDynamicMap[key];
-        // Then static table
-        if (submapIconMap[key]) return submapIconMap[key];
-        // Heuristics
-        if (/resiz/.test(key)) return "open_in_full";
-        if (/move|drag/.test(key)) return "open_with";
-        if (/swap/.test(key)) return "swap_horiz";
-        if (/launch|launcher/.test(key)) return "apps";
-        if (/media/.test(key)) return "play_circle";
-        if (/vol|audio|sound/.test(key)) return "volume_up";
-        if (/bright|light/.test(key)) return "brightness_6";
-        if (/(^|_)ws|work|desk|tile|grid/.test(key)) return "grid_view";
-        if (/mon|display|screen|output/.test(key)) return "monitor";
-        if (/term|shell|tty/.test(key)) return "terminal";
-        if (/code|dev/.test(key)) return "code";
-        if (/search|find/.test(key)) return "search";
-        if (/shot|screen.*shot|snap/.test(key)) return "screenshot";
-        if (/browser|web|http/.test(key)) return "language";
-        if (/select|sel/.test(key)) return "select_all";
-        if (/edit/.test(key)) return "edit";
-        if (/copy|yank/.test(key)) return "content_copy";
-        if (/paste/.test(key)) return "content_paste";
-        if (/sys|system|cfg|conf/.test(key)) return "settings";
-        if (/gap/.test(key)) return "crop_square";
-        return geometricFallbackIcon(key);
+        return WsMap.submapIcon(key, Theme.wsSubmapIconOverrides);
     }
 
     property color iconColor: Theme.accentHover

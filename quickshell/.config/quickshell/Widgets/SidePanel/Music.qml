@@ -46,7 +46,7 @@ Rectangle {
                     text: "music_note"
                     font.family: "Material Symbols Outlined"
                     font.pixelSize: Theme.fontSizeHeader * Theme.scale(screen)
-                    color: Color.contrastOn(card.color, Theme.textSecondary, Theme.textPrimary, Theme.contrastThreshold)
+                    color: Theme.textOn(card.color, Theme.textSecondary, Theme.textPrimary)
                     Layout.alignment: Qt.AlignHCenter
                     Component.onCompleted: musicCard.warnContrast(card.color, color, 'fallbackIcon')
                 }
@@ -74,7 +74,7 @@ Rectangle {
             // Typography
             property int musicFontPx: Math.round(Theme.fontSizeSmall * Theme.scale(screen))
             property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(screen))
-            property color musicTextColor: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
+            property color musicTextColor: Theme.textOn(card.color)
             Component.onCompleted: musicCard.warnContrast(card.color, musicTextColor, 'musicText')
             property int musicFontWeight: Font.Medium
 
@@ -281,7 +281,7 @@ Rectangle {
                             text: "album"
                             font.family: "Material Symbols Outlined"
                             font.pixelSize: Theme.fontSizeBody * Theme.scale(screen)
-                            color: Color.contrastOn(card.color, Theme.textSecondary, Theme.textPrimary, Theme.contrastThreshold)
+                            color: Theme.textOn(card.color, Theme.textSecondary, Theme.textPrimary)
                             visible: !albumArt.visible
                         }
                     }

@@ -91,13 +91,13 @@ Rectangle {
                                 font.family: Theme.fontFamily
                                 font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
                                 font.bold: true
-                                color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
+                                color: Theme.textOn(card.color)
                             }
                             Text {
                                 text: weatherData && weatherData.timezone_abbreviation ? `(${weatherData.timezone_abbreviation})` : ""
                                 font.family: Theme.fontFamily
                                     font.pixelSize: Math.round(Theme.tooltipFontPx * Theme.tooltipSmallScaleRatio * Theme.scale(Screen))
-                                color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
+                                color: Theme.textOn(card.color)
                                 leftPadding: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(Screen))
                             }
                         }
@@ -106,7 +106,7 @@ Rectangle {
                             font.family: Theme.fontFamily
                             font.pixelSize: Math.round(Theme.fontSizeHeader * Theme.weatherHeaderScale * Theme.scale(Screen))
                             font.bold: true
-                            color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
+                            color: Theme.textOn(card.color)
                             Component.onCompleted: weatherRoot.warnContrast(card.color, color, 'weather.current')
                         }
                     }
@@ -145,7 +145,7 @@ Rectangle {
                             text: Qt.formatDateTime(new Date(weatherData.daily.time[index]), "ddd")
                             font.family: Theme.fontFamily
                             font.pixelSize: Math.round(Theme.fontSizeCaption * Theme.scale(Screen))
-                            color: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
+                            color: Theme.textOn(card.color)
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                             Component.onCompleted: weatherRoot.warnContrast(card.color, color, 'weather.dailyLabel')
