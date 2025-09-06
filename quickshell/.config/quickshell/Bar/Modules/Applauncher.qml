@@ -78,10 +78,10 @@ PanelWithOverlay {
         implicitHeight: Theme.applauncherHeight
         color: "transparent"
         visible: parent.visible
-        // Reduce rounded corners within the launcher UI
-        property real radiusScale: 0.25
-        // Compactness scale for fonts, icons, paddings, spacings
-        property real compactScale: 0.70
+        // Reduce rounded corners within the launcher UI (from Theme)
+        property real radiusScale: Theme.applauncherCornerScale
+        // Compactness scale for fonts, icons, paddings, spacings (from Theme)
+        property real compactScale: Theme.applauncherCompactScale
         property bool shouldBeVisible: false
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -110,8 +110,8 @@ PanelWithOverlay {
             width: Theme.applauncherWidth
             height: Theme.applauncherHeight
             x: (parent.width - width) / 2
-            // Panel background should look like the bar: slightly translucent background
-            color: Color.withAlpha(Theme.background, 0.88)
+            // Panel background should look like the bar: slightly translucent background (from Theme)
+            color: Color.withAlpha(Theme.background, Theme.applauncherBgAlpha)
             radius: Math.round(Theme.applauncherCornerRadius * appLauncherPanelRect.radiusScale)
             border.color: "transparent"
             border.width: 0
@@ -150,15 +150,16 @@ PanelWithOverlay {
                 }
             }
 
-            function isVstEntry(app) {
+            function isAudioPluginEntry(app) {
                 try {
                     const n = String(app.name || '').toLowerCase();
                     const c = String(app.comment || app.genericName || '').toLowerCase();
                     const cats = String(app.categories || app.category || '').toLowerCase();
                     const ex = String(app.execString || app.exec || '').toLowerCase();
-                    function hasVst(s){ return /(\bvst\b|\bvst2\b|\bvst3\b|\bvx?st\b)/.test(s); }
-                    if (hasVst(n) || hasVst(c) || hasVst(cats) || hasVst(ex)) return true;
-                    if (ex.indexOf('/.vst') !== -1 || ex.indexOf('/vst3') !== -1) return true;
+                    function m(s,re){ return re.test(s); }
+                    const re = /(\b(vst|vst2|vst3|lv2|ladspa|dssi|clap|lsp|audiounit|audio-unit|au|vamp|plugin)\b)/;
+                    if (m(n,re) || m(c,re) || m(cats,re) || m(ex,re)) return true;
+                    if (ex.indexOf('/.vst') !== -1 || ex.indexOf('/vst3') !== -1 || ex.indexOf('/.lv2') !== -1 || ex.indexOf('/.ladspa') !== -1 || ex.indexOf('/.clap') !== -1) return true;
                 } catch (e) {}
                 return false;
             }
@@ -176,8 +177,8 @@ PanelWithOverlay {
             function updateFilter() {
                 var query = searchField.text ? searchField.text.toLowerCase() : "";
                 var apps = root.appModel.slice();
-                // Filter out VST plugins upfront
-                apps = apps.filter(function(a){ return !isVstEntry(a); });
+                // Filter out audio plugin entries upfront
+                apps = apps.filter(function(a){ return !isAudioPluginEntry(a); });
                 var results = [];
                 
 
