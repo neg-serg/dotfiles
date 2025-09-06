@@ -15,6 +15,8 @@ import "../../Helpers" as Helpers
 
 PanelWithOverlay {
     // Smoke test to ensure Helpers.Fuzzy is available at runtime
+    // Do not dim the screen when launcher is open — keep overlay transparent
+    showOverlay: false
     Component.onCompleted: {
         try {
             var res = Helpers.Fuzzy.single('term', 'terminal');
