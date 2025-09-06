@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import qs.Settings
-import "../../Helpers/Format.js" as Format
+import "../../Helpers/RichText.js" as Rich
 import "../../Helpers/Utils.js" as Utils
 import qs.Components
 import qs.Services as Services
@@ -62,7 +62,7 @@ Item {
         iconColor: currentIconColor()
         labelIsRichText: true
         labelText: displayText && displayText.indexOf('/') !== -1
-                   ? displayText.replace('/', Format.sepSpan(separatorColor, '/'))
+                   ? displayText.replace('/', Rich.sepSpan(separatorColor, '/'))
                    : displayText
         labelColor: textColor
         labelFontFamily: Theme.fontFamily

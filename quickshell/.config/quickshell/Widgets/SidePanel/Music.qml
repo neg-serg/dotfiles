@@ -8,6 +8,7 @@ import qs.Components
 import qs.Services
 import "../../Helpers/Color.js" as Color
 import "../../Helpers/Format.js" as Format
+import "../../Helpers/RichText.js" as Rich
 
 Rectangle {
     id: musicCard
@@ -508,7 +509,8 @@ Rectangle {
                                     text: (function(){
                                         const s = MusicManager.trackQualitySummary || "";
                                         const c = Format.colorCss(Theme.accentPrimary, 1);
-                                        return s.replace(/\u00B7/g, `<span style='color:${c}; font-weight:bold'>&#183;</span>`);
+                                        // Escape full string, then replace escaped middot entity with styled span.
+                                        return Rich.esc(s).replace(/&#183;/g, Rich.sepSpan(c, '\u00B7', true));
                                     })()
                                     color: playerUI.musicTextColor
                                     font.family: Theme.fontFamily

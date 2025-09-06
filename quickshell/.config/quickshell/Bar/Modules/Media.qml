@@ -5,6 +5,7 @@ import QtQuick.Layouts
 // Quickshell.Widgets not needed
 import QtQuick.Effects
 import "../../Helpers/Format.js" as Format
+import "../../Helpers/RichText.js" as Rich
 import "../../Helpers/Time.js" as Time
 import "../../Helpers/Color.js" as Color
 import qs.Settings
@@ -229,10 +230,6 @@ Item {
                     textFormat: Text.RichText
                     renderType: Text.NativeRendering
                     wrapMode: Text.NoWrap
-                    function esc(s) {
-                        s = (s === undefined || s === null) ? "" : String(s);
-                        return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                    }
                     property string bracketColor: Format.colorCss(Theme.accentDarkStrong, 1)
                     property string timeColor: (function(){
                         var c = MusicManager.isPlaying ? Theme.textPrimary : Theme.textSecondary;
@@ -242,34 +239,22 @@ Item {
                     property string titlePart: (MusicManager.trackArtist || MusicManager.trackTitle)
                         ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")
                         : ""
-                    function bracketPair() {
-                        const s = (Settings.settings.timeBracketStyle || "square").toLowerCase();
-                        switch (s) {
-                            case "round": return { l: "(",    r: ")"     };
-                            case "lenticular": return { l: "\u3016", r: "\u3017" };
-                            case "lenticular_black": return { l: "\u3010", r: "\u3011" };
-                            case "angle": return { l: "\u27E8", r: "\u27E9" };
-                            case "square": return { l: "[",    r: "]"     };
-                            case "tortoise": return { l: "\u3014", r: "\u3015" };
-                            default: return { l: "[",    r: "]"     };
-                        }
-                    }
                     text: (function(){
                         if (!trackText.titlePart) return "";
                         const sepChar = (Settings.settings.mediaTitleSeparator || '—');
-                        const t = trackText.esc(trackText.titlePart)
+                        const t = Rich.esc(trackText.titlePart)
                                    .replace(/\s(?:-|–|—)\s/g, function(){
-                                       return "&#8201;" + Format.sepSpan(Theme.accentHover, sepChar) + "&#8201;";
+                                       return "&#8201;" + Rich.sepSpan(Theme.accentHover, sepChar) + "&#8201;";
                                    });
                         const cur = Format.fmtTime(MusicManager.currentPosition || 0);
                         const tot = Format.fmtTime(Time.mprisToMs(MusicManager.trackLength || 0));
-                        const bp = trackText.bracketPair();
+                        const bp = Rich.bracketPair(Settings.settings.timeBracketStyle || "square");
                         return t
-                               + " &#8201;<span style='color:" + trackText.bracketColor + "'>" + bp.l + "</span>"
-                               + "<span style='vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + cur + "</span>"
-                               + Format.sepSpan(Theme.accentHover, '/')
-                               + "<span style='vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + tot + "</span>"
-                               + "<span style='color:" + trackText.bracketColor + "'>" + bp.r + "</span>";
+                               + " &#8201;" + Rich.bracketSpan(trackText.bracketColor, bp.l)
+                               + Rich.timeSpan(trackText.timeColor, cur)
+                               + Rich.sepSpan(Theme.accentHover, '/')
+                               + Rich.timeSpan(trackText.timeColor, tot)
+                               + Rich.bracketSpan(trackText.bracketColor, bp.r);
                     })()
                     color: Theme.textPrimary
                     font.family: Theme.fontFamily

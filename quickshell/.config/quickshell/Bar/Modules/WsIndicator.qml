@@ -6,7 +6,7 @@ import Quickshell.Io
 import qs.Components
 import qs.Services
 import qs.Settings
-import "../../Helpers/Format.js" as Format
+import "../../Helpers/RichText.js" as Rich
 import "../../Helpers/WsIconMap.js" as WsMap
 
 Item {
@@ -44,15 +44,7 @@ Item {
         return sig ? ["HYPRLAND_INSTANCE_SIGNATURE=" + sig] : null;
     }
 
-    function htmlEscape(s) {
-        s = (s === undefined || s === null) ? "" : String(s);
-        return s
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
+    // RichText helpers are provided by Helpers/RichText.js
 
     function isPUA(cp) { return cp >= 0xE000 && cp <= 0xF8FF; }          // Private Use Area (icon fonts)
     function isOldItalic(cp){ return cp >= 0x10300 && cp <= 0x1034F; }
@@ -62,22 +54,22 @@ Item {
     function spanForChar(ch) {
         const cp = ch.codePointAt(0);
         if (isPUA(cp)) {
-            return "<span style='color:" + iconColor + "'>" + htmlEscape(ch) + "</span>";
+            return "<span style='color:" + iconColor + "'>" + Rich.esc(ch) + "</span>";
         }
         if (isOldItalic(cp)) {
-            return "<span style='color:" + gothicColor + "'>" + htmlEscape(ch) + "</span>";
+            return "<span style='color:" + gothicColor + "'>" + Rich.esc(ch) + "</span>";
         }
         if (isSeparatorChar(ch)) {
             if (ch === "·") return " ";
             // Use accentHover for separators
-            return Format.sepSpan(Theme.accentHover, ch);
+            return Rich.sepSpan(Theme.accentHover, ch);
         }
-        return htmlEscape(ch);
+        return Rich.esc(ch);
     }
 
     // Decorate string with category spans
     function decorateName(name) {
-        if (!name || typeof name !== "string") return htmlEscape(name || "");
+        if (!name || typeof name !== "string") return Rich.esc(name || "");
         let out = "";
         for (let i = 0; i < name.length; ) {
             const cp = name.codePointAt(i);
