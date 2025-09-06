@@ -67,7 +67,6 @@ Additional UI tokens (nested)
    - ws.icon.innerPadding
   - Submap baseline: ws.submap.icon.baselineOffset
   - Submap icon color: ws.submap.icon.color
- - Applauncher removed (tokens no longer used)
   - Menu item radius: panel.menu.itemRadius
   - Spectrum: spectrum.peakThickness
   - Side panel: sidePanel.innerRadius (inner blocks)

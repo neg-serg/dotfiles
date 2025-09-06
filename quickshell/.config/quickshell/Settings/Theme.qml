@@ -429,7 +429,6 @@ Singleton {
     property int musicPositionPollMs: Utils.clamp(val('timers.musicPositionPollMs', 1000), 100, 600000)
     property int musicPlayersPollMs: Utils.clamp(val('timers.musicPlayersPollMs', 5000), 100, 600000)
     property int musicMetaRecalcDebounceMs: Utils.clamp(val('timers.musicMetaRecalcDebounceMs', 80), 0, 10000)
-    // Applauncher removed: related tokens no longer used
     // Calendar metrics
     property int calendarRowSpacing: val('calendar.rowSpacing', 2)
     property int calendarCellSpacing: val('calendar.cellSpacing', 2)
@@ -614,7 +613,6 @@ Singleton {
     property int uiEasingStdOut: easingType(val('ui.anim.easing.stdOut', 'OutCubic'), 'OutCubic')
     property int uiEasingStdIn: easingType(val('ui.anim.easing.stdIn', 'InCubic'), 'InCubic')
     property int uiEasingInOut: easingType(val('ui.anim.easing.inOut', 'InOutQuad'), 'InOutQuad')
-    // Applauncher removed: entry opacity token unused
     // Calendar popup sizing
     property int calendarWidth: Utils.clamp(val('calendar.size.width', 280), 200, 800)
     property int calendarHeight: Utils.clamp(val('calendar.size.height', 320), 200, 800)
