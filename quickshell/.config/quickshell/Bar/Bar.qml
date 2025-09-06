@@ -49,7 +49,10 @@ Scope {
                     // Inline component for repeated diagonal separator
                     component DiagSep: ThemedSeparator {
                         kind: "diagonal"
-                        height: barBackground.height + panel.sepOvershoot
+                        // For layouts: provide preferred height so RowLayout sizes correctly
+                        Layout.preferredHeight: barBackground.height + panel.sepOvershoot
+                        // Also set height for non-layout contexts (defensive)
+                        height: Layout.preferredHeight
                     }
 
                     Rectangle { // Bar background
