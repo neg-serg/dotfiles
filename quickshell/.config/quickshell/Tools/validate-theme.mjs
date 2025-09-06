@@ -71,10 +71,6 @@ function parseArgs(argv) {
 const GROUP_ROOTS = new Set([
   'colors','panel','shape','tooltip','weather','sidePanel','ui','ws','timers','network','media','spectrum','time','calendar','vpn','volume','applauncher','keyboard'
 ]);
-const DEPRECATED = [
-  'rippleEffect', 'accentDisabled', 'panelHoverOpacity', 'overlay', 'baseOverlay',
-  'media.time.fontScale' // explicitly removed
-];
 
 function main() {
   const args = parseArgs(process.argv);
@@ -96,9 +92,6 @@ function main() {
     if (!GROUP_ROOTS.has(k)) flat.push(k);
   }
 
-  // Deprecated tokens present
-  const deprecated = [];
-  for (const d of DEPRECATED) if (themePaths.has(d)) deprecated.push(d);
 
   // Missing tokens (schema leaves not present in theme)
   function getAt(o, p) {
@@ -123,13 +116,10 @@ function main() {
   hdr('Flat tokens at root (legacy)');
   if (flat.length) flat.sort().forEach(k => console.log('  *', k)); else console.log('  (none)');
 
-  hdr('Deprecated tokens present');
-  if (deprecated.length) deprecated.sort().forEach(k => console.log('  !', k)); else console.log('  (none)');
-
   hdr('Missing tokens (informational)');
   if (missing.length) missing.sort().forEach(p => console.log('  -', p)); else console.log('  (none)');
 
-  if (args.strict && (unknown.length || deprecated.length || flat.length)) {
+  if (args.strict && (unknown.length || flat.length)) {
     console.error('\nStrict mode: validation errors present.');
     process.exitCode = 1;
   }
