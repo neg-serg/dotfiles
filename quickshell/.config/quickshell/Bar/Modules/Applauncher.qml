@@ -75,8 +75,8 @@ PanelWithOverlay {
         implicitHeight: Theme.applauncherHeight
         color: "transparent"
         visible: parent.visible
-        // Halve rounded corners within the launcher UI
-        property real radiusScale: 0.5
+        // Reduce rounded corners within the launcher UI
+        property real radiusScale: 0.25
         property bool shouldBeVisible: false
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
