@@ -129,9 +129,9 @@ PanelWithOverlay {
             property int targetY: Utils.clamp(parent.height - height - bottomMargin, 0, parent.height)
             property int offscreenYBottom: parent.height + Theme.applauncherOffscreenShift
             y: appLauncherPanelRect.shouldBeVisible ? targetY : offscreenYBottom
-            Behavior on y { NumberFadeBehavior { duration: Theme.applauncherEnterAnimMs; easing.type: Theme.uiEasingQuick } }
+            Behavior on y { NumberFadeBehavior { duration: Math.round(Theme.applauncherEnterAnimMs / 4); easing.type: Theme.uiEasingQuick } }
             scale: appLauncherPanelRect.shouldBeVisible ? 1 : 0
-            Behavior on scale { NumberFadeBehavior { duration: Theme.applauncherScaleAnimMs; easing.type: Theme.uiEasingInOut } }
+            Behavior on scale { NumberFadeBehavior { duration: Math.round(Theme.applauncherScaleAnimMs / 4); easing.type: Theme.uiEasingInOut } }
             onScaleChanged: {
                 if (scale === 0 && !appLauncherPanelRect.shouldBeVisible) {
                     appLauncherPanel.visible = false;
