@@ -553,7 +553,6 @@ Singleton {
     property int mediaHoverOpenDelayMs: Utils.clamp(val('media.hover.openDelayMs', themeData.mediaHoverOpenDelayMs), 0, 5000)
     property int mediaHoverStillThresholdMs: Utils.clamp(val('media.hover.stillThresholdMs', themeData.mediaHoverStillThresholdMs), 0, 10000)
     // Media time text font scale (relative to track title font size)
-    property real mediaTimeFontScale: Utils.clamp(val('media.time.fontScale', 0.8), 0.1, 2.0)
     property int spectrumPeakDecayIntervalMs: Utils.clamp(val('spectrum.peakDecayIntervalMs', themeData.spectrumPeakDecayIntervalMs), 10, 1000)
     property int spectrumBarAnimMs: Utils.clamp(val('spectrum.barAnimMs', themeData.spectrumBarAnimMs), 0, 5000)
     property int spectrumPeakThickness: Utils.clamp(val('spectrum.peakThickness', 2), 1, 12)

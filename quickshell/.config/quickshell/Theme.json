@@ -241,7 +241,6 @@
     },
     "iconScaleEmphasis": 1.15,
     "time": {
-      "fontScale": 0.8,
       "alpha": {
         "playing": 1.0,
         "paused": 0.8
