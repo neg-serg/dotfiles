@@ -393,7 +393,7 @@ PanelWithOverlay {
             
                     Rectangle {
                         id: searchBar
-                        color: Theme.surface
+                        color: "transparent"
                         radius: Math.round(Theme.panelOverlayRadius * appLauncherPanelRect.radiusScale)
                         height: Math.round(Theme.uiControlHeight * appLauncherPanelRect.compactScale)
                         Layout.fillWidth: true
