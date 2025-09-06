@@ -113,7 +113,7 @@ Item {
             try {
                 if (code === 0) {
                     var content = String(_buf).trim();
-                    if (content && !content.startsWith("vscode-file://")) {
+                    if (content) {
                         var entry = { type: 'text', content: content, timestamp: Date.now() };
                         root._pushEntry(entry);
                     }
@@ -127,4 +127,3 @@ Item {
         restartOnExit: false
     }
 }
-
