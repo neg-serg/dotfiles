@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
@@ -81,10 +82,10 @@ PanelWithOverlay {
         function showAt() {
             appLauncherPanel.visible = true;
             shouldBeVisible = true;
-            searchField.forceActiveFocus();
             root.selectedIndex = 0;
             root.appModel = DesktopEntries.applications.values;
             root.updateFilter();
+            focusLater.start();
         }
 
         function hidePanel() {
@@ -103,9 +104,20 @@ PanelWithOverlay {
             width: Theme.applauncherWidth
             height: Theme.applauncherHeight
             x: (parent.width - width) / 2
-            color: Theme.background
-            bottomLeftRadius: Theme.applauncherCornerRadius
-            bottomRightRadius: Theme.applauncherCornerRadius
+            // Panel background should look like a surfaced card with rounded corners
+            color: Theme.surface
+            radius: Theme.applauncherCornerRadius
+            border.color: Theme.borderSubtle
+            border.width: 1
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowColor: Theme.shadow
+                shadowOpacity: Theme.uiShadowOpacity
+                shadowHorizontalOffset: Theme.uiShadowOffsetX
+                shadowVerticalOffset: Theme.uiShadowOffsetY
+                shadowBlur: Theme.uiShadowBlur
+            }
 
             property var appModel: DesktopEntries.applications.values
             property var filteredApps: []
@@ -669,6 +681,15 @@ PanelWithOverlay {
                     }
                 }
             }
+        }
+
+        // Defer focusing the search field to avoid Wayland textinput focus warnings
+        Timer {
+            id: focusLater
+            interval: 0
+            repeat: false
+            running: false
+            onTriggered: searchField.forceActiveFocus()
         }
     }
 }
