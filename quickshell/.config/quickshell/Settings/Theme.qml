@@ -527,7 +527,9 @@ Singleton {
     property int panelRowSpacing: val('panel.rowSpacing', themeData.panelRowSpacing)
     property int panelRowSpacingSmall: val('panel.rowSpacingSmall', themeData.panelRowSpacingSmall)
     // Scale factor for computedFontPx used by small icon/text modules (e.g., network, vpn)
-    property real panelComputedFontScale: Utils.clamp(val('panel.computedFontScale', 0.6), 0.1, 1.0)
+    // Scale factor for computedFontPx used by small icon/text modules (e.g., network, vpn)
+    // Apply global fontSizeMultiplier so inline modules respect user font scaling
+    property real panelComputedFontScale: Utils.clamp(val('panel.computedFontScale', 0.6) * fontSizeMultiplier, 0.1, 2.0)
     // Spacing between VPN + NetworkUsage in left cluster
     property int panelNetClusterSpacing: Utils.clamp(val('panel.netCluster.spacing', 6), 0, 64)
     // Volume behavior
