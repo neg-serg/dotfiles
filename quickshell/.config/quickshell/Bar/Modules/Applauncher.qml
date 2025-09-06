@@ -129,17 +129,7 @@ PanelWithOverlay {
                 }
             }
 
-            function isMathExpression(str) {
-                return /^[-+*/().0-9\s]+$/.test(str);
-            }
-
-            function safeEval(expr) {
-                try {
-                    return Function('return (' + expr + ')')();
-                } catch (e) {
-                    return undefined;
-                }
-            }
+            // Calculator support removed; related helpers dropped
 
             function isAudioPluginEntry(app) {
                 try {
@@ -229,10 +219,7 @@ PanelWithOverlay {
                 var modelData = filteredApps[selectedIndex];
                 const termEmu = Quickshell.env("TERMINAL") || Quickshell.env("TERM_PROGRAM") || "";
 
-                if (modelData.isCommand) {
-                    modelData.execute();
-                    return;
-                } else if (modelData.runInTerminal && termEmu){
+                if (modelData.runInTerminal && termEmu){
                     Quickshell.execDetached([termEmu, "-e", modelData.execString.trim()]);
                 } else if (modelData.execute) {
                     modelData.execute();
@@ -294,7 +281,7 @@ PanelWithOverlay {
                                 Layout.alignment: Qt.AlignVCenter
                                 onTextChanged: {
                                     const t = searchField.text || "";
-                                    if (t === ">" || t.startsWith(">calc") || t.length <= 2) {
+                                    if (t.length <= 2) {
                                         root.updateFilterNow();
                                     } else {
                                         filterLater.interval = Math.max(0, appLauncherPanelRect.debounceMs);
@@ -475,13 +462,12 @@ PanelWithOverlay {
                                         }
 
                                         Text {
-                                            text: modelData.isCalculator ? (modelData.expr + " = " + modelData.result)
-                                                 : (modelData.isCommand ? modelData.content : (modelData.comment || modelData.genericName || "No description available"))
+                                            text: (modelData.comment || modelData.genericName || "No description available")
                                             color: (hovered || isSelected) ? Theme.onAccent : Theme.textSecondary
                                             font.family: Theme.fontFamily
                                             font.pixelSize: Math.round(Theme.fontSizeCaption * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                             font.italic: !(modelData.comment || modelData.genericName)
-                                            opacity: modelData.isCommand ? Theme.applauncherCommandEntryOpacity : ((modelData.comment || modelData.genericName) ? 1.0 : Theme.applauncherNoMetaOpacity)
+                                            opacity: (modelData.comment || modelData.genericName) ? 1.0 : Theme.applauncherNoMetaOpacity
         
                                             elide: Text.ElideRight
                                             maximumLineCount: 1
