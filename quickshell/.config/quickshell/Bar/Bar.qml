@@ -71,21 +71,21 @@ Scope {
                         function onHeightChanged() { rootScope.barHeight = barBackground.height }
                     }
 
-                    Row {
+                    RowLayout {
                         id: leftWidgetsRow
                         anchors.verticalCenter: barBackground.verticalCenter
                         anchors.left: barBackground.left
                         anchors.leftMargin: panel.sideMargin
                         spacing: panel.widgetSpacing
-                        ClockWidget { anchors.verticalCenter: parent.verticalCenter }
-                        DiagSep { stripeEnabled: false; anchors.verticalCenter: parent.verticalCenter }
-                        WsIndicator { id: wsindicator; anchors.verticalCenter: parent.verticalCenter }
-                        DiagSep { anchors.verticalCenter: parent.verticalCenter }
-                        KeyboardLayoutHypr { id: kbIndicator; anchors.verticalCenter: wsindicator.verticalCenter; /* deviceMatch: "dygma-defy-keyboard" */ }
-                        DiagSep { anchors.verticalCenter: parent.verticalCenter }
+                        ClockWidget { Layout.alignment: Qt.AlignVCenter }
+                        DiagSep { stripeEnabled: false; Layout.alignment: Qt.AlignVCenter }
+                        WsIndicator { id: wsindicator; Layout.alignment: Qt.AlignVCenter }
+                        DiagSep { Layout.alignment: Qt.AlignVCenter }
+                        KeyboardLayoutHypr { id: kbIndicator; /* deviceMatch: "dygma-defy-keyboard" */ Layout.alignment: Qt.AlignVCenter }
+                        DiagSep { Layout.alignment: Qt.AlignVCenter }
                         Row {
                             id: netCluster
-                            anchors.verticalCenter: wsindicator.verticalCenter
+                            Layout.alignment: Qt.AlignVCenter
                             spacing: Math.round(Theme.panelNetClusterSpacing * panel.s)
                             LocalMods.VpnAmneziaIndicator {
                                 id: amneziaVpn
@@ -94,13 +94,10 @@ Scope {
                             }
                             NetworkUsage { id: net }
                         }
-                        DiagSep { visible: Settings.settings.showWeatherInBar === true; anchors.verticalCenter: parent.verticalCenter }
-                        LocalMods.WeatherButton {
-                            anchors.verticalCenter: parent.verticalCenter
-                            visible: Settings.settings.showWeatherInBar === true
-                        }
+                        DiagSep { visible: Settings.settings.showWeatherInBar === true; Layout.alignment: Qt.AlignVCenter }
+                        LocalMods.WeatherButton { visible: Settings.settings.showWeatherInBar === true; Layout.alignment: Qt.AlignVCenter }
                         // Rightmost separator of the left section: show only if weather is visible
-                        DiagSep { stripeEnabled: false; visible: Settings.settings.showWeatherInBar === true; anchors.verticalCenter: parent.verticalCenter }
+                        DiagSep { stripeEnabled: false; visible: Settings.settings.showWeatherInBar === true; Layout.alignment: Qt.AlignVCenter }
                     }
 
                     
