@@ -75,6 +75,8 @@ PanelWithOverlay {
         implicitHeight: Theme.applauncherHeight
         color: "transparent"
         visible: parent.visible
+        // Halve rounded corners within the launcher UI
+        property real radiusScale: 0.5
         property bool shouldBeVisible: false
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -106,7 +108,7 @@ PanelWithOverlay {
             x: (parent.width - width) / 2
             // Panel background should look like a surfaced card with rounded corners
             color: Theme.surface
-            radius: Theme.applauncherCornerRadius
+            radius: Math.round(Theme.applauncherCornerRadius * appLauncherPanelRect.radiusScale)
             border.color: Theme.borderSubtle
             border.width: 1
             layer.enabled: true
@@ -392,7 +394,7 @@ PanelWithOverlay {
                     Rectangle {
                         id: searchBar
                         color: Theme.surfaceVariant
-                        radius: Theme.panelOverlayRadius
+                        radius: Math.round(Theme.panelOverlayRadius * appLauncherPanelRect.radiusScale)
                         height: Theme.uiControlHeight
                         Layout.fillWidth: true
                         border.color: searchField.activeFocus ? Theme.accentPrimary : Theme.outline
@@ -451,7 +453,7 @@ PanelWithOverlay {
             
                     Rectangle {
                         color: Theme.surface
-                        radius: Theme.panelOverlayRadius
+                        radius: Math.round(Theme.panelOverlayRadius * appLauncherPanelRect.radiusScale)
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         clip: true
@@ -479,7 +481,7 @@ PanelWithOverlay {
                                     color: (hovered || isSelected)
                                         ? Theme.accentPrimary
                                         : (appLauncherPanel.isPinned(modelData) ? Theme.surfaceVariant : "transparent")
-                                    radius: Theme.cornerRadiusLarge
+                                    radius: Math.round(Theme.cornerRadiusLarge * appLauncherPanelRect.radiusScale)
                                     border.color: appLauncherPanel.isPinned(modelData)
                                         ? "transparent"
                                         : (hovered || isSelected ? Theme.accentPrimary : "transparent")
@@ -640,7 +642,7 @@ PanelWithOverlay {
                                     anchors.right: parent.right
                                     anchors.bottom: parent.bottom
                                     height: Theme.uiSeparatorThickness
-                                    radius: Theme.uiSeparatorRadius
+                                    radius: Math.round(Theme.uiSeparatorRadius * appLauncherPanelRect.radiusScale)
                                     color: Theme.borderSubtle
                                     opacity: index === appList.count - 1 ? 0 : 1.0
                                 }
