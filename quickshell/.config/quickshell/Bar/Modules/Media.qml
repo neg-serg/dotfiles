@@ -233,7 +233,6 @@ Item {
                 peakOpacity: Theme.spectrumPeakOpacity
                 useGradient: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient : Settings.settings.spectrumUseGradient
                 barColor: mediaControl.accentReady ? mediaControl.mediaAccent : Theme.borderSubtle
-                onBarColorChanged: console.warn('[Media] spectrum.barColor -> accentReady=', mediaControl.accentReady, ' color=', barColor)
                 z: -1
             }
 
@@ -284,7 +283,6 @@ Item {
                         const cur = Format.fmtTime(MusicManager.currentPosition || 0);
                         const tot = Format.fmtTime(Time.mprisToMs(MusicManager.trackLength || 0));
                         const bp = Rich.bracketPair(Settings.settings.timeBracketStyle || "square");
-                        console.warn('[Media] buildText ready=', trackText._accentReady, ' accentCss=', trackText._accentCss, ' sep=', sepChar, ' cur/tot=', cur, '/', tot)
                         if (trackText._accentReady) {
                             return t
                                    + " &#8201;" + Rich.bracketSpan(trackText._accentCss, bp.l)
