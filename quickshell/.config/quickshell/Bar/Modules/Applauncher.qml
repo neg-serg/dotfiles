@@ -536,9 +536,16 @@ PanelWithOverlay {
                                                 if (modelData.isCalculator) return "qrc:/icons/calculate.svg";
                                                 if (modelData.isClipboard || modelData.isCommand) return "qrc:/icons/" + modelData.icon + ".svg";
                                                 let name = modelData.icon || "";
-                                                if (!name) return ""; // let MaterialIcon fallback handle empty
+                                                if (!name || name === "application-x-executable") return ""; // force fallback icon
                                                 if (name.startsWith("qrc:") || name.startsWith("file:") || name.startsWith("image://")) return name;
-                                                if (name.indexOf('/') !== -1) return "file://" + name;
+                                                if (name.indexOf('/') !== -1) {
+                                                    // Prefer theme icon by basename over direct file path to avoid file:// warnings
+                                                    let base = name.substring(name.lastIndexOf('/') + 1);
+                                                    if (base.endsWith('.png') || base.endsWith('.svg') || base.endsWith('.xpm')) {
+                                                        base = base.replace(/\.(png|svg|xpm)$/i, '');
+                                                    }
+                                                    return "image://icon/" + base;
+                                                }
                                                 // Strip reverse-DNS prefixes (e.g., net.veloren.airshipper -> airshipper)
                                                 if (name.indexOf('.') !== -1) name = name.split('.').pop();
                                                 return "image://icon/" + name;
