@@ -47,7 +47,8 @@ Scope {
                     property color barBgColor:   Theme.background // Colors
 
                     // Inline component for repeated diagonal separator
-                    component DiagSep: DiagonalSeparatorRect {
+                    component DiagSep: ThemedSeparator {
+                        kind: "diagonal"
                         height: barBackground.height + panel.sepOvershoot
                     }
 
