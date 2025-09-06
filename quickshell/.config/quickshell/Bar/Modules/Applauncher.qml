@@ -22,154 +22,18 @@ PanelWithOverlay {
             console.warn('[Applauncher] Fuzzy smoke failed:', e);
         }
     }
-    Connections {
-        target: Services.Timers
-        function onTickClipboard() {
-            if (appLauncherPanel.visible && searchField.text.startsWith(">clip")) {
-                updateClipboardHistory();
-            }
-        }
-    }
+    // Clipboard integration via service
+    property alias clipboardHistory: Services.Clipboard.history
+    Connections { target: Services.Clipboard; function onHistoryChanged() { root.updateFilter() } }
 
-    property var clipboardHistory: []
-    property bool clipboardInitialized: false
-
-    ProcessRunner {
-        id: clipboardTypeProcess
-        property bool isLoading: false
-        property var currentTypes: []
-        property string _buf: ""
-
-        onLine: (s) => { _buf += (s + "\n") }
-        onExited: (exitCode, exitStatus) => {
-            if (exitCode === 0) {
-                currentTypes = String(_buf).trim().split('\n').filter(t => t);
-
-                const imageType = currentTypes.find(t => t.startsWith('image/'));
-                if (imageType) {
-                    clipboardImageProcess.mimeType = imageType;
-                    clipboardImageProcess.cmd = ["sh", "-c", `wl-paste -n -t "${imageType}" | base64 -w 0`];
-                    clipboardImageProcess.start();
-                } else {
-
-                    clipboardHistoryProcess.cmd = ["wl-paste", "-n", "--type", "text/plain"];
-                    clipboardHistoryProcess.start();
-                }
-            } else {
-
-                clipboardTypeProcess.isLoading = false;
-            }
-            _buf = "";
-        }
-        autoStart: false
-        restartOnExit: false
-    }
-
-    ProcessRunner {
-        id: clipboardImageProcess
-        property string mimeType: ""
-        property string _buf: ""
-
-        onLine: (s) => { _buf += (s + "\n") }
-        onExited: (exitCode, exitStatus) => {
-            if (exitCode === 0) {
-                const base64 = String(_buf).trim();
-                if (base64) {
-                    const entry = {
-                        type: 'image',
-                        mimeType: mimeType,
-                        data: `data:${mimeType};base64,${base64}`,
-                        timestamp: new Date().getTime()
-                    };
-                    
-    
-                    const exists = clipboardHistory.find(item => 
-                        item.type === 'image' && item.data === entry.data
-                    );
-
-                    if (!exists) {
-                        clipboardHistory = [entry, ...clipboardHistory].slice(0, 20);
-                        root.updateFilter();
-                    }
-                }
-            }
-            
-            if (!clipboardHistoryProcess.isLoading) {
-                clipboardInitialized = true;
-            }
-            clipboardTypeProcess.isLoading = false;
-            _buf = "";
-        }
-        autoStart: false
-        restartOnExit: false
-    }
-
-    ProcessRunner {
-        id: clipboardHistoryProcess
-        property bool isLoading: false
-        property string _buf: ""
-
-        onLine: (s) => { _buf += (s + "\n") }
-        onExited: (exitCode, exitStatus) => {
-            if (exitCode === 0) {
-                const content = String(_buf).trim();
-                if (content && !content.startsWith("vscode-file://")) {
-                    const entry = {
-                        type: 'text',
-                        content: content,
-                        timestamp: new Date().getTime()
-                    };
-
-    
-                    const exists = clipboardHistory.find(item => {
-                        if (item.type === 'text') {
-                            return item.content === content;
-                        }
-        
-                        return item === content;
-                    });
-
-                    if (!exists) {
-        
-                        const newHistory = clipboardHistory.map(item => {
-                            if (typeof item === 'string') {
-                                return {
-                                    type: 'text',
-                                    content: item,
-                                    timestamp: new Date().getTime()
-                                };
-                            }
-                            return item;
-                        });
-                        
-                        clipboardHistory = [entry, ...newHistory].slice(0, 20);
-                    }
-                }
-            } else {
-
-                clipboardHistoryProcess.isLoading = false;
-            }
-            clipboardInitialized = true;
-            clipboardTypeProcess.isLoading = false;
-            root.updateFilter();
-            _buf = "";
-        }
-        autoStart: false
-        restartOnExit: false
-    }
-
-    
-
-    function updateClipboardHistory() {
-        if (!clipboardTypeProcess.isLoading && !clipboardHistoryProcess.isLoading) {
-            clipboardTypeProcess.isLoading = true;
-            clipboardTypeProcess.cmd = ["wl-paste", "-l"];
-            clipboardTypeProcess.start();
-        }
-    }
+    // Old clipboard ProcessRunners removed; use Services.Clipboard instead
 
     id: appLauncherPanel
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    onVisibleChanged: {
+        // Enable clipboard polling only when panel is visible and >clip is active
+        try { Services.Clipboard.enabled = (visible && searchField && searchField.text && searchField.text.startsWith(">clip")); } catch (e) {}
+    }
     
     function isPinned(app) {
         return app && app.execString && Settings.settings.pinnedExecs.indexOf(app.execString) !== -1;
@@ -307,9 +171,7 @@ PanelWithOverlay {
                 
 
                 if (query.startsWith(">clip")) {
-                    if (!clipboardInitialized) {
-                        updateClipboardHistory();
-                    }
+                    Services.Clipboard.enabled = appLauncherPanel.visible;
                     const searchTerm = query.slice(5).trim();
                     
                     clipboardHistory.forEach(function(clip, index) {
@@ -327,8 +189,7 @@ PanelWithOverlay {
                                     data: clip.data,
                                     execute: function() {
                                         const base64Data = clip.data.split(',')[1];
-                                        clipboardTypeProcess.command = ["sh", "-c", `echo '${base64Data}' | base64 -d | wl-copy -t '${clip.mimeType}'`];
-                                        clipboardTypeProcess.running = true;
+                                        Quickshell.execDetached(["sh", "-c", `echo '${base64Data}' | base64 -d | wl-copy -t '${clip.mimeType}'`]);
                                     }
                                 };
                             } else {
@@ -550,7 +411,7 @@ PanelWithOverlay {
                                 font.pixelSize: Theme.fontSizeBody * Theme.scale(screen)
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignVCenter
-                                onTextChanged: root.updateFilter()
+                                onTextChanged: { root.updateFilter(); try { Services.Clipboard.enabled = (appLauncherPanel.visible && searchField.text.startsWith(">clip")); } catch (e) {} }
                                 selectedTextColor: Theme.onAccent
                                 selectionColor: Theme.accentPrimary
                                 padding: Theme.uiSpacingNone
