@@ -8,6 +8,7 @@ import Quickshell.Wayland
 import Quickshell.Widgets
 import qs.Components
 import "../../Helpers/Utils.js" as Utils
+import "../../Helpers/Color.js" as Color
 import qs.Settings
 import qs.Services as Services
 
@@ -80,7 +81,7 @@ PanelWithOverlay {
         // Reduce rounded corners within the launcher UI
         property real radiusScale: 0.25
         // Compactness scale for fonts, icons, paddings, spacings
-        property real compactScale: 0.85
+        property real compactScale: 0.80
         property bool shouldBeVisible: false
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -110,8 +111,8 @@ PanelWithOverlay {
             width: Theme.applauncherWidth
             height: Theme.applauncherHeight
             x: (parent.width - width) / 2
-            // Panel background should look like a surfaced card with rounded corners
-            color: Theme.background
+            // Panel background should look like the bar: slightly translucent background
+            color: Color.withAlpha(Theme.background, 0.92)
             radius: Math.round(Theme.applauncherCornerRadius * appLauncherPanelRect.radiusScale)
             border.color: "transparent"
             border.width: 0
@@ -389,12 +390,12 @@ PanelWithOverlay {
             
                     Rectangle {
                         id: searchBar
-                        color: Theme.surfaceVariant
+                        color: Theme.surface
                         radius: Math.round(Theme.panelOverlayRadius * appLauncherPanelRect.radiusScale)
-                        height: Theme.uiControlHeight
+                        height: Math.round(Theme.uiControlHeight * appLauncherPanelRect.compactScale)
                         Layout.fillWidth: true
                         border.color: searchField.activeFocus ? Theme.accentPrimary : Theme.outline
-                        border.width: searchField.activeFocus ? 2 : 1
+                        border.width: searchField.activeFocus ? 1 : 1
 
                     RowLayout {
                         anchors.left: parent.left
