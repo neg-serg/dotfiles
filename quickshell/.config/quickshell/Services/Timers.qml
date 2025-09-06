@@ -11,7 +11,6 @@ Item {
     signal tickMusicPosition()
     signal tickMusicPlayers()
     signal tickMpdFlagsFallback()
-    signal tickClipboard()
     signal tick2s()
 
     // Time/Clock tick (configurable)
@@ -46,13 +45,6 @@ Item {
         onTriggered: root.tickMpdFlagsFallback()
     }
 
-    // Clipboard polling for Applauncher (configurable)
-    Timer {
-        interval: Theme.applauncherClipboardPollMs
-        repeat: true
-        running: true
-        onTriggered: root.tickClipboard()
-    }
 
     // Generic 2s tick for UI dedupe tasks
     Timer {

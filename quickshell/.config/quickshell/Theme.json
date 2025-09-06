@@ -295,7 +295,6 @@
     "centerOffset": -2
   },
   "applauncher": {
-    "clipboardPollMs": 1000,
     "cornerScale": 0.25,
     "compactScale": 0.70,
     "backgroundAlpha": 0.88,
@@ -305,15 +304,9 @@
       "itemHeight": 48,
       "itemHeightLarge": 64,
       "opacity": {
-        "clipboard": 0.8,
         "command": 0.9,
         "noMeta": 0.6
       }
-    },
-    "preview": {
-      "width": 200,
-      "innerMargin": 14,
-      "maxHeightRatio": 1.0
     },
     "content": {
       "margin": 32

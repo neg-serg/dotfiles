@@ -431,7 +431,6 @@ Singleton {
     property int musicPlayersPollMs: Utils.clamp(val('timers.musicPlayersPollMs', 5000), 100, 600000)
     property int musicMetaRecalcDebounceMs: Utils.clamp(val('timers.musicMetaRecalcDebounceMs', 80), 0, 10000)
     // Applauncher
-    property int applauncherClipboardPollMs: Utils.clamp(val('applauncher.clipboardPollMs', 1000), 100, 600000)
     // Applauncher UI/config (nested)
     property int applauncherWidth: val('applauncher.size.width', 460)
     property int applauncherHeight: val('applauncher.size.height', 640)
@@ -452,12 +451,8 @@ Singleton {
     // Applauncher list item heights
     property int applauncherListItemHeight: Utils.clamp(val('applauncher.list.itemHeight', 48), 24, 256)
     property int applauncherListItemHeightLarge: Utils.clamp(val('applauncher.list.itemHeightLarge', 64), 24, 256)
-    // Applauncher preview panel width
-    property int applauncherPreviewWidth: Utils.clamp(val('applauncher.preview.width', 200), 100, 1000)
-    // Applauncher content/preview margins and max height ratio
+    // Applauncher content margins
     property int applauncherContentMargin: Utils.clamp(val('applauncher.content.margin', uiMarginLarge), 0, 256)
-    property int applauncherPreviewInnerMargin: Utils.clamp(val('applauncher.preview.innerMargin', uiMarginMedium), 0, 256)
-    property real applauncherPreviewMaxHeightRatio: Utils.clamp(val('applauncher.preview.maxHeightRatio', 1.0), 0.1, 1.0)
     // Calendar metrics
     property int calendarRowSpacing: val('calendar.rowSpacing', 2)
     property int calendarCellSpacing: val('calendar.cellSpacing', 2)
@@ -628,7 +623,6 @@ Singleton {
     property int uiEasingStdIn: easingType(val('ui.anim.easing.stdIn', 'InCubic'), 'InCubic')
     property int uiEasingInOut: easingType(val('ui.anim.easing.inOut', 'InOutQuad'), 'InOutQuad')
     // Applauncher entry opacities
-    property real applauncherClipboardEntryOpacity: Utils.clamp(val('applauncher.list.opacity.clipboard', 0.8), 0, 1)
     property real applauncherCommandEntryOpacity: Utils.clamp(val('applauncher.list.opacity.command', 0.9), 0, 1)
     property real applauncherNoMetaOpacity: Utils.clamp(val('applauncher.list.opacity.noMeta', 0.6), 0, 1)
     // Calendar popup sizing

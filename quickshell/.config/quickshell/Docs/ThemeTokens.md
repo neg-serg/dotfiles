@@ -67,12 +67,11 @@ Additional UI tokens (nested)
    - ws.icon.innerPadding
   - Submap baseline: ws.submap.icon.baselineOffset
   - Submap icon color: ws.submap.icon.color
-- Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift, applauncher.clipboardPollMs
+ - Applauncher: applauncher.size.width/height, applauncher.cornerRadius, applauncher.margins.bottom, applauncher.anim.enterMs/scaleMs/offscreenShift
   - Applauncher tuning: applauncher.cornerScale (0..1), applauncher.compactScale (0.5..1), applauncher.backgroundAlpha (0..1)
   - Applauncher filters: applauncher.filter.consoleApps (bool)
   - Applauncher list: applauncher.list.itemHeight, applauncher.list.itemHeightLarge
-  - Applauncher preview: applauncher.preview.width
-  - Applauncher layout: applauncher.content.margin, applauncher.preview.innerMargin, applauncher.preview.maxHeightRatio
+  - Applauncher layout: applauncher.content.margin
   - Menu item radius: panel.menu.itemRadius
   - Spectrum: spectrum.peakThickness
   - Side panel: sidePanel.innerRadius (inner blocks)
