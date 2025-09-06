@@ -354,7 +354,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Artist icon
                                     icon: "person"
-                                    color: musicAccent
+                                    color: detailsCol.musicAccent
                                     size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
@@ -377,7 +377,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Album artist icon
                                     icon: "person"
-                                    color: musicAccent
+                                    color: detailsCol.musicAccent
                                     size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
@@ -400,7 +400,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Album icon
                                     icon: "album"
-                                    color: musicAccent
+                                    color: detailsCol.musicAccent
                                     size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
@@ -425,7 +425,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Genre icon
                                     icon: "category"
-                                    color: musicAccent
+                                    color: detailsCol.musicAccent
                                     size: Math.round(playerUI.musicFontPx * Theme.mediaIconScaleEmphasis)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
@@ -447,7 +447,7 @@ Rectangle {
                                 visible: !!MusicManager.trackYear && !MusicManager.trackDateStr
                                 Layout.fillWidth: true
                                 spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
-                                MaterialIcon { icon: "calendar_month"; color: musicAccent; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
+                                MaterialIcon { icon: "calendar_month"; color: detailsCol.musicAccent; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
                                 Text {
                                     Layout.fillWidth: true
                                     text: MusicManager.trackYear
@@ -465,7 +465,7 @@ Rectangle {
                                 visible: !!MusicManager.trackLabel
                                 Layout.fillWidth: true
                                 spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
-                                MaterialIcon { icon: "sell"; color: musicAccent; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
+                                MaterialIcon { icon: "sell"; color: detailsCol.musicAccent; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
                                 Text {
                                     Layout.fillWidth: true
                                     text: MusicManager.trackLabel
@@ -484,7 +484,7 @@ Rectangle {
                                 visible: !!MusicManager.trackComposer
                                 Layout.fillWidth: true
                                 spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
-                                MaterialIcon { icon: "piano"; color: musicAccent; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
+                                MaterialIcon { icon: "piano"; color: detailsCol.musicAccent; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
                                 Text {
                                     Layout.fillWidth: true
                                     text: MusicManager.trackComposer
@@ -538,7 +538,7 @@ Rectangle {
                                     textFormat: Text.RichText
                                     text: (function(){
                                         const s = MusicManager.trackQualitySummary || "";
-                                        const c = musicAccentCss;
+                                        const c = detailsCol.musicAccentCss;
                                         // Escape full string, then replace escaped middot entity with styled span.
                                         return Rich.esc(s).replace(/&#183;/g, Rich.sepSpan(c, '\u00B7', true));
                                     })()
@@ -560,7 +560,7 @@ Rectangle {
                                 MaterialIcon {
                                     // DSD rate icon
                                     icon: "speed"
-                                    color: musicAccent
+                                    color: detailsCol.musicAccent
                                     size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
