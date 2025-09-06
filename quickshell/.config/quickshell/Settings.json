@@ -1,5 +1,6 @@
 {
     "dimPanels": true,
+    "applauncherDisableAnimations": false,
     "fontSizeMultiplier": 1.2,
     "showMediaInBar": true,
     "showMediaVisualizer": false,
