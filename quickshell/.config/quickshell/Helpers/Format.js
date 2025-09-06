@@ -1,4 +1,7 @@
 .pragma library
+// Bridge to RichText helpers for consistency
+// Use Qt.include to avoid dupe logic; fallback remains available
+try { Qt.include("RichText.js"); } catch (e) {}
 
 // Helpers/Format.js — common lightweight formatting utilities
 
@@ -14,6 +17,12 @@ function htmlEscape(s) {
 
 // Return a colored inline separator span (default '/') for rich text
 function sepSpan(colorCss, ch) {
+    try {
+        if (typeof RichRT !== 'undefined' && RichRT && typeof RichRT.sepSpan === 'function') {
+            return RichRT.sepSpan(colorCss, ch);
+        }
+    } catch (e) {}
+    // Fallback implementation
     var c = (colorCss === undefined || colorCss === null) ? "inherit" : String(colorCss);
     var s = (ch === undefined || ch === null) ? '/' : String(ch);
     return "<span style='color:" + c + "'>" + htmlEscape(s) + "</span>";
