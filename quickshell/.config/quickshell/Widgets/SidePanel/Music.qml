@@ -5,7 +5,7 @@ import QtQuick.Effects
 import QtQuick.Window 2.15
 import qs.Settings
 import qs.Components
-import qs.Services as Services
+import qs.Services
 import "../../Helpers/Color.js" as Color
 import "../../Helpers/Format.js" as Format
 
@@ -117,7 +117,7 @@ Rectangle {
                 }
             }
             // Refresh list periodically and on player change (centralized timer)
-            Connections { target: Services.Timers; function onTick2s() { playerUI.dedupePlayers() } }
+            Connections { target: Timers; function onTick2s() { playerUI.dedupePlayers() } }
             Connections { target: MusicManager; function onCurrentPlayerChanged() { playerUI.dedupePlayers() } }
             ComboBox {
                 id: playerSelector
