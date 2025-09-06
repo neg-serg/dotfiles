@@ -11,7 +11,16 @@ Item {
     property int backoffMs: 1500
     property var env: null
     property int intervalMs: 0
+    // Parse entire stdout as JSON once (on process end)
     property bool parseJson: false
+    // Parse each line as JSON (streaming); falls back to line signal on parse failure
+    property bool jsonLine: false
+    // Debounce emission of line/jsonLine events (ms); 0 = emit immediately
+    property int debounceMs: 0
+    // Restart policy on exit when intervalMs == 0: 'always' or 'never'.
+    // Backward-compat: if empty, fallback to restartOnExit boolean.
+    property string restartMode: ""
+    // Backward-compat flag (deprecated). Use restartMode instead.
     property bool restartOnExit: true
     property bool autoStart: true
     readonly property alias running: proc.running
@@ -37,6 +46,16 @@ Item {
         onTriggered: if (!proc.running) proc.running = true
     }
 
+    // Debounce buffer for streaming output
+    property string _pendingTail: ""
+    property var _pendingLines: []
+    Timer {
+        id: debounce
+        interval: Math.max(1, root.debounceMs)
+        repeat: false
+        onTriggered: root._flushPending()
+    }
+
     Process {
         id: proc
         command: root.cmd
@@ -50,16 +69,23 @@ Item {
                 const all = text;
                 if (root._consumed >= all.length) return;
                 const chunk = all.substring(root._consumed);
-                root._consumed = all.length;
-                let lines = chunk.split("\n");
-                const last = lines.pop();
-                if (last && !chunk.endsWith("\n")) {
-                    root._consumed -= last.length;
-                } else if (last) {
-                    lines.push(last);
+                // Combine with tail and split into lines
+                const combined = root._pendingTail + chunk;
+                let lines = combined.split("\n");
+                // Last element is tail (may be empty if chunk ended with \n)
+                root._pendingTail = lines.pop() || "";
+                // Update consumed to leave tail for next time
+                root._consumed = all.length - root._pendingTail.length;
+                // Stash lines for debounced flush
+                for (let i = 0; i < lines.length; i++) {
+                    const s = (lines[i] || "").trim();
+                    if (!s) continue;
+                    root._pendingLines.push(s);
                 }
-                for (let l of lines) {
-                    const s = (l || "").trim(); if (!s) continue; root.line(s);
+                if (root.debounceMs > 0) {
+                    debounce.restart();
+                } else {
+                    root._flushPending();
                 }
             }
             onStreamFinished: {
@@ -75,11 +101,38 @@ Item {
 
         onExited: function(exitCode, exitStatus) {
             root._consumed = 0;
+            root._pendingTail = "";
             root.exited(exitCode, exitStatus);
-            if (root.intervalMs === 0 && root.restartOnExit) backoff.restart();
+            function _shouldRestart() {
+                var m = String(root.restartMode || "").toLowerCase();
+                if (m === 'always') return true;
+                if (m === 'never') return false;
+                // Fallback to legacy flag
+                return !!root.restartOnExit;
+            }
+            if (root.intervalMs === 0 && _shouldRestart()) backoff.restart();
         }
     }
 
     function start() { proc.running = true }
     function stop()  { proc.running = false }
+
+    function _flushPending() {
+        if (!root._pendingLines || root._pendingLines.length === 0) return;
+        try {
+            for (let i = 0; i < root._pendingLines.length; i++) {
+                const s = root._pendingLines[i];
+                if (root.jsonLine) {
+                    try {
+                        const obj = JSON.parse(s);
+                        root.json(obj);
+                        continue;
+                    } catch (e) { /* fall through to line */ }
+                }
+                root.line(s);
+            }
+        } finally {
+            root._pendingLines = [];
+        }
+    }
 }
