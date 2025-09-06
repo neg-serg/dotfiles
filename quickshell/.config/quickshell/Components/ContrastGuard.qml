@@ -22,7 +22,7 @@ QtObject {
         ? Settings.settings.contrastWarnRatio : 4.5
     property string label: ""
 
-    readonly property color fg: Color.contrastOn(bg, preferLight, preferDark, threshold)
+    readonly property color fg: Theme.textOn(bg, preferLight, preferDark, threshold)
     readonly property real  ratio: Color.contrastRatio(bg, fg)
 
     function maybeWarn() {

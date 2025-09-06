@@ -50,11 +50,14 @@ Singleton {
     }
 
     // Convenience: choose readable text color for a background
-    function textOn(bg, preferLight, preferDark) {
+    // textOn(bg[, preferLight, preferDark, threshold])
+    function textOn(bg, preferLight, preferDark, threshold) {
         try {
             var light = (preferLight !== undefined) ? preferLight : textPrimary;
             var dark  = (preferDark  !== undefined) ? preferDark  : textSecondary;
-            return Color.contrastOn(bg, light, dark, contrastThreshold);
+            var th = (threshold !== undefined && threshold !== null && isFinite(threshold))
+                ? Number(threshold) : contrastThreshold;
+            return Color.contrastOn(bg, light, dark, th);
         } catch (e) { return textPrimary; }
     }
     

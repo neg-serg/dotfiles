@@ -116,7 +116,7 @@ Guidance
   - Accent hover/active: Theme.accentHover / Theme.accentActive
   - Borders: Theme.borderSubtle / Theme.borderStrong
   - Dark accent tint blocks: Theme.accentDarkStrong
-- Text on dynamic backgrounds: Theme.textOn(bg[, preferLight, preferDark])
+- Text on dynamic backgrounds: Theme.textOn(bg[, preferLight, preferDark, threshold])
 - Avoid hardcoded Qt.rgba mixes for state colors; use derived tokens or Color helpers.
   - For CSS strings use Helpers/Format.colorCss(color, alpha?) instead of manual rgba() building.
 
