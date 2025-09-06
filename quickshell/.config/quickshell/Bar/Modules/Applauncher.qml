@@ -28,7 +28,7 @@ PanelWithOverlay {
     }
     // Clipboard integration via service
     readonly property var clipboardHistory: Services.Clipboard.history
-    Connections { target: Services.Clipboard; function onHistoryChanged() { root.updateFilter() } }
+    Connections { target: Services.Clipboard; function onHistoryChanged() { try { root.filterLater.restart() } catch (e) {} } }
 
     // Old clipboard ProcessRunners removed; use Services.Clipboard instead
 
@@ -53,7 +53,7 @@ PanelWithOverlay {
             arr.splice(idx, 1);
         }
         Settings.settings.pinnedExecs = arr;
-        root.updateFilter();
+        try { root.filterLater.restart() } catch (e) {}
     }
     
     function showAt() {
@@ -94,7 +94,7 @@ PanelWithOverlay {
             shouldBeVisible = true;
             root.selectedIndex = 0;
             root.appModel = DesktopEntries.applications.values;
-            root.updateFilter();
+            try { root.filterLater.restart() } catch (e) {}
         }
 
         function hidePanel() {
@@ -357,7 +357,7 @@ PanelWithOverlay {
             }
 
             // Debounced filtering trigger
-            Timer { id: filterLater; interval: Math.max(0, appLauncherPanelRect.debounceMs); repeat: false; onTriggered: updateFilterNow() }
+            Timer { id: filterLater; interval: Math.max(0, appLauncherPanelRect.debounceMs); repeat: false; onTriggered: root.updateFilterNow() }
 
             function selectNext() {
                 if (filteredApps.length > 0)
@@ -395,7 +395,7 @@ PanelWithOverlay {
                 searchField.text = "";
             }
 
-            Component.onCompleted: updateFilter()
+            Component.onCompleted: updateFilterNow()
 
             RowLayout {
                 anchors.fill: parent
