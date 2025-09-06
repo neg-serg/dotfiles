@@ -68,9 +68,6 @@ function parseArgs(argv) {
   return args;
 }
 
-const GROUP_ROOTS = new Set([
-  'colors','panel','shape','tooltip','weather','sidePanel','ui','ws','timers','network','media','spectrum','time','calendar','vpn','volume','applauncher','keyboard'
-]);
 
 function main() {
   const args = parseArgs(process.argv);
@@ -86,11 +83,7 @@ function main() {
   const unknown = [];
   for (const p of themePaths) if (!schemaPaths.has(p)) unknown.push(p);
 
-  // Flat tokens at root
-  const flat = [];
-  for (const k of Object.keys(theme)) {
-    if (!GROUP_ROOTS.has(k)) flat.push(k);
-  }
+  // Flat token detection removed — schema is authoritative and flat tokens are no longer supported.
 
 
   // Missing tokens (schema leaves not present in theme)
@@ -113,13 +106,12 @@ function main() {
   hdr('Unknown tokens');
   if (unknown.length) unknown.sort().forEach(p => console.log('  +', p)); else console.log('  (none)');
 
-  hdr('Flat tokens at root (legacy)');
-  if (flat.length) flat.sort().forEach(k => console.log('  *', k)); else console.log('  (none)');
+  // (flat tokens check removed)
 
   hdr('Missing tokens (informational)');
   if (missing.length) missing.sort().forEach(p => console.log('  -', p)); else console.log('  (none)');
 
-  if (args.strict && (unknown.length || flat.length)) {
+  if (args.strict && (unknown.length)) {
     console.error('\nStrict mode: validation errors present.');
     process.exitCode = 1;
   }

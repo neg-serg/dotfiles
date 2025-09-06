@@ -133,7 +133,7 @@ Debugging
 
 Tools
 - Validation: `node Tools/validate-theme.mjs [--theme Theme.json] [--schema Docs/ThemeHierarchical.json] [--strict]`
-  - Reports unknown (extra), flat (legacy), deprecated, and missing tokens (missing is informational unless `--strict`).
+  - Reports unknown (extra) and missing tokens (missing is informational; `--strict` fails on unknown only).
 - Generate example schema: `node Tools/generate-theme-schema.mjs`
   - Rebuilds `Docs/ThemeHierarchical.json` from the repository `Theme.json` (single source for docs), preventing drift.
 
