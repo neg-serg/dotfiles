@@ -126,9 +126,9 @@ PanelWithOverlay {
             property int targetY: Utils.clamp(parent.height - height - bottomMargin, 0, parent.height)
             property int offscreenYBottom: parent.height + Theme.applauncherOffscreenShift
             y: appLauncherPanelRect.shouldBeVisible ? targetY : offscreenYBottom
-            Behavior on y { NumberFadeBehavior { duration: Math.round(Theme.applauncherEnterAnimMs / 4); easing.type: Theme.uiEasingQuick } }
+            Behavior on y { enabled: !Settings.settings.applauncherDisableAnimations; NumberFadeBehavior { duration: Math.round(Theme.applauncherEnterAnimMs / 4); easing.type: Theme.uiEasingQuick } }
             scale: appLauncherPanelRect.shouldBeVisible ? 1 : 0
-            Behavior on scale { NumberFadeBehavior { duration: Math.round(Theme.applauncherScaleAnimMs / 4); easing.type: Theme.uiEasingInOut } }
+            Behavior on scale { enabled: !Settings.settings.applauncherDisableAnimations; NumberFadeBehavior { duration: Math.round(Theme.applauncherScaleAnimMs / 4); easing.type: Theme.uiEasingInOut } }
             onScaleChanged: {
                 if (scale === 0 && !appLauncherPanelRect.shouldBeVisible) {
                     appLauncherPanel.visible = false;
@@ -443,8 +443,8 @@ PanelWithOverlay {
                             }
                         }
 
-                        Behavior on border.color { ColorFadeBehavior {} }
-                        Behavior on border.width { NumberFadeBehavior {} }
+                        Behavior on border.color { enabled: !Settings.settings.applauncherDisableAnimations; ColorFadeBehavior {} }
+                        Behavior on border.width { enabled: !Settings.settings.applauncherDisableAnimations; NumberFadeBehavior {} }
                     }
 
             
@@ -484,9 +484,9 @@ PanelWithOverlay {
                                         : (hovered || isSelected ? Theme.accentPrimary : "transparent")
                                     border.width: appLauncherPanel.isPinned(modelData) ? 0 : (hovered || isSelected ? 2 : 0)
 
-                                    Behavior on color { ColorFadeBehavior {} }
-                                    Behavior on border.color { ColorFadeBehavior {} }
-                                    Behavior on border.width { NumberFadeBehavior {} }
+                                    Behavior on color { enabled: !Settings.settings.applauncherDisableAnimations; ColorFadeBehavior {} }
+                                    Behavior on border.color { enabled: !Settings.settings.applauncherDisableAnimations; ColorFadeBehavior {} }
+                                    Behavior on border.width { enabled: !Settings.settings.applauncherDisableAnimations; NumberFadeBehavior {} }
                                 }
 
                                 RowLayout {
@@ -632,7 +632,7 @@ PanelWithOverlay {
                                             return;
                                         }
                                         ripple.opacity = Theme.uiRippleOpacity;
-                                        rippleNumberAnimation.start();
+                                        if (!Settings.settings.applauncherDisableAnimations) rippleNumberAnimation.start(); else ripple.opacity = 0.0;
                                         root.selectedIndex = index;
                                         root.activateSelected();
                                     }
@@ -641,7 +641,7 @@ PanelWithOverlay {
                                     onReleased: ripple.opacity = 0.0
                                 }
 
-                                    RippleFadeBehavior { id: rippleNumberAnimation; target: ripple; property: "opacity"; to: 0.0 }
+                                    RippleFadeBehavior { id: rippleNumberAnimation; target: ripple; property: "opacity"; to: 0.0; enabled: !Settings.settings.applauncherDisableAnimations }
 
                                 Rectangle {
                                     anchors.left: parent.left
