@@ -111,7 +111,7 @@ PanelWithOverlay {
             height: Theme.applauncherHeight
             x: (parent.width - width) / 2
             // Panel background should look like the bar: slightly translucent background
-            color: Color.withAlpha(Theme.background, 0.92)
+            color: Color.withAlpha(Theme.background, 0.88)
             radius: Math.round(Theme.applauncherCornerRadius * appLauncherPanelRect.radiusScale)
             border.color: "transparent"
             border.width: 0
@@ -363,7 +363,7 @@ PanelWithOverlay {
                     Layout.preferredWidth: Math.round(Theme.applauncherPreviewWidth * Theme.scale(Screen))
                     Layout.maximumHeight: Math.round(parent.height * Theme.applauncherPreviewMaxHeightRatio)
                     Layout.fillHeight: true
-                    color: Theme.surface
+                    color: "transparent"
                     radius: Theme.panelOverlayRadius
                     visible: false
 
@@ -404,9 +404,9 @@ PanelWithOverlay {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.leftMargin: Math.round(Theme.uiPaddingMedium * appLauncherPanelRect.compactScale)
-                        anchors.rightMargin: Math.round(Theme.uiPaddingMedium * appLauncherPanelRect.compactScale)
-                        spacing: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
+                        anchors.leftMargin: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
+                        anchors.rightMargin: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
+                        spacing: Math.round(Theme.uiSpacingXSmall * appLauncherPanelRect.compactScale)
 
                             MaterialIcon {
                                 icon: "search"
@@ -452,7 +452,7 @@ PanelWithOverlay {
 
             
                     Rectangle {
-                        color: Theme.surface
+                        color: "transparent"
                         radius: Math.round(Theme.panelOverlayRadius * appLauncherPanelRect.radiusScale)
                         Layout.fillWidth: true
                         Layout.fillHeight: true
@@ -478,9 +478,9 @@ PanelWithOverlay {
 
                                 Rectangle {
                                     anchors.fill: parent
-                                    color: (hovered || isSelected)
-                                        ? Theme.accentPrimary
-                                        : (appLauncherPanel.isPinned(modelData) ? Theme.surfaceVariant : "transparent")
+                                    color: isSelected ? Theme.accentPrimary
+                                         : hovered ? Theme.overlayWeak
+                                         : (appLauncherPanel.isPinned(modelData) ? Theme.surfaceVariant : "transparent")
                                     radius: Math.round(Theme.cornerRadiusLarge * appLauncherPanelRect.radiusScale)
                                     border.color: "transparent"
                                     border.width: 0
@@ -651,7 +651,7 @@ PanelWithOverlay {
                                     height: Theme.uiSeparatorThickness
                                     radius: Math.round(Theme.uiSeparatorRadius * appLauncherPanelRect.radiusScale)
                                     color: Theme.borderSubtle
-                                    opacity: index === appList.count - 1 ? 0 : 1.0
+                                    opacity: index === appList.count - 1 ? 0 : 0.4
                                 }
 
         
