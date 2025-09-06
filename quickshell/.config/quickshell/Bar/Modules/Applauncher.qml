@@ -96,7 +96,7 @@ PanelWithOverlay {
             root.appModel = DesktopEntries.applications.values;
             // Precompute base (non-plugin) app list once per open for responsiveness
             try {
-                root.baseApps = root.appModel.slice().filter(function(a){ return !isAudioPluginEntry(a); });
+                root.baseApps = root.appModel.slice().filter(function(a){ return !isAudioPluginEntry(a) && !isConsoleAppEntry(a); });
             } catch (e) { root.baseApps = root.appModel.slice(); }
             try { root.filterLater.restart() } catch (e) {}
         }
@@ -169,6 +169,22 @@ PanelWithOverlay {
                     const re = /(\b(vst|vst2|vst3|lv2|ladspa|dssi|clap|lsp|audiounit|audio-unit|au|vamp|plugin)\b)/;
                     if (m(n,re) || m(c,re) || m(cats,re) || m(ex,re)) return true;
                     if (ex.indexOf('/.vst') !== -1 || ex.indexOf('/vst3') !== -1 || ex.indexOf('/.lv2') !== -1 || ex.indexOf('/.ladspa') !== -1 || ex.indexOf('/.clap') !== -1) return true;
+                } catch (e) {}
+                return false;
+            }
+
+            function isConsoleAppEntry(app) {
+                try {
+                    // Standard desktop entry flag
+                    if (app.runInTerminal === true || String(app.terminal || '').toLowerCase() === 'true') return true;
+                    const n = String(app.name || '').toLowerCase();
+                    const ex = String(app.execString || app.exec || '').toLowerCase();
+                    // Common console-only tools that provide .desktop files
+                    const consoleNames = ['yazi','ranger','lf','nnn','mc','htop','btop','bashtop','btm','nvim','neovim','vim','nano','tmux','xplr','zellij'];
+                    for (var i = 0; i < consoleNames.length; ++i) {
+                        const t = consoleNames[i];
+                        if (n === t || n.indexOf(t) !== -1 || ex.startsWith(t + ' ') || ex.indexOf('/' + t + ' ') !== -1 || ex === t) return true;
+                    }
                 } catch (e) {}
                 return false;
             }
@@ -345,6 +361,8 @@ PanelWithOverlay {
                 var unpinned = [];
                 for (var i = 0; i < results.length; ++i) {
                     var app = results[i];
+                    // Exclude console-only apps from final list too (defense-in-depth when baseApps not set)
+                    if (isConsoleAppEntry(app)) continue;
                     if (app.execString && Settings.settings.pinnedExecs.indexOf(app.execString) !== -1) {
                         pinned.push(app);
                     } else {
