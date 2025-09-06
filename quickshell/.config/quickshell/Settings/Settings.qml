@@ -91,8 +91,6 @@ Singleton {
             property string collapsedTrayIcon: "expand_more"
             property string trayFallbackIcon: "broken_image"
 
-            // Applauncher: disable animations entirely when true
-            property bool applauncherDisableAnimations: false
 
             // Global contrast
             property real contrastThreshold: 0.5

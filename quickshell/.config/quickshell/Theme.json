@@ -294,34 +294,6 @@
     },
     "centerOffset": -2
   },
-  "applauncher": {
-    "cornerScale": 0.25,
-    "compactScale": 0.70,
-    "backgroundAlpha": 0.88,
-    "filter": { "consoleApps": true },
-    "search": { "maxResults": 150, "debounceMs": 20 },
-    "list": {
-      "itemHeight": 48,
-      "itemHeightLarge": 64,
-      "opacity": { "noMeta": 0.6 }
-    },
-    "content": {
-      "margin": 32
-    },
-    "size": {
-      "width": 460,
-      "height": 640
-    },
-    "cornerRadius": 28,
-    "margins": {
-      "bottom": 16
-    },
-    "anim": {
-      "offscreenShift": 12,
-      "enterMs": 300,
-      "scaleMs": 200
-    }
-  },
   "vpn": {
     "connectedOpacity": 0.8,
     "disconnectedOpacity": 0.45,

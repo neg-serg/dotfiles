@@ -98,7 +98,6 @@ Singleton {
             property var calendar: ({})
             property var vpn: ({})
             property var volume: ({})
-            property var applauncher: ({})
             property var keyboard: ({})
         }
         
@@ -250,7 +249,7 @@ Singleton {
             }
 
             // Flat tokens presence warning (aggregate once)
-            var groupRoots = ['colors','panel','shape','tooltip','weather','sidePanel','ui','ws','timers','network','media','spectrum','time','calendar','vpn','volume','applauncher','keyboard'];
+            var groupRoots = ['colors','panel','shape','tooltip','weather','sidePanel','ui','ws','timers','network','media','spectrum','time','calendar','vpn','volume','keyboard'];
             var ignoreKeys = { objectName: true };
             var flats = [];
             try {
@@ -430,29 +429,7 @@ Singleton {
     property int musicPositionPollMs: Utils.clamp(val('timers.musicPositionPollMs', 1000), 100, 600000)
     property int musicPlayersPollMs: Utils.clamp(val('timers.musicPlayersPollMs', 5000), 100, 600000)
     property int musicMetaRecalcDebounceMs: Utils.clamp(val('timers.musicMetaRecalcDebounceMs', 80), 0, 10000)
-    // Applauncher
-    // Applauncher UI/config (nested)
-    property int applauncherWidth: val('applauncher.size.width', 460)
-    property int applauncherHeight: val('applauncher.size.height', 640)
-    property int applauncherCornerRadius: val('applauncher.cornerRadius', 28)
-    // Applauncher tuning (scales and alpha)
-    property real applauncherCornerScale: Utils.clamp(val('applauncher.cornerScale', 0.25), 0.0, 1.0)
-    property real applauncherCompactScale: Utils.clamp(val('applauncher.compactScale', 0.70), 0.5, 1.0)
-    property real applauncherBgAlpha: Utils.clamp(val('applauncher.backgroundAlpha', 0.88), 0.0, 1.0)
-    // Applauncher search tuning
-    property int applauncherSearchMaxResults: Utils.clamp(val('applauncher.search.maxResults', 150), 10, 2000)
-    property int applauncherSearchDebounceMs: Utils.clamp(val('applauncher.search.debounceMs', 60), 0, 1000)
-    // Applauncher filters
-    property bool applauncherFilterConsoleApps: !!val('applauncher.filter.consoleApps', true)
-    property int applauncherBottomMargin: val('applauncher.margins.bottom', 16)
-    property int applauncherOffscreenShift: val('applauncher.anim.offscreenShift', 12)
-    property int applauncherEnterAnimMs: Utils.clamp(val('applauncher.anim.enterMs', 300), 0, 10000)
-    property int applauncherScaleAnimMs: Utils.clamp(val('applauncher.anim.scaleMs', 200), 0, 10000)
-    // Applauncher list item heights
-    property int applauncherListItemHeight: Utils.clamp(val('applauncher.list.itemHeight', 48), 24, 256)
-    property int applauncherListItemHeightLarge: Utils.clamp(val('applauncher.list.itemHeightLarge', 64), 24, 256)
-    // Applauncher content margins
-    property int applauncherContentMargin: Utils.clamp(val('applauncher.content.margin', uiMarginLarge), 0, 256)
+    // Applauncher removed: related tokens no longer used
     // Calendar metrics
     property int calendarRowSpacing: val('calendar.rowSpacing', 2)
     property int calendarCellSpacing: val('calendar.cellSpacing', 2)
@@ -637,8 +614,7 @@ Singleton {
     property int uiEasingStdOut: easingType(val('ui.anim.easing.stdOut', 'OutCubic'), 'OutCubic')
     property int uiEasingStdIn: easingType(val('ui.anim.easing.stdIn', 'InCubic'), 'InCubic')
     property int uiEasingInOut: easingType(val('ui.anim.easing.inOut', 'InOutQuad'), 'InOutQuad')
-    // Applauncher entry opacities
-    property real applauncherNoMetaOpacity: Utils.clamp(val('applauncher.list.opacity.noMeta', 0.6), 0, 1)
+    // Applauncher removed: entry opacity token unused
     // Calendar popup sizing
     property int calendarWidth: Utils.clamp(val('calendar.size.width', 280), 200, 800)
     property int calendarHeight: Utils.clamp(val('calendar.size.height', 320), 200, 800)
