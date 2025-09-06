@@ -30,7 +30,6 @@ Additional UI tokens (nested)
   - UI spinner: ui.spinner.durationMs
   - UI opacities: ui.ripple.opacity, ui.icon.emphasisOpacity
  - Media: media.iconScaleEmphasis
-  - Time text: media.time.fontScale
   - MPD flags polling: media.mpd.flags.fallbackMs
   - Album art fallback opacity: media.albumArt.fallbackOpacity
  - System tray: panel.tray.inlinePadding (px)
@@ -131,3 +130,33 @@ Examples
 - Media separators: bracket = Theme.accentDarkStrong; separator = Theme.accentHover
 Debugging
 - Strict token warnings: set `Settings.settings.strictThemeTokens` to true to log a warning whenever a Theme token is missing and a fallback is used. Helps ensure themes define all tokens you rely on.
+
+Deprecations and Migration
+- Deprecated (removed): media.time.fontScale — removed in Sep 2025 as time spans follow main text size. Remove from Theme.json; no replacement needed.
+- Flat (legacy) tokens: compatibility remains until 2025-11-01. After this date, flat keys stop working. Migrate to hierarchical tokens in Theme.json.
+
+Migration (flat → nested)
+Flat keys were historically supported alongside nested tokens. They are deprecated and removed after 2025-11-01. Enable `Settings.settings.strictThemeTokens = true` to get console warnings when any flat key is detected.
+
+Core mappings (examples):
+
+- Colors: background → colors.background; surface → colors.surface; surfaceVariant → colors.surfaceVariant; textPrimary → colors.text.primary; textSecondary → colors.text.secondary; textDisabled → colors.text.disabled; accentPrimary → colors.accent.primary; error → colors.status.error; warning → colors.status.warning; highlight → colors.highlight; onAccent → colors.onAccent; outline → colors.outline; shadow → colors.shadow
+- Panel: panelHeight → panel.height; panelSideMargin → panel.sideMargin; panelWidgetSpacing → panel.widgetSpacing; panelSepOvershoot → panel.sepOvershoot; panelModuleHeight → panel.moduleHeight; panelMenuYOffset → panel.menuYOffset
+- Panel icons: panelIconSize → panel.icons.iconSize; panelIconSizeSmall → panel.icons.iconSizeSmall
+- Hotzone: panelHotzoneWidth → panel.hotzone.width; panelHotzoneHeight → panel.hotzone.height; panelHotzoneRightShift → panel.hotzone.rightShift
+- Shape: cornerRadius → shape.cornerRadius; cornerRadiusSmall → shape.cornerRadiusSmall; cornerRadiusLarge → shape.cornerRadiusLarge
+- Tooltip: tooltipDelayMs → tooltip.delayMs; tooltipMinSize → tooltip.minSize; tooltipMargin → tooltip.margin; tooltipPadding → tooltip.padding; tooltipBorderWidth → tooltip.borderWidth; tooltipRadius → tooltip.radius; tooltipFontPx → tooltip.fontPx
+- Pill: panelPillHeight → panel.pill.height; panelPillIconSize → panel.pill.iconSize; panelPillPaddingH → panel.pill.paddingH; panelPillShowDelayMs → panel.pill.showDelayMs; panelPillAutoHidePauseMs → panel.pill.autoHidePauseMs; panelPillBackground → panel.pill.background
+- Animations: panelAnimStdMs → panel.animations.stdMs; panelAnimFastMs → panel.animations.fastMs
+- Tray: panelTrayLongHoldMs → panel.tray.longHoldMs; panelTrayShortHoldMs → panel.tray.shortHoldMs; panelTrayGuardMs → panel.tray.guardMs; panelTrayOverlayDismissDelayMs → panel.tray.overlayDismissDelayMs
+- Spacing/rows: panelRowSpacing → panel.rowSpacing; panelRowSpacingSmall → panel.rowSpacingSmall
+- Volume: panelVolumeFullHideMs → panel.volume.fullHideMs; panelVolumeLowColor → panel.volume.lowColor; panelVolumeHighColor → panel.volume.highColor
+- Timers: timeTickMs → timers.timeTickMs; wsRefreshDebounceMs → timers.wsRefreshDebounceMs
+- Network: vpnPollMs → network.vpnPollMs; networkRestartBackoffMs → network.restartBackoffMs; networkLinkPollMs → network.linkPollMs
+- Media hover: mediaHoverOpenDelayMs → media.hover.openDelayMs; mediaHoverStillThresholdMs → media.hover.stillThresholdMs
+- Spectrum: spectrumPeakDecayIntervalMs → spectrum.peakDecayIntervalMs; spectrumBarAnimMs → spectrum.barAnimMs
+
+Notes
+- The nested schema is authoritative going forward. New tokens are added only in nested form.
+- If you maintain custom themes, migrate now to avoid breakage after 2025-11-01.
+- For colors.* derived tokens (accentHover, borderSubtle, etc.), prefer nested override keys under `colors.overrides.*` if you must override formulas.
