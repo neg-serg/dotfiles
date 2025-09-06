@@ -39,29 +39,49 @@ Item {
 
     // Resolve optional query string and support `path` param robustly
     function resolvedSource() {
-        var icon = source || "";
-        if (!icon) return "";
+        try {
+            var icon = source || "";
+            if (!icon) return "";
 
-        var qIndex = icon.indexOf("?");
-        if (qIndex === -1) {
-            return icon;
+            // Remove query and parse lightweight params we care about
+            var qIndex = icon.indexOf("?");
+            var base = (qIndex === -1) ? icon : icon.slice(0, qIndex);
+            var query = (qIndex === -1) ? "" : icon.slice(qIndex);
+
+            // Normalize obvious fallbacks to force our MaterialIcon fallback (avoid noisy warnings)
+            if (base === "application-x-executable") return "";
+
+            // Convert file path style icons into theme lookups by basename
+            if (base.indexOf('/') !== -1 && !base.startsWith("image://")) {
+                var b = base.substring(base.lastIndexOf('/') + 1);
+                b = b.replace(/\.(png|svg|xpm)$/i, '');
+                return "image://icon/" + b;
+            }
+
+            // If icon is reverse-DNS like net.foo.bar, use the last token
+            if (base.indexOf('.') !== -1 && !base.startsWith("image://")) {
+                var tokens = base.split('.');
+                base = tokens[tokens.length - 1];
+            }
+
+            // Handle explicit path=? query param (legacy). Convert to file URL
+            if (query && query.length > 0) {
+                var params = Url.parseQuery(query);
+                var path = params["path"];
+                if (path && path.length > 0) {
+                    var fileName = base.substring(base.lastIndexOf("/") + 1);
+                    return Url.buildFileUrl(path, fileName);
+                }
+            }
+
+            // Pass through image:// and qrc:/
+            if (base.startsWith("image://") || base.startsWith("qrc:/") || base.startsWith("file:")) return base;
+
+            // Default: theme icon name
+            return base;
+        } catch (e) {
+            return source || "";
         }
-
-        var base = icon.slice(0, qIndex);
-        var query = icon.slice(qIndex);
-
-        // Parse via shared helper
-        var params = Url.parseQuery(query);
-
-        var path = params["path"];
-        if (path && path.length > 0) {
-            var fileName = base.substring(base.lastIndexOf("/") + 1);
-            // Build file URL via helper
-            return Url.buildFileUrl(path, fileName);
-        }
-
-        // Fallback: return original icon (including query)
-        return icon;
     }
 
     IconImage {
@@ -74,10 +94,13 @@ Item {
         asynchronous: true
         backer.fillMode: Image.PreserveAspectFit
         // Request device-pixel-aligned backing texture for crisp rendering
-        backer.sourceSize: Qt.size(
-            Math.round(width  * Screen.devicePixelRatio),
-            Math.round(height * Screen.devicePixelRatio)
-        )
+        // Enforce a sensible minimum backing size to avoid tiny provider requests (e.g., 2x2)
+        backer.sourceSize: (function(){
+            var wpx = Math.round(width  * Screen.devicePixelRatio);
+            var hpx = Math.round(height * Screen.devicePixelRatio);
+            var minPx = Math.max(12, Math.round(Theme.panelIconSizeSmall * Screen.devicePixelRatio));
+            return Qt.size(Math.max(minPx, wpx), Math.max(minPx, hpx));
+        })()
         source: root.resolvedSource()
 
         // Optional grayscale effect (e.g., while overlay is up)
