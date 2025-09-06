@@ -520,10 +520,16 @@ PanelWithOverlay {
                                             id: iconImg
                                             anchors.fill: parent
                                             asynchronous: true
-                                            source: modelData.isCalculator ? "qrc:/icons/calculate.svg" : 
-                                                    modelData.isClipboard ? "qrc:/icons/" + modelData.icon + ".svg" :
-                                                    modelData.isCommand ? "qrc:/icons/" + modelData.icon + ".svg" :
-                                                    Quickshell.iconPath(modelData.icon, "application-x-executable")
+                                            // Resolve icons robustly: qrc/svg for commands, theme icons via image provider, or fallback
+                                            source: (function(){
+                                                if (modelData.isCalculator) return "qrc:/icons/calculate.svg";
+                                                if (modelData.isClipboard || modelData.isCommand) return "qrc:/icons/" + modelData.icon + ".svg";
+                                                const name = modelData.icon || "";
+                                                if (!name) return "image://icon/application-x-executable";
+                                                if (name.startsWith("qrc:") || name.startsWith("file:") || name.startsWith("image://")) return name;
+                                                if (name.indexOf('/') !== -1) return "file://" + name;
+                                                return "image://icon/" + name;
+                                            })()
                                             visible: (modelData.isCalculator || modelData.isClipboard || modelData.isCommand || parent.iconLoaded) && modelData.type !== 'image'
                                         }
                                         
