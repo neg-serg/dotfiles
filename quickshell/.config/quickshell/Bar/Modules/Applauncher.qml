@@ -39,22 +39,7 @@ PanelWithOverlay {
         try { Services.Clipboard.enabled = (visible && searchField && searchField.text && searchField.text.startsWith(">clip")); } catch (e) {}
     }
     
-    function isPinned(app) {
-        return app && app.execString && Settings.settings.pinnedExecs.indexOf(app.execString) !== -1;
-    }
-
-    function togglePin(app) {
-        if (!app || !app.execString) return;
-        var arr = Settings.settings.pinnedExecs ? Settings.settings.pinnedExecs.slice() : [];
-        var idx = arr.indexOf(app.execString);
-        if (idx === -1) {
-            arr.push(app.execString);
-        } else {
-            arr.splice(idx, 1);
-        }
-        Settings.settings.pinnedExecs = arr;
-        try { root.filterLater.restart() } catch (e) {}
-    }
+    // Favorites (pinned) support removed for a simpler, faster launcher
     
     function showAt() {
         appLauncherPanelRect.showAt();
@@ -317,22 +302,7 @@ PanelWithOverlay {
                         }
                     }
                     
-    
-                    var pinned = [];
-                    var unpinned = [];
-                    for (var i = 0; i < results.length; ++i) {
-                        var app = results[i];
-                        if (app.execString && Settings.settings.pinnedExecs.indexOf(app.execString) !== -1) {
-                            pinned.push(app);
-                        } else {
-                            unpinned.push(app);
-                        }
-                    }
-                    // Sort pinned apps alphabetically for consistent display
-                    pinned.sort(function(a, b) {
-                        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-                    });
-                    root.filteredApps = pinned.concat(unpinned);
+                    root.filteredApps = results;
                     root.selectedIndex = 0;
                     return;
                 }
@@ -360,24 +330,8 @@ PanelWithOverlay {
                 }
 
                 // Icons are removed from launcher UI; skip icon-based filtering entirely
-
-                var pinned = [];
-                var unpinned = [];
-                for (var i = 0; i < results.length; ++i) {
-                    var app = results[i];
-                    // Exclude console-only apps from final list too (defense-in-depth when baseApps not set)
-                    if (Theme.applauncherFilterConsoleApps && isConsoleAppEntry(app)) continue;
-                    if (app.execString && Settings.settings.pinnedExecs.indexOf(app.execString) !== -1) {
-                        pinned.push(app);
-                    } else {
-                        unpinned.push(app);
-                    }
-                }
-                // Sort pinned alphabetically
-                pinned.sort(function(a, b) {
-                    return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-                });
-                root.filteredApps = pinned.concat(unpinned);
+                // Exclude console-only apps from final list too (defense in depth)
+                root.filteredApps = results.filter(function(app){ return !(Theme.applauncherFilterConsoleApps && isConsoleAppEntry(app)); });
                 root.selectedIndex = 0;
             }
 
@@ -644,7 +598,7 @@ PanelWithOverlay {
                                     anchors.fill: parent
                                     color: isSelected ? Theme.accentPrimary
                                          : hovered ? Theme.overlayWeak
-                                         : (appLauncherPanel.isPinned(modelData) ? Theme.surfaceVariant : "transparent")
+                                         : "transparent"
                                     radius: Math.round(Theme.cornerRadiusLarge * appLauncherPanelRect.radiusScale)
                                     border.color: "transparent"
                                     border.width: 0
@@ -667,7 +621,7 @@ PanelWithOverlay {
 
                                         Text {
                                             text: modelData.name
-                                            color: (hovered || isSelected) ? Theme.onAccent : (appLauncherPanel.isPinned(modelData) ? Theme.textPrimary : Theme.textPrimary)
+                                            color: (hovered || isSelected) ? Theme.onAccent : Theme.textPrimary
                                             font.family: Theme.fontFamily
                                             font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                             font.bold: hovered || isSelected
@@ -681,7 +635,7 @@ PanelWithOverlay {
                                                   modelData.isClipboard ? modelData.content :
                                                   modelData.isCommand ? modelData.content :
                                                   (modelData.comment || modelData.genericName || "No description available")
-                                            color: (hovered || isSelected) ? Theme.onAccent : (appLauncherPanel.isPinned(modelData) ? Theme.textSecondary : Theme.textSecondary)
+                                            color: (hovered || isSelected) ? Theme.onAccent : Theme.textSecondary
                                             font.family: Theme.fontFamily
                                             font.pixelSize: Math.round(Theme.fontSizeCaption * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                             font.italic: !(modelData.comment || modelData.genericName)
@@ -701,9 +655,7 @@ PanelWithOverlay {
                                     MaterialIcon {
                                         icon: modelData.isCalculator ? "content_copy" : "chevron_right"
                                         size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen) * appLauncherPanelRect.compactScale)
-                                        color: (hovered || isSelected)
-                                            ? Theme.onAccent
-                                            : (appLauncherPanel.isPinned(modelData) ? Theme.textPrimary : Theme.textSecondary)
+                                        color: (hovered || isSelected) ? Theme.onAccent : Theme.textSecondary
                                         Layout.rightMargin: Theme.panelRowSpacingSmall
                                     }
 
@@ -726,12 +678,6 @@ PanelWithOverlay {
                                     hoverEnabled: true
                                     acceptedButtons: Qt.LeftButton | Qt.RightButton
                                     onClicked: {
-
-                                        if (pinArea.containsMouse) return;
-                                        if (mouse.button === Qt.RightButton) {
-                                            appLauncherPanel.togglePin(modelData);
-                                            return;
-                                        }
                                         if (Settings.settings.applauncherDisableAnimations) {
                                             ripple.opacity = 0.0;
                                         } else {
@@ -758,37 +704,7 @@ PanelWithOverlay {
                                     opacity: index === appList.count - 1 ? 0 : 0.4
                                 }
 
-        
-                                Item {
-                                    id: pinArea
-                                    width: Math.round(Theme.panelIconSize * Theme.scale(Screen) * appLauncherPanelRect.compactScale); height: Math.round(Theme.panelIconSize * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
-                                    z: 100
-                                    anchors.right: parent.right
-                                    anchors.verticalCenter: parent.verticalCenter
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        preventStealing: true
-                                        z: 100
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        acceptedButtons: Qt.LeftButton | Qt.RightButton
-                                        propagateComposedEvents: false
-                                        onClicked: {
-                                            appLauncherPanel.togglePin(modelData);
-                                            event.accepted = true;
-                                        }
-                                    }
-
-                                    MaterialIcon {
-                                        anchors.centerIn: parent
-                                        icon: "star"
-                                        size: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * appLauncherPanelRect.compactScale)
-                                        color: (parent.MouseArea.containsMouse || hovered || isSelected)
-                                            ? Theme.onAccent
-                                            : (appLauncherPanel.isPinned(modelData) ? Theme.textPrimary : Theme.textDisabled)
-                                    }
-                                }
+                                
                             }
                         }
                     }
