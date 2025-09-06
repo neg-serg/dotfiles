@@ -1,7 +1,7 @@
 .pragma library
 // Bridge to RichText helpers for consistency
 // Use Qt.include to avoid dupe logic; fallback remains available
-try { Qt.include("RichText.js"); } catch (e) {}
+try { Qt.include("./RichText.js"); } catch (e) {}
 
 // Helpers/Format.js — common lightweight formatting utilities
 
