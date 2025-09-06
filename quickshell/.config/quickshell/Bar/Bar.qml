@@ -32,19 +32,19 @@ Scope {
                     property bool panelHovering: false
                     WlrLayershell.namespace: "quickshell-bar"
                     anchors.bottom: true
-                    anchors.left:   true
-                    anchors.right:  true
+                    anchors.left: true
+                    anchors.right: true
                     visible: Settings.settings.barMonitors.includes(modelData.name)
                              || (Settings.settings.barMonitors.length === 0)
                     implicitHeight: barBackground.height
                     exclusionMode: ExclusionMode.Normal
                     exclusiveZone: panel.barHeightPx   // reserve exactly bar height
                     property real s: Theme.scale(panel.screen)
-                    property int  barHeightPx:   Math.round(Theme.panelHeight * s)
-                    property int  sideMargin:    Math.round(Theme.panelSideMargin * s)
-                    property int  widgetSpacing: Math.round(Theme.panelWidgetSpacing * s)
-                    property int  sepOvershoot:  Theme.panelSepOvershoot
-                    property color barBgColor:   Theme.background // Colors
+                    property int barHeightPx:Math.round(Theme.panelHeight * s)
+                    property int sideMargin:Math.round(Theme.panelSideMargin * s)
+                    property int widgetSpacing:Math.round(Theme.panelWidgetSpacing * s)
+                    property int sepOvershoot:Theme.panelSepOvershoot
+                    property color barBgColor: Theme.background // Colors
 
                     // Inline component for repeated diagonal separator
                     component DiagSep: ThemedSeparator {
@@ -57,9 +57,9 @@ Scope {
 
                     Rectangle { // Bar background
                         id: barBackground
-                        width:  parent.width
+                        width: parent.width
                         height: panel.barHeightPx
-                        color:  panel.barBgColor
+                        color: panel.barBgColor
                         anchors.top: parent.top
                         anchors.left: parent.left
                     }

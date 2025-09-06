@@ -13,7 +13,7 @@ Item {
     readonly property var _audio: (defaultAudioSink && defaultAudioSink.audio) ? defaultAudioSink.audio : null
 
     // Public state
-    property int  volume: 0          // 0..100, 0 when muted
+    property int volume:0          // 0..100, 0 when muted
     property bool muted: (_audio ? _audio.muted : false)
 
     // Stepping/limits

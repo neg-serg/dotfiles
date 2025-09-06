@@ -9,9 +9,9 @@ import qs.Settings
 Rectangle {
     id: hoverRect
     property color colorToken: Theme.surfaceHover
-    property real  radiusFactor: 0.5
-    property real  epsToken: Theme.uiVisibilityEpsilon
-    property real  intensity: 0.0
+    property real radiusFactor:0.5
+    property real epsToken:Theme.uiVisibilityEpsilon
+    property real intensity:0.0
 
     anchors.fill: parent
     color: colorToken

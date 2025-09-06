@@ -22,21 +22,21 @@ Item {
 
     // Diagonal-only tuning
     property real angleDeg: Theme.uiSeparatorDiagonalAngleDeg
-    property int  inset: Theme.uiSeparatorDiagonalInset
+    property int inset:Theme.uiSeparatorDiagonalInset
 
     // Stripe sub-settings (generic)
-    property bool  stripeEnabled: true
+    property bool stripeEnabled:true
     // 0..1, lower = closer to black
-    property real  stripeBrightness: Theme.uiSeparatorStripeBrightness
+    property real stripeBrightness:Theme.uiSeparatorStripeBrightness
     property color stripeColor: Color.towardsBlack(Theme.accentPrimary, 1 - stripeBrightness)
-    property real  stripeOpacity: Theme.uiSeparatorStripeOpacity
+    property real stripeOpacity:Theme.uiSeparatorStripeOpacity
     // Portion of thickness used by the accent stripe (0..1)
-    property real  stripeRatio: Utils.clamp(Theme.uiSeparatorStripeRatio, 0, 1)
+    property real stripeRatio:Utils.clamp(Theme.uiSeparatorStripeRatio, 0, 1)
     // Edge placement for stripe
     // For diagonal/vertical: true = right edge, false = left edge
-    property bool  stripeOnRight: true
+    property bool stripeOnRight:true
     // For horizontal: true = bottom edge, false = top edge
-    property bool  stripeOnBottom: true
+    property bool stripeOnBottom:true
 
     // Note: legacy 'alpha' alias removed; use sepOpacity
 

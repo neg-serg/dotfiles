@@ -15,7 +15,7 @@ Item {
     // Link + reachability
     property bool hasLink: false
     property bool hasInternet: false
-    property var  interfaces: []
+    property var interfaces:[]
 
     // Traffic rates (KiB/s)
     property real rxKiBps: 0

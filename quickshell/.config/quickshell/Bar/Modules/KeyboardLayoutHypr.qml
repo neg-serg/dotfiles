@@ -11,26 +11,26 @@ Item {
     id: kb
 
     property string deviceMatch: ""
-    property alias  fontPixelSize: label.font.pixelSize
-    property int    desiredHeight: Math.round(Theme.keyboardHeight * Theme.scale(Screen))
-    property var    screen: null
-    property bool   useTheme: true
-    property int    yNudge: 0
+    property alias fontPixelSize:label.font.pixelSize
+    property int desiredHeight:Math.round(Theme.keyboardHeight * Theme.scale(Screen))
+    property var screen:null
+    property bool useTheme:true
+    property int yNudge:0
 
-    property real   iconScale: Theme.keyboardIconScale
-    property int    iconSpacing: Theme.keyboardIconSpacing
-    property color  iconColor: useTheme ? Theme.keyboardIconColor : Theme.textSecondary
+    property real iconScale:Theme.keyboardIconScale
+    property int iconSpacing:Theme.keyboardIconSpacing
+    property color iconColor:useTheme ? Theme.keyboardIconColor : Theme.textSecondary
 
-    property int    iconBaselineAdjust: Theme.keyboardIconBaselineOffset
-    property int    textBaselineAdjust: Theme.keyboardTextBaselineOffset
+    property int iconBaselineAdjust:Theme.keyboardIconBaselineOffset
+    property int textBaselineAdjust:Theme.keyboardTextBaselineOffset
 
-    property color  bgColor:      useTheme ? Theme.keyboardBgColor : Theme.background
-    property color  textColor:    useTheme ? Theme.keyboardTextColor : Theme.textPrimary
-    property color  hoverBgColor: useTheme ? Theme.keyboardHoverBgColor : Theme.surfaceHover
+    property color bgColor:useTheme ? Theme.keyboardBgColor : Theme.background
+    property color textColor:useTheme ? Theme.keyboardTextColor : Theme.textPrimary
+    property color hoverBgColor:useTheme ? Theme.keyboardHoverBgColor : Theme.surfaceHover
 
     property string layoutText: "??"
     property string deviceName: ""
-    property var    knownKeyboards: []
+    property var knownKeyboards:[]
 
     function sc() {
         const s = kb.screen || (Quickshell.screens && Quickshell.screens.length ? Quickshell.screens[0] : null)
@@ -39,15 +39,15 @@ Item {
 
     readonly property int margin: Math.round(Theme.keyboardMargin * sc())
 
-    implicitWidth:  Math.ceil(row.implicitWidth + 2 * margin)
+    implicitWidth: Math.ceil(row.implicitWidth + 2 * margin)
     implicitHeight: capsule.height
 
     Rectangle {
         id: capsule
         readonly property bool hovered: ma.containsMouse
         height: Utils.clamp(row.implicitHeight + 2 * kb.margin, kb.desiredHeight, row.implicitHeight + 2 * kb.margin)
-        width:  Utils.clamp(row.implicitWidth + 2 * kb.margin, Math.round(Theme.keyboardMinWidth * sc()), row.implicitWidth + 2 * kb.margin)
-        color:  hovered ? kb.hoverBgColor : kb.bgColor
+        width: Utils.clamp(row.implicitWidth + 2 * kb.margin, Math.round(Theme.keyboardMinWidth * sc()), row.implicitWidth + 2 * kb.margin)
+        color: hovered ? kb.hoverBgColor : kb.bgColor
         radius: Math.round(Theme.keyboardRadius * sc())
         opacity: hovered ? Theme.keyboardHoverOpacity : Theme.keyboardNormalOpacity
         antialiasing: true

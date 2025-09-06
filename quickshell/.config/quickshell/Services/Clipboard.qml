@@ -9,7 +9,7 @@ Item {
     id: root
 
     // Public state
-    property var  history: []          // Array of { type: 'text'|'image', content|data, mimeType?, timestamp }
+    property var history:[]          // Array of { type: 'text'|'image', content|data, mimeType?, timestamp }
     property bool enabled: false       // Consumers toggle this when they need clipboard updates
     property bool isLoading: false
 

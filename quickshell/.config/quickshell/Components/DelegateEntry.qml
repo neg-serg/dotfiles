@@ -28,7 +28,7 @@ required property var entryData
     
     // Theming
     property color hoverBaseColor: Theme.surfaceHover
-    property int   itemRadius: Theme.panelMenuItemRadius
+    property int itemRadius:Theme.panelMenuItemRadius
 
     width: listViewRef.width
     height: (entryData?.isSeparator) ? Theme.panelMenuSeparatorHeight : Theme.panelMenuItemHeight

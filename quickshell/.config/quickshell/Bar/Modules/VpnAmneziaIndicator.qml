@@ -10,24 +10,24 @@ import qs.Services as Services
 Item {
     id: root
 
-    property int   desiredHeight: Math.round(Theme.panelHeight * Theme.scale(Screen))
+    property int desiredHeight:Math.round(Theme.panelHeight * Theme.scale(Screen))
     // Match network usage label size with standard small font
-    property int   fontPixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
-    property bool  useTheme: true
-    property bool  showLabel: true
-    property int   iconSpacing: Theme.vpnIconSpacing
-    property int   textPadding: Theme.vpnTextPadding
-    property int   iconVAdjust: Theme.vpnIconVAdjust
-    property real  iconScale: Theme.vpnIconScale
+    property int fontPixelSize:Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
+    property bool useTheme:true
+    property bool showLabel:true
+    property int iconSpacing:Theme.vpnIconSpacing
+    property int textPadding:Theme.vpnTextPadding
+    property int iconVAdjust:Theme.vpnIconVAdjust
+    property real iconScale:Theme.vpnIconScale
     property color bgColor: "transparent"
     property string iconName: "verified_user"
-    property bool   iconRounded: false
+    property bool iconRounded:false
 
     property real accentSaturateBoost: Theme.vpnAccentSaturateBoost
     property real accentLightenTowardWhite: Theme.vpnAccentLightenTowardWhite
-    property color onColor:  Color.towardsWhite(Color.saturate(Theme.accentPrimary, accentSaturateBoost), accentLightenTowardWhite)
+    property color onColor: Color.towardsWhite(Color.saturate(Theme.accentPrimary, accentSaturateBoost), accentLightenTowardWhite)
     property color offColor: useTheme ? Theme.textDisabled  : Theme.textDisabled
-    property real  desaturateAmount: Theme.vpnDesaturateAmount
+    property real desaturateAmount:Theme.vpnDesaturateAmount
     property color accentBase: Color.saturate(Theme.accentPrimary, accentSaturateBoost)
     property color accentColor: desaturateColor(accentBase, desaturateAmount)
 
@@ -101,8 +101,8 @@ Item {
         root.matchedIf = name
     }
 
-    property bool  muted: true
-    property bool  hovered: false
+    property bool muted:true
+    property bool hovered:false
     opacity: hovered ? 1.0 : (connected ? connectedOpacity : disconnectedOpacity)
     function iconColor() {
         if (!connected) return offColor
@@ -113,8 +113,8 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.NoButton
-        onEntered:  root.hovered = true
-        onExited:   root.hovered = false
+        onEntered: root.hovered = true
+        onExited: root.hovered = false
         cursorShape: Qt.ArrowCursor
     }
 

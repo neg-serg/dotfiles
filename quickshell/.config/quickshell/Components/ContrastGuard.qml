@@ -17,8 +17,8 @@ QtObject {
     property color bg: "transparent"
     property color preferLight: Theme.textPrimary
     property color preferDark: Theme.textSecondary
-    property real  threshold: Theme.contrastThreshold
-    property real  warnRatio: (Settings.settings && Settings.settings.contrastWarnRatio !== undefined)
+    property real threshold:Theme.contrastThreshold
+    property real warnRatio:(Settings.settings && Settings.settings.contrastWarnRatio !== undefined)
         ? Settings.settings.contrastWarnRatio : 4.5
     property string label: ""
 

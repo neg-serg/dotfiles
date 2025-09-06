@@ -13,33 +13,33 @@ Item {
     property int _recalcSeq: 0
 
     // Public metadata (set imperatively to avoid re-evaluation)
-    property string trackGenre:          ""
-    property string trackLabel:          ""
-    property string trackYear:           ""
-    property string trackBitrateStr:     ""
-    property string trackSampleRateStr:  ""
-    property string trackDsdRateStr:     ""
-    property string trackCodec:          ""
-    property string trackCodecDetail:    ""
-    property string trackChannelsStr:    ""
-    property string trackBitDepthStr:    ""
-    property string trackNumberStr:      ""
-    property string trackDiscNumberStr:  ""
-    property string trackAlbumArtist:    ""
-    property string trackComposer:       ""
-    property string trackUrlStr:         ""
-    property string trackRgTrackStr:     ""
-    property string trackRgAlbumStr:     ""
-    property string trackDateStr:        ""
-    property string trackContainer:      ""
-    property string trackFileSizeStr:    ""
-    property string trackChannelLayout:  ""
+    property string trackGenre: ""
+    property string trackLabel: ""
+    property string trackYear: ""
+    property string trackBitrateStr: ""
+    property string trackSampleRateStr: ""
+    property string trackDsdRateStr: ""
+    property string trackCodec: ""
+    property string trackCodecDetail: ""
+    property string trackChannelsStr: ""
+    property string trackBitDepthStr: ""
+    property string trackNumberStr: ""
+    property string trackDiscNumberStr: ""
+    property string trackAlbumArtist: ""
+    property string trackComposer: ""
+    property string trackUrlStr: ""
+    property string trackRgTrackStr: ""
+    property string trackRgAlbumStr: ""
+    property string trackDateStr: ""
+    property string trackContainer: ""
+    property string trackFileSizeStr: ""
+    property string trackChannelLayout: ""
     property string trackQualitySummary: ""
 
     property bool introspectAudioEnabled: true
     property string _lastPath: ""
     property string _pendingPath: ""
-    property var  fileAudioMeta: ({})   // { codec, codecLong, profile, sampleFormat, sampleRate, bitrateKbps, channels, bitDepth, tags:{}, fileSizeBytes, container, channelLayout, encoder }
+    property var fileAudioMeta:({})   // { codec, codecLong, profile, sampleFormat, sampleRate, bitrateKbps, channels, bitDepth, tags:{}, fileSizeBytes, container, channelLayout, encoder }
     function resetFileMeta() { fileAudioMeta = ({}) }
 
     Timer {

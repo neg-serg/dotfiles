@@ -8,28 +8,28 @@ import qs.Services as Services
 
 Item {
     id: root
-    property var    screen: null
-    property int    desiredHeight: Math.round(Theme.panelHeight * Theme.scale(Screen))
+    property var screen:null
+    property int desiredHeight:Math.round(Theme.panelHeight * Theme.scale(Screen))
     // Use standard small font size to match other bar text
-    property int    fontPixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
-    property color  textColor: Theme.textPrimary
-    property color  separatorColor: Theme.accentHover
-    property color  bgColor:   "transparent"
-    property int    iconSpacing: Theme.panelRowSpacingSmall
+    property int fontPixelSize:Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
+    property color textColor:Theme.textPrimary
+    property color separatorColor:Theme.accentHover
+    property color bgColor:"transparent"
+    property int iconSpacing:Theme.panelRowSpacingSmall
     property string deviceMatch: ""
     property string displayText: "0"
-    property bool   useTheme: true
-    property bool   hasLink: Services.Connectivity.hasLink
-    property bool   hasInternet: Services.Connectivity.hasInternet
+    property bool useTheme:true
+    property bool hasLink:Services.Connectivity.hasLink
+    property bool hasInternet:Services.Connectivity.hasInternet
 
-    property real   iconScale: Theme.networkIconScale
-    property color  iconColor: useTheme ? Theme.textSecondary : Theme.textSecondary
-    property int    iconVAdjust: Theme.networkIconVAdjust   // vertical nudge (px)
+    property real iconScale:Theme.networkIconScale
+    property color iconColor:useTheme ? Theme.textSecondary : Theme.textSecondary
+    property int iconVAdjust:Theme.networkIconVAdjust   // vertical nudge (px)
     property string iconText: ""
     property string iconFontFamily: "Font Awesome 6 Free"
     property string iconStyleName: "Solid"
 
-    property int    textPadding: Theme.panelRowSpacingSmall
+    property int textPadding:Theme.panelRowSpacingSmall
 
     implicitHeight: desiredHeight
     width: inlineView.implicitWidth

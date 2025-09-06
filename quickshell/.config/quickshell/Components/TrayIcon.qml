@@ -27,7 +27,7 @@ Item {
     property string fallbackIcon: (Settings.settings && Settings.settings.trayFallbackIcon) ? Settings.settings.trayFallbackIcon : "broken_image"
     // Optional fallback styling overrides
     property color fallbackColor: Theme.textSecondary
-    property int   fallbackSize: size
+    property int fallbackSize:size
 
     width: size
     height: size

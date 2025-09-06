@@ -19,8 +19,8 @@ Scope {
                  : (Settings.settings.cavaFramerate !== undefined ? Settings.settings.cavaFramerate : 30);
         return Utils.clamp(Utils.coerceInt(raw, 30), 1, 120);
     })()
-    property int gravity:        (_vp && _vp.cavaGravity        !== undefined) ? _vp.cavaGravity        : (Settings.settings.cavaGravity        !== undefined ? Settings.settings.cavaGravity        : 20000)
-    property bool monstercat:    (_vp && _vp.cavaMonstercat     !== undefined) ? _vp.cavaMonstercat     : (Settings.settings.cavaMonstercat     !== undefined ? Settings.settings.cavaMonstercat     : false)
+    property int gravity: (_vp && _vp.cavaGravity        !== undefined) ? _vp.cavaGravity        : (Settings.settings.cavaGravity        !== undefined ? Settings.settings.cavaGravity        : 20000)
+    property bool monstercat: (_vp && _vp.cavaMonstercat     !== undefined) ? _vp.cavaMonstercat     : (Settings.settings.cavaMonstercat     !== undefined ? Settings.settings.cavaMonstercat     : false)
     property string channels: "mono"
     property string monoOption: "average"
 

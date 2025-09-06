@@ -15,7 +15,7 @@ Item {
     // Backward-compat alias: keep two-way sync with old configs
     property int panelMarginPx: barMarginPx
     onPanelMarginPxChanged: if (panelMarginPx !== barMarginPx) barMarginPx = panelMarginPx
-    onBarMarginPxChanged:   if (barMarginPx   !== panelMarginPx) panelMarginPx = barMarginPx
+    onBarMarginPxChanged: if (barMarginPx   !== panelMarginPx) panelMarginPx = barMarginPx
 
     // Anchor: panel/bar window for correct positioning relative to exclusive zones
     property var anchorWindow: null
@@ -91,9 +91,9 @@ Item {
         property real musicHeightPx: (musicWidget && musicWidget.implicitHeight > 0)
                                      ? Math.round(musicWidget.implicitHeight)
                                      : Math.round(Settings.settings.musicPopupHeight * Theme.scale(Screen))
-        property int  contentPaddingPx: Math.round(Settings.settings.musicPopupPadding * Theme.scale(Screen))
+        property int contentPaddingPx:Math.round(Settings.settings.musicPopupPadding * Theme.scale(Screen))
 
-        implicitWidth:  Math.round(musicWidthPx)
+        implicitWidth: Math.round(musicWidthPx)
         implicitHeight: Math.round((computedHeightPx >= 0) ? computedHeightPx : musicHeightPx)
 
         // --- Slide animation (animate inner content, not the window)
@@ -228,7 +228,7 @@ Item {
 
                     Music {
                         id: musicWidget
-                        width:  toast.musicWidthPx
+                        width: toast.musicWidthPx
                         height: toast.musicHeightPx
                     }
                 }

@@ -10,7 +10,7 @@ import "../../Helpers/Utils.js" as Utils
 Item {
     id: root
     property bool enabled: false
-    property int  fallbackIntervalMs: Theme.mpdFlagsFallbackMs
+    property int fallbackIntervalMs:Theme.mpdFlagsFallbackMs
     property color iconColor: Theme.textPrimary
     property int iconPx: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
     property string cmd: "(mpc status || rmpc status)"

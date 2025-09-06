@@ -29,8 +29,8 @@ Item {
     property color separatorColor: Theme.textSecondary
 
     // Icon layout
-    property int  iconBaselineOffset: Theme.wsIconBaselineOffset
-    property int  iconSpacing: Theme.wsIconSpacing
+    property int iconBaselineOffset:Theme.wsIconBaselineOffset
+    property int iconSpacing:Theme.wsIconSpacing
 
     implicitWidth: lineBox.implicitWidth
     implicitHeight: lineBox.implicitHeight

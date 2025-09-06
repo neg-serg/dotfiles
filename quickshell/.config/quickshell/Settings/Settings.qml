@@ -48,12 +48,12 @@ Singleton {
             property var pinnedExecs: []
 
             // Media spectrum / CAVA
-            property int  cavaBars: 86
+            property int cavaBars:86
             // CAVA tuning
-            property int  cavaFramerate: 24
+            property int cavaFramerate:24
             property bool cavaMonstercat: false
-            property int  cavaGravity: 150000
-            property int  cavaNoiseReduction: 12
+            property int cavaGravity:150000
+            property int cavaNoiseReduction:12
             property bool spectrumUseGradient: false
             property bool spectrumMirror: false
             property bool showSpectrumTopHalf: false
@@ -122,11 +122,11 @@ Singleton {
             property string playerSelectionPreset: "default"
 
             // Music popup sizing
-            property int  musicPopupWidth: 840     // logical px, scaled
-            property int  musicPopupHeight: 250    // logical px, scaled (used when content height unknown)
-            property int  musicPopupPadding: 12    // logical px, scaled (inner content padding)
+            property int musicPopupWidth:840     // logical px, scaled
+            property int musicPopupHeight:250    // logical px, scaled (used when content height unknown)
+            property int musicPopupPadding:12    // logical px, scaled (inner content padding)
 
-            property int  networkPingIntervalMs: 30000
+            property int networkPingIntervalMs:30000
             property string networkNoInternetColor: "#FF6E00"
             property string networkNoLinkColor: "#D81B60"
         }

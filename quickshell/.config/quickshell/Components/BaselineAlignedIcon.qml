@@ -8,10 +8,10 @@ Item {
     id: root
     property var labelRef
     // Optional token-style API; falls back to legacy props
-    property var  scaleToken: undefined
-    property var  baselineOffsetToken: undefined
+    property var scaleToken:undefined
+    property var baselineOffsetToken:undefined
     property real scale: 1.0
-    property int  baselineAdjust: 0
+    property int baselineAdjust:0
     property string mode: "text"
     // Auto-tune size to match label visual height
     property bool autoTune: true

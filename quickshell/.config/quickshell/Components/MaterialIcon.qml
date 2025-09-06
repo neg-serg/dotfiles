@@ -18,7 +18,7 @@ Text {
 
     // Font family selection
     readonly property string _outlined: "Material Symbols Outlined"
-    readonly property string _rounded:  "Material Symbols Rounded"
+    readonly property string _rounded: "Material Symbols Rounded"
 
     font.family: rounded ? _rounded : _outlined
     font.pixelSize: size

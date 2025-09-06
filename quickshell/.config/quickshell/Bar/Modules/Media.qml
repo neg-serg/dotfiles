@@ -245,13 +245,13 @@ Item {
                     function bracketPair() {
                         const s = (Settings.settings.timeBracketStyle || "square").toLowerCase();
                         switch (s) {
-                            case "round":              return { l: "(",    r: ")"     };
-                            case "lenticular":        return { l: "\u3016", r: "\u3017" };
-                            case "lenticular_black":  return { l: "\u3010", r: "\u3011" };
-                            case "angle":             return { l: "\u27E8", r: "\u27E9" };
-                            case "square":            return { l: "[",    r: "]"     };
-                            case "tortoise":          return { l: "\u3014", r: "\u3015" };
-                            default:                   return { l: "[",    r: "]"     };
+                            case "round": return { l: "(",    r: ")"     };
+                            case "lenticular": return { l: "\u3016", r: "\u3017" };
+                            case "lenticular_black": return { l: "\u3010", r: "\u3011" };
+                            case "angle": return { l: "\u27E8", r: "\u27E9" };
+                            case "square": return { l: "[",    r: "]"     };
+                            case "tortoise": return { l: "\u3014", r: "\u3015" };
+                            default: return { l: "[",    r: "]"     };
                         }
                     }
                     text: (function(){
