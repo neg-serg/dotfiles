@@ -299,7 +299,7 @@
     "cornerScale": 0.25,
     "compactScale": 0.70,
     "backgroundAlpha": 0.88,
-    "search": { "maxResults": 150, "debounceMs": 60 },
+    "search": { "maxResults": 150, "debounceMs": 20 },
     "list": {
       "itemHeight": 48,
       "itemHeightLarge": 64,

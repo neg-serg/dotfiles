@@ -94,6 +94,10 @@ PanelWithOverlay {
             shouldBeVisible = true;
             root.selectedIndex = 0;
             root.appModel = DesktopEntries.applications.values;
+            // Precompute base (non-plugin) app list once per open for responsiveness
+            try {
+                root.baseApps = root.appModel.slice().filter(function(a){ return !isAudioPluginEntry(a); });
+            } catch (e) { root.baseApps = root.appModel.slice(); }
             try { root.filterLater.restart() } catch (e) {}
         }
 
@@ -121,6 +125,8 @@ PanelWithOverlay {
             layer.enabled: false
 
             property var appModel: DesktopEntries.applications.values
+            // Cache of non-plugin applications for faster incremental filtering
+            property var baseApps: []
             property var filteredApps: []
             property int selectedIndex: 0
             // Bottom-docked slide + scale
@@ -179,9 +185,7 @@ PanelWithOverlay {
 
             function updateFilterNow() {
                 var query = searchField.text ? searchField.text.toLowerCase() : "";
-                var apps = root.appModel.slice();
-                // Filter out audio plugin entries upfront
-                apps = apps.filter(function(a){ return !isAudioPluginEntry(a); });
+                var apps = (root.baseApps && root.baseApps.length) ? root.baseApps : root.appModel.slice();
                 var results = [];
                 
 
@@ -335,8 +339,7 @@ PanelWithOverlay {
                     }
                 }
 
-                // Filter items without usable icons (keep commands/clipboard)
-                results = results.filter(function(a){ return !likelyMissingIcon(a); });
+                // Icons are removed from launcher UI; skip icon-based filtering entirely
 
                 var pinned = [];
                 var unpinned = [];
@@ -463,7 +466,16 @@ PanelWithOverlay {
                                 font.pixelSize: Math.round(Theme.fontSizeBody * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignVCenter
-                                onTextChanged: { filterLater.restart(); try { Services.Clipboard.enabled = (appLauncherPanel.visible && searchField.text.startsWith(">clip")); } catch (e) {} }
+                                onTextChanged: {
+                                    try { Services.Clipboard.enabled = (appLauncherPanel.visible && searchField.text.startsWith(">clip")); } catch (e) {}
+                                    const t = searchField.text || "";
+                                    if (t === ">" || t.startsWith(">clip") || t.startsWith(">calc") || t.length <= 2) {
+                                        root.updateFilterNow();
+                                    } else {
+                                        filterLater.interval = Math.max(0, appLauncherPanelRect.debounceMs);
+                                        filterLater.restart();
+                                    }
+                                }
                                 selectedTextColor: Theme.onAccent
                                 selectionColor: Theme.accentPrimary
                                 padding: Theme.uiSpacingNone
