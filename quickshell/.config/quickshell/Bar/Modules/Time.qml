@@ -2,6 +2,7 @@ pragma Singleton
 import Quickshell
 import QtQuick
 import qs.Settings
+import qs.Services
 
 Singleton {
     id: root
@@ -35,11 +36,8 @@ Singleton {
         return `${dayName}, ` + (Settings.settings.reverseDayMonth ? `${month} ${day}${suffix} ${year}` : `${day}${suffix} ${month} ${year}`);
     }
 
-    Timer {
-        interval: Theme.timeTickMs
-        repeat: true
-        running: true
-
-        onTriggered: root.date = new Date()
+    Connections {
+        target: Services.Timers
+        function onTickTime() { root.date = new Date() }
     }
 }

@@ -116,8 +116,8 @@ Rectangle {
                     // ignore
                 }
             }
-            // Refresh list periodically and on player change
-            Timer { interval: 2000; running: true; repeat: true; onTriggered: playerUI.dedupePlayers() }
+            // Refresh list periodically and on player change (centralized timer)
+            Connections { target: Services.Timers; function onTick2s() { playerUI.dedupePlayers() } }
             Connections { target: MusicManager; function onCurrentPlayerChanged() { playerUI.dedupePlayers() } }
             ComboBox {
                 id: playerSelector

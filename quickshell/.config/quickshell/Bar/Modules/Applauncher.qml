@@ -8,6 +8,7 @@ import Quickshell.Widgets
 import qs.Components
 import "../../Helpers/Utils.js" as Utils
 import qs.Settings
+import qs.Services
 
 import "../../Helpers" as Helpers
 
@@ -21,14 +22,12 @@ PanelWithOverlay {
             console.warn('[Applauncher] Fuzzy smoke failed:', e);
         }
     }
-    Timer {
-        id: clipboardTimer
-        interval: (typeof Theme !== 'undefined' && Theme.applauncherClipboardPollMs !== undefined)
-                  ? Theme.applauncherClipboardPollMs : 1000
-        repeat: true
-        running: appLauncherPanel.visible && searchField.text.startsWith(">clip")
-        onTriggered: {
-            updateClipboardHistory();
+    Connections {
+        target: Services.Timers
+        function onTickClipboard() {
+            if (appLauncherPanel.visible && searchField.text.startsWith(">clip")) {
+                updateClipboardHistory();
+            }
         }
     }
 

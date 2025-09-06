@@ -4,6 +4,7 @@ import Quickshell.Io
 import qs.Settings
 import qs.Services
 import qs.Components
+import qs.Services
 import "../../Helpers/Utils.js" as Utils
 
 Item {
@@ -113,14 +114,12 @@ Item {
         }
     }
 
-    // Fallback polling if idle misses or unsupported
-    Timer {
-        id: fallback
-        interval: root.fallbackIntervalMs
-        repeat: true
-        // Only when enabled
-        running: root.enabled
-        onTriggered: { root.refresh() }
+    // Fallback polling if idle misses or unsupported (centralized timer)
+    Connections {
+        target: Services.Timers
+        function onTickMpdFlagsFallback() {
+            if (root.enabled) root.refresh();
+        }
     }
 
     // Control lifecycle

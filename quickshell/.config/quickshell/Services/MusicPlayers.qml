@@ -2,6 +2,7 @@ import QtQuick
 import QtQml
 import qs.Settings
 import Quickshell.Services.Mpris
+import qs.Services
 
 // Tracks MPRIS players and exposes currentPlayer.
 // Selection rules (Settings.playerSelectionPriority): pinnedPlaying, mpdPlaying, anyPlaying, mpdRecent, pinned, recent, manual, first.
@@ -238,11 +239,9 @@ Item {
             }
         }
 
-    // Fallback: poll in case Connections not delivered
-    Timer {
-        interval: Theme.musicPlayersPollMs
-        repeat: true
-        running: true
-        onTriggered: root.updateCurrentPlayer()
+    // Fallback: poll in case Connections not delivered (centralized timer)
+    Connections {
+        target: Services.Timers
+        function onTickMusicPlayers() { root.updateCurrentPlayer() }
     }
 }

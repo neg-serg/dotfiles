@@ -1,6 +1,7 @@
 import QtQuick
 import QtQml
 import qs.Settings
+import qs.Services
 import "../Helpers/Utils.js" as Utils
 import "../Helpers/Time.js" as Time
 
@@ -32,13 +33,10 @@ Item {
         } catch (e) { /* ignore */ }
     }
 
-    // Poll MPRIS position properly (seconds) and convert to ms
-    Timer {
-        id: positionPoller
-        interval: Theme.musicPositionPollMs
-        repeat: true
-        running: !!root.currentPlayer
-        onTriggered: {
+    // Poll MPRIS position via centralized Timers service
+    Connections {
+        target: Services.Timers
+        function onTickMusicPosition() {
             if (!root.currentPlayer) { root.currentPosition = 0; return; }
             try {
                 if (root.currentPlayer.positionSupported) {
