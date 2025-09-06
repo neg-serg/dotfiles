@@ -440,6 +440,9 @@ Singleton {
     property real applauncherCornerScale: Utils.clamp(val('applauncher.cornerScale', 0.25), 0.0, 1.0)
     property real applauncherCompactScale: Utils.clamp(val('applauncher.compactScale', 0.70), 0.5, 1.0)
     property real applauncherBgAlpha: Utils.clamp(val('applauncher.backgroundAlpha', 0.88), 0.0, 1.0)
+    // Applauncher search tuning
+    property int applauncherSearchMaxResults: Utils.clamp(val('applauncher.search.maxResults', 150), 10, 2000)
+    property int applauncherSearchDebounceMs: Utils.clamp(val('applauncher.search.debounceMs', 60), 0, 1000)
     property int applauncherBottomMargin: val('applauncher.margins.bottom', 16)
     property int applauncherOffscreenShift: val('applauncher.anim.offscreenShift', 12)
     property int applauncherEnterAnimMs: Utils.clamp(val('applauncher.anim.enterMs', 300), 0, 10000)

@@ -230,7 +230,8 @@ Item {
                     textFormat: Text.RichText
                     renderType: Text.NativeRendering
                     wrapMode: Text.NoWrap
-                    property string bracketColor: Format.colorCss(Theme.accentDarkStrong, 1)
+                    // Brackets use the standard accent color
+                    property string bracketColor: Format.colorCss(Theme.accentPrimary, 1)
                     property string timeColor: (function(){
                         var c = MusicManager.isPlaying ? Theme.textPrimary : Theme.textSecondary;
                         var a = MusicManager.isPlaying ? Theme.mediaTimeAlphaPlaying : Theme.mediaTimeAlphaPaused;

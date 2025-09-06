@@ -83,6 +83,9 @@ PanelWithOverlay {
         // Compactness scale for fonts, icons, paddings, spacings (from Theme)
         property real compactScale: Theme.applauncherCompactScale
         property bool shouldBeVisible: false
+        // Search perf tuning
+        property int maxResults: Theme.applauncherSearchMaxResults
+        property int debounceMs: Theme.applauncherSearchDebounceMs
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -174,7 +177,7 @@ PanelWithOverlay {
                 return false;
             }
 
-            function updateFilter() {
+            function updateFilterNow() {
                 var query = searchField.text ? searchField.text.toLowerCase() : "";
                 var apps = root.appModel.slice();
                 // Filter out audio plugin entries upfront
@@ -314,12 +317,22 @@ PanelWithOverlay {
                         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
                     }));
                 } else {
-                    var fuzzyResults = Helpers.Fuzzy.go(query, apps, {
-                        keys: ["name", "comment", "genericName"]
-                    });
-                    results = results.concat(fuzzyResults.map(function (r) {
-                        return r.obj;
-                    }));
+                    // Fast path: prefix/substring matches first
+                    var q = query;
+                    var prelim = [];
+                    function pushIfMatch(app) {
+                        var n = String(app.name||"").toLowerCase();
+                        var c = String(app.comment||"").toLowerCase();
+                        var g = String(app.genericName||"").toLowerCase();
+                        if (n.startsWith(q) || n.indexOf(q) !== -1 || c.indexOf(q) !== -1 || g.indexOf(q) !== -1) prelim.push(app);
+                    }
+                    for (var i = 0; i < apps.length && prelim.length < appLauncherPanelRect.maxResults; ++i) pushIfMatch(apps[i]);
+                    results = results.concat(prelim);
+                    // If still under limit, use fuzzysort for the rest
+                    if (results.length < appLauncherPanelRect.maxResults) {
+                        var fuzzyResults = Helpers.Fuzzy.go(query, apps, { keys: ["name","comment","genericName"], limit: appLauncherPanelRect.maxResults });
+                        for (var j = 0; j < fuzzyResults.length && results.length < appLauncherPanelRect.maxResults; ++j) results.push(fuzzyResults[j].obj);
+                    }
                 }
 
                 // Filter items without usable icons (keep commands/clipboard)
@@ -342,6 +355,9 @@ PanelWithOverlay {
                 root.filteredApps = pinned.concat(unpinned);
                 root.selectedIndex = 0;
             }
+
+            // Debounced filtering trigger
+            Timer { id: filterLater; interval: Math.max(0, appLauncherPanelRect.debounceMs); repeat: false; onTriggered: updateFilterNow() }
 
             function selectNext() {
                 if (filteredApps.length > 0)
@@ -447,7 +463,7 @@ PanelWithOverlay {
                                 font.pixelSize: Math.round(Theme.fontSizeBody * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignVCenter
-                                onTextChanged: { root.updateFilter(); try { Services.Clipboard.enabled = (appLauncherPanel.visible && searchField.text.startsWith(">clip")); } catch (e) {} }
+                                onTextChanged: { filterLater.restart(); try { Services.Clipboard.enabled = (appLauncherPanel.visible && searchField.text.startsWith(">clip")); } catch (e) {} }
                                 selectedTextColor: Theme.onAccent
                                 selectionColor: Theme.accentPrimary
                                 padding: Theme.uiSpacingNone
