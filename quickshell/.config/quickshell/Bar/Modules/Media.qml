@@ -28,6 +28,19 @@ Item {
     // Accent derived from current cover art (dominant color)
     property color mediaAccent: Theme.accentPrimary
     property string mediaAccentCss: Format.colorCss(mediaAccent, 1)
+    // Debug: print accent in hex for easier inspection
+    function _toHexByte(n) { n = Math.max(0, Math.min(255, Math.round(n))); var s = n.toString(16).toUpperCase(); return (s.length < 2) ? ('0' + s) : s }
+    function _colorToHex(c) {
+        try {
+            // c is a Qt.rgba object (r,g,b,a in 0..1)
+            return '#' + _toHexByte(c.r * 255) + _toHexByte(c.g * 255) + _toHexByte(c.b * 255)
+        } catch (e) { return '#000000' }
+    }
+    onMediaAccentChanged: console.warn('[Media] accent ' + _colorToHex(mediaAccent))
+    Component.onCompleted: { colorSampler.requestPaint(); accentRetry.restart() }
+    onVisibleChanged: { if (visible) { colorSampler.requestPaint(); accentRetry.restart() } }
+    Connections { target: MusicManager; function onCoverUrlChanged() { colorSampler.requestPaint(); accentRetry.restart() } }
+    Timer { id: accentRetry; interval: 100; repeat: false; onTriggered: colorSampler.requestPaint() }
 
     RowLayout {
         id: mediaRow
@@ -60,7 +73,8 @@ Item {
                     source: (MusicManager.coverUrl || "")
                     fillMode: Image.PreserveAspectCrop
                     visible: status === Image.Ready
-                    onStatusChanged: { if (status === Image.Ready) colorSampler.requestPaint() }
+                    onStatusChanged: { if (status === Image.Ready) { colorSampler.requestPaint(); accentRetry.restart() } }
+                    onSourceChanged: { colorSampler.requestPaint(); accentRetry.restart() }
                 }
 
                 // Offscreen canvas to sample dominant color from cover art
@@ -70,9 +84,10 @@ Item {
                     onPaint: {
                         try {
                             var ctx = getContext('2d');
-                            ctx.reset();
-                            if (!cover.source || cover.source.toString() === '') return;
-                            ctx.drawImage(cover.source, 0, 0, width, height);
+                            ctx.clearRect(0, 0, width, height);
+                            if (!cover.visible) { mediaControl.mediaAccent = Theme.accentPrimary; return; }
+                            // Draw the image element directly for reliability
+                            ctx.drawImage(cover, 0, 0, width, height);
                             var img = ctx.getImageData(0, 0, width, height);
                             var data = img.data; var len = data.length;
                             var rs=0, gs=0, bs=0, n=0;
@@ -277,22 +292,25 @@ Item {
                     property string titlePart: (MusicManager.trackArtist || MusicManager.trackTitle)
                         ? [MusicManager.trackArtist, MusicManager.trackTitle].filter(function(x){return !!x;}).join(" - ")
                         : ""
+                    // Bind against accent so changes retrigger
+                    property string _accentCss: mediaControl.mediaAccentCss
                     text: (function(){
                         if (!trackText.titlePart) return "";
                         const sepChar = (Settings.settings.mediaTitleSeparator || '—');
-                        const t = Rich.esc(trackText.titlePart)
+                        let t = Rich.esc(trackText.titlePart)
                                    .replace(/\s(?:-|–|—)\s/g, function(){
-                                       return "&#8201;" + Rich.sepSpan(mediaControl.mediaAccentCss, sepChar) + "&#8201;";
-                                   });
+                                       // Only color the separator we inject, not any literal hyphens
+                                       return "&#8201;" + Rich.sepSpan(trackText._accentCss, sepChar) + "&#8201;";
+                                    });
                         const cur = Format.fmtTime(MusicManager.currentPosition || 0);
                         const tot = Format.fmtTime(Time.mprisToMs(MusicManager.trackLength || 0));
                         const bp = Rich.bracketPair(Settings.settings.timeBracketStyle || "square");
                         return t
-                               + " &#8201;" + Rich.bracketSpan(trackText.bracketColor, bp.l)
+                               + " &#8201;" + Rich.bracketSpan(trackText._accentCss, bp.l)
                                + Rich.timeSpan(trackText.timeColor, cur)
-                               + Rich.sepSpan(mediaControl.mediaAccentCss, '/')
+                               + Rich.sepSpan(trackText._accentCss, '/')
                                + Rich.timeSpan(trackText.timeColor, tot)
-                               + Rich.bracketSpan(trackText.bracketColor, bp.r);
+                               + Rich.bracketSpan(trackText._accentCss, bp.r);
                     })()
                     color: Theme.textPrimary
                     font.family: Theme.fontFamily
