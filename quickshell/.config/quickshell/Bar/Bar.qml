@@ -78,11 +78,11 @@ Scope {
                         anchors.leftMargin: panel.sideMargin
                         spacing: panel.widgetSpacing
                         ClockWidget { anchors.verticalCenter: parent.verticalCenter }
-                        DiagSep { stripeEnabled: false }
+                        DiagSep { stripeEnabled: false; anchors.verticalCenter: parent.verticalCenter }
                         WsIndicator { id: wsindicator; anchors.verticalCenter: parent.verticalCenter }
-                        DiagSep {}
+                        DiagSep { anchors.verticalCenter: parent.verticalCenter }
                         KeyboardLayoutHypr { id: kbIndicator; anchors.verticalCenter: wsindicator.verticalCenter; /* deviceMatch: "dygma-defy-keyboard" */ }
-                        DiagSep {}
+                        DiagSep { anchors.verticalCenter: parent.verticalCenter }
                         Row {
                             id: netCluster
                             anchors.verticalCenter: wsindicator.verticalCenter
@@ -94,13 +94,13 @@ Scope {
                             }
                             NetworkUsage { id: net }
                         }
-                        DiagSep { visible: Settings.settings.showWeatherInBar === true }
+                        DiagSep { visible: Settings.settings.showWeatherInBar === true; anchors.verticalCenter: parent.verticalCenter }
                         LocalMods.WeatherButton {
                             anchors.verticalCenter: parent.verticalCenter
                             visible: Settings.settings.showWeatherInBar === true
                         }
                         // Rightmost separator of the left section: show only if weather is visible
-                        DiagSep { stripeEnabled: false; visible: Settings.settings.showWeatherInBar === true }
+                        DiagSep { stripeEnabled: false; visible: Settings.settings.showWeatherInBar === true; anchors.verticalCenter: parent.verticalCenter }
                     }
 
                     
