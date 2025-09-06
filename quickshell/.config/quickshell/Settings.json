@@ -5,6 +5,6 @@
     "showMediaVisualizer": false,
     "showWeatherInBar": false,
     "strictThemeTokens": true,
-    "debugContrast": true,
+    "debugContrast": false,
     "contrastWarnRatio": 4.5
 }
