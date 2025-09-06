@@ -27,7 +27,7 @@ QtObject {
 
     function maybeWarn() {
         try {
-            if (!(Settings.settings && Settings.settings.debugContrast)) return;
+            if (!(Settings.settings && Settings.settings.debugLogs)) return;
             // Suppress noisy menu item warnings; menu text color is derived from base background
             if (label === 'MenuItem') return;
             // Compute ratio on demand to avoid ordering issues during initialization

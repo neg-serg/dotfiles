@@ -2,7 +2,7 @@ import QtQuick
 import QtQml
 import qs.Settings
 import Quickshell.Services.Mpris
-// qs.Services not used here
+import qs.Services as Services
 
 // Tracks MPRIS players and exposes currentPlayer.
 // Selection rules (Settings.playerSelectionPriority): pinnedPlaying, mpdPlaying, anyPlaying, mpdRecent, pinned, recent, manual, first.
@@ -161,7 +161,7 @@ Item {
                 for (var i = 0; i < arr.length; i++) {
                     var r = String(arr[i]);
                     if (_allowedRules.indexOf(r) === -1) {
-                        try { console.debug('[MusicPlayers] Unknown rule in playerSelectionPriority:', r); } catch (e2) {}
+                        try { if (Settings.settings && Settings.settings.debugLogs) console.debug('[MusicPlayers] Unknown rule in playerSelectionPriority:', r); } catch (e2) {}
                         continue;
                     }
                     if (out.indexOf(r) === -1) out.push(r);
@@ -181,7 +181,7 @@ Item {
             case "default":
             default:
                 if (n !== "default") {
-                    try { console.debug('[MusicPlayers] Unknown playerSelectionPreset:', n, '; using default'); } catch (e1) {}
+                    try { if (Settings.settings && Settings.settings.debugLogs) console.debug('[MusicPlayers] Unknown playerSelectionPreset:', n, '; using default'); } catch (e1) {}
                 }
                 return ["pinnedPlaying", "mpdPlaying", "anyPlaying", "mpdRecent", "pinned", "recent", "manual", "first"]; // default
             }
@@ -191,7 +191,7 @@ Item {
         if (cfg && cfg.length > 0) {
             rules = _sanitizeRules(cfg);
             if (!rules.length) {
-                try { console.debug('[MusicPlayers] playerSelectionPriority contained no valid rules; falling back to preset'); } catch (e3) {}
+                try { if (Settings.settings && Settings.settings.debugLogs) console.debug('[MusicPlayers] playerSelectionPriority contained no valid rules; falling back to preset'); } catch (e3) {}
                 rules = presetRules(Settings.settings && Settings.settings.playerSelectionPreset);
             }
         } else {

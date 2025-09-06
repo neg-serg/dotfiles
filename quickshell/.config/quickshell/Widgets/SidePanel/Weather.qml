@@ -33,7 +33,7 @@ Rectangle {
 
     function warnContrast(bg, fg, label) {
         try {
-            if (!(Settings.settings && Settings.settings.debugContrast)) return;
+            if (!(Settings.settings && Settings.settings.debugLogs)) return;
             var ratio = Color.contrastRatio(bg, fg);
             var th = (Settings.settings && Settings.settings.contrastWarnRatio) ? Settings.settings.contrastWarnRatio : 4.5;
             if (ratio < th) console.debug('[Contrast]', label || 'text', 'ratio', ratio.toFixed(2));

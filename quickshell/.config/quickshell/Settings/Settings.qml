@@ -34,6 +34,8 @@ Singleton {
             property string weatherCity: "Moscow"
             property string userAgent: "NegPanel"
             property string profileImage: Quickshell.env("HOME") + "/.face"
+            // Unified logging toggle for low-importance debug logs
+            property bool debugLogs: false
             property bool debugNetwork: false
             property bool strictThemeTokens: false
             property bool useFahrenheit: false
