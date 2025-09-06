@@ -1,5 +1,6 @@
 pragma Singleton
 import QtQuick
+import qs.Settings
 
 // TrayController: centralizes SystemTray guard/collapse timers and popup timings
 // Exposes start/stop APIs and emits signals on elapse for consumers to react.
