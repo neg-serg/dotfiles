@@ -53,12 +53,8 @@ Item {
     // Wrap one char into colored span by category
     function spanForChar(ch) {
         const cp = ch.codePointAt(0);
-        if (isPUA(cp)) {
-            return "<span style='color:" + iconColor + "'>" + Rich.esc(ch) + "</span>";
-        }
-        if (isOldItalic(cp)) {
-            return "<span style='color:" + gothicColor + "'>" + Rich.esc(ch) + "</span>";
-        }
+        if (isPUA(cp)) { return Rich.colorSpan(iconColor, ch); }
+        if (isOldItalic(cp)) { return Rich.colorSpan(gothicColor, ch); }
         if (isSeparatorChar(ch)) {
             if (ch === "·") return " ";
             // Use accentHover for separators

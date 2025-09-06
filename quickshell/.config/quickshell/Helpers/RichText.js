@@ -47,6 +47,12 @@ function timeSpan(colorCss, text) {
     return "<span style='vertical-align: middle; line-height:1; color:" + c + "'>" + t + "</span>";
 }
 
+// Generic colored span for arbitrary text
+function colorSpan(colorCss, text) {
+    var c = (colorCss === undefined || colorCss === null) ? "inherit" : String(colorCss);
+    return "<span style='color:" + c + "'>" + esc(text) + "</span>";
+}
+
 // Export functions
 // (QML JavaScript library functions are available by import alias)
 // Also expose a namespaced object for Qt.include usage in other JS libs
@@ -55,5 +61,6 @@ var RichRT = {
     sepSpan: sepSpan,
     bracketPair: bracketPair,
     bracketSpan: bracketSpan,
-    timeSpan: timeSpan
+    timeSpan: timeSpan,
+    colorSpan: colorSpan
 };
