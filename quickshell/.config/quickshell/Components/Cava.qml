@@ -45,47 +45,42 @@ Scope {
 
     property var values: Array(count).fill(0)
 
-    Process {
+    ProcessRunner {
         id: process
         property int index: 0
+        autoStart: (Settings.settings.showMediaVisualizer === true) && MusicManager.isPlaying
+        cmd: ["cava", "-p", "/dev/stdin"]
         stdinEnabled: true
-        running: (Settings.settings.showMediaVisualizer === true) && MusicManager.isPlaying
-        command: ["cava", "-p", "/dev/stdin"]
+        rawMode: true
+        restartMode: "always"
         onExited: {
-            stdinEnabled = true;
-            index = 0;
+            process.stdinEnabled = true;
+            process.index = 0;
             values = Array(count).fill(0);
         }
         onStarted: {
             for (const k in config) {
                 if (typeof config[k] !== "object") {
-                    write(k + "=" + config[k] + "\n");
+                    process.write(k + "=" + config[k] + "\n");
                     continue;
                 }
-                write("[" + k + "]\n");
+                process.write("[" + k + "]\n");
                 const obj = config[k];
                 for (const k2 in obj) {
-                    write(k2 + "=" + obj[k2] + "\n");
+                    process.write(k2 + "=" + obj[k2] + "\n");
                 }
             }
-            stdinEnabled = false;
+            process.stdinEnabled = false;
         }
-        stdout: SplitParser {
-            splitMarker: ""
-            onRead: data => {
-                const newValues = Array(count).fill(0);
-                for (let i = 0; i < values.length; i++) {
-                    newValues[i] = values[i];
-                }
-                if (process.index + data.length > count) {
-                    process.index = 0;
-                }
-                for (let i = 0; i < data.length; i += 1) {
-                    newValues[process.index] = Utils.clamp(data.charCodeAt(i), 0, 128) / 128;
-                    process.index = (process.index+1) % count;
-                }
-                values = newValues;
+        onChunk: (data) => {
+            const newValues = Array(count).fill(0);
+            for (let i = 0; i < values.length; i++) newValues[i] = values[i];
+            if (process.index + data.length > count) process.index = 0;
+            for (let i = 0; i < data.length; i += 1) {
+                newValues[process.index] = Utils.clamp(data.charCodeAt(i), 0, 128) / 128;
+                process.index = (process.index + 1) % count;
             }
+            values = newValues;
         }
     }
 }

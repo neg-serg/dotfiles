@@ -25,6 +25,17 @@ Item {
     property bool autoStart: true
     readonly property alias running: proc.running
 
+    // STDIN support
+    property bool stdinEnabled: false
+    function write(data) { try { proc.write(String(data)) } catch (e) {} }
+    function closeStdin() { try { proc.stdinEnabled = false } catch (e) {} }
+
+    // Raw chunk mode (binary-like streaming)
+    // When true, emit chunks of stdout via `chunk(string data)` instead of line/jsonLine logic.
+    property bool rawMode: false
+    signal chunk(string data)
+    signal started()
+
     signal line(string s)
     signal json(var obj)
     signal exited(int code, int status)
@@ -61,11 +72,27 @@ Item {
         command: root.cmd
         environment: (root.env && typeof root.env === 'object') ? root.env : ({})
         running: root.intervalMs === 0 ? root.autoStart : false
+        stdinEnabled: root.stdinEnabled
+        onStarted: { root.started() }
 
         stdout: StdioCollector {
             waitForEnd: root.parseJson
             onTextChanged: {
                 if (root.parseJson) return;
+                // Raw chunk mode: emit new data directly
+                if (root.rawMode) {
+                    const all = text;
+                    if (root._consumed >= all.length) return;
+                    const chunk = all.substring(root._consumed);
+                    root._consumed = all.length;
+                    if (root.debounceMs > 0) {
+                        root._pendingLines.push(chunk);
+                        debounce.restart();
+                    } else {
+                        root.chunk(chunk);
+                    }
+                    return;
+                }
                 const all = text;
                 if (root._consumed >= all.length) return;
                 const chunk = all.substring(root._consumed);
@@ -120,16 +147,22 @@ Item {
     function _flushPending() {
         if (!root._pendingLines || root._pendingLines.length === 0) return;
         try {
-            for (let i = 0; i < root._pendingLines.length; i++) {
-                const s = root._pendingLines[i];
-                if (root.jsonLine) {
-                    try {
-                        const obj = JSON.parse(s);
-                        root.json(obj);
-                        continue;
-                    } catch (e) { /* fall through to line */ }
+            if (root.rawMode) {
+                // Join and emit as one chunk
+                const data = root._pendingLines.join("");
+                root.chunk(data);
+            } else {
+                for (let i = 0; i < root._pendingLines.length; i++) {
+                    const s = root._pendingLines[i];
+                    if (root.jsonLine) {
+                        try {
+                            const obj = JSON.parse(s);
+                            root.json(obj);
+                            continue;
+                        } catch (e) { /* fall through to line */ }
+                    }
+                    root.line(s);
                 }
-                root.line(s);
             }
         } finally {
             root._pendingLines = [];
