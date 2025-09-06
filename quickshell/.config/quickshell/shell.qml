@@ -17,15 +17,9 @@ Scope {
 
     // Overview {}
     Bar { id: bar; shell: root; }
-    
-
-    Applauncher {
-        id: appLauncherPanel
-        visible: false
-    }
 
     IdleInhibitor { id: idleInhibitor; }
-    IPCHandlers { appLauncherPanel: appLauncherPanel; idleInhibitor: idleInhibitor; }
+    IPCHandlers { idleInhibitor: idleInhibitor; }
 
     Connections {
         function onReloadCompleted() { Quickshell.inhibitReloadPopup(); }

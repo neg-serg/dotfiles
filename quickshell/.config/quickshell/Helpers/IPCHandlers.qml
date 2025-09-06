@@ -1,11 +1,11 @@
 import QtQuick
 import Quickshell.Io
-import qs.Bar.Modules
 import qs.Helpers
 
 Item {
     id: root
-    property Applauncher appLauncherPanel
+    // Use Item to avoid requiring the Applauncher type
+    property Item appLauncherPanel
     property IdleInhibitor idleInhibitor
     IpcHandler {
         target: "globalIPC"
