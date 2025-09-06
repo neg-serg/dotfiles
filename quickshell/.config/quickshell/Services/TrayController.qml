@@ -47,5 +47,12 @@ Item {
         repeat: false
         onTriggered: root.guardOff()
     }
-}
 
+    // Expose tray-related popup timings/tokens
+    // Tooltip delay used by tray tooltips
+    property int tooltipDelayMs: Theme.tooltipDelayMs
+    // Vertical offset for menus anchored to tray icons
+    property int menuYOffset: Theme.panelMenuYOffset
+    // Submenu gap (if used by tray menus)
+    property int submenuGap: Theme.panelSubmenuGap
+}

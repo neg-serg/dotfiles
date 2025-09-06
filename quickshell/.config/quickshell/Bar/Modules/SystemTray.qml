@@ -162,7 +162,7 @@ Row {
                                 if (trayMenu && trayMenu.visible) { trayMenu.hideMenu(); root.dismissOverlayNow(); return; }
                                 if (modelData.hasMenu && modelData.menu && trayMenu) {
                                     const menuX = (width / 2) - (trayMenu.width / 2);
-                                    const menuY = height + Math.round(Theme.panelMenuYOffset * Theme.scale(Screen));
+                                    const menuY = height + Math.round(Services.TrayController.menuYOffset * Theme.scale(Screen));
                                     trayMenu.menu = modelData.menu;
                                     trayMenu.showAt(parent, menuX, menuY);
                                     trayOverlay.show();
@@ -291,7 +291,7 @@ Row {
                         if (modelData.hasMenu && modelData.menu && trayMenu) {
                             // Anchor the menu to the tray icon item (parent) and position it below the icon
                             const menuX = (width / 2) - (trayMenu.width / 2);
-                            const menuY = height + Math.round(Theme.panelMenuYOffset * Theme.scale(Screen));
+                            const menuY = height + Math.round(Services.TrayController.menuYOffset * Theme.scale(Screen));
                             trayMenu.menu = modelData.menu;
                             trayMenu.showAt(parent, menuX, menuY);
                             trayOverlay.show();
@@ -311,7 +311,7 @@ Row {
                 positionAbove: false
                 tooltipVisible: false
                 targetItem: trayIcon
-                delay: Theme.tooltipDelayMs
+                delay: Services.TrayController.tooltipDelayMs
             }
 
             Component.onDestruction:
