@@ -1,7 +1,7 @@
 import QtQuick
 import QtQml
 import qs.Settings
-import qs.Services
+import qs.Services as Services
 import "../Helpers/Utils.js" as Utils
 import "../Helpers/Time.js" as Time
 

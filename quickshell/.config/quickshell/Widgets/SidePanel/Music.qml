@@ -5,7 +5,7 @@ import QtQuick.Effects
 import QtQuick.Window 2.15
 import qs.Settings
 import qs.Components
-import qs.Services
+import qs.Services as Services
 import "../../Helpers/Color.js" as Color
 import "../../Helpers/Format.js" as Format
 

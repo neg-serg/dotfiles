@@ -2,7 +2,7 @@ pragma Singleton
 import Quickshell
 import QtQuick
 import qs.Settings
-import qs.Services
+import qs.Services as Services
 
 Item {
     id: root

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQml
 import qs.Settings
+import qs.Services as Services
 import Quickshell.Services.Mpris
 import qs.Services
 

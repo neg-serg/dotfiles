@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
 import qs.Settings
-import qs.Services
+import qs.Services as Services
 import qs.Components
 import qs.Services
 import "../../Helpers/Utils.js" as Utils

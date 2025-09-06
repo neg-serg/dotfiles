@@ -8,7 +8,7 @@ import Quickshell.Widgets
 import qs.Components
 import "../../Helpers/Utils.js" as Utils
 import qs.Settings
-import qs.Services
+import qs.Services as Services
 
 import "../../Helpers" as Helpers
 
