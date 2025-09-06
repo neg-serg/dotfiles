@@ -96,7 +96,11 @@ PanelWithOverlay {
             root.appModel = DesktopEntries.applications.values;
             // Precompute base (non-plugin) app list once per open for responsiveness
             try {
-                root.baseApps = root.appModel.slice().filter(function(a){ return !isAudioPluginEntry(a) && !isConsoleAppEntry(a); });
+                root.baseApps = root.appModel.slice().filter(function(a){
+                    if (isAudioPluginEntry(a)) return false;
+                    if (Theme.applauncherFilterConsoleApps && isConsoleAppEntry(a)) return false;
+                    return true;
+                });
             } catch (e) { root.baseApps = root.appModel.slice(); }
             try { root.filterLater.restart() } catch (e) {}
         }
@@ -362,7 +366,7 @@ PanelWithOverlay {
                 for (var i = 0; i < results.length; ++i) {
                     var app = results[i];
                     // Exclude console-only apps from final list too (defense-in-depth when baseApps not set)
-                    if (isConsoleAppEntry(app)) continue;
+                    if (Theme.applauncherFilterConsoleApps && isConsoleAppEntry(app)) continue;
                     if (app.execString && Settings.settings.pinnedExecs.indexOf(app.execString) !== -1) {
                         pinned.push(app);
                     } else {

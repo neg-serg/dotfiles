@@ -443,6 +443,8 @@ Singleton {
     // Applauncher search tuning
     property int applauncherSearchMaxResults: Utils.clamp(val('applauncher.search.maxResults', 150), 10, 2000)
     property int applauncherSearchDebounceMs: Utils.clamp(val('applauncher.search.debounceMs', 60), 0, 1000)
+    // Applauncher filters
+    property bool applauncherFilterConsoleApps: !!val('applauncher.filter.consoleApps', true)
     property int applauncherBottomMargin: val('applauncher.margins.bottom', 16)
     property int applauncherOffscreenShift: val('applauncher.anim.offscreenShift', 12)
     property int applauncherEnterAnimMs: Utils.clamp(val('applauncher.anim.enterMs', 300), 0, 10000)
