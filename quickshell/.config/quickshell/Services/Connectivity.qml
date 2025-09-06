@@ -96,9 +96,9 @@ Item {
         id: rsStream
         cmd: ["rsmetrx"]
         backoffMs: Theme.networkRestartBackoffMs
-        onLine: (line) => {
+        jsonLine: true
+        onJson: (data) => {
             try {
-                const data = JSON.parse(line)
                 if (typeof data.rx_kib_s === "number") root.rxKiBps = data.rx_kib_s
                 if (typeof data.tx_kib_s === "number") root.txKiBps = data.tx_kib_s
             } catch (e) { /* ignore */ }
