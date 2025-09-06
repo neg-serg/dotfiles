@@ -92,7 +92,6 @@ PanelWithOverlay {
             root.selectedIndex = 0;
             root.appModel = DesktopEntries.applications.values;
             root.updateFilter();
-            focusLater.start();
         }
 
         function hidePanel() {
@@ -132,6 +131,10 @@ PanelWithOverlay {
             onScaleChanged: {
                 if (scale === 0 && !appLauncherPanelRect.shouldBeVisible) {
                     appLauncherPanel.visible = false;
+                }
+                if (scale === 1 && appLauncherPanelRect.shouldBeVisible) {
+                    // Focus after the panel is fully shown to avoid Wayland textinput focus race warnings
+                    focusLater.start();
                 }
             }
 
