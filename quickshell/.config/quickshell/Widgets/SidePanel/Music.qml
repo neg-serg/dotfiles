@@ -720,7 +720,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Date icon
                                     icon: "calendar_month"
-                                    color: Theme.accentHover
+                                    color: detailsCol.musicAccent
                                     size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
