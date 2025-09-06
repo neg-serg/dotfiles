@@ -25,7 +25,6 @@ Item {
 
     property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
 
-    // Time formatting moved to Helpers/Format.js
     RowLayout {
         id: mediaRow
         height: parent.height
@@ -106,7 +105,6 @@ Item {
 
             
 
-            // Hover-to-open with dwell; click also opens
             MouseArea {
                 id: trackSidePanelClick
                 anchors.fill: parent
@@ -153,7 +151,6 @@ Item {
                 cursorShape: Qt.PointingHandCursor
             }
 
-            // Hidden measurer for title (so spectrum width doesn't intrude into time)
             Text {
                 id: titleMeasure
                 visible: false
@@ -167,14 +164,11 @@ Item {
                 font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
             }
 
-            // Linear spectrum rendered behind the text (bottom half only)
             LinearSpectrum {
                 id: linearSpectrum
                 visible: Settings.settings.showMediaVisualizer === true && MusicManager.isPlaying && (trackText.text && trackText.text.length > 0)
                 anchors.left: parent.left
-                // Place the spectrum behind the text area, slightly raised into it
                 anchors.top: textFrame.bottom
-                // Use active profile overrides if present
                 anchors.topMargin: -Math.round(trackText.font.pixelSize * (
                     (Settings.settings.visualizerProfiles
                      && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile]
@@ -212,7 +206,6 @@ Item {
                 peakOpacity: Theme.spectrumPeakOpacity
                 useGradient: (Settings.settings.visualizerProfiles && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile] && Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient !== undefined) ? Settings.settings.visualizerProfiles[Settings.settings.activeVisualizerProfile].spectrumUseGradient : Settings.settings.spectrumUseGradient
                 barColor: Theme.accentPrimary
-                // Push spectrum to the very bottom within this container
                 z: -1
             }
 
@@ -228,7 +221,6 @@ Item {
 
                 
 
-                // Single rich text line: title + [cur/tot] inline; clipped by frame
                 Text {
                     id: trackText
                     anchors.left: parent.left
@@ -237,14 +229,11 @@ Item {
                     textFormat: Text.RichText
                     renderType: Text.NativeRendering
                     wrapMode: Text.NoWrap
-                    // Build HTML with colored separators and escaped content
                     function esc(s) {
                         s = (s === undefined || s === null) ? "" : String(s);
                         return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     }
-                    // Unified dark accent usage
                     property string bracketColor: Format.colorCss(Theme.accentDarkStrong, 1)
-                    // Time color: dim and desaturate when paused
                     property string timeColor: (function(){
                         var c = MusicManager.isPlaying ? Theme.textPrimary : Theme.textSecondary;
                         var a = MusicManager.isPlaying ? Theme.mediaTimeAlphaPlaying : Theme.mediaTimeAlphaPaused;
@@ -274,13 +263,12 @@ Item {
                                    });
                         const cur = Format.fmtTime(MusicManager.currentPosition || 0);
                         const tot = Format.fmtTime(Time.mprisToMs(MusicManager.trackLength || 0));
-                        const timeSize = Utils.clamp(Math.round(trackText.font.pixelSize * Theme.mediaTimeFontScale), 1, 2048);
                         const bp = trackText.bracketPair();
                         return t
                                + " &#8201;<span style='color:" + trackText.bracketColor + "'>" + bp.l + "</span>"
-                               + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + cur + "</span>"
+                               + "<span style='vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + cur + "</span>"
                                + Format.sepSpan(Theme.accentHover, '/')
-                               + "<span style='font-size:" + timeSize + "px; vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + tot + "</span>"
+                               + "<span style='vertical-align: middle; line-height:1; color:" + trackText.timeColor + "'>" + tot + "</span>"
                                + "<span style='color:" + trackText.bracketColor + "'>" + bp.r + "</span>";
                     })()
                     color: Theme.textPrimary
@@ -301,7 +289,6 @@ Item {
                 }
             }
 
-            // (Time is embedded in trackText; no separate right block)
         }
     }
 
