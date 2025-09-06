@@ -642,7 +642,7 @@ PanelWithOverlay {
                                     onReleased: ripple.opacity = 0.0
                                 }
 
-                                    RippleFadeBehavior { id: rippleNumberAnimation; target: ripple; property: "opacity"; to: 0.0; enabled: !Settings.settings.applauncherDisableAnimations }
+                                    RippleFadeBehavior { id: rippleNumberAnimation; target: ripple; property: "opacity"; to: 0.0 }
 
                                 Rectangle {
                                     anchors.left: parent.left
