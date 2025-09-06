@@ -9,9 +9,7 @@ function _defaultMap() {
     resize: "open_in_full",
     swap: "swap_horiz",
     swap_ws: "swap_horiz",
-    // launching / apps
-    launcher: "apps",
-    launch: "apps",
+    // launching / apps (removed explicit 'launcher' key)
     // media / volume / brightness
     media: "play_circle",
     volume: "volume_up",
@@ -62,7 +60,7 @@ function _heuristic(name) {
   if (/resiz/.test(key)) return "open_in_full";
   if (/move|drag/.test(key)) return "open_with";
   if (/swap/.test(key)) return "swap_horiz";
-  if (/launch|launcher/.test(key)) return "apps";
+  // 'launch'/'launcher' mapping removed; fall back to geometric icon
   if (/media/.test(key)) return "play_circle";
   if (/vol|audio|sound/.test(key)) return "volume_up";
   if (/bright|light/.test(key)) return "brightness_6";
@@ -105,4 +103,3 @@ if (typeof WsIconMap !== 'undefined') {
 
 // Also expose top-level for direct namespacing
 function __qml_namespace__() { return WsIconMap }
-
