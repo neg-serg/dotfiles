@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell.Io
-import qs.Helpers
 
 Item {
     id: root
