@@ -3,29 +3,14 @@ import QtQml
 import qs.Settings
 import Quickshell.Services.Mpris
 
-// Non-visual helper that tracks available MPRIS players and exposes currentPlayer
-// Player selection policy
-// - Configured via Settings.settings.playerSelectionPriority (array of rules)
-// - Supported rules (checked in order until a match):
-//   "pinnedPlaying" -> most-recent pinned player that is currently playing
-//   "mpdPlaying"  -> most-recent MPD that is currently playing
-//   "anyPlaying"  -> most-recent player that is currently playing (any backend)
-//   "mpdRecent"   -> most-recent MPD (regardless of playing)
-//   "pinned"      -> most-recent pinned player (regardless of playing)
-//   "recent"      -> most-recent player (regardless of playing)
-//   "manual"      -> respect manually selected index if within range
-//   "first"       -> fallback to the first available
-// Examples:
-//   ["manual","recent","first"]
-//   ["anyPlaying","mpdPlaying","manual","first"]
+// Tracks MPRIS players and exposes currentPlayer.
+// Selection rules (Settings.playerSelectionPriority): pinnedPlaying, mpdPlaying, anyPlaying, mpdRecent, pinned, recent, manual, first.
 Item {
     id: root
 
-    // Public API
     property var currentPlayer: null
     property int selectedPlayerIndex: 0
     property bool hasPlayer: getAvailablePlayers().length > 0
-    // LIFO of last active players by id (most recent first)
     property var _lastActiveStack: []
 
     function playerId(p) {
@@ -50,13 +35,11 @@ Item {
         try {
             var id = playerId(p);
             if (!id) return;
-            // Move to front (dedupe)
             var arr = _lastActiveStack || [];
             var idx = arr.indexOf(id);
             if (idx !== -1) arr.splice(idx, 1);
             arr.unshift(id);
             _lastActiveStack = arr;
-            // Persist small prefix to Settings (bounded)
             try {
                 var maxN = 5;
                 var toSave = arr.slice(0, maxN);
@@ -112,7 +95,6 @@ Item {
         let avail = getAvailablePlayers();
         if (avail.length === 0) return null;
 
-        // Fast map from id -> player
         let byId = {};
         for (let i = 0; i < avail.length; i++) byId[playerId(avail[i])] = avail[i];
 
@@ -123,7 +105,6 @@ Item {
                     let p = byId[_lastActiveStack[i]];
                     if (p && p.isPlaying && _isPinned(p)) return p;
                 }
-                // Fallback: any pinned & playing in avail
                 for (let j = 0; j < avail.length; j++) if (avail[j] && avail[j].isPlaying && _isPinned(avail[j])) return avail[j];
                 return null;
             case "mpdPlaying":
@@ -145,7 +126,6 @@ Item {
                     let p = byId[_lastActiveStack[i]];
                     if (p && isPlayerMpd(p)) return p;
                 }
-                // Fallback: first MPD in avail
                 for (let j = 0; j < avail.length; j++) if (isPlayerMpd(avail[j])) return avail[j];
                 return null;
             case "pinned":
@@ -153,7 +133,6 @@ Item {
                     let p = byId[_lastActiveStack[i]];
                     if (p && _isPinned(p)) return p;
                 }
-                // Fallback: first pinned in avail
                 for (let j = 0; j < avail.length; j++) if (_isPinned(avail[j])) return avail[j];
                 return null;
             case "recent":
@@ -172,7 +151,7 @@ Item {
             }
         }
 
-        // Derive rules: explicit array wins; otherwise use preset
+        // Build rules: explicit array wins; otherwise preset
         const _allowedRules = ["pinnedPlaying","mpdPlaying","anyPlaying","mpdRecent","pinned","recent","manual","first"];
         function _sanitizeRules(arr) {
             var out = [];
@@ -193,9 +172,9 @@ Item {
             var n = String(name || "default");
             switch (n) {
             case "manualFirst":
-                return ["manual", "pinnedPlaying", "anyPlaying", "pinned", "recent", "first"]; // honor manual, then pinned/playing, then recents
+                return ["manual", "pinnedPlaying", "anyPlaying", "pinned", "recent", "first"]; // manual, then pinned/playing, then recents
             case "playingFirst":
-                return ["pinnedPlaying", "anyPlaying", "mpdPlaying", "pinned", "manual", "recent", "first"]; // prefer playing, then mpdPlaying, prefer pinned
+                return ["pinnedPlaying", "anyPlaying", "mpdPlaying", "pinned", "manual", "recent", "first"]; // prefer playing, then mpdPlaying
             case "mpdBias":
                 return ["pinnedPlaying", "mpdPlaying", "anyPlaying", "mpdRecent", "pinned", "recent", "manual", "first"]; // mpd + pinned
             case "default":
@@ -203,7 +182,7 @@ Item {
                 if (n !== "default") {
                     try { console.warn('[MusicPlayers] Unknown playerSelectionPreset:', n, '; using default'); } catch (e1) {}
                 }
-                return ["pinnedPlaying", "mpdPlaying", "anyPlaying", "mpdRecent", "pinned", "recent", "manual", "first"]; // sane default
+                return ["pinnedPlaying", "mpdPlaying", "anyPlaying", "mpdRecent", "pinned", "recent", "manual", "first"]; // default
             }
         }
         let cfg = (Settings.settings && Settings.settings.playerSelectionPriority) || null;
@@ -222,7 +201,6 @@ Item {
             if (candidate) return candidate;
         }
 
-        // Safety fallback
         return avail[0];
     }
 
@@ -242,15 +220,13 @@ Item {
         } catch (e) { }
     }
 
-    // Primary: react to MPRIS players list changes via Connections
-    // Keep it under data: [...] to satisfy Item's default property list
-    // Use child objects (avoid assigning default property 'data' twice)
+        // React to players list via Connections
         Connections {
             target: Mpris.players
             ignoreUnknownSignals: true
             function onValuesChanged() { root.pruneStack(); root.updateCurrentPlayer() }
         }
-        // Track playback state changes per player to maintain LIFO order
+        // Track playback state per player to maintain LIFO
         Instantiator {
             active: true
             model: (Mpris.players && Mpris.players.values) ? Mpris.players.values : []
@@ -262,7 +238,7 @@ Item {
             }
         }
 
-    // Fallback: light polling in case Connections are not delivered in this env
+    // Fallback: poll in case Connections not delivered
     Timer {
         interval: Theme.musicPlayersPollMs
         repeat: true

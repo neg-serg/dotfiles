@@ -12,10 +12,6 @@ import "../Helpers/Utils.js" as Utils
 Singleton {
     id: manager
 
-    // --- Helpers -----------------------------------------------------------
-    // Time conversion is centralized in Helpers/Time.js
-
-    // --- Public API --------------------------------------------------------
     // Identify whether a player is MPD-like (mpd/mpdris/mopidy)
     function isPlayerMpd(player) {
         try {
@@ -30,10 +26,8 @@ Singleton {
     }
 
     function isCurrentMpdPlayer() { return isPlayerMpd(currentPlayer); }
-    // Delegate core responsibilities to helper objects
     MusicPlayers { id: players }
     MusicPosition { id: position; currentPlayer: players.currentPlayer }
-    // Public surface stays identical
     property alias currentPlayer: players.currentPlayer
     property alias selectedPlayerIndex: players.selectedPlayerIndex
     property alias currentPosition: position.currentPosition
@@ -54,7 +48,6 @@ Singleton {
     property bool   canSeek:        currentPlayer ? currentPlayer.canSeek : false
     property bool   hasPlayer:      players.hasPlayer
 
-    // --- Extended track metadata moved to MusicMeta ----------------------
     MusicMeta { id: meta; currentPlayer: players.currentPlayer }
     property alias trackGenre:          meta.trackGenre
     property alias trackLabel:          meta.trackLabel
@@ -96,8 +89,7 @@ Singleton {
 
     function seek(posMs) { position.seek(posMs); }
 
-    // Audio spectrum (bars count from settings)
-    // Prefer active profile bars, then settings, then fallback
+    // Audio spectrum bars (prefer active profile, then settings)
     Cava {
         id: cava
         count: (

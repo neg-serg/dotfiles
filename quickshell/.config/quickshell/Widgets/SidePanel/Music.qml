@@ -11,13 +11,11 @@ import "../../Helpers/Format.js" as Format
 
 Rectangle {
     id: musicCard
-    // Inherit the containing Window's screen when available; fallback to global Screen
-    // Use attached Window.window to avoid 'window is not defined' in some contexts
+    // Use attached Window.window when available; fallback to Screen
     property var screen: (Window.window && Window.window.screen) ? Window.window.screen : Screen
     color: "transparent"
     implicitHeight: playerUI.implicitHeight
 
-    // Optional contrast warnings
     function warnContrast(bg, fg, label) {
         try {
             if (!(Settings.settings && Settings.settings.enforceContrastWarnings)) return;
@@ -27,18 +25,14 @@ Rectangle {
         } catch (e) {}
     }
 
-    // Time formatting moved to Helpers/Format.js
-
         Rectangle {
             id: card
             anchors.fill: parent
-            // Use primary background (no accent tint) for music card
             color: Theme.background
             border.color: "transparent"
             border.width: Theme.uiBorderNone
             radius: Math.round(Theme.sidePanelCornerRadius * Theme.scale(Screen))
 
-        // Show fallback UI if no player is available
         Item {
             width: parent.width
             height: parent.height
@@ -67,7 +61,6 @@ Rectangle {
             }
         }
 
-        // Main player UI
         ColumnLayout {
             id: playerUI
             anchors.fill: parent
@@ -78,10 +71,8 @@ Rectangle {
             spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
             visible: !!MusicManager.currentPlayer
 
-            // Unified typography for music widget
-            // Base size for icons and calculations (align to Theme.fontSizeSmall)
+            // Typography
             property int musicFontPx: Math.round(Theme.fontSizeSmall * Theme.scale(screen))
-            // Exact text size to match the rest of the panel
             property int musicTextPx: Math.round(Theme.fontSizeSmall * Theme.scale(screen))
             property color musicTextColor: Color.contrastOn(card.color, Theme.textPrimary, Theme.textSecondary, Theme.contrastThreshold)
             Component.onCompleted: musicCard.warnContrast(card.color, musicTextColor, 'musicText')
@@ -89,9 +80,8 @@ Rectangle {
 
             
 
-            // Player selector (dedup by identity/id)
+            // Player selector
             property var uniquePlayers: []
-            // Keep header area hidden to prevent layout jumps on player discovery
             readonly property bool showCombo: false
             readonly property bool showSingleLabel: false
             function dedupePlayers() {
@@ -219,7 +209,6 @@ Rectangle {
                     }
                 }
 
-            // Single player label (when only one player)
             Text {
                 visible: playerUI.showSingleLabel
                 Layout.preferredHeight: visible ? (28 * Theme.scale(screen)) : 0
@@ -234,25 +223,20 @@ Rectangle {
 
             }
 
-            // Album art with spectrum visualizer
             RowLayout {
                 spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
                 Layout.fillWidth: true
 
-                // Album art container with circular spectrum overlay
                 Item {
                     id: albumArtContainer
-                    // Match exactly to artwork to avoid any extra left padding
                     width: albumArtwork.width
                     height: albumArtwork.height
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
 
                     
 
-                    // Album art image (square with slight rounding) — no outer fill/border
                     Rectangle {
                         id: albumArtwork
-                            // Cover at 200px (scaled)
                             width: Math.round(Theme.sidePanelAlbumArtSize * Theme.scale(screen))
                             height: Math.round(Theme.sidePanelAlbumArtSize * Theme.scale(screen))
                             anchors.fill: parent
@@ -292,7 +276,6 @@ Rectangle {
                             }
                         }
 
-                        // Fallback icon when no album art available
                         Text {
                             anchors.centerIn: parent
                             text: "album"
@@ -302,7 +285,6 @@ Rectangle {
                             visible: !albumArt.visible
                         }
                     }
-                    // Remove outer glow to avoid any perceived black edge
                 }
 
                 // Track metadata
@@ -310,15 +292,10 @@ Rectangle {
                     Layout.fillWidth: true
                     spacing: Math.round(Theme.sidePanelSpacingSmall * 0.5 * Theme.scale(screen))
 
-                    
-
-                    // (Upper two lines moved into details block)
-
-                    // Extra details block (time + player identity + metadata)
+                    // Details block: time + identity + metadata
                     Rectangle {
                         Layout.fillWidth: true
                         implicitHeight: detailsCol.implicitHeight
-                        // Match card background; radius and border from Theme
                         color: card.color
                         radius: Theme.sidePanelInnerRadius
                         border.width: Theme.uiBorderNone
@@ -333,9 +310,7 @@ Rectangle {
                             anchors.topMargin: Theme.uiMarginNone
                             anchors.bottomMargin: Theme.uiMarginNone
                             spacing: Math.round(Theme.sidePanelSpacingSmall * Theme.scale(screen))
-                            // (rollback) no special table-like layout properties
-
-                            // (reverted) no category-colored quality block here
+                            // layout follows tokens; no special table-like props
                             
 
                     

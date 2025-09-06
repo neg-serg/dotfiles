@@ -2,7 +2,6 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
-// import qs.Services
 
 Singleton {
     property string shellName: "quickshell"
@@ -13,7 +12,7 @@ Singleton {
 
     Item {
         Component.onCompleted: {
-            Quickshell.execDetached(["mkdir", "-p", settingsDir]); // ensure settings dir
+            Quickshell.execDetached(["mkdir", "-p", settingsDir]);
         }
     }
 
@@ -33,13 +32,9 @@ Singleton {
         JsonAdapter {
             id: settingAdapter
             property string weatherCity: "Moscow"
-            // Optional User-Agent for external APIs (e.g., Nominatim, Open-Meteo)
-            // Set to something like: "Quickshell/1.0 (contact: name@example.com)"
             property string userAgent: "NegPanel"
             property string profileImage: Quickshell.env("HOME") + "/.face"
-            // Debug toggles
             property bool debugNetwork: false
-            // Strict Theme tokens: warn when Theme falls back to defaults
             property bool strictThemeTokens: false
             property bool useFahrenheit: false
             property bool showMediaInBar: false
@@ -50,14 +45,11 @@ Singleton {
             property bool use12HourClock: false
             property bool dimPanels: true
             property real fontSizeMultiplier: 1.0  // Font size multiplier (1.0 = normal, 1.2 = 20% larger, 0.8 = 20% smaller)
-            property var pinnedExecs: [] // Added for AppLauncher pinned apps
+            property var pinnedExecs: []
 
-            // Media spectrum / CAVA visualization
-            // Reduced by one third from 128 -> ~86
+            // Media spectrum / CAVA
             property int  cavaBars: 86
-            // CAVA tuning (crisper, less smoothing/denoise)
             // CAVA tuning
-            // Slightly lower FPS and higher noise reduction for less jittery output
             property int  cavaFramerate: 24
             property bool cavaMonstercat: false
             property int  cavaGravity: 150000
@@ -67,12 +59,10 @@ Singleton {
             property bool showSpectrumTopHalf: false
             property real spectrumFillOpacity: 0.35
             property real spectrumHeightFactor: 1.2
-            property real spectrumOverlapFactor: 0.2  // how much overlaps upward from baseline (0..1 of font size)
-            property real spectrumBarGap: 1.0         // gap between bars in px (scaled later)
-            // Additional upward shift for CAVA spectrum behind text (in font-size units)
+            property real spectrumOverlapFactor: 0.2
+            property real spectrumBarGap: 1.0
             property real spectrumVerticalRaise: 0.75
 
-            // Visualizer profiles: group related settings under named presets
             property string activeVisualizerProfile: "classic"
             property var visualizerProfiles: ({
                 classic: {
@@ -90,40 +80,25 @@ Singleton {
             })
 
             // Media time brackets styling
-            // Options: "round" (( )), "tortoise" (〔 〕), "lenticular" (〖 〗), "lenticular_black" (【 】),
-            //          "angle" (⟨ ⟩), "square" ([ ])
             property string timeBracketStyle: "round"
-            // Media title separator character between artist and title
-            // Examples: "—" (em dash, default), "–" (en dash), "-" (hyphen)
             property string mediaTitleSeparator: "—"
 
-            // Monitor/Display Settings
-            property var barMonitors: [] // Array of monitor names to show the bar on
-            property var dockMonitors: [] // Array of monitor names to show the dock on
-            property var monitorScaleOverrides: {} // Map of monitor name -> scale override (e.g., 0.8..2.0). When set, Theme.scale() returns this value
+            // Displays
+            property var barMonitors: []
+            property var dockMonitors: []
+            property var monitorScaleOverrides: {}
 
-            // System tray behavior
             property bool collapseSystemTray: true
-            property string collapsedTrayIcon: "expand_more" // Material Symbols name
-            // Fallback icon for tray entries when source fails to load
-            // Uses Material Symbols name; e.g., "broken_image", "help", "image".
+            property string collapsedTrayIcon: "expand_more"
             property string trayFallbackIcon: "broken_image"
 
-            // Global contrast threshold (0..1) for Color.contrastOn
-            // Lower = prefers light text more often; higher = prefers dark
+            // Global contrast
             property real contrastThreshold: 0.5
-            // Debug: enforce contrast warnings if ratios fall below threshold
-            // Components may opt-in and use Color.contrastRatio()
             property bool enforceContrastWarnings: false
-            // Debug: log low-contrast warnings when components opt-in
             property bool debugContrast: false
-            // Target contrast ratio for warnings (WCAG AA for normal text ~4.5)
             property real contrastWarnRatio: 4.5
 
-            // Music player selection helpers
-            // Optional lists of player IDs to pin or ignore.
-            // ID format matches internal detection: service || busName || name || identity (first non-empty).
-            // Examples: "org.mpris.MediaPlayer2.mpd", "spotify", "vlc".
+            // Music player selection
             property var pinnedPlayers: []
             property var ignoredPlayers: []
             property string trayAccentColor: "#3b7bb3" // Accent color for tray button/icon
@@ -135,7 +110,7 @@ Singleton {
             // Media visualizer (CAVA/LinearSpectrum) toggle
             property bool showMediaVisualizer: false
 
-            // Player selection priority (ordered rules): mpdPlaying, anyPlaying, mpdRecent, recent, manual, first
+            // Player selection priority
             property var playerSelectionPriority: [
                 "mpdPlaying",
                 "anyPlaying",
@@ -144,19 +119,15 @@ Singleton {
                 "manual",
                 "first"
             ]
-            // Preset if priority list is empty: "default", "manualFirst", "playingFirst", "mpdBias"
             property string playerSelectionPreset: "default"
 
-            // Music popup sizing (logical; scaled per-screen)
+            // Music popup sizing
             property int  musicPopupWidth: 840     // logical px, scaled
             property int  musicPopupHeight: 250    // logical px, scaled (used when content height unknown)
             property int  musicPopupPadding: 12    // logical px, scaled (inner content padding)
 
-            // Networking
             property int  networkPingIntervalMs: 30000
-            // Colors for NetworkUsage icon states
             property string networkNoInternetColor: "#FF6E00"
-            // No Link (interface down): raspberry/crimson-ish
             property string networkNoLinkColor: "#D81B60"
         }
     }

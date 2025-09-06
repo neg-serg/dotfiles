@@ -2,39 +2,26 @@ import QtQuick
 import Quickshell.Io
 import qs.Settings
 
-// ProcessRunner: lightweight runner with optional JSON parsing and built-in restart/poll timers.
-// Usage examples:
-// - Streaming lines:
-//   ProcessRunner { cmd: ["rsmetrx"]; backoffMs: Theme.networkRestartBackoffMs; onLine: (l)=> handle(l) }
-// - Poll JSON:
-//   ProcessRunner { cmd: ["bash","-lc","ip -j -br a"]; intervalMs: Theme.vpnPollMs; parseJson: true; onJson: (obj)=> handle(obj) }
+// ProcessRunner: run a process (streaming lines or poll JSON) with backoff/poll timers.
+// Examples: streaming — ProcessRunner { cmd: ["rsmetrx"], backoffMs: Theme.networkRestartBackoffMs, onLine: (l)=>handle(l) }
+//           poll JSON — ProcessRunner { cmd: ["bash","-lc","ip -j -br a"], intervalMs: Theme.vpnPollMs, parseJson: true, onJson: (o)=>handle(o) }
 Item {
     id: root
-    // Command to execute
     property var cmd: []
-    // Restart backoff after unexpected exit (ms)
     property int backoffMs: 1500
-    // Optional environment map (array/object depending on Process API)
     property var env: null
-    // Optional polling interval (ms). When > 0, runs once per tick.
     property int intervalMs: 0
-    // Parse stdout as JSON (single shot). When true, emits json(obj) on stream finish.
     property bool parseJson: false
-    // Control whether to auto-restart on exit in streaming mode (intervalMs==0)
     property bool restartOnExit: true
-    // Auto start when created
     property bool autoStart: true
-    // Expose running state
     readonly property alias running: proc.running
 
     signal line(string s)
     signal json(var obj)
     signal exited(int code, int status)
 
-    // Streaming collector
     property int _consumed: 0
 
-    // Backoff restart timer (for streaming processes)
     Timer {
         id: backoff
         interval: root.backoffMs
@@ -42,7 +29,6 @@ Item {
         onTriggered: proc.running = true
     }
 
-    // Poll timer (for JSON mode or periodic triggers)
     Timer {
         id: poll
         interval: Math.max(0, root.intervalMs)
@@ -90,12 +76,7 @@ Item {
         onExited: function(exitCode, exitStatus) {
             root._consumed = 0;
             root.exited(exitCode, exitStatus);
-            if (root.intervalMs > 0) {
-                // In poll mode, rely on timer to retrigger
-            } else {
-                // Streaming mode: restart with backoff
-                if (root.restartOnExit) backoff.restart();
-            }
+            if (root.intervalMs === 0 && root.restartOnExit) backoff.restart();
         }
     }
 

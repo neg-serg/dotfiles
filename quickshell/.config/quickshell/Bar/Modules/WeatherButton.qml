@@ -72,7 +72,6 @@ Item {
         }
     }
 
-    // Tooltip with city and current temperature (if available)
     StyledTooltip {
         id: weatherTip
         targetItem: weatherBtn

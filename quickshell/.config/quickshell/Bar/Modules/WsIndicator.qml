@@ -10,14 +10,11 @@ import "../../Helpers/Format.js" as Format
 
 Item {
     id: root
-    // Public widget state
     property string wsName: "?"
     property int wsId: -1
-    // Hyprland keyboard submap (left of workspace)
     property string submapName: ""
-    // Fine-tune vertical alignment of submap icon (px; negative moves up)
+    // Vertical alignment of submap icon (px; negative moves up)
     property int submapBaselineAdjust: Theme.wsSubmapIconBaselineOffset
-    // Live-discovered submaps from Hyprland (via hyprctl -j binds)
     property var submapDynamicMap: ({})
     // Known submaps → Material Symbols
     readonly property var submapIconMap: ({
@@ -107,7 +104,6 @@ Item {
         return geometricFallbackIcon(key);
     }
 
-    // Accent palette (override if needed)
     property color iconColor: Theme.accentHover
     property color gothicColor: Theme.textPrimary
     property color separatorColor: Theme.textSecondary
@@ -116,7 +112,6 @@ Item {
     property int  iconBaselineOffset: Theme.wsIconBaselineOffset
     property int  iconSpacing: Theme.wsIconSpacing
 
-    // Size follows the composed row
     implicitWidth: lineBox.implicitWidth
     implicitHeight: lineBox.implicitHeight
 
@@ -129,7 +124,6 @@ Item {
         return sig ? ["HYPRLAND_INSTANCE_SIGNATURE=" + sig] : null;
     }
 
-    // HTML escape
     function htmlEscape(s) {
         s = (s === undefined || s === null) ? "" : String(s);
         return s
@@ -140,9 +134,8 @@ Item {
         .replace(/'/g, "&#39;");
     }
 
-    // Char classifiers
     function isPUA(cp) { return cp >= 0xE000 && cp <= 0xF8FF; }          // Private Use Area (icon fonts)
-    function isOldItalic(cp){ return cp >= 0x10300 && cp <= 0x1034F; }   // Old Italic block (e.g., 𐌰)
+    function isOldItalic(cp){ return cp >= 0x10300 && cp <= 0x1034F; }
     function isSeparatorChar(ch){ return [":","·","|","/","-"] .indexOf(ch) !== -1; }
 
     // Wrap one char into colored span by category
@@ -217,43 +210,31 @@ Item {
     // UI
     Row {
         id: lineBox
-        // Small spacing; children add padding
         spacing: iconSpacing
-        // Center the whole row vertically so label doesn't appear to move
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
-        // implicit sizes come from children
 
-        // Submap icon aligned to WS icon's offset via alignTarget
         BaselineAlignedIcon {
             visible: root.submapName && root.submapName.length > 0
             mode: "material"
             labelRef: label
-            // Center wrapper to the row center
             anchors.verticalCenter: lineBox.verticalCenter
-            // Slightly reduce Material icon visual size and align to baseline
             scale: 0.88
-            // Token-style API
             baselineOffsetToken: submapBaselineAdjust
             alignMode: "baseline"
-            // Align vertical offset exactly to wsIcon's computed offset (no magic pixels)
             alignTarget: wsIcon
             icon: submapIconName(root.submapName)
             color: Theme.wsSubmapIconColor
             screen: Screen
         }
 
-        // Workspace icon from name (PUA / Font Awesome glyphs)
         BaselineAlignedIcon {
             id: wsIcon
             visible: iconGlyph.length > 0
             mode: "text"
             labelRef: label
-            // Center wrapper to the row center
             anchors.verticalCenter: lineBox.verticalCenter
-            // Larger than label for better prominence
             scale: 1.40
-            // Token-style API
             baselineOffsetToken: iconBaselineOffset
             alignMode: "baseline"
             text: iconGlyph
@@ -262,7 +243,6 @@ Item {
             padding: (root.isTerminalWs ? Theme.uiSpacingNone : Theme.wsIconInnerPadding)
         }
 
-        // Label (RichText)
         Label {
             id: label
             textFormat: Text.RichText
@@ -273,9 +253,7 @@ Item {
             font.pixelSize: Theme.fontSizeSmall * Theme.scale(Screen)
             color: Theme.textPrimary
             padding: Theme.wsLabelPadding
-            // Tighter left gap next to icon
             leftPadding: (root.isTerminalWs ? Theme.wsLabelLeftPaddingTerminal : Theme.wsLabelLeftPadding)
-            // Match text vertical offset to ws icon criteria
             anchors.verticalCenter: lineBox.verticalCenter
             anchors.verticalCenterOffset: (wsIcon && wsIcon.currentOffset !== undefined) ? wsIcon.currentOffset : 0
         }

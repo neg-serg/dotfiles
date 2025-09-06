@@ -3,8 +3,7 @@ import qs.Components
 import qs.Settings
 import "../../Helpers/Color.js" as Color
 
-// Backward-compatible wrapper around ThemedSeparator with kind: 'diagonal'.
-// Keeps the existing API (alpha/thickness/angleDeg/inset/stripe* props).
+// Wrapper around ThemedSeparator (kind: 'diagonal'); preserves legacy props
 Item {
     id: root
     // Expose legacy properties
@@ -20,7 +19,6 @@ Item {
     property real stripeRatio: Theme.uiSeparatorDiagonalStripeRatio
     property bool stripeOnRight: true
 
-    // Keep same implicit size defaults
     implicitWidth: Theme.uiDiagonalSeparatorImplicitWidth
     implicitHeight: Theme.uiDiagonalSeparatorImplicitHeight
 
@@ -28,7 +26,6 @@ Item {
         id: sep
         anchors.fill: parent
         kind: "diagonal"
-        // Pass the panel screen if available on a parent chain
         screen: (typeof panel !== 'undefined') ? panel.screen : undefined
         color: root.color
         sepOpacity: root.alpha
@@ -36,7 +33,6 @@ Item {
         angleDeg: root.angleDeg
         inset: root.inset
         stripeEnabled: root.stripeEnabled
-        // Allow explicit stripeColor override via wrapper property
         stripeBrightness: root.stripeBrightness
         stripeColor: root.stripeColor
         stripeOpacity: root.stripeOpacity

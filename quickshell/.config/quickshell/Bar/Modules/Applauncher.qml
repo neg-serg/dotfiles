@@ -247,7 +247,7 @@ PanelWithOverlay {
             property var appModel: DesktopEntries.applications.values
             property var filteredApps: []
             property int selectedIndex: 0
-            // Bottom-docked animation: slide from offscreen bottom to bottom with small margin
+            // Bottom-docked slide + scale
             property int bottomMargin: Theme.applauncherBottomMargin
             property int targetY: Utils.clamp(parent.height - height - bottomMargin, 0, parent.height)
             property int offscreenYBottom: parent.height + Theme.applauncherOffscreenShift
@@ -314,9 +314,7 @@ PanelWithOverlay {
                     const searchTerm = query.slice(5).trim();
                     
                     clipboardHistory.forEach(function(clip, index) {
-                        let searchContent = clip.type === 'image' ? 
-                            clip.mimeType : 
-                            clip.content || clip;  // Support both new object format and old string format
+                        let searchContent = clip.type === 'image' ? clip.mimeType : (clip.content || clip);
                             
                         if (!searchTerm || searchContent.toLowerCase().includes(searchTerm)) {
                             let entry;
@@ -329,14 +327,13 @@ PanelWithOverlay {
                                     type: 'image',
                                     data: clip.data,
                                     execute: function() {
-                                        // Convert base64 image data back to binary and copy to clipboard
                                         const base64Data = clip.data.split(',')[1];
                                         clipboardTypeProcess.command = ["sh", "-c", `echo '${base64Data}' | base64 -d | wl-copy -t '${clip.mimeType}'`];
                                         clipboardTypeProcess.running = true;
                                     }
                                 };
                             } else {
-                                const textContent = clip.content || clip;  // Support both new object format and old string format
+                                const textContent = clip.content || clip;
                                 let displayContent = textContent;
                                 let previewContent = "";
                                 

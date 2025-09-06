@@ -9,16 +9,12 @@ import "../../Helpers/Utils.js" as Utils
 Item {
     id: root
     property bool enabled: false
-    // Polling even when not enabled but MPD is current player
     property int  fallbackIntervalMs: Theme.mpdFlagsFallbackMs
-    // Colors from theme for readability on panel background
     property color iconColor: Theme.textPrimary
     property int iconPx: Math.round(Theme.fontSizeSmall * Theme.scale(Screen))
-    // Prefer mpc; fallback to rmpc
     property string cmd: "(mpc status || rmpc status)"
     property var activeFlags: [] // [{ key, icon, title }]
     property string mpdState: "unknown" // playing | paused | stopped | unknown
-    // Background padding
     property int padX: Math.round(Theme.panelRowSpacingSmall * Theme.scale(Screen))
     property int padY: Math.round(Theme.uiGapTiny * Theme.scale(Screen))
     property int radius: Math.round(Theme.cornerRadiusSmall * Theme.scale(Screen))
@@ -32,7 +28,6 @@ Item {
     function parseStatus(text) {
         try {
             const s = String(text || "");
-            // Prefer JSON (rmpc); fallback to text (mpc)
             var trimmed = s.trim();
             const flags = [];
             function pushFlag(ok, key, icon, title) { if (ok) flags.push({ key, icon, title }); }
@@ -41,9 +36,7 @@ Item {
                 return t === "on" || t === "1" || t === "true" || t === "one";
             }
             if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
-                // JSON mode
                 var obj = JSON.parse(trimmed);
-                // Normalize variants
                 var stv = (obj.state || obj.State || "").toString().toLowerCase();
                 if (!stv && obj.mpd && obj.mpd.state) stv = String(obj.mpd.state).toLowerCase();
                 mpdState = stv || "unknown";
@@ -58,7 +51,6 @@ Item {
                 if (typeof xf === 'number') xfOn = xf > 0; else if (xf !== undefined && xf !== null) xfOn = !/^0$|^off$/i.test(String(xf));
                 pushFlag(xfOn, "xfade", "blur_linear", "Crossfade");
             } else {
-                // Text mode
                 var st = "unknown";
                 var mbr = trimmed.match(/\[(playing|paused|stopped)\]/i);
                 if (mbr && mbr[1]) st = String(mbr[1]).toLowerCase();

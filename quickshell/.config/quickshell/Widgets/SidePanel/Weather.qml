@@ -21,12 +21,10 @@ Rectangle {
     property int lastFetchTime: 0
     property bool isLoading: false
  
-    // Auto-refetch weather when city changes
     Connections {
         target: Settings.settings
         function onWeatherCityChanged() {
             if (isVisible && city !== "") {
-                // Force refresh when city changes
                 lastFetchTime = 0;
                 fetchCityWeather();
             }
@@ -45,13 +43,11 @@ Rectangle {
             return;
         }
  
-        // Check if we should fetch new data (avoid fetching too frequently)
         var currentTime = Date.now();
         var timeSinceLastFetch = currentTime - lastFetchTime;
- 
-        // Only skip if we have recent data AND lastFetchTime is not 0 (initial state)
+
         if (lastFetchTime > 0 && timeSinceLastFetch < 60000) { // 1 minute
-            return; // Skip if last fetch was less than 1 minute ago
+            return;
         }
  
         isLoading = true;
@@ -74,7 +70,6 @@ Rectangle {
  
     function startWeatherFetch() {
         isVisible = true
-        // Force refresh when panel opens, regardless of time check
         lastFetchTime = 0;
         fetchCityWeather();
     }
@@ -83,7 +78,6 @@ Rectangle {
         isVisible = false
     }
 
-    // Optional contrast warnings for debug
     function warnContrast(bg, fg, label) {
         try {
             if (!(Settings.settings && Settings.settings.debugContrast)) return;
@@ -96,7 +90,6 @@ Rectangle {
     Rectangle {
         id: card
         anchors.fill: parent
-        // Dark accent background with configurable alpha
         color: Color.withAlpha(Theme.accentDarkStrong, Theme.weatherCardOpacity)
         border.color: Theme.borderSubtle
         border.width: Theme.uiBorderWidth
@@ -115,7 +108,6 @@ Rectangle {
  
                 RowLayout {
                     spacing: Math.round(Theme.sidePanelSpacing * Theme.scale(Screen))
-                    // Width proportionate to panel width for responsiveness
                     Layout.preferredWidth: Math.round(weatherRoot.width * Theme.sidePanelWeatherLeftColumnRatio)
  
  
@@ -176,7 +168,6 @@ Rectangle {
             Rectangle {
                 width: parent.width
                 height: Utils.clamp(Math.round(Theme.tooltipBorderWidth * Theme.scale(Screen)), 1, 64)
-                // Use theme subtle border for divider
                 color: Theme.borderSubtle
                 radius: Theme.uiSeparatorRadius
                 Layout.fillWidth: true

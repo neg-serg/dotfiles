@@ -4,17 +4,15 @@ import Quickshell.Io
 import qs.Components
 import qs.Settings
 
-// Non-visual helper that computes extended track metadata and introspects files
+// Computes extended track metadata and introspects files
 Item {
     id: root
 
-    // Inputs
     property var currentPlayer: null
-    // Diagnostics (off by default)
     property bool debugMetaLogging: false
     property int _recalcSeq: 0
 
-    // Public metadata — now set imperatively to avoid expensive re-evaluation
+    // Public metadata (set imperatively to avoid re-evaluation)
     property string trackGenre:          ""
     property string trackLabel:          ""
     property string trackYear:           ""
@@ -38,15 +36,12 @@ Item {
     property string trackChannelLayout:  ""
     property string trackQualitySummary: ""
 
-    // Internal state for file introspection
     property bool introspectAudioEnabled: true
-    // Debounce state
     property string _lastPath: ""
     property string _pendingPath: ""
     property var  fileAudioMeta: ({})   // { codec, codecLong, profile, sampleFormat, sampleRate, bitrateKbps, channels, bitDepth, tags:{}, fileSizeBytes, container, channelLayout, encoder }
     function resetFileMeta() { fileAudioMeta = ({}) }
 
-    // Debounced recalc orchestrator
     Timer {
         id: recalcTimer
         interval: Theme.musicMetaRecalcDebounceMs
@@ -58,7 +53,6 @@ Item {
         if (recalcTimer.running) recalcTimer.restart(); else recalcTimer.start();
     }
 
-    // Recalculate all public fields in one pass (debounced by caller if needed)
     function recalcAll() {
         var t0 = 0; if (debugMetaLogging) { t0 = Date.now(); ++_recalcSeq; }
         // Compute URL first to trigger introspection when it changes
@@ -90,7 +84,6 @@ Item {
         
     }
 
-    // --- Helpers over currentPlayer -------------------------------------
     function playerProp(keys) {
         var p = currentPlayer;
         if (!p) return undefined;
@@ -177,7 +170,7 @@ Item {
     function computeChannelLayout() { try { if (fileAudioMeta && fileAudioMeta.channelLayout) return String(fileAudioMeta.channelLayout); } catch (e) {} return ""; }
     function computeQualitySummary() { var parts = []; var codec = trackCodec ? String(trackCodec).toUpperCase() : ""; var isDsd = (codec.indexOf('DSD') !== -1); if (isDsd) { codec = computeDsdVariant(codec, trackSampleRateStr); } if (codec) parts.push(codec); var lossy = (function(c){ c = String(c).toUpperCase(); if (!c) return false; if (/(FLAC|ALAC|PCM|WAV|AIFF|DSD|APE|WV)/.test(c)) return false; return true; })(codec); if (lossy && trackBitrateStr) { var br = String(trackBitrateStr).trim(); var mBr = br.match(/(\d+(?:\.\d+)?)/); if (mBr) br = mBr[1]; parts.push(br); } if (!isDsd && trackSampleRateStr) parts.push(trackSampleRateStr); if (trackBitDepthStr && String(trackBitDepthStr) !== "16") parts.push(trackBitDepthStr); if (trackChannelsStr && String(trackChannelsStr) !== "2") parts.push(trackChannelsStr); return parts.filter(function(p){ return p && String(p).length > 0; }).join("/"); }
 
-    // --- File path + introspection
+    // File path + introspection
     function pathFromUrl(u) { if (!u) return ""; var s = String(u); if (s.startsWith("file://")) { try { return decodeURIComponent(s.replace(/^file:\/\//, "")); } catch (e) { return s.replace(/^file:\/\//, ""); } } if (s.startsWith("/")) return s; return ""; }
     function isBusy() {
         try { return ffprobeProcess.running || mediainfoProcess.running || soxinfoProcess.running; } catch (e) { return false; }
@@ -222,10 +215,10 @@ Item {
     }
     onCurrentPlayerChanged: scheduleRecalc()
 
-    // Update computed fields when file introspection updates land
+    // Update fields when file introspection updates land
     onFileAudioMetaChanged: scheduleRecalc()
 
-    // Processes: ffprobe → mediainfo → sox --i
+    // Process chain: ffprobe → mediainfo → sox --i
     ProcessRunner {
         id: ffprobeProcess
         property string targetPath: ""

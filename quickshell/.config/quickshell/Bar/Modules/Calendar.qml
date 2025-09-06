@@ -34,7 +34,6 @@ PanelWithOverlay {
             anchors.margins: Theme.calendarSideMargin
             spacing: Theme.calendarRowSpacing
 
-            // Header with navigation
             RowLayout {
                 Layout.fillWidth: true
                 spacing: Theme.calendarCellSpacing
@@ -101,7 +100,6 @@ PanelWithOverlay {
                 id: calendar
 
                 property var holidays: []
-                // Selected date
                 property int selectedYear: -1
                 property int selectedMonth: -1
                 property int selectedDay: -1
@@ -123,7 +121,6 @@ PanelWithOverlay {
                 onYearChanged: updateHolidays()
                 Component.onCompleted: updateHolidays()
 
-                // Update when panel visibility changes
                 Connections {
                     function onVisibleChanged() {
                         if (calendarOverlay.visible) {
@@ -148,7 +145,7 @@ PanelWithOverlay {
                     width: Theme.calendarCellSize
                     height: Theme.calendarCellSize
                 radius: Math.round(Theme.cornerRadius * Theme.calendarCellRadiusFactor)
-                    // Today/selected/hover use explicit darkened accent (tunable factor)
+                    // Today/selected/hover use darkened accent
                     color: (model.today || isSelected || mouseArea2.containsMouse)
                         ? Color.towardsBlack(Theme.accentPrimary, Theme.calendarAccentDarken)
                         : "transparent"
@@ -198,7 +195,6 @@ PanelWithOverlay {
                                 holidayTooltip.targetItem = parent;
                                 holidayTooltip.tooltipVisible = true;
                             }
-                            // ContrastGuard handles optional warnings when debugContrast is set
                         }
                         onExited: holidayTooltip.tooltipVisible = false
                         onClicked: {
@@ -216,8 +212,6 @@ PanelWithOverlay {
                         targetItem: null
                         delay: Theme.tooltipDelayMs
                     }
-
-                    
 
                 }
 

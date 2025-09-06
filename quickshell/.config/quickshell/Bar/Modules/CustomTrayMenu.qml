@@ -24,7 +24,7 @@ import "../../Helpers/Color.js" as Color
     anchor.rect.x: anchorX
     anchor.rect.y: anchorY - Math.round(Theme.panelMenuAnchorYOffset * Theme.scale(Screen))
 
-    // Recursive function to destroy all open submenus in delegate tree, safely avoiding infinite recursion
+    // Recursively destroy all open submenus in delegate tree
     function destroySubmenusRecursively(item) {
         if (!item || !item.contentItem) return;
         var children = item.contentItem.children;
@@ -35,7 +35,6 @@ import "../../Helpers/Color.js" as Color
                 child.subMenu.destroy();
                 child.subMenu = null;
             }
-            // Recursively destroy submenus only if the child has contentItem to prevent issues
             if (child.contentItem) {
                 destroySubmenusRecursively(child);
             }
@@ -60,10 +59,9 @@ import "../../Helpers/Color.js" as Color
     }
 
     QsMenuOpener { id: opener; menu: trayMenu.menu }
-    // Shared submenu host component for delegates; pass itself for deeper submenus
+    // Submenu host component passed into delegates
     Component { id: submenuHostComp; SubmenuHost { submenuHostComponent: submenuHostComp } }
 
-    // Base background: compact; radius configured by Theme
     Rectangle {
         id: bg;
         anchors.fill: parent;
@@ -98,7 +96,6 @@ import "../../Helpers/Color.js" as Color
             })()
         }
 
-        // Hover color: use derived surface hover token
         readonly property color _hoverColor: Theme.surfaceHover
 
         delegate: Item {

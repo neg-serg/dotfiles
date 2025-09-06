@@ -29,35 +29,25 @@ Scope {
                     id: panel
                     screen: modelData
                     color: "transparent"
-                    // Track if mouse is currently over the panel area
                     property bool panelHovering: false
-                    // Namespace for Hyprland layerrules
                     WlrLayershell.namespace: "quickshell-bar"
-
-                    // --- Placement / visibility: bar is fixed at bottom ---
                     anchors.bottom: true
                     anchors.left:   true
                     anchors.right:  true
                     visible: Settings.settings.barMonitors.includes(modelData.name)
                              || (Settings.settings.barMonitors.length === 0)
-                    // --- Docking: reserve space & push tiled windows ---
                     implicitHeight: barBackground.height
                     exclusionMode: ExclusionMode.Normal
                     exclusiveZone: panel.barHeightPx   // reserve exactly bar height
-                    // ---------- Lifted/shared properties ----------
-                    // UI scale for this screen
                     property real s: Theme.scale(panel.screen)
-                    // Bar metrics (logical values from Theme scaled per-screen)
                     property int  barHeightPx:   Math.round(Theme.panelHeight * s)
                     property int  sideMargin:    Math.round(Theme.panelSideMargin * s)
                     property int  widgetSpacing: Math.round(Theme.panelWidgetSpacing * s)
-                    // Separator overshoot kept unscaled by design
                     property int  sepOvershoot:  Theme.panelSepOvershoot
                     property color barBgColor:   Theme.background // Colors
 
                     // Inline component for repeated diagonal separator
                     component DiagSep: DiagonalSeparatorRect {
-                        // extend beyond bar for a nicer cut
                         height: barBackground.height + panel.sepOvershoot
                     }
 
@@ -72,7 +62,6 @@ Scope {
 
                     
 
-                    // Keep rootScope.barHeight in sync with actual bar height
                     Component.onCompleted: {
                         rootScope.barHeight = barBackground.height
                     }
@@ -88,20 +77,17 @@ Scope {
                         anchors.leftMargin: panel.sideMargin
                         spacing: panel.widgetSpacing
                         ClockWidget { anchors.verticalCenter: parent.verticalCenter }
-                        // Separator between clock and workspaces: no accent stripe
                         DiagSep { stripeEnabled: false }
                         WsIndicator { id: wsindicator; anchors.verticalCenter: parent.verticalCenter }
                         DiagSep {}
                         KeyboardLayoutHypr { id: kbIndicator; anchors.verticalCenter: wsindicator.verticalCenter; /* deviceMatch: "dygma-defy-keyboard" */ }
                         DiagSep {}
-                        // Tighter cluster: VPN + Network usage
                         Row {
                             id: netCluster
                             anchors.verticalCenter: wsindicator.verticalCenter
                             spacing: Math.round(Theme.panelNetClusterSpacing * panel.s)
                             LocalMods.VpnAmneziaIndicator {
                                 id: amneziaVpn
-                                // Icon only
                                 showLabel: false
                                 iconRounded: true
                             }
@@ -127,14 +113,11 @@ Scope {
                         Media {
                             Layout.alignment: Qt.AlignVCenter
                             Layout.fillWidth: true
-                            // Pass the side panel reference so clicking the track toggles it
                             sidePanelPopup: sidebarPopup
                         }
-                        // MPD flags as a dedicated section to the right of media
                         LocalMods.MpdFlags {
                             id: mpdFlagsBar
                             Layout.alignment: Qt.AlignVCenter
-                            // Enable only when media is visible and MPD-like player is active
                             property bool _mediaVisible: (
                                 Settings.settings.showMediaInBar
                                 && MusicManager.currentPlayer
@@ -161,7 +144,6 @@ Scope {
 
                     }
 
-                    // Music popup lives outside layout (overlay window), anchored to this panel window
                     MusicPopup {
                         id: sidebarPopup
                         barMarginPx: rootScope.barHeight
@@ -169,15 +151,13 @@ Scope {
                         panelEdge: "bottom"
                     }
 
-                    // Auto-show popup when album name changes (and is present)
-                    // Store last-shown album here (no binding!)
                     property string _lastAlbum: ""
                     function maybeShowOnAlbumChange() {
                         try {
                             if (!panel.visible) return;
                             if (MusicManager.isStopped) return;
                             const album = String(MusicManager.trackAlbum || "");
-                            if (!album || album.length === 0) return; // require album present
+                            if (!album || album.length === 0) return;
                             if (album !== panel._lastAlbum) {
                                 if (MusicManager.trackTitle || MusicManager.trackArtist) sidebarPopup.showAt();
                                 panel._lastAlbum = album;
@@ -190,20 +170,16 @@ Scope {
                         function onTrackAlbumChanged()  { panel.maybeShowOnAlbumChange(); }
                     }
 
-                    // Hover hot-zone to reveal tray: to the right of music and volume (outside Row to avoid anchor warnings)
                     MouseArea {
                         id: trayHotZone
                         anchors.right: barBackground.right
                         anchors.bottom: barBackground.bottom
-                        // Size and offset from Theme metrics (scaled)
                         width: Math.round(Theme.panelHotzoneWidth * panel.s)
                         height: Math.round(Theme.panelHotzoneHeight * panel.s)
-                        // Shift left by a factor of its width
                         anchors.rightMargin: Math.round(width * Theme.panelHotzoneRightShift)
                         anchors.bottomMargin: Theme.uiMarginNone
                         hoverEnabled: true
                         acceptedButtons: Qt.NoButton
-                        // Place above generic bar hover tracker so it receives hover reliably
                         z: 10001
                         onEntered: {
                             systemTrayModule.hotHover = true
@@ -211,13 +187,10 @@ Scope {
                         }
                         onExited: {
                             systemTrayModule.hotHover = false
-                            // Do not collapse here; allow staying open while on panel
                         }
                         cursorShape: Qt.ArrowCursor
-                        // No visual here; drawn by trayHotZoneVisual below content
                     }
 
-                    // Bar-wide hover tracker to keep tray open while cursor is anywhere on the bar
                     MouseArea {
                         id: barHoverTracker
                         anchors.fill: barBackground
@@ -235,11 +208,9 @@ Scope {
                                 }
                             }
                         visible: true
-                        // fully transparent tracker
                         Rectangle { visible: false }
                     }
 
-                    // (Removed overlay layer; inline tray expansion handles layout and stacking)
                 }
             }
         }

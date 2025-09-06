@@ -1,5 +1,3 @@
-// Keyboard layout indicator (Hyprland)
-
 import QtQuick
 import QtQuick.Controls
 import Quickshell
@@ -12,7 +10,6 @@ import "../../Helpers/Utils.js" as Utils
 Item {
     id: kb
 
-    // Public API
     property string deviceMatch: ""
     property alias  fontPixelSize: label.font.pixelSize
     property int    desiredHeight: Math.round(Theme.keyboardHeight * Theme.scale(Screen))
@@ -20,26 +17,21 @@ Item {
     property bool   useTheme: true
     property int    yNudge: 0
 
-    // Icon
     property real   iconScale: Theme.keyboardIconScale
     property int    iconSpacing: Theme.keyboardIconSpacing
     property color  iconColor: useTheme ? Theme.keyboardIconColor : Theme.textSecondary
 
-    // Baseline nudges
     property int    iconBaselineAdjust: Theme.keyboardIconBaselineOffset
     property int    textBaselineAdjust: Theme.keyboardTextBaselineOffset
 
-    // Colors
     property color  bgColor:      useTheme ? Theme.keyboardBgColor : Theme.background
     property color  textColor:    useTheme ? Theme.keyboardTextColor : Theme.textPrimary
     property color  hoverBgColor: useTheme ? Theme.keyboardHoverBgColor : Theme.surfaceHover
 
-    // State
     property string layoutText: "??"
     property string deviceName: ""
     property var    knownKeyboards: []
 
-    // Theme scaling
     function sc() {
         const s = kb.screen || (Quickshell.screens && Quickshell.screens.length ? Quickshell.screens[0] : null)
         return s ? Theme.scale(s) : 1
@@ -47,15 +39,12 @@ Item {
 
     readonly property int margin: Math.round(Theme.keyboardMargin * sc())
 
-    // Size hints
     implicitWidth:  Math.ceil(row.implicitWidth + 2 * margin)
     implicitHeight: capsule.height
 
-    // Capsule UI
     Rectangle {
         id: capsule
         readonly property bool hovered: ma.containsMouse
-        // Capsule height follows content but won't go below desiredHeight
         height: Utils.clamp(row.implicitHeight + 2 * kb.margin, kb.desiredHeight, row.implicitHeight + 2 * kb.margin)
         width:  Utils.clamp(row.implicitWidth + 2 * kb.margin, Math.round(Theme.keyboardMinWidth * sc()), row.implicitWidth + 2 * kb.margin)
         color:  hovered ? kb.hoverBgColor : kb.bgColor
@@ -76,7 +65,6 @@ Item {
             anchors.margins: kb.margin
             spacing: kb.iconSpacing * sc()
 
-            // Font Awesome keyboard icon
             Label {
                 id: iconLabel
                 text: "\uf11c" // FA "keyboard"
@@ -87,11 +75,9 @@ Item {
                 color: kb.iconColor
                 verticalAlignment: Text.AlignVCenter
                 padding: Math.round(Theme.keyboardIconPadding * sc())
-                // Baseline from ascent + nudge
                 baselineOffset: fmIcon.ascent + kb.iconBaselineAdjust
             }
 
-            // Layout text
             Label {
                 id: label
                 text: kb.layoutText
@@ -100,7 +86,6 @@ Item {
                 font.weight: Theme.keyboardTextBold ? Font.DemiBold : Font.Medium
                 verticalAlignment: Text.AlignVCenter
                 padding: Math.round(Theme.keyboardTextPadding * sc())
-                // Baseline from ascent + nudge
                 baselineOffset: fmText.ascent + kb.textBaselineAdjust
             }
         }
@@ -118,7 +103,6 @@ Item {
         }
     }
 
-    // Hyprland raw events
     Connections {
         target: Hyprland
         function onRawEvent(a, b) {
@@ -144,7 +128,6 @@ Item {
         }
     }
 
-    // Initial snapshot
     ProcessRunner {
         id: initProc
         cmd: ["bash", "-lc", "hyprctl -j devices"]
@@ -160,10 +143,8 @@ Item {
         }
     }
 
-    // Click runner
     ProcessRunner { id: switchProc; autoStart: false; restartOnExit: false }
 
-    // Helpers
     function deviceAllowed(name) {
         const needle = (kb.deviceMatch || "").toLowerCase().trim()
         if (!needle) return true
