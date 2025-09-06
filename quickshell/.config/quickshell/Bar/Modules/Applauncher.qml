@@ -10,7 +10,7 @@ import qs.Components
 import "../../Helpers/Utils.js" as Utils
 import "../../Helpers/Color.js" as Color
 import qs.Settings
-import qs.Services as Services
+// Clipboard support removed; Services import not needed
 
 import "../../Helpers" as Helpers
 
@@ -26,18 +26,11 @@ PanelWithOverlay {
             console.warn('[Applauncher] Fuzzy smoke failed:', e);
         }
     }
-    // Clipboard integration via service
-    readonly property var clipboardHistory: Services.Clipboard.history
-    Connections { target: Services.Clipboard; function onHistoryChanged() { try { root.filterLater.restart() } catch (e) {} } }
-
-    // Old clipboard ProcessRunners removed; use Services.Clipboard instead
+    // Clipboard integration removed
 
     id: appLauncherPanel
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
-    onVisibleChanged: {
-        // Enable clipboard polling only when panel is visible and >clip is active
-        try { Services.Clipboard.enabled = (visible && searchField && searchField.text && searchField.text.startsWith(">clip")); } catch (e) {}
-    }
+    // onVisibleChanged: no clipboard integration
     
     // Favorites (pinned) support removed for a simpler, faster launcher
     
@@ -178,15 +171,7 @@ PanelWithOverlay {
                 return false;
             }
 
-            function likelyMissingIcon(app) {
-                try {
-                    if (app.isCalculator || app.isClipboard || app.isCommand) return false;
-                    const icon = String(app.icon || '').trim();
-                    if (!icon) return true;
-                    if (icon === 'application-x-executable') return true;
-                } catch (e) {}
-                return false;
-            }
+            // No icon/clipboard special-cases anymore
 
             function updateFilterNow() {
                 var query = searchField.text ? searchField.text.toLowerCase() : "";
@@ -382,31 +367,7 @@ PanelWithOverlay {
                 spacing: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
 
         
-                Rectangle {
-                    id: previewPanel
-                    Layout.preferredWidth: Math.round(Theme.applauncherPreviewWidth * Theme.scale(Screen))
-                    Layout.maximumHeight: Math.round(parent.height * Theme.applauncherPreviewMaxHeightRatio)
-                    Layout.fillHeight: true
-                    color: "transparent"
-                    radius: Theme.panelOverlayRadius
-                    visible: false
-
-                    Rectangle {
-                        anchors.fill: parent
-                        anchors.margins: Math.round(Theme.applauncherPreviewInnerMargin * Theme.scale(Screen))
-                        color: "transparent"
-                        clip: true
-
-                        Image {
-                            id: previewImage
-                            anchors.fill: parent
-                            fillMode: Image.PreserveAspectFit
-                            asynchronous: true
-                            cache: true
-                            smooth: true
-                        }
-                    }
-                }
+                // Clipboard preview panel removed
 
         
                 ColumnLayout {
@@ -443,9 +404,8 @@ PanelWithOverlay {
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignVCenter
                                 onTextChanged: {
-                                    try { Services.Clipboard.enabled = (appLauncherPanel.visible && searchField.text.startsWith(">clip")); } catch (e) {}
                                     const t = searchField.text || "";
-                                    if (t === ">" || t.startsWith(">clip") || t.startsWith(">calc") || t.length <= 2) {
+                                    if (t === ">" || t.startsWith(">calc") || t.length <= 2) {
                                         root.updateFilterNow();
                                     } else {
                                         filterLater.interval = Math.max(0, appLauncherPanelRect.debounceMs);
@@ -631,20 +591,18 @@ PanelWithOverlay {
                                         }
 
                                         Text {
-                                            text: modelData.isCalculator ? (modelData.expr + " = " + modelData.result) : 
-                                                  modelData.isClipboard ? modelData.content :
-                                                  modelData.isCommand ? modelData.content :
-                                                  (modelData.comment || modelData.genericName || "No description available")
+                                            text: modelData.isCalculator ? (modelData.expr + " = " + modelData.result)
+                                                 : (modelData.isCommand ? modelData.content : (modelData.comment || modelData.genericName || "No description available"))
                                             color: (hovered || isSelected) ? Theme.onAccent : Theme.textSecondary
                                             font.family: Theme.fontFamily
                                             font.pixelSize: Math.round(Theme.fontSizeCaption * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                             font.italic: !(modelData.comment || modelData.genericName)
-                                            opacity: modelData.isClipboard ? Theme.applauncherClipboardEntryOpacity : modelData.isCommand ? Theme.applauncherCommandEntryOpacity : ((modelData.comment || modelData.genericName) ? 1.0 : Theme.applauncherNoMetaOpacity)
+                                            opacity: modelData.isCommand ? Theme.applauncherCommandEntryOpacity : ((modelData.comment || modelData.genericName) ? 1.0 : Theme.applauncherNoMetaOpacity)
+        
                                             elide: Text.ElideRight
-                                            maximumLineCount: (modelData.isClipboard || modelData.isCommand) ? 2 : 1
-                                            wrapMode: (modelData.isClipboard || modelData.isCommand) ? Text.WordWrap : Text.NoWrap
+                                            maximumLineCount: 1
+                                            wrapMode: Text.NoWrap
                                             Layout.fillWidth: true
-                                            Layout.preferredHeight: (modelData.isClipboard || modelData.isCommand) ? implicitHeight : contentHeight
                                         }
                                     }
 
