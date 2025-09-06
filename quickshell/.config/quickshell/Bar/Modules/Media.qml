@@ -34,42 +34,12 @@ Item {
     // Accent readiness: separators uncolored until accent is ready
     property bool accentReady: false
     onMediaAccentChanged: { accentVersion++; }
-    Component.onCompleted: {
-        console.warn('[Media] onCompleted visible=', visible, ' coverUrl=', MusicManager.coverUrl)
-        colorSampler.requestPaint(); accentRetry.restart()
-    }
-    onVisibleChanged: {
-        console.warn('[Media] onVisibleChanged visible=', visible)
-        if (visible) { colorSampler.requestPaint(); accentRetry.restart() }
-    }
-    Connections {
-        target: MusicManager
-        function onCoverUrlChanged() {
-            console.warn('[Media] coverUrlChanged ->', MusicManager.coverUrl)
-            mediaControl.accentReady = false; colorSampler.requestPaint(); accentRetry.restart()
-        }
-        function onTrackAlbumChanged() {
-            console.warn('[Media] trackAlbumChanged ->', MusicManager.trackAlbum)
-            mediaControl.accentReady = false; colorSampler.requestPaint(); accentRetry.restart()
-        }
-    }
+    Component.onCompleted: { colorSampler.requestPaint(); accentRetry.restart() }
+    onVisibleChanged: { if (visible) { colorSampler.requestPaint(); accentRetry.restart() } }
+    Connections { target: MusicManager; function onCoverUrlChanged() { mediaControl.accentReady = false; colorSampler.requestPaint(); accentRetry.restart() } function onTrackAlbumChanged() { mediaControl.accentReady = false; colorSampler.requestPaint(); accentRetry.restart() } }
     // Retry sampler a few times while UI/cover settles
     property int _accentRetryCount: 0
-    Timer {
-        id: accentRetry
-        interval: 120
-        repeat: false
-        onTriggered: {
-            console.warn('[Media] accentRetry fired; requesting repaint; attempt', mediaControl._accentRetryCount)
-            colorSampler.requestPaint()
-            if (!mediaControl.accentReady && mediaControl._accentRetryCount < 5) {
-                mediaControl._accentRetryCount++
-                start()
-            } else {
-                mediaControl._accentRetryCount = 0
-            }
-        }
-    }
+    Timer { id: accentRetry; interval: Theme.mediaAccentRetryMs; repeat: false; onTriggered: { colorSampler.requestPaint(); if (!mediaControl.accentReady && mediaControl._accentRetryCount < Theme.mediaAccentRetryMax) { mediaControl._accentRetryCount++; start() } else { mediaControl._accentRetryCount = 0 } } }
 
     RowLayout {
         id: mediaRow
@@ -104,70 +74,15 @@ Item {
                     source: (MusicManager.coverUrl || "")
                     fillMode: Image.PreserveAspectCrop
                     visible: status === Image.Ready
-                    onStatusChanged: {
-                        console.warn('[Media] cover.statusChanged ->', status, ' visible=', visible)
-                        if (status === Image.Ready) { colorSampler.requestPaint(); mediaControl._accentRetryCount = 0; accentRetry.restart() }
-                    }
-                    onSourceChanged: {
-                        console.warn('[Media] cover.sourceChanged ->', source)
-                        colorSampler.requestPaint(); mediaControl._accentRetryCount = 0; accentRetry.restart()
-                    }
+                    onStatusChanged: { if (status === Image.Ready) { colorSampler.requestPaint(); mediaControl._accentRetryCount = 0; accentRetry.restart() } }
+                    onSourceChanged: { colorSampler.requestPaint(); mediaControl._accentRetryCount = 0; accentRetry.restart() }
                 }
 
                 // Offscreen canvas to sample dominant color from cover art
                 Canvas {
                     id: colorSampler
-                    width: 48; height: 48; visible: false
-                    onPaint: {
-                        try {
-                            console.warn('[Media] canvas.paint begin; cover.visible=', cover.visible, ' size=', width, 'x', height)
-                            var ctx = getContext('2d');
-                            ctx.clearRect(0, 0, width, height);
-                            if (!cover.visible) {
-                                console.warn('[Media] canvas: cover not visible; fallback to theme accent')
-                                mediaControl.mediaAccent = Theme.accentPrimary; mediaControl.accentReady = false; return;
-                            }
-                            // Draw the image element directly for reliability
-                            ctx.drawImage(cover, 0, 0, width, height);
-                            var img = ctx.getImageData(0, 0, width, height);
-                            var data = img.data; var len = data.length;
-                            var rs=0, gs=0, bs=0, n=0;
-                            for (var i=0; i<len; i+=4) {
-                                var a = data[i+3]; if (a < 128) continue;
-                                var r = data[i], g = data[i+1], b = data[i+2];
-                                var maxv = Math.max(r,g,b), minv = Math.min(r,g,b);
-                                var sat = maxv - minv; if (sat < 10) continue; // skip near-gray (stricter relaxed)
-                                var lum = (r+g+b)/3; if (lum < 20 || lum > 235) continue; // slightly wider bounds
-                                rs += r; gs += g; bs += b; ++n;
-                            }
-                            console.warn('[Media] canvas: sampled pixels=', len/4, ' accepted=', n)
-                            if (n === 0) {
-                                // Relaxed pass: loosen thresholds to grab something usable (e.g., desaturated covers)
-                                rs=0; gs=0; bs=0; n=0;
-                                for (var j=0; j<len; j+=4) {
-                                    var a2 = data[j+3]; if (a2 < 128) continue;
-                                    var r2 = data[j], g2 = data[j+1], b2 = data[j+2];
-                                    var max2 = Math.max(r2,g2,b2), min2 = Math.min(r2,g2,b2);
-                                    var sat2 = max2 - min2; if (sat2 < 8) continue; // slightly relax saturation
-                                    var lum2 = (r2+g2+b2)/3; if (lum2 < 20 || lum2 > 240) continue; // widen luminance bounds
-                                    rs += r2; gs += g2; bs += b2; ++n;
-                                }
-                                console.warn('[Media] canvas: relaxed accepted=', n)
-                            }
-                            if (n > 0) {
-                                var rr = Math.min(255, Math.round(rs/n));
-                                var gg = Math.min(255, Math.round(gs/n));
-                                var bb = Math.min(255, Math.round(bs/n));
-                                mediaControl.mediaAccent = Qt.rgba(rr/255.0, gg/255.0, bb/255.0, 1);
-                                console.warn('[Media] canvas: computed accent rgb=', rr, gg, bb)
-                                mediaControl.accentReady = true;
-                            } else {
-                                mediaControl.mediaAccent = Theme.accentPrimary;
-                                console.warn('[Media] canvas: no dominant color; fallback to theme accent')
-                                mediaControl.accentReady = false;
-                            }
-                        } catch (e) { /* ignore */ }
-                    }
+                    width: Theme.mediaAccentSamplerPx; height: Theme.mediaAccentSamplerPx; visible: false
+                    onPaint: { try { var ctx = getContext('2d'); ctx.clearRect(0, 0, width, height); if (!cover.visible) { mediaControl.mediaAccent = Theme.accentPrimary; mediaControl.accentReady = false; return; } ctx.drawImage(cover, 0, 0, width, height); var img = ctx.getImageData(0, 0, width, height); var data = img.data; var len = data.length; var rs=0, gs=0, bs=0, n=0; for (var i=0; i<len; i+=4) { var a = data[i+3]; if (a < 128) continue; var r = data[i], g = data[i+1], b = data[i+2]; var maxv = Math.max(r,g,b), minv = Math.min(r,g,b); var sat = maxv - minv; if (sat < 10) continue; var lum = (r+g+b)/3; if (lum < 20 || lum > 235) continue; rs += r; gs += g; bs += b; ++n; } if (n === 0) { rs=0; gs=0; bs=0; n=0; for (var j=0; j<len; j+=4) { var a2 = data[j+3]; if (a2 < 128) continue; var r2 = data[j], g2 = data[j+1], b2 = data[j+2]; var max2 = Math.max(r2,g2,b2), min2 = Math.min(r2,g2,b2); var sat2 = max2 - min2; if (sat2 < 8) continue; var lum2 = (r2+g2+b2)/3; if (lum2 < 20 || lum2 > 240) continue; rs += r2; gs += g2; bs += b2; ++n; } } if (n > 0) { var rr = Math.min(255, Math.round(rs/n)); var gg = Math.min(255, Math.round(gs/n)); var bb = Math.min(255, Math.round(bs/n)); mediaControl.mediaAccent = Qt.rgba(rr/255.0, gg/255.0, bb/255.0, 1); mediaControl.accentReady = true; } else { mediaControl.mediaAccent = Theme.accentPrimary; mediaControl.accentReady = false; } } catch (e) { /* ignore */ } }
                 }
 
                 MaterialIcon {

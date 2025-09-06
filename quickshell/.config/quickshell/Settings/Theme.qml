@@ -463,6 +463,21 @@ Singleton {
     property int sidePanelPopupOuterMargin:val('sidePanel.popup.outerMargin', 4)
     // Side-panel popup spacing (between inner items)
     property int sidePanelPopupSpacing:val('sidePanel.popup.spacing', 0)
+    // Side-panel popup corner radius
+    property int sidePanelPopupRadius: val('sidePanel.popup.radius', cornerRadius)
+
+    // Media dominant-accent sampler/logic (extract hardcoded tuning)
+    property int mediaAccentSamplerPx: Utils.clamp(val('media.accent.samplerPx', 48), 8, 256)
+    property int mediaAccentRetryMs: Utils.clamp(val('media.accent.retryMs', 120), 10, 2000)
+    property int mediaAccentRetryMax: Utils.clamp(val('media.accent.retryMax', 5), 0, 20)
+    // Strict pass thresholds
+    property int mediaAccentSatMin: Utils.clamp(val('media.accent.satMin', 10), 0, 255)
+    property int mediaAccentLumMin: Utils.clamp(val('media.accent.lumMin', 20), 0, 255)
+    property int mediaAccentLumMax: Utils.clamp(val('media.accent.lumMax', 235), 0, 255)
+    // Relaxed pass thresholds
+    property int mediaAccentSatRelax: Utils.clamp(val('media.accent.relaxed.satMin', 8), 0, 255)
+    property int mediaAccentLumRelaxMin: Utils.clamp(val('media.accent.relaxed.lumMin', 20), 0, 255)
+    property int mediaAccentLumRelaxMax: Utils.clamp(val('media.accent.relaxed.lumMax', 240), 0, 255)
     // Side-panel button hover rectangle visibility guard
     property real sidePanelButtonActiveVisibleMin: Utils.clamp(val('sidePanel.button.activeVisibleMin', 0.18), 0, 1)
     // Side-panel spacing medium

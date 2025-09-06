@@ -28,8 +28,8 @@ Item {
 
     PopupWindow {
         id: toast
-        // Neutral dark backdrop for the entire popup (non-accent)
-        color: Theme.overlayStrong
+        // We draw our own rounded background
+        color: "transparent"
         visible: false
 
         // --- Auto-hide with pause on hover/focus and while cursor is on panel
@@ -196,10 +196,21 @@ Item {
         }
 
         // --- Content
-        FocusScope {
+        // Slide container for both background and content
+        Item {
+            id: contentRoot
             anchors.fill: parent
-            // Horizontal slide only; window position handles vertical offset
             transform: Translate { x: toast.slideX }
+
+            // Rounded background with theme-controlled radius
+            Rectangle {
+                anchors.fill: parent
+                radius: Theme.sidePanelPopupRadius
+                color: Theme.overlayStrong
+            }
+
+            FocusScope {
+                anchors.fill: parent
 
             // Pause auto-hide while pointer is over popup; resume on exit
             HoverHandler {

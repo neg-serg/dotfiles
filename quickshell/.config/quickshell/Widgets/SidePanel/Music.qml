@@ -271,7 +271,7 @@ Rectangle {
                             }
                         }
                         // Accent sampler (dominant color); gates icon coloring until ready
-                        Canvas { id: accentSampler; width: 48; height: 48; visible: false; onPaint: {
+                        Canvas { id: accentSampler; width: Theme.mediaAccentSamplerPx; height: Theme.mediaAccentSamplerPx; visible: false; onPaint: {
                             try {
                                 var ctx = getContext('2d');
                                 ctx.clearRect(0, 0, width, height);
@@ -284,9 +284,21 @@ Rectangle {
                                     var a = data[i+3]; if (a < 128) continue;
                                     var r = data[i], g = data[i+1], b = data[i+2];
                                     var maxv = Math.max(r,g,b), minv = Math.min(r,g,b);
-                                    var sat = maxv - minv; if (sat < 10) continue;
-                                    var lum = (r+g+b)/3; if (lum < 20 || lum > 235) continue;
+                                    var sat = maxv - minv; if (sat < Theme.mediaAccentSatMin) continue;
+                                    var lum = (r+g+b)/3; if (lum < Theme.mediaAccentLumMin || lum > Theme.mediaAccentLumMax) continue;
                                     rs += r; gs += g; bs += b; ++n;
+                                }
+                                if (n === 0) {
+                                    // Relaxed thresholds
+                                    rs=0; gs=0; bs=0; n=0;
+                                    for (var j=0; j<len; j+=4) {
+                                        var a2 = data[j+3]; if (a2 < 128) continue;
+                                        var r2 = data[j], g2 = data[j+1], b2 = data[j+2];
+                                        var max2 = Math.max(r2,g2,b2), min2 = Math.min(r2,g2,b2);
+                                        var sat2 = max2 - min2; if (sat2 < Theme.mediaAccentSatRelax) continue;
+                                        var lum2 = (r2+g2+b2)/3; if (lum2 < Theme.mediaAccentLumRelaxMin || lum2 > Theme.mediaAccentLumRelaxMax) continue;
+                                        rs += r2; gs += g2; bs += b2; ++n;
+                                    }
                                 }
                                 if (n > 0) {
                                     var rr = Math.min(255, Math.round(rs/n));
@@ -355,7 +367,7 @@ Rectangle {
                             property bool musicAccentReady: false
                             // Retry sampler a few times until cover is fully ready
                             property int _accentRetryCount: 0
-                            Timer { id: musicAccentRetry; interval: 120; repeat: false; onTriggered: { accentSampler.requestPaint(); if (!detailsCol.musicAccentReady && detailsCol._accentRetryCount < 5) { detailsCol._accentRetryCount++; start(); } else { detailsCol._accentRetryCount = 0 } } }
+                            Timer { id: musicAccentRetry; interval: Theme.mediaAccentRetryMs; repeat: false; onTriggered: { accentSampler.requestPaint(); if (!detailsCol.musicAccentReady && detailsCol._accentRetryCount < Theme.mediaAccentRetryMax) { detailsCol._accentRetryCount++; start(); } else { detailsCol._accentRetryCount = 0 } } }
                             
 
                     
