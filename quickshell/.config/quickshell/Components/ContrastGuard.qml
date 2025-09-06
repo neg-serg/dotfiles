@@ -33,7 +33,7 @@ QtObject {
             // Compute ratio on demand to avoid ordering issues during initialization
             var r = Color.contrastRatio(bg, fg);
             if (!(r > 0)) return;
-            if (r < warnRatio) console.warn('[ContrastGuard]', label || '(unnamed)', 'ratio', r.toFixed(2));
+            if (r < warnRatio) console.debug('[ContrastGuard]', label || '(unnamed)', 'ratio', r.toFixed(2));
         } catch (e) { /* ignore */ }
     }
 

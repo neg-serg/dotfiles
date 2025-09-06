@@ -39,7 +39,7 @@ function httpGetJson(url, timeoutMs, success, fail, userAgent) {
                 if (!(_uaWarnedHosts[key])) {
                     if (!uastr || /^quickshell$/i.test(uastr) || /^negpanel$/i.test(uastr)) {
                         try {
-                            console.warn('[Http] Geocoding service recommends a descriptive User-Agent with contact. Set Settings.userAgent, e.g.: "NegPanel/1.0 (contact: you@example.com)"');
+                            console.debug('[Http] Geocoding service recommends a descriptive User-Agent with contact. Set Settings.userAgent, e.g.: "NegPanel/1.0 (contact: you@example.com)"');
                         } catch (_e) {}
                     }
                     _uaWarnedHosts[key] = true;
