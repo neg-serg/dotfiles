@@ -6,6 +6,7 @@ import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 import qs.Settings
 import qs.Components
+import qs.Services as Services
 
 Row {
     id: root
@@ -14,32 +15,25 @@ Row {
     property bool holdOpen: false
     property bool shortHoldActive: false
 
-    Timer {
-        id: longHoldTimer
-        interval: Theme.panelTrayLongHoldMs
-        repeat: false
-        onTriggered: {
-            root.holdOpen = false;
-            root.expanded = false;
-        }
-    }
-    Timer {
-        id: shortHoldTimer
-        interval: Theme.panelTrayShortHoldMs
-        repeat: false
-        onTriggered: { root.shortHoldActive = false; if (!root.panelHover && !root.hotHover && !root.holdOpen) root.expanded = false }
+    // Timers centralized in TrayController service
+    Connections {
+        target: Services.TrayController
+        function onLongHold() { root.holdOpen = false; root.expanded = false }
+        function onShortHold() { root.shortHoldActive = false; if (!root.panelHover && !root.hotHover && !root.holdOpen) root.expanded = false }
+        function onCollapseDelay() { root.expanded = false }
+        function onGuardOff() { root.openGuard = false }
     }
 
     onHotHoverChanged: {
         if (hotHover) {
-            shortHoldTimer.stop();
+            Services.TrayController.stopShortHold();
             shortHoldActive = false;
             expanded = true;
         } else {
             const menuOpen = trayMenu && trayMenu.visible;
             if (!panelHover && !menuOpen && !holdOpen) {
                 shortHoldActive = true;
-                shortHoldTimer.restart();
+                Services.TrayController.startShortHold();
             }
         }
     }
@@ -47,7 +41,7 @@ Row {
     property var screen
     property var trayMenu
     property bool programmaticOverlayDismiss: false
-    Timer { id: collapseDelayTimer; interval: Theme.panelTrayOverlayDismissDelayMs; repeat: false; onTriggered: root.expanded = false }
+    // Collapse delay handled by TrayController service
     function dismissOverlayNow() { root.programmaticOverlayDismiss = true; trayOverlay.dismiss(); root.programmaticOverlayDismiss = false }
     spacing: Math.round(Theme.panelRowSpacing * Theme.scale(Screen))
     Layout.alignment: Qt.AlignVCenter
@@ -58,7 +52,6 @@ Row {
     property bool collapsed: Settings.settings.collapseSystemTray
     property bool expanded: false
     property bool openGuard: false
-    Timer { id: guardTimer; interval: Theme.panelTrayGuardMs; repeat: false; onTriggered: openGuard = false }
 
     PanelWithOverlay {
         id: trayOverlay
@@ -73,9 +66,9 @@ Row {
                     if (root.holdOpen || root.hotHover || root.panelHover || (trayMenu && trayMenu.visible)) {
                     } else {
                         if (!root.programmaticOverlayDismiss) {
-                            collapseDelayTimer.restart();
+                            Services.TrayController.startCollapseDelay();
                         } else {
-                            if (collapseDelayTimer.running) collapseDelayTimer.stop();
+                            Services.TrayController.stopCollapseDelay();
                             root.expanded = false;
                         }
                     }
@@ -198,7 +191,7 @@ Row {
         iconHoverColor: Theme.textPrimary
         onClicked: {
             expanded = !expanded;
-            if (expanded) { openGuard = true; guardTimer.restart(); }
+            if (expanded) { openGuard = true; Services.TrayController.startGuard(); }
             if (expanded) { trayOverlay.show(); try { trayOverlay.showOverlay = false; } catch (e) {} }
             else root.dismissOverlayNow();
         }
@@ -218,12 +211,12 @@ Row {
             if (trayMenu.visible) {
                 root.expanded = true;
                 root.holdOpen = true;
-                longHoldTimer.stop();
-                shortHoldTimer.stop();
+                Services.TrayController.stopLongHold();
+                Services.TrayController.stopShortHold();
                 root.shortHoldActive = false;
             } else {
                 root.holdOpen = true;
-                longHoldTimer.restart();
+                Services.TrayController.startLongHold();
             }
         }
     }
