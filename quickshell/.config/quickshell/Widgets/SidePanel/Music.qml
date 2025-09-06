@@ -22,7 +22,7 @@ Rectangle {
             if (!(Settings.settings && Settings.settings.enforceContrastWarnings)) return;
             var ratio = Color.contrastRatio(bg, fg);
             var th = (Settings.settings && Settings.settings.contrastWarnRatio) ? Settings.settings.contrastWarnRatio : 4.5;
-            if (ratio < th) console.warn('[Music] Low contrast', label || 'text', ratio.toFixed(2));
+            if (ratio < th) console.debug('[Music] Low contrast', label || 'text', ratio.toFixed(2));
         } catch (e) {}
     }
 
@@ -766,30 +766,7 @@ Rectangle {
 
                             
 
-                            // ReplayGain (hide RG Track)
-                            // Row hidden per request; keep album-only if desired
-                            RowLayout {
-                                visible: false && !!MusicManager.trackRgAlbumStr
-                                Layout.fillWidth: true
-                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
-                                Text {
-                                    text: "RG album"
-                                    color: playerUI.musicTextColor
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: playerUI.musicTextPx
-                                    font.weight: Font.DemiBold
-                                    Layout.alignment: Qt.AlignVCenter
-                                }
-                                Text {
-                                    Layout.fillWidth: true
-                                    text: MusicManager.trackRgAlbumStr
-                                    color: playerUI.musicTextColor
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: playerUI.musicTextPx
-                                    font.weight: Font.DemiBold
-                                    Layout.alignment: Qt.AlignVCenter
-                                }
-                            }
+                            // ReplayGain removed per configuration
                         }
                     }
                 }

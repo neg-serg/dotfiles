@@ -1,6 +1,5 @@
 import QtQuick
 import QtQml
-import Quickshell.Io
 import qs.Components
 import qs.Settings
 
@@ -28,8 +27,6 @@ Item {
     property string trackAlbumArtist: ""
     property string trackComposer: ""
     property string trackUrlStr: ""
-    property string trackRgTrackStr: ""
-    property string trackRgAlbumStr: ""
     property string trackDateStr: ""
     property string trackContainer: ""
     property string trackFileSizeStr: ""
@@ -72,8 +69,6 @@ Item {
         trackDiscNumberStr  = computeDiscNumberStr();
         trackAlbumArtist    = computeAlbumArtist();
         trackComposer       = computeComposer();
-        trackRgTrackStr     = computeRgTrackStr();
-        trackRgAlbumStr     = computeRgAlbumStr();
         trackDateStr        = computeDateStr();
         trackContainer      = computeContainer();
         trackFileSizeStr    = computeFileSizeStr();
@@ -159,8 +154,6 @@ Item {
     function computeAlbumArtist() { var v = playerProp(["albumArtist","xesam:albumArtist"]); var s = toFlatString(v); if (s) return s; try { if (fileAudioMeta && fileAudioMeta.tags && fileAudioMeta.tags.album_artist) return toFlatString(fileAudioMeta.tags.album_artist); } catch (e) {} return ""; }
     function computeComposer() { var v = playerProp(["composer","xesam:composer"]); var s = toFlatString(v); if (s) return s; try { if (fileAudioMeta && fileAudioMeta.tags && fileAudioMeta.tags.composer) return toFlatString(fileAudioMeta.tags.composer); } catch (e) {} return ""; }
     function computeUrlStr() { var v = playerProp(["url","xesam:url"]); var s = toFlatString(v); if (!s) return ""; try { if (s.startsWith("file://")) { return decodeURIComponent(s.replace(/^file:\/\//, "")); } } catch (e) { } return s; }
-    function computeRgTrackStr() { var v = playerProp(["replaygain_track_gain","rg_track_gain","replaygain_track","replayGainTrack","xesam:replaygain_track_gain","xesam:replayGainTrack"]); var s = toFlatString(v); if (s) return s; try { if (fileAudioMeta && fileAudioMeta.tags && fileAudioMeta.tags.replaygain_track_gain) return toFlatString(fileAudioMeta.tags.replaygain_track_gain); } catch (e) {} var all = mdAll(); for (var i = 0; i < all.length; i++) { var str = all[i]; var m = str.match(/(?:replaygain|rg)[^\d-+]*([+-]?\d+(?:\.\d+)?)\s*dB/i); if (m) return m[1] + " dB"; } return ""; }
-    function computeRgAlbumStr() { var v = playerProp(["replaygain_album_gain","rg_album_gain","replaygain_album","replayGainAlbum","xesam:replaygain_album_gain","xesam:replayGainAlbum"]); var s = toFlatString(v); if (s) return s; try { if (fileAudioMeta && fileAudioMeta.tags && fileAudioMeta.tags.replaygain_album_gain) return toFlatString(fileAudioMeta.tags.replaygain_album_gain); } catch (e) {} var all = mdAll(); for (var i2 = 0; i2 < all.length; i2++) { var str2 = all[i2]; var m = str2.match(/album[^\d-+]*([+-]?\d+(?:\.\d+)?)\s*dB/i); if (m) return m[1] + " dB"; } return ""; }
     function computeDsdVariant(codec, sampleRateStr) { try { if (!codec) return ""; var c = String(codec).toUpperCase(); if (c.indexOf('DSD') === -1) return ""; var hz = parseRateToHz(sampleRateStr || trackSampleRateStr || ""); if (!isNaN(hz) && hz > 0) { var base = 44100; var ratio = hz / base; var candidates = [64, 128, 256, 512, 1024]; var best = 0, bestDiff = 1e9; for (var i = 0; i < candidates.length; i++) { var r = candidates[i]; var diff = Math.abs(ratio - r); if (diff < bestDiff) { bestDiff = diff; best = r; } } if (best > 0 && (bestDiff / best) <= 0.05) { return 'DSD' + best; } } var all3 = mdAll(); for (var j = 0; j < all3.length; j++) { var s3 = String(all3[j]); var m = s3.match(/DSD\s*(64|128|256|512|1024)/i); if (m) return 'DSD' + m[1]; } return 'DSD'; } catch (e) { return 'DSD'; } }
     function computeDsdRateStr() { try { var codec = trackCodec ? String(trackCodec).toUpperCase() : ""; if (codec.indexOf('DSD') === -1) return ""; var hz = parseRateToHz(trackSampleRateStr); if (!isNaN(hz) && hz > 0) return fmtMHz(hz); var variant = computeDsdVariant(codec, trackSampleRateStr); var m = String(variant).match(/DSD(64|128|256|512|1024)/); if (m) { var mult = Number(m[1]); var estHz = mult * 44100; return fmtMHz(estHz); } var all = mdAll(); for (var j = 0; j < all.length; j++) { var s = String(all[j]); var mhz = s.match(/(\d+(?:\.\d+)?)\s*MHz/i); if (mhz) return mhz[1] + 'M'; var khz = s.match(/(\d{4,6})\s*Hz/i); if (khz) return fmtMHz(khz[1]); } } catch (e) { } return ""; }
     function computeDateStr() { var v = playerProp(["date","xesam:contentCreated","xesam:date","xesam:contentcreated"]); var s = toFlatString(v); if (s) return s; try { if (fileAudioMeta && fileAudioMeta.tags && fileAudioMeta.tags.date) return toFlatString(fileAudioMeta.tags.date); } catch (e) {} return ""; }

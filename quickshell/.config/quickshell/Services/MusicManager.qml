@@ -1,9 +1,6 @@
 pragma Singleton
 import QtQuick
-import Quickshell
-import Quickshell.Io
 import Quickshell.Services.Mpris
-import "../Helpers/Time.js" as Time
 import qs.Services
 import qs.Settings
 import qs.Components
@@ -64,8 +61,6 @@ Item {
     property alias trackAlbumArtist: meta.trackAlbumArtist
     property alias trackComposer: meta.trackComposer
     property alias trackUrlStr: meta.trackUrlStr
-    property alias trackRgTrackStr: meta.trackRgTrackStr
-    property alias trackRgAlbumStr: meta.trackRgAlbumStr
     property alias trackDateStr: meta.trackDateStr
     property alias trackContainer: meta.trackContainer
     property alias trackFileSizeStr: meta.trackFileSizeStr
