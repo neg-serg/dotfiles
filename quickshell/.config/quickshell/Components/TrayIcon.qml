@@ -74,11 +74,12 @@ Item {
                 }
             }
 
-            // Pass through image:// and qrc:/
+            // Pass through image:// and qrc:/ and file:
             if (base.startsWith("image://") || base.startsWith("qrc:/") || base.startsWith("file:")) return base;
 
-            // Default: theme icon name
-            return base;
+            // Normalize theme icon name: lowercase and replace spaces/underscores with '-'
+            var norm = base.toLowerCase().replace(/[\s_]+/g, '-');
+            return "image://icon/" + norm;
         } catch (e) {
             return source || "";
         }

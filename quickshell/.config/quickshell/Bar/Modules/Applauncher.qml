@@ -578,11 +578,11 @@ PanelWithOverlay {
                                                     if (base.endsWith('.png') || base.endsWith('.svg') || base.endsWith('.xpm')) {
                                                         base = base.replace(/\.(png|svg|xpm)$/i, '');
                                                     }
-                                                    return "image://icon/" + base;
+                                                    return "image://icon/" + base.toLowerCase().replace(/[\s_]+/g, '-');
                                                 }
                                                 // Strip reverse-DNS prefixes (e.g., net.veloren.airshipper -> airshipper)
                                                 if (name.indexOf('.') !== -1) name = name.split('.').pop();
-                                                return "image://icon/" + name;
+                                                return "image://icon/" + name.toLowerCase().replace(/[\s_]+/g, '-');
                                             })()
                                             visible: (modelData.isCalculator || modelData.isClipboard || modelData.isCommand || parent.iconLoaded) && modelData.type !== 'image'
                                         }
@@ -661,19 +661,23 @@ PanelWithOverlay {
                                     hoverEnabled: true
                                     acceptedButtons: Qt.LeftButton | Qt.RightButton
                                     onClicked: {
-                
+
                                         if (pinArea.containsMouse) return;
                                         if (mouse.button === Qt.RightButton) {
                                             appLauncherPanel.togglePin(modelData);
                                             return;
                                         }
-                                        ripple.opacity = Theme.uiRippleOpacity;
-                                        if (!Settings.settings.applauncherDisableAnimations) rippleNumberAnimation.start(); else ripple.opacity = 0.0;
+                                        if (Settings.settings.applauncherDisableAnimations) {
+                                            ripple.opacity = 0.0;
+                                        } else {
+                                            ripple.opacity = Theme.uiRippleOpacity;
+                                            rippleNumberAnimation.start();
+                                        }
                                         root.selectedIndex = index;
                                         root.activateSelected();
                                     }
                                     cursorShape: Qt.PointingHandCursor
-                                    onPressed: ripple.opacity = Theme.uiRippleOpacity
+                                    onPressed: ripple.opacity = Settings.settings.applauncherDisableAnimations ? 0.0 : Theme.uiRippleOpacity
                                     onReleased: ripple.opacity = 0.0
                                 }
 
