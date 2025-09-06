@@ -254,7 +254,14 @@ Rectangle {
                             cache: false
                             source: (MusicManager.coverUrl || "")
                             visible: source && source.toString() !== ""
-                            onStatusChanged: { if (status === Image.Ready) accentSampler.requestPaint() }
+                            onStatusChanged: {
+                                if (status === Image.Ready) {
+                                    detailsCol.musicAccentReady = false;
+                                    detailsCol._accentRetryCount = 0;
+                                    accentSampler.requestPaint();
+                                    musicAccentRetry.restart();
+                                }
+                            }
 
                             // Apply rounded-rect mask (corner radius)
                             layer.enabled: true
@@ -263,12 +270,13 @@ Rectangle {
                                 maskSource: mask
                             }
                         }
-                        Canvas { id: accentSampler; width: 24; height: 24; visible: false; onPaint: {
+                        // Accent sampler (dominant color); gates icon coloring until ready
+                        Canvas { id: accentSampler; width: 48; height: 48; visible: false; onPaint: {
                             try {
                                 var ctx = getContext('2d');
-                                ctx.reset();
-                                if (!albumArt.source || albumArt.source.toString() === '') return;
-                                ctx.drawImage(albumArt.source, 0, 0, width, height);
+                                ctx.clearRect(0, 0, width, height);
+                                if (!albumArt.visible) { detailsCol.musicAccent = Theme.accentPrimary; detailsCol.musicAccentReady = false; return; }
+                                ctx.drawImage(albumArt, 0, 0, width, height);
                                 var img = ctx.getImageData(0, 0, width, height);
                                 var data = img.data; var len = data.length;
                                 var rs=0, gs=0, bs=0, n=0;
@@ -276,8 +284,8 @@ Rectangle {
                                     var a = data[i+3]; if (a < 128) continue;
                                     var r = data[i], g = data[i+1], b = data[i+2];
                                     var maxv = Math.max(r,g,b), minv = Math.min(r,g,b);
-                                    var sat = maxv - minv; if (sat < 15) continue;
-                                    var lum = (r+g+b)/3; if (lum < 30 || lum > 230) continue;
+                                    var sat = maxv - minv; if (sat < 10) continue;
+                                    var lum = (r+g+b)/3; if (lum < 20 || lum > 235) continue;
                                     rs += r; gs += g; bs += b; ++n;
                                 }
                                 if (n > 0) {
@@ -285,11 +293,13 @@ Rectangle {
                                     var gg = Math.min(255, Math.round(gs/n));
                                     var bb = Math.min(255, Math.round(bs/n));
                                     detailsCol.musicAccent = Qt.rgba(rr/255.0, gg/255.0, bb/255.0, 1);
+                                    detailsCol.musicAccentReady = true;
                                 } else {
                                     detailsCol.musicAccent = Theme.accentPrimary;
+                                    detailsCol.musicAccentReady = false;
                                 }
-                            } catch (e) {}
-                        } }
+                                } catch (e) { /* ignore */ }
+                            } }
 
                         Item {
                             id: mask
@@ -342,6 +352,10 @@ Rectangle {
                             // layout follows tokens; no special table-like props
                             property color musicAccent: Theme.accentPrimary
                             property string musicAccentCss: Format.colorCss(musicAccent, 1)
+                            property bool musicAccentReady: false
+                            // Retry sampler a few times until cover is fully ready
+                            property int _accentRetryCount: 0
+                            Timer { id: musicAccentRetry; interval: 120; repeat: false; onTriggered: { accentSampler.requestPaint(); if (!detailsCol.musicAccentReady && detailsCol._accentRetryCount < 5) { detailsCol._accentRetryCount++; start(); } else { detailsCol._accentRetryCount = 0 } } }
                             
 
                     
@@ -354,7 +368,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Artist icon
                                     icon: "person"
-                                    color: detailsCol.musicAccent
+                                    color: detailsCol.musicAccentReady ? detailsCol.musicAccent : playerUI.musicTextColor
                                     size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
@@ -377,7 +391,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Album artist icon
                                     icon: "person"
-                                    color: detailsCol.musicAccent
+                                    color: detailsCol.musicAccentReady ? detailsCol.musicAccent : playerUI.musicTextColor
                                     size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
@@ -400,7 +414,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Album icon
                                     icon: "album"
-                                    color: detailsCol.musicAccent
+                                    color: detailsCol.musicAccentReady ? detailsCol.musicAccent : playerUI.musicTextColor
                                     size: Math.round(playerUI.musicFontPx * 1.05)
                                 }
                                 Text {
@@ -425,7 +439,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Genre icon
                                     icon: "category"
-                                    color: detailsCol.musicAccent
+                                    color: detailsCol.musicAccentReady ? detailsCol.musicAccent : playerUI.musicTextColor
                                     size: Math.round(playerUI.musicFontPx * Theme.mediaIconScaleEmphasis)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
@@ -447,7 +461,7 @@ Rectangle {
                                 visible: !!MusicManager.trackYear && !MusicManager.trackDateStr
                                 Layout.fillWidth: true
                                 spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
-                                MaterialIcon { icon: "calendar_month"; color: detailsCol.musicAccent; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
+                                MaterialIcon { icon: "calendar_month"; color: detailsCol.musicAccentReady ? detailsCol.musicAccent : playerUI.musicTextColor; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
                                 Text {
                                     Layout.fillWidth: true
                                     text: MusicManager.trackYear
@@ -465,7 +479,7 @@ Rectangle {
                                 visible: !!MusicManager.trackLabel
                                 Layout.fillWidth: true
                                 spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
-                                MaterialIcon { icon: "sell"; color: detailsCol.musicAccent; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
+                                MaterialIcon { icon: "sell"; color: detailsCol.musicAccentReady ? detailsCol.musicAccent : playerUI.musicTextColor; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
                                 Text {
                                     Layout.fillWidth: true
                                     text: MusicManager.trackLabel
@@ -484,7 +498,7 @@ Rectangle {
                                 visible: !!MusicManager.trackComposer
                                 Layout.fillWidth: true
                                 spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
-                                MaterialIcon { icon: "piano"; color: detailsCol.musicAccent; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
+                                MaterialIcon { icon: "piano"; color: detailsCol.musicAccentReady ? detailsCol.musicAccent : playerUI.musicTextColor; size: Math.round(playerUI.musicFontPx * 1.15); Layout.alignment: Qt.AlignVCenter }
                                 Text {
                                     Layout.fillWidth: true
                                     text: MusicManager.trackComposer
@@ -528,7 +542,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Quality icon
                                     icon: "high_quality"
-                                    color: musicAccent
+                                    color: detailsCol.musicAccentReady ? detailsCol.musicAccent : playerUI.musicTextColor
                                     size: Math.round(playerUI.musicFontPx * Theme.mediaIconScaleEmphasis)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
@@ -537,10 +551,13 @@ Rectangle {
                                     // Color the middle dot with accent color; keep rest default
                                     textFormat: Text.RichText
                                     text: (function(){
-                                        const s = MusicManager.trackQualitySummary || "";
+                                        const raw = MusicManager.trackQualitySummary || "";
                                         const c = detailsCol.musicAccentCss;
-                                        // Escape full string, then replace escaped middot entity with styled span.
-                                        return Rich.esc(s).replace(/&#183;/g, Rich.sepSpan(c, '\u00B7', true));
+                                        // Wrap PUA icon chars and middot with accent; leave words unchanged
+                                        const wrapped = raw.replace(/[\uE000-\uF8FF]/g, function(ch){ return Rich.colorSpan(c, ch); })
+                                                           .replace(/\u00B7/g, '\u00B7');
+                                        // Escape then color middot entities
+                                        return Rich.esc(wrapped).replace(/&#183;/g, Rich.sepSpan(c, '\u00B7', true));
                                     })()
                                     color: playerUI.musicTextColor
                                     font.family: Theme.fontFamily
@@ -720,7 +737,7 @@ Rectangle {
                                 MaterialIcon {
                                     // Date icon
                                     icon: "calendar_month"
-                                    color: detailsCol.musicAccent
+                                    color: detailsCol.musicAccentReady ? detailsCol.musicAccent : playerUI.musicTextColor
                                     size: Math.round(playerUI.musicFontPx * 1.15)
                                     Layout.alignment: Qt.AlignVCenter
                                 }
@@ -737,31 +754,10 @@ Rectangle {
 
                             
 
-                            // ReplayGain (if available)
+                            // ReplayGain (hide RG Track)
+                            // Row hidden per request; keep album-only if desired
                             RowLayout {
-                                visible: !!MusicManager.trackRgTrackStr
-                                Layout.fillWidth: true
-                                spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
-                                Text {
-                                    text: "RG track"
-                                    color: playerUI.musicTextColor
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: playerUI.musicTextPx
-                                    font.weight: Font.DemiBold
-                                    Layout.alignment: Qt.AlignVCenter
-                                }
-                                Text {
-                                    Layout.fillWidth: true
-                                    text: MusicManager.trackRgTrackStr
-                                    color: playerUI.musicTextColor
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: playerUI.musicTextPx
-                                    font.weight: Font.DemiBold
-                                    Layout.alignment: Qt.AlignVCenter
-                                }
-                            }
-                            RowLayout {
-                                visible: !!MusicManager.trackRgAlbumStr
+                                visible: false && !!MusicManager.trackRgAlbumStr
                                 Layout.fillWidth: true
                                 spacing: Math.round(Theme.sidePanelSpacingTight * Theme.scale(screen))
                                 Text {
