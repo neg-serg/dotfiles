@@ -394,8 +394,8 @@ PanelWithOverlay {
                         radius: Math.round(Theme.panelOverlayRadius * appLauncherPanelRect.radiusScale)
                         height: Math.round(Theme.uiControlHeight * appLauncherPanelRect.compactScale)
                         Layout.fillWidth: true
-                        border.color: searchField.activeFocus ? Theme.accentPrimary : Theme.outline
-                        border.width: searchField.activeFocus ? 1 : 1
+                        border.color: "transparent"
+                        border.width: 0
 
                     RowLayout {
                         anchors.left: parent.left
@@ -443,8 +443,8 @@ PanelWithOverlay {
                             }
                         }
 
-                        Behavior on border.color { enabled: !Settings.settings.applauncherDisableAnimations; ColorFadeBehavior {} }
-                        Behavior on border.width { enabled: !Settings.settings.applauncherDisableAnimations; NumberFadeBehavior {} }
+                        Behavior on border.color { enabled: false; ColorFadeBehavior {} }
+                        Behavior on border.width { enabled: false; NumberFadeBehavior {} }
                     }
 
             
@@ -479,14 +479,12 @@ PanelWithOverlay {
                                         ? Theme.accentPrimary
                                         : (appLauncherPanel.isPinned(modelData) ? Theme.surfaceVariant : "transparent")
                                     radius: Math.round(Theme.cornerRadiusLarge * appLauncherPanelRect.radiusScale)
-                                    border.color: appLauncherPanel.isPinned(modelData)
-                                        ? "transparent"
-                                        : (hovered || isSelected ? Theme.accentPrimary : "transparent")
-                                    border.width: appLauncherPanel.isPinned(modelData) ? 0 : (hovered || isSelected ? 2 : 0)
+                                    border.color: "transparent"
+                                    border.width: 0
 
                                     Behavior on color { enabled: !Settings.settings.applauncherDisableAnimations; ColorFadeBehavior {} }
-                                    Behavior on border.color { enabled: !Settings.settings.applauncherDisableAnimations; ColorFadeBehavior {} }
-                                    Behavior on border.width { enabled: !Settings.settings.applauncherDisableAnimations; NumberFadeBehavior {} }
+                                    Behavior on border.color { enabled: false; ColorFadeBehavior {} }
+                                    Behavior on border.width { enabled: false; NumberFadeBehavior {} }
                                 }
 
                                 RowLayout {
