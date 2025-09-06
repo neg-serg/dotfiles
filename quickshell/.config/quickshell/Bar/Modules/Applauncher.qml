@@ -81,7 +81,7 @@ PanelWithOverlay {
         // Reduce rounded corners within the launcher UI
         property real radiusScale: 0.25
         // Compactness scale for fonts, icons, paddings, spacings
-        property real compactScale: 0.80
+        property real compactScale: 0.70
         property bool shouldBeVisible: false
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -150,9 +150,34 @@ PanelWithOverlay {
                 }
             }
 
+            function isVstEntry(app) {
+                try {
+                    const n = String(app.name || '').toLowerCase();
+                    const c = String(app.comment || app.genericName || '').toLowerCase();
+                    const cats = String(app.categories || app.category || '').toLowerCase();
+                    const ex = String(app.execString || app.exec || '').toLowerCase();
+                    function hasVst(s){ return /(\bvst\b|\bvst2\b|\bvst3\b|\bvx?st\b)/.test(s); }
+                    if (hasVst(n) || hasVst(c) || hasVst(cats) || hasVst(ex)) return true;
+                    if (ex.indexOf('/.vst') !== -1 || ex.indexOf('/vst3') !== -1) return true;
+                } catch (e) {}
+                return false;
+            }
+
+            function likelyMissingIcon(app) {
+                try {
+                    if (app.isCalculator || app.isClipboard || app.isCommand) return false;
+                    const icon = String(app.icon || '').trim();
+                    if (!icon) return true;
+                    if (icon === 'application-x-executable') return true;
+                } catch (e) {}
+                return false;
+            }
+
             function updateFilter() {
                 var query = searchField.text ? searchField.text.toLowerCase() : "";
                 var apps = root.appModel.slice();
+                // Filter out VST plugins upfront
+                apps = apps.filter(function(a){ return !isVstEntry(a); });
                 var results = [];
                 
 
@@ -296,6 +321,9 @@ PanelWithOverlay {
                     }));
                 }
 
+                // Filter items without usable icons (keep commands/clipboard)
+                results = results.filter(function(a){ return !likelyMissingIcon(a); });
+
                 var pinned = [];
                 var unpinned = [];
                 for (var i = 0; i < results.length; ++i) {
@@ -354,8 +382,8 @@ PanelWithOverlay {
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: Math.round(Theme.applauncherContentMargin * Theme.scale(Screen))
-                spacing: Theme.uiSpacingLarge
+                anchors.margins: Math.round(Theme.uiSpacingXSmall * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
+                spacing: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
 
         
                 Rectangle {
@@ -458,7 +486,7 @@ PanelWithOverlay {
                         Layout.fillHeight: true
                         clip: true
                         // Inner padding based on UI theme padding
-                        property int innerPadding: Math.round(Theme.uiPaddingMedium * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
+                        property int innerPadding: Math.round(Theme.uiSpacingXSmall * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
 
                         ListView {
                             id: appList
@@ -470,9 +498,12 @@ PanelWithOverlay {
                             delegate: Item {
                                 id: appDelegate
                                 width: appList.width
-                                height: (modelData.isClipboard || modelData.isCommand)
-                                        ? Math.round(Theme.applauncherListItemHeightLarge * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
-                                        : Math.round(Theme.applauncherListItemHeight * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
+                                // Hide entries without icons by collapsing height
+                                height: (visible)
+                                        ? ((modelData.isClipboard || modelData.isCommand)
+                                            ? Math.round(Theme.applauncherListItemHeightLarge * Theme.scale(Screen) * appLauncherPanelRect.compactScale * 0.85)
+                                            : Math.round(Theme.applauncherListItemHeight * Theme.scale(Screen) * appLauncherPanelRect.compactScale * 0.85))
+                                        : 0
                                 property bool hovered: mouseArea.containsMouse
                                 property bool isSelected: index === root.selectedIndex
 
@@ -497,6 +528,7 @@ PanelWithOverlay {
                                     spacing: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
 
                                     Item {
+                                        id: iconCell
                                         width: Math.round(Theme.panelIconSize * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
                                         height: Math.round(Theme.panelIconSize * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
                                         property bool iconLoaded: !modelData.isCalculator && !modelData.isClipboard && !modelData.isCommand && iconImg.status === Image.Ready && iconImg.source !== "" && iconImg.status !== Image.Error
@@ -612,6 +644,8 @@ PanelWithOverlay {
             
                                     Item { width: Theme.panelRowSpacingSmall; height: Theme.uiGapTiny }
                                 }
+                                // Filter out entries without a real icon (commands/clipboard allowed)
+                                visible: modelData.isCalculator || modelData.isClipboard || modelData.isCommand || iconCell.iconLoaded
 
                                 Rectangle {
                                     id: ripple
