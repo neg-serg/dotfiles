@@ -77,6 +77,8 @@ PanelWithOverlay {
         visible: parent.visible
         // Reduce rounded corners within the launcher UI
         property real radiusScale: 0.25
+        // Compactness scale for fonts, icons, paddings, spacings
+        property real compactScale: 0.85
         property bool shouldBeVisible: false
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -107,19 +109,11 @@ PanelWithOverlay {
             height: Theme.applauncherHeight
             x: (parent.width - width) / 2
             // Panel background should look like a surfaced card with rounded corners
-            color: Theme.surface
+            color: Theme.background
             radius: Math.round(Theme.applauncherCornerRadius * appLauncherPanelRect.radiusScale)
-            border.color: Theme.borderSubtle
-            border.width: 1
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                shadowEnabled: true
-                shadowColor: Theme.shadow
-                shadowOpacity: Theme.uiShadowOpacity
-                shadowHorizontalOffset: Theme.uiShadowOffsetX
-                shadowVerticalOffset: Theme.uiShadowOffsetY
-                shadowBlur: Theme.uiShadowBlur
-            }
+            border.color: "transparent"
+            border.width: 0
+            layer.enabled: false
 
             property var appModel: DesktopEntries.applications.values
             property var filteredApps: []
@@ -400,17 +394,17 @@ PanelWithOverlay {
                         border.color: searchField.activeFocus ? Theme.accentPrimary : Theme.outline
                         border.width: searchField.activeFocus ? 2 : 1
 
-                        RowLayout {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.leftMargin: Theme.uiPaddingMedium
-                            anchors.rightMargin: Theme.uiPaddingMedium
-                            spacing: Theme.uiSpacingSmall
+                    RowLayout {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.leftMargin: Math.round(Theme.uiPaddingMedium * appLauncherPanelRect.compactScale)
+                        anchors.rightMargin: Math.round(Theme.uiPaddingMedium * appLauncherPanelRect.compactScale)
+                        spacing: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
 
                             MaterialIcon {
                                 icon: "search"
-                                size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen))
+                                size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                 color: searchField.activeFocus ? Theme.accentPrimary : Theme.textSecondary
                                 Layout.alignment: Qt.AlignVCenter
                             }
@@ -422,7 +416,7 @@ PanelWithOverlay {
                                 placeholderTextColor: Theme.textSecondary
                                 background: null
                                 font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSizeBody * Theme.scale(screen)
+                                font.pixelSize: Math.round(Theme.fontSizeBody * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignVCenter
                                 onTextChanged: { root.updateFilter(); try { Services.Clipboard.enabled = (appLauncherPanel.visible && searchField.text.startsWith(">clip")); } catch (e) {} }
@@ -458,21 +452,21 @@ PanelWithOverlay {
                         Layout.fillHeight: true
                         clip: true
                         // Inner padding based on UI theme padding
-                        property int innerPadding: Math.round(Theme.uiPaddingMedium * Theme.scale(Screen))
+                        property int innerPadding: Math.round(Theme.uiPaddingMedium * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
 
                         ListView {
                             id: appList
                             anchors.fill: parent
                             anchors.margins: parent.innerPadding
-                        spacing: Theme.uiSpacingXSmall
+                        spacing: Math.round(Theme.uiSpacingXSmall * appLauncherPanelRect.compactScale)
                             model: root.filteredApps
                             currentIndex: root.selectedIndex
                             delegate: Item {
                                 id: appDelegate
                                 width: appList.width
                                 height: (modelData.isClipboard || modelData.isCommand)
-                                        ? Math.round(Theme.applauncherListItemHeightLarge * Theme.scale(Screen))
-                                        : Math.round(Theme.applauncherListItemHeight * Theme.scale(Screen))
+                                        ? Math.round(Theme.applauncherListItemHeightLarge * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
+                                        : Math.round(Theme.applauncherListItemHeight * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
                                 property bool hovered: mouseArea.containsMouse
                                 property bool isSelected: index === root.selectedIndex
 
@@ -494,13 +488,13 @@ PanelWithOverlay {
 
                                 RowLayout {
                                     anchors.fill: parent
-                                    anchors.leftMargin: Theme.uiSpacingSmall
-                                    anchors.rightMargin: Theme.uiSpacingSmall
-                                    spacing: Theme.uiSpacingSmall
+                                    anchors.leftMargin: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
+                                    anchors.rightMargin: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
+                                    spacing: Math.round(Theme.uiSpacingSmall * appLauncherPanelRect.compactScale)
 
                                     Item {
-                                        width: Math.round(Theme.panelIconSize * Theme.scale(Screen))
-                                        height: Math.round(Theme.panelIconSize * Theme.scale(Screen))
+                                        width: Math.round(Theme.panelIconSize * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
+                                        height: Math.round(Theme.panelIconSize * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
                                         property bool iconLoaded: !modelData.isCalculator && !modelData.isClipboard && !modelData.isCommand && iconImg.status === Image.Ready && iconImg.source !== "" && iconImg.status !== Image.Error
                                         
                                         Image {
@@ -551,20 +545,20 @@ PanelWithOverlay {
                                             anchors.centerIn: parent
                                             visible: !modelData.isCalculator && !modelData.isClipboard && !modelData.isCommand && !parent.iconLoaded && modelData.type !== 'image'
                                             icon: Settings.settings.trayFallbackIcon || "broken_image"
-                                            size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen))
+                                            size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                             color: Theme.accentPrimary
                                         }
                                     }
 
                                     ColumnLayout {
                                         Layout.fillWidth: true
-                                        spacing: Theme.uiGapTiny
+                                        spacing: Math.round(Theme.uiGapTiny * appLauncherPanelRect.compactScale)
 
                                         Text {
                                             text: modelData.name
                                             color: (hovered || isSelected) ? Theme.onAccent : (appLauncherPanel.isPinned(modelData) ? Theme.textPrimary : Theme.textPrimary)
                                             font.family: Theme.fontFamily
-                                            font.pixelSize: Theme.fontSizeSmall * Theme.scale(screen)
+                                            font.pixelSize: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                             font.bold: hovered || isSelected
                                             verticalAlignment: Text.AlignVCenter
                                             elide: Text.ElideRight
@@ -578,7 +572,7 @@ PanelWithOverlay {
                                                   (modelData.comment || modelData.genericName || "No description available")
                                             color: (hovered || isSelected) ? Theme.onAccent : (appLauncherPanel.isPinned(modelData) ? Theme.textSecondary : Theme.textSecondary)
                                             font.family: Theme.fontFamily
-                                            font.pixelSize: Theme.fontSizeCaption * Theme.scale(screen)
+                                            font.pixelSize: Math.round(Theme.fontSizeCaption * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                             font.italic: !(modelData.comment || modelData.genericName)
                                             opacity: modelData.isClipboard ? Theme.applauncherClipboardEntryOpacity : modelData.isCommand ? Theme.applauncherCommandEntryOpacity : ((modelData.comment || modelData.genericName) ? 1.0 : Theme.applauncherNoMetaOpacity)
                                             elide: Text.ElideRight
@@ -595,7 +589,7 @@ PanelWithOverlay {
 
                                     MaterialIcon {
                                         icon: modelData.isCalculator ? "content_copy" : "chevron_right"
-                                        size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen))
+                                        size: Math.round(Theme.panelIconSizeSmall * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                         color: (hovered || isSelected)
                                             ? Theme.onAccent
                                             : (appLauncherPanel.isPinned(modelData) ? Theme.textPrimary : Theme.textSecondary)
@@ -650,7 +644,7 @@ PanelWithOverlay {
         
                                 Item {
                                     id: pinArea
-                                    width: Math.round(Theme.panelIconSize * Theme.scale(Screen)); height: Math.round(Theme.panelIconSize * Theme.scale(Screen))
+                                    width: Math.round(Theme.panelIconSize * Theme.scale(Screen) * appLauncherPanelRect.compactScale); height: Math.round(Theme.panelIconSize * Theme.scale(Screen) * appLauncherPanelRect.compactScale)
                                     z: 100
                                     anchors.right: parent.right
                                     anchors.verticalCenter: parent.verticalCenter
@@ -672,7 +666,7 @@ PanelWithOverlay {
                                     MaterialIcon {
                                         anchors.centerIn: parent
                                         icon: "star"
-                                        size: Theme.fontSizeSmall * Theme.scale(screen)
+                                        size: Math.round(Theme.fontSizeSmall * Theme.scale(screen) * appLauncherPanelRect.compactScale)
                                         color: (parent.MouseArea.containsMouse || hovered || isSelected)
                                             ? Theme.onAccent
                                             : (appLauncherPanel.isPinned(modelData) ? Theme.textPrimary : Theme.textDisabled)
