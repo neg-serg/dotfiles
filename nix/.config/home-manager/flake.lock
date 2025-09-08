@@ -1003,6 +1003,9 @@
         "chaotic": "chaotic",
         "crane": "crane",
         "home-manager": "home-manager_2",
+        "homeManagerInput": [
+          "home-manager"
+        ],
         "hy3": "hy3",
         "hyprland": "hyprland",
         "iosevka-neg": "iosevka-neg",
@@ -1016,6 +1019,9 @@
         "quickshell": "quickshell",
         "rsmetrx": "rsmetrx",
         "sops-nix": "sops-nix",
+        "sopsNixInput": [
+          "sops-nix"
+        ],
         "stylix": "stylix",
         "yandex-browser": "yandex-browser",
         "yandexBrowserInput": [

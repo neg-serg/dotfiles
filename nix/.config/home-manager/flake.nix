@@ -53,6 +53,8 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # CamelCase alias for convenience in code
+    homeManagerInput.follows = "home-manager";
     # Pin hy3 to a commit compatible with Hyprland v0.50.1 (GitHub archive available)
     hy3 = {
       # Pin to the last commit before hy3 switched to the new render API (CHyprColor)
@@ -93,6 +95,8 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # CamelCase alias for convenience in code
+    sopsNixInput.follows = "sops-nix";
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -113,7 +117,7 @@
     self,
     bzmenu,
     chaotic,
-    home-manager,
+    homeManagerInput,
     hy3,
     hyprland,
     iosevkaNegInput,
@@ -122,7 +126,7 @@
     nvfetcher,
     quickshell,
     rsmetrx,
-    sops-nix,
+    sopsNixInput,
     stylix,
     yandexBrowserInput,
     ...
@@ -241,7 +245,7 @@
           }
       );
 
-      homeConfigurations."neg" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations."neg" = homeManagerInput.lib.homeManagerConfiguration {
         pkgs = perSystem.${defaultSystem}.pkgs;
         extraSpecialArgs = {
           # Pass inputs mapped for Nilla raw-loader (issue #14 workaround)
@@ -255,11 +259,11 @@
           ./home.nix
           stylix.homeModules.stylix
           chaotic.homeManagerModules.default
-          sops-nix.homeManagerModules.sops
+          sopsNixInput.homeManagerModules.sops
         ];
       };
 
-      homeConfigurations."neg-lite" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations."neg-lite" = homeManagerInput.lib.homeManagerConfiguration {
         pkgs = perSystem.${defaultSystem}.pkgs;
         extraSpecialArgs = {
           inputs = nillaInputs;
@@ -273,7 +277,7 @@
           ./home.nix
           stylix.homeModules.stylix
           chaotic.homeManagerModules.default
-          sops-nix.homeManagerModules.sops
+          sopsNixInput.homeManagerModules.sops
         ];
       };
     };
