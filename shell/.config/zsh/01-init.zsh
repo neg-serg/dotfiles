@@ -7,18 +7,15 @@ setopt correct # use autocorrection
 setopt extendedglob # enable extended globbing
 setopt glob_star_short # */** -> **
 setopt hash_list_all  # whenever a command completion is attempted, make sure the entire command path is hashed first.
-setopt nointeractivecomments # allow interactive comments after '#' in command line
 setopt longlistjobs # display PID when suspending processes as well
 setopt magic_equal_subst # ~ substitution and tab completion after a = (for --x=filename args)
 setopt multios # support multiple redirections
 setopt no_beep # get rid of beeps
 setopt no_bg_nice # don't nice background jobs
 setopt no_flowcontrol # no c-s/c-q output freezing
-setopt noglob_dots  # disable glob dots
 setopt no_hup  # don't send SIGHUP to background processes when the shell exits.
 setopt no_monitor # do not notify about bg task ending
 setopt no_nomatch # try to avoid the 'zsh: no matches found...'
-setopt no_shwordsplit  # use zsh style word splitting
 setopt notify  # report the status of backgrounds jobs immediately
 setopt nullglob # delete the pattern from the argument list if no match
 setopt prompt_subst # set the prompt
@@ -30,7 +27,6 @@ setopt rematch_pcre # use perl-like regexes
 setopt rm_star_wait # most Massively Useful Option ever! protects you from "you shoot yourself in the foot".
 setopt short_loops # short loops support
 setopt transient_rprompt # only show the rprompt on the current prompt
-setopt noauto_list # When requesting autocomp ambiguously, do not show list of options on first request
 setopt rc_quotes # quotes with ''
 
 () {
