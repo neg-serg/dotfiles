@@ -242,6 +242,85 @@
             # Run treefmt in check mode to ensure no changes would be made
             hm = self.homeConfigurations."neg".activationPackage;
             hm-lite = self.homeConfigurations."neg-lite".activationPackage;
+            # Fast eval matrix for RetroArch toggles (no heavy builds)
+            hm-eval-neg-retro-on = let
+              hmCfg = homeManagerInput.lib.homeManagerConfiguration {
+                pkgs = perSystem.${s}.pkgs;
+                extraSpecialArgs = {
+                  inputs = nillaInputs;
+                  inherit hy3;
+                  iosevkaNeg = perSystem.${s}.iosevkaNeg;
+                  yandexBrowser = perSystem.${s}.yandexBrowser;
+                  fa = perSystem.${s}.fa;
+                };
+                modules = [
+                  ./home.nix
+                  stylix.homeModules.stylix
+                  chaotic.homeManagerModules.default
+                  sopsNixInput.homeManagerModules.sops
+                  ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce true; })
+                ];
+              };
+            in perSystem.${s}.pkgs.writeText "hm-eval-neg-retro-on.json" (builtins.toJSON hmCfg.config.features);
+            hm-eval-neg-retro-off = let
+              hmCfg = homeManagerInput.lib.homeManagerConfiguration {
+                pkgs = perSystem.${s}.pkgs;
+                extraSpecialArgs = {
+                  inputs = nillaInputs;
+                  inherit hy3;
+                  iosevkaNeg = perSystem.${s}.iosevkaNeg;
+                  yandexBrowser = perSystem.${s}.yandexBrowser;
+                  fa = perSystem.${s}.fa;
+                };
+                modules = [
+                  ./home.nix
+                  stylix.homeModules.stylix
+                  chaotic.homeManagerModules.default
+                  sopsNixInput.homeManagerModules.sops
+                  ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce false; })
+                ];
+              };
+            in perSystem.${s}.pkgs.writeText "hm-eval-neg-retro-off.json" (builtins.toJSON hmCfg.config.features);
+            hm-eval-lite-retro-on = let
+              hmCfg = homeManagerInput.lib.homeManagerConfiguration {
+                pkgs = perSystem.${s}.pkgs;
+                extraSpecialArgs = {
+                  inputs = nillaInputs;
+                  inherit hy3;
+                  iosevkaNeg = perSystem.${s}.iosevkaNeg;
+                  yandexBrowser = perSystem.${s}.yandexBrowser;
+                  fa = perSystem.${s}.fa;
+                };
+                modules = [
+                  ({ ... }: { features.profile = "lite"; })
+                  ./home.nix
+                  stylix.homeModules.stylix
+                  chaotic.homeManagerModules.default
+                  sopsNixInput.homeManagerModules.sops
+                  ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce true; })
+                ];
+              };
+            in perSystem.${s}.pkgs.writeText "hm-eval-lite-retro-on.json" (builtins.toJSON hmCfg.config.features);
+            hm-eval-lite-retro-off = let
+              hmCfg = homeManagerInput.lib.homeManagerConfiguration {
+                pkgs = perSystem.${s}.pkgs;
+                extraSpecialArgs = {
+                  inputs = nillaInputs;
+                  inherit hy3;
+                  iosevkaNeg = perSystem.${s}.iosevkaNeg;
+                  yandexBrowser = perSystem.${s}.yandexBrowser;
+                  fa = perSystem.${s}.fa;
+                };
+                modules = [
+                  ({ ... }: { features.profile = "lite"; })
+                  ./home.nix
+                  stylix.homeModules.stylix
+                  chaotic.homeManagerModules.default
+                  sopsNixInput.homeManagerModules.sops
+                  ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce false; })
+                ];
+              };
+            in perSystem.${s}.pkgs.writeText "hm-eval-lite-retro-off.json" (builtins.toJSON hmCfg.config.features);
           }
       );
 
