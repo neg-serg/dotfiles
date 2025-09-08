@@ -4,6 +4,7 @@ let
   cfg = config.features;
 in {
   imports = [
+    ./lib/neg.nix
     ./features.nix
     ./cli
     ./db

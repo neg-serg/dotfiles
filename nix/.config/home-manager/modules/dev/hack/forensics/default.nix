@@ -1,6 +1,5 @@
 { pkgs, lib, config, ... }:
 let
-  inherit (lib) optionals;
   groups = with pkgs; rec {
     fs = [
       ddrescue # data recovery utility
@@ -27,9 +26,5 @@ let
     ];
   };
 in {
-  home.packages =
-    (optionals config.features.dev.hack.forensics.fs groups.fs)
-    ++ (optionals config.features.dev.hack.forensics.stego groups.stego)
-    ++ (optionals config.features.dev.hack.forensics.analysis groups.analysis)
-    ++ (optionals config.features.dev.hack.forensics.network groups.network);
+  home.packages = config.lib.neg.mkEnabledList config.features.dev.hack.forensics groups;
 }
