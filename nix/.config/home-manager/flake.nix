@@ -244,18 +244,22 @@
                   (builtins.readFile ./OPTIONS.md)
                   + "\n\n" + deltas
               );
-              # Auto-generated docs for features.* options
+              # Auto-generated docs for features.* options (Markdown + JSON)
               features-options-md = pkgs.writeText "features-options.md" (
                 let
                   eval = lib.evalModules { modules = [ ./modules/features.nix ]; };
                   opts = eval.options;
-                  # Flatten nested option attrset to a list of { path, desc }
                   toList = optSet: prefix:
                     lib.concatLists (
                       lib.mapAttrsToList (name: v:
                         let cur = lib.optionalString (prefix != "") (prefix + ".") + name;
                         in if (v ? _type) && (v._type == "option") then [
-                          { path = cur; desc = v.description or ""; }
+                          {
+                            path = cur;
+                            desc = v.description or "";
+                            type = if (v ? type) && (v.type ? name) then v.type.name else (v.type.description or "unknown");
+                            def = if v ? defaultText then v.defaultText else (if v ? default then builtins.toJSON v.default else "");
+                          }
                         ] else if builtins.isAttrs v then
                           toList v cur
                         else []
@@ -263,14 +267,41 @@
                     );
                   items = toList opts "";
                   esc = s: lib.replaceStrings ["\n" "|"] [" " "\\|"] (toString s);
-                  rows = lib.concatStringsSep "\n" (map (o: "| ${o.path} | " + esc o.desc + " |") items);
+                  rows = lib.concatStringsSep "\n" (
+                    map (o: "| ${o.path} | " + esc o.type + " | " + esc o.def + " | " + esc o.desc + " |") items
+                  );
                 in ''
                   # Features Options (auto-generated)
 
-                  | Option | Description |
-                  |---|---|
+                  | Option | Type | Default | Description |
+                  |---|---|---|---|
                   ${rows}
                 ''
+              );
+
+              features-options-json = pkgs.writeText "features-options.json" (
+                let
+                  eval = lib.evalModules { modules = [ ./modules/features.nix ]; };
+                  opts = eval.options;
+                  toList = optSet: prefix:
+                    lib.concatLists (
+                      lib.mapAttrsToList (name: v:
+                        let cur = lib.optionalString (prefix != "") (prefix + ".") + name;
+                        in if (v ? _type) && (v._type == "option") then [
+                          {
+                            path = cur;
+                            description = v.description or "";
+                            type = if (v ? type) && (v.type ? name) then v.type.name else (v.type.description or "unknown");
+                            default = if v ? default then v.default else null;
+                            defaultText = if v ? defaultText then v.defaultText else null;
+                          }
+                        ] else if builtins.isAttrs v then
+                          toList v cur
+                        else []
+                      ) optSet
+                    );
+                  items = toList opts "";
+                in builtins.toJSON items
               );
             };
 
@@ -299,6 +330,9 @@
               '';
               features-options-md = pkgs.runCommand "features-options-md" {} ''
                 cp ${self.packages.${system}.features-options-md} "$out"
+              '';
+              features-options-json = pkgs.runCommand "features-options-json" {} ''
+                cp ${self.packages.${system}.features-options-json} "$out"
               '';
             };
           }
