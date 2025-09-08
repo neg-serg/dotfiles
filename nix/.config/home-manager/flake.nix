@@ -199,7 +199,49 @@
               default = pkgs.zsh;
               hy3Plugin = hy3.packages.${system}.hy3;
               # Publish options docs as a package for convenience
-              options-md = pkgs.writeText "OPTIONS.md" (builtins.readFile ./OPTIONS.md);
+              options-md = pkgs.writeText "OPTIONS.md" (
+                let
+                  evalCfg = mods: homeManagerInput.lib.homeManagerConfiguration {
+                    pkgs = pkgs;
+                    extraSpecialArgs = {
+                      inputs = nillaInputs;
+                      inherit hy3;
+                      iosevkaNeg = iosevkaNeg;
+                      yandexBrowser = yandexBrowser;
+                      fa = fa;
+                    };
+                    modules = mods;
+                  };
+                  negMods = [ ./home.nix stylix.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops ];
+                  liteMods = [ ({...}:{ features.profile = "lite"; }) ./home.nix stylix.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops ];
+                  fNeg = (evalCfg negMods).config.features;
+                  fLite = (evalCfg liteMods).config.features;
+                  toFlat = set: prefix:
+                    lib.foldl' (acc: name:
+                      let cur = lib.optionalString (prefix != "") (prefix + ".") + name;
+                          v = set.${name};
+                      in acc
+                        // (if builtins.isAttrs v then toFlat v cur else if builtins.isBool v then { ${cur} = v; } else {})
+                    ) {} (builtins.attrNames set);
+                  flatNeg = toFlat fNeg "features";
+                  flatLite = toFlat fLite "features";
+                  keys = lib.unique ((builtins.attrNames flatNeg) ++ (builtins.attrNames flatLite));
+                  rows = lib.concatStringsSep "\n" (map (k:
+                    let a = (flatNeg.${k} or null);
+                        b = (flatLite.${k} or null);
+                    in if a != b then "| ${k} | ${toString a} | ${toString b} |" else ""
+                  ) keys);
+                  deltas = ''
+                    ## Full vs Lite (feature deltas)
+
+                    | Option | neg (full) | neg-lite |
+                    |---|---|---|
+                    ${lib.concatStringsSep "\n" (lib.filter (x: x != "") (lib.splitString "\n" rows))}
+                  '';
+                in
+                  (builtins.readFile ./OPTIONS.md)
+                  + "\n\n" + deltas
+              );
               # Auto-generated docs for features.* options
               features-options-md = pkgs.writeText "features-options.md" (
                 let
@@ -251,7 +293,7 @@
               '';
               # Build the options documentation as part of checks
               options-md = pkgs.runCommand "options-md" {} ''
-                cp ${./OPTIONS.md} "$out"
+                cp ${self.packages.${system}.options-md} "$out"
               '';
               features-options-md = pkgs.runCommand "features-options-md" {} ''
                 cp ${self.packages.${system}.features-options-md} "$out"

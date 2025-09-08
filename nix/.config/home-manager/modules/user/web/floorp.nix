@@ -2,6 +2,7 @@
 lib.mkIf (config.features.web.enable && config.features.web.floorp.enable) (let
   dlDir = "${config.home.homeDirectory}/dw";
   fa' = if fa != null then fa else pkgs.nur.repos.rycee.firefox-addons; # requires NUR
+  addons = config.lib.neg.browserAddons fa';
 in {
   programs.floorp = {
     enable = true;
@@ -14,19 +15,7 @@ in {
       isDefault = true;
       # Declarative extensions (NUR where available)
       extensions = {
-        packages = with fa'; [
-          augmented-steam
-          cookie-quick-manager
-          darkreader
-          enhanced-github
-          export-tabs-urls-and-titles
-          lovely-forks
-          search-by-image
-          stylus
-          tabliss
-          to-google-translate
-          tridactyl
-        ];
+        packages = addons.common;
         # Example for per-addon config (keep empty if not needed):
         # settings."[email protected]".settings = {
         #   selectedFilterLists = [ "ublock-filters" ];

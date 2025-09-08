@@ -1,0 +1,20 @@
+# Run formatter configured in flake (treefmt)
+fmt:
+    nix fmt
+
+# Run flake checks (format, docs, hm evals)
+check:
+    nix flake check -L
+
+# Switch Home Manager to full profile
+hm-neg:
+    home-manager switch --flake .#neg
+
+# Switch Home Manager to lite profile
+hm-lite:
+    home-manager switch --flake .#neg-lite
+
+# Enable local git hooks
+hooks-enable:
+    git config core.hooksPath nix/.config/home-manager/.githooks
+
