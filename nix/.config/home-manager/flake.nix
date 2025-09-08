@@ -200,6 +200,34 @@
               hy3Plugin = hy3.packages.${system}.hy3;
               # Publish options docs as a package for convenience
               options-md = pkgs.writeText "OPTIONS.md" (builtins.readFile ./OPTIONS.md);
+              # Auto-generated docs for features.* options
+              features-options-md = pkgs.writeText "features-options.md" (
+                let
+                  eval = lib.evalModules { modules = [ ./modules/features.nix ]; };
+                  opts = eval.options;
+                  # Flatten nested option attrset to a list of { path, desc }
+                  toList = optSet: prefix:
+                    lib.concatLists (
+                      lib.mapAttrsToList (name: v:
+                        let cur = lib.optionalString (prefix != "") (prefix + ".") + name;
+                        in if (v ? _type) && (v._type == "option") then [
+                          { path = cur; desc = v.description or ""; }
+                        ] else if builtins.isAttrs v then
+                          toList v cur
+                        else []
+                      ) optSet
+                    );
+                  items = toList opts "";
+                  esc = s: lib.replaceStrings ["\n" "|"] [" " "\\|"] (toString s);
+                  rows = lib.concatStringsSep "\n" (map (o: "| ${o.path} | " + esc o.desc + " |") items);
+                in ''
+                  # Features Options (auto-generated)
+
+                  | Option | Description |
+                  |---|---|
+                  ${rows}
+                ''
+              );
             };
 
             # Formatter: treefmt wrapper pinned to repo config
@@ -224,6 +252,9 @@
               # Build the options documentation as part of checks
               options-md = pkgs.runCommand "options-md" {} ''
                 cp ${./OPTIONS.md} "$out"
+              '';
+              features-options-md = pkgs.runCommand "features-options-md" {} ''
+                cp ${self.packages.${system}.features-options-md} "$out"
               '';
             };
           }
