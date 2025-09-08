@@ -12,6 +12,6 @@ with lib; {
         pcem # emulator for ibm pc and clones
         pcsx2 # ps2 emulator
       ]
-      ++ (if config.features.emulators.retroarch.full then [retroarchFull] else [retroarch]);
+      ++ (if config.features.emulators.retroarch.full then [retroarchFull] else [retroarch]); # frontend (full|free cores)
   };
 }

@@ -18,7 +18,7 @@ with lib; {
           passff-host # host app for the WebExtension PassFF
         ]
         ++ (optionals (yandexBrowser != null && config.features.web.yandex.enable) [
-          yandexBrowser.yandex-browser-stable # google chrome-based yandex fork
+        yandexBrowser.yandex-browser-stable # Yandex Browser (Chromium)
         ]);
     })
   ];

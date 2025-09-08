@@ -1,19 +1,19 @@
 {
   # Desktop-oriented unfree packages
   desktop = [
-    "abuse" # classic side-scrolling shooter customizable with LISP
-    "ocenaudio" # good audio editor
-    "reaper" # digital audio workstation (DAW)
-    "vcv-rack" # powerful soft modular synth
-    "vital" # serum-like digital synth
-    "roomeqwizard" # room acoustics software
-    "stegsolve" # image steganography analyzer/solver
-    "volatility3" # memory forensics framework
-    "cursor" # AI-powered code editor (VS Code-based)
-    "claude-code" # Claude Code desktop client
-    "yandex-browser-stable" # Chromium-based Yandex browser
-    "lmstudio" # desktop app for local/open LLMs
-    "code-cursor-fhs" # Cursor packaged via FHS env
+    "abuse" # side-scrolling shooter (LISP)
+    "ocenaudio" # audio editor
+    "reaper" # DAW
+    "vcv-rack" # modular synth
+    "vital" # digital synth
+    "roomeqwizard" # room acoustics
+    "stegsolve" # image stego analyzer
+    "volatility3" # memory forensics
+    "cursor" # AI code editor (VS Code)
+    "claude-code" # Claude Code client
+    "yandex-browser-stable" # Yandex Browser (Chromium)
+    "lmstudio" # local LLM app
+    "code-cursor-fhs" # Cursor (FHS)
   ];
 
   # Headless/server preset: no unfree packages allowed
