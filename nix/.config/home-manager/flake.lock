@@ -1023,6 +1023,9 @@
           "sops-nix"
         ],
         "stylix": "stylix",
+        "stylixInput": [
+          "stylix"
+        ],
         "yandex-browser": "yandex-browser",
         "yandexBrowserInput": [
           "yandex-browser"

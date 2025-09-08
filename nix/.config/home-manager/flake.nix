@@ -101,6 +101,8 @@
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # CamelCase alias for convenience in code
+    stylixInput.follows = "stylix";
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -127,7 +129,7 @@
     quickshell,
     rsmetrx,
     sopsNixInput,
-    stylix,
+    stylixInput,
     yandexBrowserInput,
     ...
   }:
@@ -212,8 +214,8 @@
                     };
                     modules = mods;
                   };
-                  negMods = [ ./home.nix stylix.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops ];
-                  liteMods = [ ({...}:{ features.profile = "lite"; }) ./home.nix stylix.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops ];
+                  negMods = [ ./home.nix stylixInput.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops ];
+                  liteMods = [ ({...}:{ features.profile = "lite"; }) ./home.nix stylixInput.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops ];
                   fNeg = (evalCfg negMods).config.features;
                   fLite = (evalCfg liteMods).config.features;
                   toFlat = set: prefix:
@@ -328,7 +330,7 @@
                 };
                 modules = [
                   ./home.nix
-                  stylix.homeModules.stylix
+                  stylixInput.homeModules.stylix
                   chaotic.homeManagerModules.default
                   sopsNixInput.homeManagerModules.sops
                   ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce true; })
@@ -347,7 +349,7 @@
                 };
                 modules = [
                   ./home.nix
-                  stylix.homeModules.stylix
+                  stylixInput.homeModules.stylix
                   chaotic.homeManagerModules.default
                   sopsNixInput.homeManagerModules.sops
                   ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce false; })
@@ -367,7 +369,7 @@
                 modules = [
                   ({ ... }: { features.profile = "lite"; })
                   ./home.nix
-                  stylix.homeModules.stylix
+                  stylixInput.homeModules.stylix
                   chaotic.homeManagerModules.default
                   sopsNixInput.homeManagerModules.sops
                   ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce true; })
@@ -387,7 +389,7 @@
                 modules = [
                   ({ ... }: { features.profile = "lite"; })
                   ./home.nix
-                  stylix.homeModules.stylix
+                  stylixInput.homeModules.stylix
                   chaotic.homeManagerModules.default
                   sopsNixInput.homeManagerModules.sops
                   ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce false; })
@@ -409,7 +411,7 @@
         };
         modules = [
           ./home.nix
-          stylix.homeModules.stylix
+          stylixInput.homeModules.stylix
           chaotic.homeManagerModules.default
           sopsNixInput.homeManagerModules.sops
         ];
@@ -427,7 +429,7 @@
         modules = [
           ({ ... }: { features.profile = "lite"; })
           ./home.nix
-          stylix.homeModules.stylix
+          stylixInput.homeModules.stylix
           chaotic.homeManagerModules.default
           sopsNixInput.homeManagerModules.sops
         ];
