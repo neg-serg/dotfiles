@@ -152,9 +152,10 @@
             iosevkaNeg = iosevkaNegInput.packages.${system};
             yandexBrowser = yandexBrowserInput.packages.${system};
             nurPkgs = nur.packages.${system};
+            fa = pkgs.nur.repos.rycee.firefox-addons;
             _bzmenu = bzmenu.packages.${system};
           in {
-            inherit pkgs iosevkaNeg yandexBrowser nurPkgs;
+            inherit pkgs iosevkaNeg yandexBrowser nurPkgs fa;
 
             devShells = {
               default = pkgs.mkShell {
@@ -248,6 +249,7 @@
           inherit hy3;
           iosevkaNeg = perSystem.${defaultSystem}.iosevkaNeg;
           yandexBrowser = perSystem.${defaultSystem}.yandexBrowser;
+          fa = perSystem.${defaultSystem}.fa;
         };
         modules = [
           ./home.nix
@@ -264,6 +266,7 @@
           inherit hy3;
           iosevkaNeg = perSystem.${defaultSystem}.iosevkaNeg;
           yandexBrowser = perSystem.${defaultSystem}.yandexBrowser;
+          fa = perSystem.${defaultSystem}.fa;
         };
         modules = [
           ({ ... }: { features.profile = "lite"; })

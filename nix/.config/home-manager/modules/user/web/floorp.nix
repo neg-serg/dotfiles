@@ -1,7 +1,7 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, fa ? null, ... }:
 lib.mkIf (config.features.web.enable && config.features.web.floorp.enable) (let
   dlDir = "${config.home.homeDirectory}/dw";
-  fa = pkgs.nur.repos.rycee.firefox-addons; # requires NUR
+  fa' = if fa != null then fa else pkgs.nur.repos.rycee.firefox-addons; # requires NUR
 in {
   programs.floorp = {
     enable = true;
@@ -14,7 +14,7 @@ in {
       isDefault = true;
       # Declarative extensions (NUR where available)
       extensions = {
-        packages = with fa; [
+        packages = with fa'; [
           augmented-steam
           cookie-quick-manager
           darkreader
