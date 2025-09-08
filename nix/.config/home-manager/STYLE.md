@@ -5,11 +5,19 @@
     - Good: `home.packages = with pkgs; [ foo bar ];`
     - Good: `groups = with pkgs; { a = [foo]; b = [bar]; };`
     - Avoid module-wide `with pkgs;` or leaking it across unrelated scopes.
-- Line width
-  - Target ~100 characters. Keep end-of-line comments short. If a comment won’t fit, move it above.
+- Line width (~100 chars)
+  - Target ~100 characters per line. This keeps diffs readable.
+  - Keep end-of-line comments short; if they don't fit, move them above the line.
+  - Tip: set an editor ruler at 100 to help keep lines concise.
+  - Example:
+    - Good: `"reaper" # DAW`
+    - Also good (longer note moved above):
+      `# Compute DR14 (Pleasurize Music Foundation procedure)`
+      `"dr14_tmeter"`
 - Comments
-  - Prefer one-line, recognizable terms (e.g., “DAW”, “modular synth”).
-  - For long explanations, put them on the line(s) above the item.
+  - Prefer concise, recognizable terms (e.g., "DAW", "modular synth").
+  - Put long comments above the line they describe (not inline).
+  - Avoid repeating obvious context (module name or path) in comments.
 - Options
   - Declare feature options centrally (see `modules/features.nix`).
   - Gate per-area configuration via `mkIf` using `features.*` flags.
@@ -20,4 +28,3 @@
 - Structure
   - Factor large package lists into local `groups = { ... }` sets.
   - Use `config.lib.neg.mkEnabledList` to flatten groups based on flags.
-
