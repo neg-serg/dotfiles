@@ -16,7 +16,7 @@ in {
       "swayimg" = mkSymlink "media/.config/swayimg" true;
 
       # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
-      "amfora" = mkSymlink "misc/.config/amfora" true;
+      # amfora config is now managed via Home Manager (modules/cli/amfora.nix)
       "dosbox" = mkSymlink "misc/.config/dosbox" true;
       "icedtea-web" = mkSymlink "misc/.config/icedtea-web" true;
       "rustmission" = mkSymlink "misc/.config/rustmission" true;

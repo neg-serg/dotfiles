@@ -79,6 +79,7 @@ in {
     ./btop.nix
     ./fastfetch.nix
     ./fd.nix # better find
+    ./amfora.nix
     ./fzf.nix
     ./tmux.nix
     ./ripgrep.nix
