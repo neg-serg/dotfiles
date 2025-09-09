@@ -1,7 +1,7 @@
 { lib, config, ... }:
 let
   l = config.lib.file.mkOutOfStoreSymlink;
-  repoRustmissionConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/misc/rustmission/conf";
+  repoRustmissionConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/misc/rustmission/conf";
 in {
   # Remove stale ~/.config/rustmission symlink before linking
   home.activation.fixRustmissionConfigDir =
@@ -19,4 +19,3 @@ in {
     recursive = true;
   };
 }
-

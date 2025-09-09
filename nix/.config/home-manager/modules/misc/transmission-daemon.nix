@@ -1,7 +1,7 @@
 { lib, config, ... }:
 let
   l = config.lib.file.mkOutOfStoreSymlink;
-  repoTxConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/misc/transmission-daemon/conf";
+  repoTxConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/misc/transmission-daemon/conf";
 in {
   # Ensure ~/.config/transmission-daemon is a real directory (not a stale HM symlink)
   home.activation.fixTransmissionDaemonDir =
