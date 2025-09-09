@@ -12,14 +12,8 @@
 in {
   xdg = {
     configFile = {
-      # █▓▒░ gdb ──────────────────────────────────────────────────────────────────────────
-      # gdb config is now managed via Home Manager (modules/dev/gdb)
-
-      # █▓▒░ git ──────────────────────────────────────────────────────────────────────────
-      # tig config is now managed via Home Manager (modules/cli/tig.nix)
-
       # █▓▒░ mail ─────────────────────────────────────────────────────────────────────────
-      "isync" = mkSymlink "mail/.config/isync" true;
+      # isync (mbsync) config is now managed via Home Manager (modules/user/mail/isync)
       "mutt" = mkSymlink "mail/.config/mutt" true;
 
       # █▓▒░ media ────────────────────────────────────────────────────────────────────────
