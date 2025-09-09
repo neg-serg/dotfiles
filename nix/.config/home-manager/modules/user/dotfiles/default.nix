@@ -12,14 +12,10 @@
 in {
   xdg = {
     configFile = {
-      # █▓▒░ media ────────────────────────────────────────────────────────────────────────
-      # swayimg config is managed in modules/media/images (live-edit symlink)
       # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
       "rustmission" = mkSymlink "misc/.config/rustmission" true;
       "transmission-daemon" = mkSymlink "misc/.config/transmission-daemon" true;
       "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
-      # █▓▒░ music ────────────────────────────────────────────────────────────────────────
-      "rmpc" = mkSymlink "music/.config/rmpc" true;
       # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
       "home-manager" = mkSymlink "nix/.config/home-manager" true;
       # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
