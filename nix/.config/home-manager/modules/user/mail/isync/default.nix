@@ -9,8 +9,21 @@ with lib;
     # Install isync/mbsync and keep using the XDG config at ~/.config/isync/mbsyncrc
     programs.mbsync.enable = true;
 
-    # Inline mbsyncrc so it is not sourced from dotfiles
-    xdg.configFile."isync/mbsyncrc".text = ''
+    # Fix stale ~/.config/isync symlink and ensure the directory exists
+    home.activation.fixIsyncConfigDir =
+      lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+        set -eu
+        IDIR="${config.xdg.configHome}/isync"
+        if [ -L "$IDIR" ]; then
+          rm -f "$IDIR"
+        fi
+        mkdir -p "$IDIR"
+      '';
+
+    # Inline mbsyncrc so it is not sourced from dotfiles; force overwrite
+    xdg.configFile."isync/mbsyncrc" = {
+      force = true;
+      text = ''
       #-- gmail
       IMAPAccount gmail
       Host imap.gmail.com
@@ -39,6 +52,7 @@ with lib;
       Expunge Near
       SyncState *
     '';
+    };
 
     # Optional: ensure the binary is present even if HM changes defaults
     # Also provide a non-blocking trigger to start sync in background
