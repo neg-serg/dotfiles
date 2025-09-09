@@ -32,7 +32,7 @@ in
       };
     };
 
-    systemd.user.services.aria2 = {
+    systemd.user.services.aria2 = lib.recursiveUpdate {
       Unit.Description = "aria2 download manager";
       Service = {
         ExecStartPre = let
@@ -61,8 +61,5 @@ in
         Slice = "session.slice";
         ProtectSystem = "full";
       };
-      Install.WantedBy = [
-        "graphical-session.target" # start with the user graphical session
-      ];
-    };
+    } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["graphical"];});
   }

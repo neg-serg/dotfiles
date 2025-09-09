@@ -44,5 +44,94 @@
         tridactyl
       ];
     };
+
+    # Systemd (user) helpers to avoid repeating arrays in many modules
+    systemdUser = let
+      # Preset collections of common targets
+      presets = {
+        graphical = {
+          after = ["graphical-session.target"];
+          wants = ["graphical-session.target"];
+          wantedBy = ["graphical-session.target"];
+          partOf = [];
+        };
+        defaultWanted = {
+          after = [];
+          wants = [];
+          wantedBy = ["default.target"];
+          partOf = [];
+        };
+        timers = {
+          after = [];
+          wants = [];
+          wantedBy = ["timers.target"];
+          partOf = [];
+        };
+        net = {
+          after = ["network.target"];
+          wants = [];
+          wantedBy = [];
+          partOf = [];
+        };
+        netOnline = {
+          after = ["network-online.target"];
+          wants = ["network-online.target"];
+          wantedBy = [];
+          partOf = [];
+        };
+        sops = {
+          after = ["sops-nix.service"];
+          wants = ["sops-nix.service"];
+          wantedBy = [];
+          partOf = [];
+        };
+        dbusSocket = {
+          after = ["dbus.socket"];
+          wants = [];
+          wantedBy = [];
+          partOf = [];
+        };
+        socketsTarget = {
+          after = ["sockets.target"];
+          wants = [];
+          wantedBy = [];
+          partOf = [];
+        };
+      };
+      # Merge preset array fields with optional extras and produce Unit/Install
+      mkUnitFromPresets = args: let
+        # args: { presets = ["graphical" "defaultWanted" ...]; after ? [], wants ? [], partOf ? [], wantedBy ? [] }
+        names = args.presets or [];
+        accum =
+          lib.foldl'
+          (acc: n: {
+            after = acc.after ++ (presets.${n}.after or []);
+            wants = acc.wants ++ (presets.${n}.wants or []);
+            partOf = acc.partOf ++ (presets.${n}.partOf or []);
+            wantedBy = acc.wantedBy ++ (presets.${n}.wantedBy or []);
+          })
+          {
+            after = [];
+            wants = [];
+            partOf = [];
+            wantedBy = [];
+          }
+          names;
+        merged = {
+          after = lib.unique (accum.after ++ (args.after or []));
+          wants = lib.unique (accum.wants ++ (args.wants or []));
+          partOf = lib.unique (accum.partOf ++ (args.partOf or []));
+          wantedBy = lib.unique (accum.wantedBy ++ (args.wantedBy or []));
+        };
+      in {
+        Unit =
+          lib.optionalAttrs (merged.after != []) {After = merged.after;}
+          // lib.optionalAttrs (merged.wants != []) {Wants = merged.wants;}
+          // lib.optionalAttrs (merged.partOf != []) {PartOf = merged.partOf;};
+        Install = lib.optionalAttrs (merged.wantedBy != []) {WantedBy = merged.wantedBy;};
+      };
+    in {
+      inherit presets mkUnitFromPresets;
+    };
   };
 }

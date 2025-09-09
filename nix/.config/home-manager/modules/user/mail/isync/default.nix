@@ -38,16 +38,8 @@ with lib;
     };
 
     # Periodic sync in addition to imapnotify (fallback / catch-up)
-    systemd.user.services."mbsync-gmail" = {
-      Unit = {
-        Description = "Sync mail via mbsync (gmail)";
-        After = [
-          "network-online.target" # require working network
-        ];
-        Wants = [
-          "network-online.target" # pull in network-online
-        ];
-      };
+    systemd.user.services."mbsync-gmail" = lib.recursiveUpdate {
+      Unit.Description = "Sync mail via mbsync (gmail)";
       Service = {
         # Use simple so `systemctl start` doesn't block the caller
         Type = "simple";
@@ -55,18 +47,13 @@ with lib;
         TimeoutStartSec = "30min";
         ExecStart = ''${pkgs.isync}/bin/mbsync -Va -c %h/.config/isync/mbsyncrc'';
       };
-    };
-    systemd.user.timers."mbsync-gmail" = {
-      Unit = {Description = "Timer: mbsync gmail";};
+    } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["netOnline"];});
+    systemd.user.timers."mbsync-gmail" = lib.recursiveUpdate {
+      Unit.Description = "Timer: mbsync gmail";
       Timer = {
         OnBootSec = "2m";
         OnUnitActiveSec = "10m";
         Persistent = true;
       };
-      Install = {
-        WantedBy = [
-          "timers.target" # hook into user timers
-        ];
-      };
-    };
+    } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["timers"];});
   }

@@ -1,4 +1,9 @@
-{pkgs, ...}:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 with {
   transmission = pkgs.transmission_4;
 }; {
@@ -8,12 +13,9 @@ with {
     rustmission # new transmission client
   ];
 
-  systemd.user.services.transmission-daemon = {
+  systemd.user.services.transmission-daemon = lib.recursiveUpdate {
     Unit = {
       Description = "transmission service";
-      After = [
-        "network.target" # ensure network up before starting
-      ];
       ConditionPathExists = "${transmission}/bin/transmission-daemon";
     };
     Service = {
@@ -24,10 +26,5 @@ with {
       StartLimitBurst = "8";
       ExecReload = "${pkgs.util-linux}/bin/kill -s HUP $MAINPID";
     };
-    Install = {
-      WantedBy = [
-        "default.target" # start in standard user session
-      ];
-    };
-  };
+  } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["net" "defaultWanted"];});
 }

@@ -26,24 +26,17 @@ with {
     };
 
     systemd.user.services = {
-      mpdas = {
-        Unit = {
-          Description = "mpdas last.fm scrobbler";
-          After = [
-            "network.target" # require network before scrobbling
-            "sound.target" # ensure sound stack initialized
-          ];
-        };
-        Service = {
-          ExecStart = "${pkgs.mpdas}/bin/mpdas -c ${config.sops.secrets.mpdas_negrc.path}";
-          Restart = "on-failure";
-          RestartSec = "10";
-        };
-        Install = {
-          WantedBy = [
-            "default.target" # start by default in user session
-          ];
-        };
-      };
+      mpdas =
+        lib.recursiveUpdate {
+          Unit.Description = "mpdas last.fm scrobbler";
+          Service = {
+            ExecStart = "${pkgs.mpdas}/bin/mpdas -c ${config.sops.secrets.mpdas_negrc.path}";
+            Restart = "on-failure";
+            RestartSec = "10";
+          };
+        } (config.lib.neg.systemdUser.mkUnitFromPresets {
+          presets = ["net" "defaultWanted"];
+          after = ["sound.target"]; # keep explicit sound dependency
+        });
     };
   }

@@ -63,34 +63,21 @@ with lib;
       password = "REPLACE-ME-PASSWORD"
       verify = true
     '';
-    systemd.user.services.vdirsyncer = {
-      Unit = {
-        Description = "Vdirsyncer synchronization service";
-        After = [
-          "network-online.target" # require working network
-        ];
-        Wants = [
-          "network-online.target" # pull in network-online
-        ];
-      };
+    systemd.user.services.vdirsyncer = lib.recursiveUpdate {
+      Unit.Description = "Vdirsyncer synchronization service";
       Service = {
         Type = "oneshot";
         ExecStartPre = "${pkgs.vdirsyncer}/bin/vdirsyncer metasync";
         ExecStart = "${pkgs.vdirsyncer}/bin/vdirsyncer sync";
       };
-    };
+    } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["netOnline"];});
 
-    systemd.user.timers.vdirsyncer = {
-      Unit = {Description = "Vdirsyncer synchronization timer";};
+    systemd.user.timers.vdirsyncer = lib.recursiveUpdate {
+      Unit.Description = "Vdirsyncer synchronization timer";
       Timer = {
         OnBootSec = "2m";
         OnUnitActiveSec = "5m";
         Unit = "vdirsyncer.service";
       };
-      Install = {
-        WantedBy = [
-          "timers.target" # hook into user timers
-        ];
-      };
-    };
+    } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["timers"];});
   }

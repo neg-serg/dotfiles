@@ -75,18 +75,8 @@ in {
       trusted-public-keys = [cfg.ownCache.publicKey];
     };
 
-    systemd.user.services."cachix-watch-store" = lib.mkIf cfg.enable {
-      Unit = {
-        Description = "Cachix watch-store for ${cfg.cacheName}";
-        After = [
-          "network-online.target" # require working network
-          "sops-nix.service" # ensure secrets available if needed
-        ];
-        Wants = [
-          "network-online.target" # pull in network-online
-          "sops-nix.service" # pull in secrets availability
-        ];
-      };
+    systemd.user.services."cachix-watch-store" = lib.mkIf cfg.enable (lib.recursiveUpdate {
+      Unit.Description = "Cachix watch-store for ${cfg.cacheName}";
       Service = {
         Type = "simple";
         EnvironmentFile =
@@ -125,11 +115,6 @@ in {
         CapabilityBoundingSet = lib.mkIf cfg.hardening.enable [""];
         RestrictAddressFamilies = lib.mkIf cfg.hardening.enable ["AF_INET" "AF_INET6"];
       };
-      Install = {
-        WantedBy = [
-          "default.target" # start by default in user session
-        ];
-      };
-    };
+    } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["netOnline" "sops" "defaultWanted"];}));
   };
 }

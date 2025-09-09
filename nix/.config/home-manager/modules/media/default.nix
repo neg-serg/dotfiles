@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  lib,
   ...
 }:
 with {
@@ -35,19 +36,12 @@ with {
   };
 
   systemd.user.services = {
-    playerctld = {
-      Unit = {
-        Description = "Keep track of media player activity";
-      };
+    playerctld = lib.recursiveUpdate {
+      Unit.Description = "Keep track of media player activity";
       Service = {
         Type = "oneshot";
         ExecStart = "${pkgs.playerctl}/bin/playerctld daemon";
       };
-      Install = {
-        WantedBy = [
-          "default.target" # start by default in user session
-        ];
-      };
-    };
+    } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["defaultWanted"];});
   };
 }
