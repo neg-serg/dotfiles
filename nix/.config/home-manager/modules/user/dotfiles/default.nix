@@ -13,7 +13,7 @@ in {
   xdg = {
     configFile = {
       # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
-      "rustmission" = mkSymlink "misc/.config/rustmission" true;
+      # rustmission config is managed in modules/misc/rustmission.nix (live-edit symlink)
       "transmission-daemon" = mkSymlink "misc/.config/transmission-daemon" true;
       "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
       # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────

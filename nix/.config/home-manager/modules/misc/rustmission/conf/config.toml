@@ -1,0 +1,56 @@
+[general]
+auto_hide = false
+accent_color = "#005faf"
+# If enabled, shows various keybindings throughout the program at the cost of
+# a little bit cluttered interface.
+beginner_mode = true
+headers_hide = false
+
+[connection]
+url = "http://localhost:9091/transmission/rpc" # REQUIRED!
+# Refresh timings (in seconds)
+torrents_refresh = 5
+stats_refresh = 5
+free_space_refresh = 10
+# username = "CHANGE_ME"
+# password = "CHANGE_ME"
+
+[torrents_tab]
+headers = ["SizeWhenDone", "UploadRatio", "Name", "Eta", "DownloadRate", "UploadRate", "Progress", "SmallStatus", "Category"]
+default_sort = "Name"
+default_sort_reverse = false
+# Whether to insert category icon into name as declared in categories.toml.
+# An alternative to inserting category's icon into torrent's name is adding a
+# CategoryIcon header into your headers.
+category_icon_insert_into_name = true
+
+[search_tab]
+# If you uncomment this, providers won't be automatically added in future
+# versions of Rustmission.
+# providers = ["Knaben", "Nyaa"]
+
+[icons]
+upload = "↑"                      # ""
+download = "↓"                    # ""
+arrow_left = "←"                  # ""
+arrow_right = "→"                 # ""
+arrow_up = "↑"                    # ""
+arrow_down = "↓"                  # ""
+triangle_right = "▶"              # "▶"
+triangle_down = "▼"               # "▼"
+file = "∷"                        # ""
+disk = "[D]"                      # "󰋊"
+help = "[?]"                      # "󰘥"
+success = "✔"                     # ""
+failure = "✖"                     # ""
+searching = "⟳"                   # ""
+verifying = "⟳"                   # "󰑓"
+loading = "⌛"                    # "󱥸"
+pause = "‖"                       # "󰏤"
+idle = "○"                        # "󱗼"
+magnifying_glass = "[o]"          # ""
+provider_disabled = "⛔"          # "󰪎"
+provider_category_general = "[G]" # ""
+provider_category_anime = "[A]"   # "󰎁"
+sort_ascending = "↓"              # "󰒼"
+sort_descending = "↑"             # "󰒽""
