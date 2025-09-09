@@ -1,7 +1,7 @@
 { lib, config, ... }:
 let
   l = config.lib.file.mkOutOfStoreSymlink;
-  repoKittyConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/kitty/conf";
+  repoKittyConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/user/gui/kitty/conf";
 in {
   # Remove stale ~/.config/kitty symlink from older generations before linking
   home.activation.fixKittyConfigDir =
@@ -19,4 +19,3 @@ in {
     recursive = true;
   };
 }
-

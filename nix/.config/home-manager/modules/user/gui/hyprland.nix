@@ -8,7 +8,7 @@
 with lib; let
   hy3Plugin = hy3.packages.${pkgs.system}.hy3;
   l = config.lib.file.mkOutOfStoreSymlink;
-  repoHyprConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf";
+  repoHyprConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/user/gui/hypr/conf";
 in
   mkIf config.features.gui.enable {
     wayland.windowManager.hyprland = {

@@ -7,7 +7,7 @@
 with lib;
 let
   l = config.lib.file.mkOutOfStoreSymlink;
-  repoRofiConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/rofi/conf";
+  repoRofiConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/user/gui/rofi/conf";
 in
   mkIf config.features.gui.enable {
     # Remove stale ~/.config/rofi symlink from older generations before linking

@@ -2,7 +2,7 @@
 with lib;
 let
   l = config.lib.file.mkOutOfStoreSymlink;
-  repoWalkerConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/walker/conf";
+  repoWalkerConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/user/gui/walker/conf";
 in
   mkIf config.features.gui.enable {
     home.packages = [ pkgs.walker ];
