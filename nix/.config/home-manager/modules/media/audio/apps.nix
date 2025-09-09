@@ -4,25 +4,40 @@
   config,
   ...
 }:
-lib.mkIf config.features.media.audio.apps.enable {
-  home.packages = with pkgs; [
-    ape # monkey audio codec
-    cdparanoia # cdrip / cdrecord
-    cider # apple music player
-    dr14_tmeter # compute DR14 (PMF procedure)
-    essentia-extractor # acousticBrainz audio feature extractor
-    id3v2 # id3v2 edit
-    ncpamixer # cli-pavucontrol
-    nicotine-plus # download music via soulseek
-    opensoundmeter # sound measurement application for tuning audio systems in real-time
-    picard # autotags
-    roomeqwizard # room acoustics software
-    scdl # download music from soundcloud
-    screenkey # screencast tool to display your keys inspired by Screenflick
-    sonic-visualiser # audio analyzer
-    sox # audio processing
-    streamlink # CLI for extracting streams from websites
-    unflac # split2flac alternative
-    # Similarity scripts rely on your existing Python env from dev/python module
-  ];
-}
+lib.mkIf config.features.media.audio.apps.enable (
+  let
+    groups = with pkgs; {
+      codecs = [ape]; # monkey audio codec
+      ripping = [cdparanoia]; # cdrip / cdrecord
+      players = [cider]; # Apple Music player
+      analysis = [
+        dr14_tmeter # compute DR14 (PMF procedure)
+        essentia-extractor # acousticBrainz audio feature extractor
+        opensoundmeter # real-time tuning/measurement
+        sonic-visualiser # audio analyzer
+        roomeqwizard # room acoustics software
+      ];
+      tagging = [
+        id3v2 # id3v2 edit
+        picard # autotags
+        unflac # split2flac alternative
+      ];
+      cli = [
+        ncpamixer # cli-pavucontrol
+        sox # audio processing
+      ];
+      net = [
+        nicotine-plus # Soulseek client
+        scdl # download from SoundCloud
+        streamlink # extract streams from websites
+      ];
+      misc = [
+        screenkey # show pressed keys during screencasts
+      ];
+    };
+    # Enable all groups by default; can be refined later if needed
+    flags = (builtins.listToAttrs (map (n: { name = n; value = true; }) (builtins.attrNames groups)));
+  in {
+    home.packages = config.lib.neg.mkEnabledList flags groups;
+  }
+)

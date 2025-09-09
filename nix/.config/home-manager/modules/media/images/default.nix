@@ -35,27 +35,42 @@
     [ -S "$sock" ] && rm -f "$sock" || true # Best-effort cleanup
     exit $rc
   '';
+in let
+  groups = with pkgs; {
+    metadata = [
+      exiftool # extract media metadata
+      exiv2 # metadata manipulation
+      mediainfo # extract media info
+    ];
+    editors = [
+      gimp # image editor
+      rawtherapee # RAW editor
+      graphviz # graph visualization
+    ];
+    optimizers = [
+      jpegoptim # jpeg optimization
+      optipng # optimize png
+      pngquant # downsample RGBA to 8-bit with alpha
+      advancecomp # ADVANCE COMP PNG compression utility
+      scour # svg optimizer
+    ];
+    color = [
+      pastel # CLI color manipulation
+      lutgen # fast LUT generator
+    ];
+    qr = [
+      qrencode # qr encoding
+      zbar # qr/barcode reader
+    ];
+    viewers = [
+      swayimg # image viewer (Wayland)
+      swayimg-first # wrapper: start from the first file
+      viu # console image viewer
+    ];
+  };
+  flags = (builtins.listToAttrs (map (n: { name = n; value = true; }) (builtins.attrNames groups)));
 in {
-  home.packages = with pkgs; [
-    advancecomp # AdvanceCOMP PNG Compression Utility
-    exiftool # extract media metadata
-    exiv2 # metadata manipulation
-    gimp # image editor
-    graphviz # graphics
-    jpegoptim # jpeg optimization
-    lutgen # fast lut generator
-    mediainfo # another tool to extract media info
-    optipng # optimize png
-    pastel # cli color analyze/convert/manipulation
-    pngquant # convert png from RGBA to 8 bit with alpha-channel
-    qrencode # qr encoding
-    rawtherapee # raw format support
-    scour # svg optimizer
-    swayimg # image viewer (Wayland)
-    swayimg-first # image viewer for Wayland display servers (start from the first file in list)
-    viu # console image viewer
-    zbar # bar code reader
-  ];
+  home.packages = config.lib.neg.mkEnabledList flags groups;
   home.file.".local/bin/swayimg".source = "${swayimg-first}/bin/swayimg-first";
 
   # Live-editable Swayimg config: out-of-store symlink to repo copy
