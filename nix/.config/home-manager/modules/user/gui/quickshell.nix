@@ -7,7 +7,8 @@
 }:
 with lib; let
   l = config.lib.file.mkOutOfStoreSymlink;
-  repoQSConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/quickshell/conf";
+  # Use existing Quickshell config stored in repo under quickshell/.config/quickshell
+  repoQSConf = "${config.home.homeDirectory}/.dotfiles/quickshell/.config/quickshell";
   qsPath = pkgs.lib.makeBinPath [
     pkgs.fd # fast file finder used by QS scripts
     pkgs.coreutils # basic CLI utilities

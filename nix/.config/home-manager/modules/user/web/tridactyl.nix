@@ -1,7 +1,8 @@
 { lib, config, ... }:
 with lib; let
   l = config.lib.file.mkOutOfStoreSymlink;
-  repoTridactylConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/web/tridactyl/conf";
+  # Use existing Tridactyl config stored in repo under misc/.config/tridactyl
+  repoTridactylConf = "${config.home.homeDirectory}/.dotfiles/misc/.config/tridactyl";
 in mkIf config.features.web.enable {
   # Remove stale ~/.config/tridactyl symlink from older generations before linking
   home.activation.fixTridactylConfigDir =
@@ -19,4 +20,3 @@ in mkIf config.features.web.enable {
     recursive = true;
   };
 }
-
