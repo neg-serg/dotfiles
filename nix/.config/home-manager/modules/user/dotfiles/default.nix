@@ -12,16 +12,9 @@
 in {
   xdg = {
     configFile = {
-      # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
-      "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
-      # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
-      "home-manager" = mkSymlink "nix/.config/home-manager" true;
-      # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
-      "dircolors" = mkSymlink "shell/.config/dircolors" true;
-      "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
-      "zsh" = mkSymlink "shell/.config/zsh" false;
-      # █▓▒░ quickshell ───────────────────────────────────────────────────────────────────
-      "quickshell" = mkSymlink "quickshell/.config/quickshell" true;
+      # The remaining entries here are those that are not yet managed
+      # directly by Home Manager modules. See modules under ./modules for
+      # migrated apps (tridactyl, home-manager, dircolors, f-sy-h, zsh, quickshell).
     };
     dataFile."hack-art" = mkSymlink "hack-art/.local/share/hack-art" true;
     dataFile."fantasy-art" = mkSymlink "fantasy-art/.local/share/fantasy-art" true;
