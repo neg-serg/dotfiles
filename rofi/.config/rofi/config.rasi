@@ -1,7 +1,7 @@
 configuration {
-    terminal:                      "kitty";
+    terminal:                      "${env:TERMINAL}";
     run-command:                   "{cmd}";
-    run-shell-command:             "kitty {cmd}";
+    run-shell-command:             "${env:TERMINAL} {cmd}";
     sort:                          true;
     parse-hosts:                   false;
     auto-select:                   false;
