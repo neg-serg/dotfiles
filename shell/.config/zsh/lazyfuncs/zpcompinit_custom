@@ -1,6 +1,8 @@
 setopt extendedglob local_options
 autoload -Uz compinit
-local zcd=${ZDOTDIR:-$HOME}/.zcompdump
+local _zcache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
+[[ -d $_zcache_dir ]] || mkdir -p -- $_zcache_dir
+local zcd=$_zcache_dir/zcompdump
 local zcdc="$zcd.zwc"
 # Compile the completion dump to increase startup speed, if dump is newer or doesn't exist,
 # in the background as this is doesn't affect the current session

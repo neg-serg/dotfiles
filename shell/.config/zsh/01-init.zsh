@@ -66,7 +66,8 @@ typeset -gx TIMEFMT="[37m[34m⟬[37m[37m%J[34m⟭[39m[34m⟬[37m%U[34m�
 typeset -gx WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 typeset -gx READNULLCMD="wbat"
 typeset -gx LS_COLORS
-typeset -gx HISTFILE=${ZDOTDIR}/zsh_history
+typeset -gx HISTFILE=${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history
+[[ -d ${HISTFILE:h} ]] || mkdir -p -- ${HISTFILE:h}
 typeset -gx SAVEHIST=10000000
 typeset -gx HISTSIZE=$((SAVEHIST * 1.10))
 typeset -gx HISTORY_IGNORE="&:l:ls:[bf]g:exit:reset:clear:cd*:gs:gd"
@@ -74,7 +75,9 @@ typeset -gx HISTORY_IGNORE="&:l:ls:[bf]g:exit:reset:clear:cd*:gs:gd"
 _zpcompinit_custom() {
     setopt extendedglob local_options
     autoload -Uz compinit
-    local zcd=${ZDOTDIR:-$HOME}/.zcompdump
+    local _zcache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
+    [[ -d $_zcache_dir ]] || mkdir -p -- $_zcache_dir
+    local zcd=$_zcache_dir/zcompdump
     local zcdc="$zcd.zwc"
     # Compile the completion dump to increase startup speed, if dump is newer or doesn't exist,
     # in the background as this is doesn't affect the current session
