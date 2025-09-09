@@ -8,7 +8,7 @@
 with lib; let
   hy3Plugin = hy3.packages.${pkgs.system}.hy3;
 in
-  mkIf config.features.gui {
+  mkIf config.features.gui.enable {
     wayland.windowManager.hyprland = {
       enable = true;
       package = null;

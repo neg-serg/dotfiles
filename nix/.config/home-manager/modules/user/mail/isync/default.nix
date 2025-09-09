@@ -5,7 +5,7 @@
   ...
 }:
 with lib;
-  mkIf config.features.mail {
+  mkIf config.features.mail.enable {
     # Install isync/mbsync and keep using the XDG config at ~/.config/isync/mbsyncrc
     programs.mbsync.enable = true;
 

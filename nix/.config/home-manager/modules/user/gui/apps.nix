@@ -6,7 +6,7 @@
   ...
 }:
 with lib;
-  mkIf config.features.gui {
+  mkIf config.features.gui.enable {
     programs.wallust.enable = true;
     home.packages = with pkgs; [
       cliphist # wayland clipboard history

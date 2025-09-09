@@ -32,7 +32,7 @@ with lib; let
     '';
   };
 in
-  mkIf config.features.gui {
+  mkIf config.features.gui.enable {
     home.packages = with pkgs; [
       cantarell-fonts # GNOME Cantarell fonts
       cava # console audio visualizer

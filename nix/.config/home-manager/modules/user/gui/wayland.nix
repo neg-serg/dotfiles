@@ -6,7 +6,7 @@
   ...
 }:
 with lib;
-  mkIf config.features.gui {
+  mkIf config.features.gui.enable {
     home.sessionVariables = {};
     home.packages = with pkgs; [
       dragon-drop # drag-n-drop from console

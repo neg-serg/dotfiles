@@ -5,7 +5,7 @@
   ...
 }:
 with lib;
-  mkIf config.features.mail {
+  mkIf config.features.mail.enable {
     home.packages = with pkgs; [
       vdirsyncer # add vdirsyncer binary for sync and initialization
     ];

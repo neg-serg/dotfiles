@@ -4,7 +4,7 @@
   ...
 }:
 with lib;
-  mkIf config.features.mail {
+  mkIf config.features.mail.enable {
     programs.notmuch = {
       enable = true;
       new = {

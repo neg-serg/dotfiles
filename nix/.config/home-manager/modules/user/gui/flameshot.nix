@@ -4,7 +4,7 @@
   ...
 }:
 with lib;
-  mkIf config.features.gui {
+  mkIf config.features.gui.enable {
     services.flameshot.enable = true;
     services.flameshot.settings = {
       General = {

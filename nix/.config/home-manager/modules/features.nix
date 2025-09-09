@@ -13,9 +13,9 @@ in {
       description = "Profile preset that adjusts feature defaults: full or lite.";
     };
 
-    gui = mkEnableOption "enable GUI stack (wayland/hyprland, quickshell, etc.)" // {default = true;};
-    mail = mkEnableOption "enable Mail stack (notmuch, isync, vdirsyncer, etc.)" // {default = true;};
-    hack = mkEnableOption "enable Hack/security tooling stack" // {default = true;};
+    gui.enable = mkEnableOption "enable GUI stack (wayland/hyprland, quickshell, etc.)" // {default = true;};
+    mail.enable = mkEnableOption "enable Mail stack (notmuch, isync, vdirsyncer, etc.)" // {default = true;};
+    hack.enable = mkEnableOption "enable Hack/security tooling stack" // {default = true;};
     dev = {
       enable = mkEnableOption "enable Dev stack (toolchains, editors, hack tooling)" // {default = true;};
       ai = {
@@ -49,9 +49,9 @@ in {
     (mkIf (cfg.profile == "lite") {
       # Slim defaults for lite profile
       features = {
-        gui = mkDefault false;
-        mail = mkDefault false;
-        hack = mkDefault false;
+        gui.enable = mkDefault false;
+        mail.enable = mkDefault false;
+        hack.enable = mkDefault false;
         dev = {
           enable = mkDefault false;
           ai.enable = mkDefault false;
@@ -100,6 +100,15 @@ in {
     })
     (mkIf (! cfg.dev.enable) {
       features.dev.ai.enable = mkDefault false;
+    })
+    (mkIf (! cfg.gui.enable) {
+      features.gui = {};
+    })
+    (mkIf (! cfg.mail.enable) {
+      features.mail = {};
+    })
+    (mkIf (! cfg.hack.enable) {
+      features.hack = {};
     })
     # Consistency assertions for nested flags
     {

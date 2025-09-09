@@ -4,7 +4,7 @@
   ...
 }:
 with lib;
-  mkIf config.features.mail {
+  mkIf config.features.mail.enable {
     accounts.email.accounts."gmail" = {
       passwordCommand = "pass show mail/gmail/serg.zorg@gmail.com/mbsync-app";
       userName = "serg.zorg@gmail.com";

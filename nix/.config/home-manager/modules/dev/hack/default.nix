@@ -24,7 +24,7 @@ in {
     ./pentest
     ./sdr
   ];
-  config = mkIf (config.features.dev.enable && config.features.hack) {
+  config = mkIf (config.features.dev.enable && config.features.hack.enable) {
     home.packages =
       (optionals config.features.dev.hack.core.secrets groups.secrets)
       ++ (optionals config.features.dev.hack.core.reverse groups.reverse)
