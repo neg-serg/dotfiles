@@ -1,5 +1,3 @@
-# Root justfile delegating to HM justfile
-
 _hm_justfile := "nix/.config/home-manager/justfile"
 _hm_dir := "nix/.config/home-manager"
 

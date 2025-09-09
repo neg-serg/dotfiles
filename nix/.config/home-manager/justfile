@@ -1,49 +1,37 @@
-# Run formatter configured in flake (treefmt)
 fmt:
     nix fmt
 
-# Run flake checks (format, docs, hm evals)
 check:
     nix flake check -L
 
-# Lint without formatting: Nix, Shell, Python
 lint:
     set -eu
-    # Nix
     statix check -- .
     deadnix --fail .
-    # Python
     if git ls-files -- '*.py' >/dev/null 2>&1; then \
       ruff check -- .; \
       black --check --line-length 100 .; \
     fi
-    # Shell (POSIX/Bash only; zsh skipped)
     if git ls-files -- '*.sh' '*.bash' >/dev/null 2>&1; then \
       shellcheck -S style -x $(git ls-files '*.sh' '*.bash'); \
     fi
 
-# Switch Home Manager to full profile
 hm-neg:
     home-manager switch --flake .#neg
 
-# Switch Home Manager to lite profile
 hm-lite:
     home-manager switch --flake .#neg-lite
 
-# Enable local git hooks
 hooks-enable:
     git config core.hooksPath nix/.config/home-manager/.githooks
 
-# Clean caches and compiled artifacts (safe)
 clean-caches:
     set -eu
     repo=$(git rev-parse --show-toplevel)
-    # Repo-local artifacts
     find "$repo" -type f -name '*.zwc' -delete || true
     find "$repo" -type d -name '__pycache__' -prune -exec rm -rf {} + || true
     find "$repo" -type f -name '*.pyc' -delete || true
     rm -rf "$repo/nix/.config/home-manager/.cache" || true
-    # User caches/state (best-effort)
     : "${XDG_CACHE_HOME:=$HOME/.cache}"
     : "${XDG_STATE_HOME:=$HOME/.local/state}"
     rm -rf "$XDG_CACHE_HOME/zsh" || true

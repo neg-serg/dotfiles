@@ -33,15 +33,10 @@
       deheader # remove unneeded C/C++ includes
     ];
 
-    # Infrastructure-as-Code toolchain
     iac = let
       backend = config.features.dev.iac.backend or "terraform";
       main = if backend == "tofu" then opentofu else terraform;
-    in [
-      main
-      terraform-ls
-      terragrunt
-    ];
+    in [ main ];
   };
 in
   lib.mkIf config.features.dev.enable {
