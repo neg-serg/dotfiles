@@ -154,7 +154,7 @@ return function(ctx)
     condition = function() return not is_empty() end,
     { provider = S.folder .. ' ', hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
     CurrentDir,
-    { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
+    -- remove blue separator for empty view
     FileIcon,
     FileNameClickable,
     Readonly,
@@ -539,7 +539,7 @@ return function(ctx)
     { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
     {
       provider = prof('Empty.Buffers', function()
-        return 'Buffers ' .. listed_buffer_count() .. ' '
+        return ' ' .. (USE_ICONS and '' or '[buf]') .. ' ' .. listed_buffer_count() .. ' '
       end),
       hl = function() return { fg = colors.cyan, bg = colors.base_bg } end,
       update = { 'BufAdd', 'BufDelete', 'BufEnter' },
@@ -561,24 +561,11 @@ return function(ctx)
     },
   }
 
-  local function time_greeting()
-    local h = tonumber(os.date('%H')) or 12
-    if h < 5 then return 'Night' elseif h < 12 then return 'Morning' elseif h < 18 then return 'Afternoon' else return 'Evening' end
-  end
-  local EmptySpecial = {
-    condition = function() return is_empty() and not is_tiny() end,
-    {
-      provider = prof('Empty.Greet', function()
-        return ' ' .. time_greeting() .. ' • ' .. os.date('%H:%M') .. ' '
-      end),
-      hl = function() return { fg = colors.blue_light, bg = colors.base_bg } end,
-      update = { 'CursorHold', 'VimResized' },
-    },
-  }
+  -- removed time-based greeting component
 
   local EmptyActions = {
     condition = function() return is_empty() and not is_narrow() end,
-    { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
+    -- no separator before actions in empty view
     {
       provider = function() return ' ' .. S.plus .. ' New ' end,
       hl = function() return { fg = colors.green, bg = colors.base_bg } end,
@@ -624,7 +611,6 @@ return function(ctx)
   local DefaultStatusline = {
     utils.surround({ '', '' }, colors.base_bg, {
       EmptyLeft,
-      EmptySpecial,
       EmptyActions,
       LeftComponents,
       components.search,
