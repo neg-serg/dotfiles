@@ -1,6 +1,7 @@
 {
   imports = [
-    ./dotfiles
+    ./files/bin.nix
+    ./files/nixpkgs-config.nix
     ./envs
     ./fonts
     ./fun
