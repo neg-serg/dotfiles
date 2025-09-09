@@ -1,7 +1,8 @@
 { lib, config, ... }:
 let
   l = config.lib.file.mkOutOfStoreSymlink;
-  repoZshConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/cli/zsh-conf";
+  # Use existing zsh config stored in repo under shell/.config/zsh
+  repoZshConf = "${config.home.homeDirectory}/.dotfiles/shell/.config/zsh";
 in {
   # Remove stale ~/.config/zsh symlink from older generations before linking
   home.activation.fixZshConfigDir =
@@ -19,4 +20,3 @@ in {
     recursive = true;
   };
 }
-

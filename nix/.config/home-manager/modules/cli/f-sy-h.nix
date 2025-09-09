@@ -1,7 +1,8 @@
 { lib, config, ... }:
 let
   l = config.lib.file.mkOutOfStoreSymlink;
-  repoFSyHConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/cli/f-sy-h";
+  # Use existing f-sy-h styles stored in repo under shell/.config/f-sy-h
+  repoFSyHConf = "${config.home.homeDirectory}/.dotfiles/shell/.config/f-sy-h";
 in {
   # Remove stale ~/.config/f-sy-h symlink from older generations before linking
   home.activation.fixFSyHConfigDir =
@@ -19,4 +20,3 @@ in {
     recursive = true;
   };
 }
-
