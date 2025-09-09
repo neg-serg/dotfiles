@@ -13,6 +13,5 @@ lib.mkIf config.features.media.audio.core.enable {
     pw-volume # pipewire volume
     pwvucontrol # pavucontrol for pipewire
     qpwgraph # yet another pipewire router
-    sonusmix # route pipewire sinks
   ];
 }
