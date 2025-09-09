@@ -30,9 +30,9 @@ in mkIf config.features.gui {
     hyprpolkitagent # better polkit agent
     hyprprop # xrop for hyprland
     hyprutils # small library for hyprland
-    kdePackages.qt6ct
-    pyprland # hyperland plugin system
-    upower
+    kdePackages.qt6ct # Qt6 config tool
+    pyprland # Hyprland plugin system
+    upower # power management daemon
   ];
   programs.hyprlock.enable = true;
 }

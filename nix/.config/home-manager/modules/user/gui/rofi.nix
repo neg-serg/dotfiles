@@ -4,8 +4,8 @@ with lib; mkIf config.features.gui {
     rofi-pass-wayland # pass interface for rofi-wayland
     (rofi-wayland.override {
       plugins = [
-        rofi-file-browser
-        pkgs.neg.rofi_games
+        rofi-file-browser # file browser plugin
+        pkgs.neg.rofi_games # custom games launcher
       ];
     }) # modern dmenu alternative
   ];

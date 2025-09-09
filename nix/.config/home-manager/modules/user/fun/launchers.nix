@@ -2,7 +2,7 @@
   programs.lutris = {
     enable = true;
     winePackages = [
-      pkgs.wineWow64Packages.full
+      pkgs.wineWow64Packages.full # full 32/64-bit Wine
     ];
   };
   home.packages = with pkgs; [

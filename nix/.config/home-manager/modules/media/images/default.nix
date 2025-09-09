@@ -49,7 +49,7 @@ in {
     qrencode # qr encoding
     rawtherapee # raw format support
     scour # svg optimizer
-    swayimg
+    swayimg # image viewer (Wayland)
     swayimg-first # image viewer for Wayland display servers (start from the first file in list)
     viu # console image viewer
     zbar # bar code reader

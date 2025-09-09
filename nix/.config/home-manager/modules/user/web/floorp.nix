@@ -7,8 +7,8 @@ in {
   programs.floorp = {
     enable = true;
     nativeMessagingHosts = [
-      pkgs.pywalfox-native
-      pkgs.tridactyl-native
+      pkgs.pywalfox-native # pywalfox native host for theming
+      pkgs.tridactyl-native # Tridactyl native host
     ];
 
     profiles."bqtlgdxw.default" = {

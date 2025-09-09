@@ -21,27 +21,27 @@ with lib; let
   };
 in mkIf config.features.gui {
   home.packages = with pkgs; [
-    cantarell-fonts
-    cava
-    inputs.rsmetrx.packages.${pkgs.system}.default
-    kdePackages.kdialog
+    cantarell-fonts # GNOME Cantarell fonts
+    cava # console audio visualizer
+    inputs.rsmetrx.packages.${pkgs.system}.default # metrics/telemetry helper
+    kdePackages.kdialog # simple Qt dialog helper
     kdePackages.qt5compat # needed for Qt5Compat modules in Qt6
-    kdePackages.qtdeclarative # Qt6
-    kdePackages.qtimageformats
-    kdePackages.qtmultimedia
-    kdePackages.qtpositioning
-    kdePackages.qtquicktimeline
-    kdePackages.qtsensors
-    kdePackages.qtsvg
-    kdePackages.qttools
-    kdePackages.qttranslations
-    kdePackages.qtvirtualkeyboard
-    kdePackages.qtwayland
-    kdePackages.syntax-highlighting
-    material-symbols
-    networkmanager
-    qt6.qtimageformats
-    qt6.qtsvg
-    quickshellWrapped
+    kdePackages.qtdeclarative # Qt 6 QML
+    kdePackages.qtimageformats # extra image formats
+    kdePackages.qtmultimedia # multimedia QML/Qt
+    kdePackages.qtpositioning # positioning QML/Qt
+    kdePackages.qtquicktimeline # timeline QML
+    kdePackages.qtsensors # sensors QML/Qt
+    kdePackages.qtsvg # SVG support
+    kdePackages.qttools # Qt tooling
+    kdePackages.qttranslations # Qt translations
+    kdePackages.qtvirtualkeyboard # on-screen keyboard
+    kdePackages.qtwayland # Wayland platform plugin
+    kdePackages.syntax-highlighting # KSyntaxHighlighting
+    material-symbols # Material Symbols font
+    networkmanager # nmcli and helpers
+    qt6.qtimageformats # extra image formats (Qt6)
+    qt6.qtsvg # SVG support (Qt6)
+    quickshellWrapped # wrapper with required env paths
   ];
 }

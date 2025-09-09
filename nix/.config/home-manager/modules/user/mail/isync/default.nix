@@ -6,7 +6,7 @@ with lib; mkIf config.features.mail {
   # Optional: ensure the binary is present even if HM changes defaults
   # Also provide a non-blocking trigger to start sync in background
   home.packages = [
-    pkgs.isync
+    pkgs.isync # mbsync binary (isync)
     (pkgs.writeShellScriptBin "sync-mail" ''
       #!/usr/bin/env bash
       set -euo pipefail
