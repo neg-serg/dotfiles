@@ -13,7 +13,6 @@ in {
   xdg = {
     configFile = {
       # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
-      # transmission-daemon config is managed in modules/misc/transmission-daemon.nix (live-edit symlinks for files)
       "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
       # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
       "home-manager" = mkSymlink "nix/.config/home-manager" true;
