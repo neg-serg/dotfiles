@@ -79,6 +79,7 @@ in {
     ./btop.nix
     ./fastfetch.nix
     ./fd.nix # better find
+    ./nushell.nix
     ./amfora.nix
     ./icedtea-web.nix
     ./dosbox.nix

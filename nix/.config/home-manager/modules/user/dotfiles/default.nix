@@ -23,7 +23,7 @@ in {
       # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
       "dircolors" = mkSymlink "shell/.config/dircolors" true;
       "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
-      "nushell" = mkSymlink "shell/.config/nushell" true;
+      # nushell config is managed in modules/cli/nushell.nix (live-edit symlink)
       "zsh" = mkSymlink "shell/.config/zsh" false;
       # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
       "kitty" = mkSymlink "wm/.config/kitty" true;

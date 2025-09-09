@@ -1,0 +1,37 @@
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+name: continuous-integration
+
+defaults:
+  run:
+    shell: nu {0}
+
+env:
+  NU_LOG_LEVEL: DEBUG
+
+jobs:
+  tests:
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [windows-latest, macos-latest, ubuntu-24.04]
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: hustcer/setup-nu@v3.10
+        with:
+          version: "0.105.1"
+
+      - name: Show Nushell Version
+        run: version
+
+      - name: Run the tests
+        run: nu --commands $"use ($env.PWD)/nupm/; nupm test"
