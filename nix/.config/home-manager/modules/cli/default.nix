@@ -81,6 +81,7 @@ in {
     ./fd.nix # better find
     ./fzf.nix
     ./ripgrep.nix
+    ./inputrc.nix
     ./tig.nix
     ./shell.nix # shells which not in nixOs and their completions
     ./yazi.nix

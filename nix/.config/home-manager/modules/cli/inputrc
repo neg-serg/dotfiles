@@ -1,0 +1,55 @@
+set bell-style                 none
+set bind-tty-special-chars     on
+set completion-ignore-case     on
+set completion-map-case        on
+set completion-query-items     200
+set echo-control-characters    off
+set enable-keypad              on
+set enable-meta-key            on
+set history-preserve-point     off
+set history-size               1000
+set horizontal-scroll-mode     off
+set input-meta                 on
+set output-meta                on
+set convert-meta               off
+set mark-directories           on
+set mark-modified-lines        off
+set mark-symlinked-directories on
+set match-hidden-files         off
+set meta-flag                  on
+set page-completions           off
+set show-all-if-ambiguous      on
+set show-all-if-unmodified     on
+set skip-completed-text        on
+set visible-stats              on
+set colored-stats              on
+set completion-prefix-display-length 3
+
+$if mode=vi
+  set keymap vi-insert
+  "gg": beginning-of-history
+  "G": end-of-history
+  "j": history-search-forward
+  "k": history-search-backward
+  set keymap vi-insert
+  "kj": vi-movement-mode
+  "\C-w": backward-kill-word
+  "\C-l": clear-screen
+  # auto-complete from the history
+  "\C-p": history-search-backward
+  "\C-n": history-search-forward
+$endif
+
+"\C-w": backward-kill-word
+"\ew": copy-backward-word
+"\C-p": history-search-backward
+"\C-n": history-search-forward
+"\e[B": history-search-forward
+"\e[A": history-search-backward
+"\C-x\C-i": menu-complete
+"\C-x\C-o": menu-complete-backward
+"\C-x\C-r": re-read-init-file
+"\C-u": kill-whole-line
+"\C-\M-w": unix-word-rubout
+"\ei": tab-insert
+

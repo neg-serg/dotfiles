@@ -12,9 +12,6 @@
 in {
   xdg = {
     configFile = {
-      # █▓▒░ mail ─────────────────────────────────────────────────────────────────────────
-      # mutt/neomutt config is now managed via Home Manager (modules/user/mail/mutt)
-
       # █▓▒░ media ────────────────────────────────────────────────────────────────────────
       "swayimg" = mkSymlink "media/.config/swayimg" true;
 
@@ -41,7 +38,6 @@ in {
       # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
       "dircolors" = mkSymlink "shell/.config/dircolors" true;
       "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
-      "inputrc" = mkSymlink "shell/.config/inputrc" true;
       "nushell" = mkSymlink "shell/.config/nushell" true;
       "tmux" = mkSymlink "shell/.config/tmux" true;
       "zsh" = mkSymlink "shell/.config/zsh" false;
