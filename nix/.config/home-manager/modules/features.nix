@@ -45,6 +45,11 @@ in {
     emulators = {
       retroarch.full = mkEnableOption "use retroarchFull with extended (unfree) cores" // {default = false;};
     };
+
+    # Fun/extras (e.g., curated art assets) that are nice-to-have
+    fun = {
+      enable = mkEnableOption "enable fun extras (art collections, etc.)" // { default = true; };
+    };
   };
 
   # Apply profile defaults. Users can still override flags after this.
@@ -72,6 +77,7 @@ in {
           yandex.enable = mkDefault false;
         };
         emulators.retroarch.full = mkDefault false;
+        fun.enable = mkDefault false;
       };
     })
     (mkIf (cfg.profile == "full") {
@@ -93,6 +99,7 @@ in {
           mpd.enable = mkDefault true;
         };
         emulators.retroarch.full = mkDefault true;
+        fun.enable = mkDefault true;
         dev.ai.enable = mkDefault true;
       };
     })

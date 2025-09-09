@@ -11,8 +11,7 @@
   };
 in {
   xdg = {
-    dataFile."hack-art" = mkSymlink "hack-art/.local/share/hack-art" true;
-    dataFile."fantasy-art" = mkSymlink "fantasy-art/.local/share/fantasy-art" true;
+    # moved to modules/misc/fun-art.nix (guarded by features.fun.enable)
   };
 
   home.file = {
