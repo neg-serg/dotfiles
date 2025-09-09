@@ -1,8 +1,9 @@
-{ lib, config, ... }:
-with lib;
-let
-  cfg = config.features;
-in {
+{
+  lib,
+  config,
+  ...
+}:
+with lib; {
   imports = [
     ./lib/neg.nix
     ./features.nix

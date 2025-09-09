@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 lib.mkIf (config.features.web.enable && config.features.web.tools.enable) {
   programs.yt-dlp = {
     enable = true;

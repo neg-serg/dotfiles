@@ -49,7 +49,7 @@ with lib;
       systemd.user.services.yabridgemgr_mountprefix = let
         build_prefix = pkgs.callPackage ./plumbing/build_prefix.nix {
           username = cfg.user;
-          plugins = cfg.plugins;
+          inherit (cfg) plugins;
         };
         mount_prefix = pkgs.callPackage ./plumbing/mount_prefix.nix {
           wineprefix = build_prefix;

@@ -1,6 +1,12 @@
-{ pkgs, lib, config, yandexBrowser ? null, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  yandexBrowser ? null,
+  ...
+}:
 with lib; {
-  imports = [ ./floorp.nix ];
+  imports = [./floorp.nix];
 
   config = mkMerge [
     {
@@ -18,7 +24,7 @@ with lib; {
           passff-host # host app for the WebExtension PassFF
         ]
         ++ (optionals (yandexBrowser != null && config.features.web.yandex.enable) [
-        yandexBrowser.yandex-browser-stable # Yandex Browser (Chromium)
+          yandexBrowser.yandex-browser-stable # Yandex Browser (Chromium)
         ]);
     })
   ];

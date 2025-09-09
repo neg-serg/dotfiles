@@ -5,7 +5,6 @@
   libepoxy,
   fetchFromGitHub,
   freetype,
-  gcc11,
   gtk3,
   lib,
   libXcursor,

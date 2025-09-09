@@ -1,8 +1,10 @@
-{ lib, config, ... }:
-let
-  cfg = config.features.emulators.retroarch or {};
-in
 {
+  lib,
+  config,
+  ...
+}: let
+  cfg = config.features.emulators.retroarch or {};
+in {
   # When retroarchFull is enabled, allow required unfree libretro cores
   config = lib.mkIf (cfg.full or false) {
     features.allowUnfree.extra = [

@@ -1,12 +1,18 @@
-{ lib, pkgs, config, inputs, ... }:
-with lib; mkIf config.features.gui {
-  home.packages = with pkgs; [
-    rofi-pass-wayland # pass interface for rofi-wayland
-    (rofi-wayland.override {
-      plugins = [
-        rofi-file-browser # file browser plugin
-        pkgs.neg.rofi_games # custom games launcher
-      ];
-    }) # modern dmenu alternative
-  ];
-}
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
+with lib;
+  mkIf config.features.gui {
+    home.packages = with pkgs; [
+      rofi-pass-wayland # pass interface for rofi-wayland
+      (rofi-wayland.override {
+        plugins = [
+          rofi-file-browser # file browser plugin
+          pkgs.neg.rofi_games # custom games launcher
+        ];
+      }) # modern dmenu alternative
+    ];
+  }

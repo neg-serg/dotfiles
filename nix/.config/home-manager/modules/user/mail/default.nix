@@ -1,5 +1,8 @@
-{ pkgs, config, ... }:
 {
+  pkgs,
+  config,
+  ...
+}: {
   imports = [
     ./accounts
     ./isync
@@ -9,9 +12,10 @@
     ./notmuch
     ./vdirsyncer
   ];
-  home.packages = with pkgs; lib.optionals config.features.mail [
-    himalaya # modern cli for mail
-    kyotocabinet # mail client helper library
-    neomutt # mail client
-  ];
+  home.packages = with pkgs;
+    lib.optionals config.features.mail [
+      himalaya # modern cli for mail
+      kyotocabinet # mail client helper library
+      neomutt # mail client
+    ];
 }

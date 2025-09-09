@@ -1,6 +1,10 @@
-{ pkgs, lib, config, ... }:
-with lib;
-let
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+with lib; let
   groups = with pkgs; rec {
     secrets = [
       gitleaks # scan repositories for secrets

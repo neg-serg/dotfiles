@@ -1,5 +1,8 @@
-{ lib, config, ... }:
-let
+{
+  lib,
+  config,
+  ...
+}: let
   audio = import ./unfree/categories/audio.nix;
   editors = import ./unfree/categories/editors.nix;
   ai = import ./unfree/categories/ai-tools.nix;
@@ -10,11 +13,11 @@ in {
   config = lib.mkMerge [
     # Audio: allow when audio apps or creation enabled
     (lib.mkIf (
-      (config.features.media.audio.apps.enable or false)
-      || (config.features.media.audio.creation.enable or false)
-    ) {
-      features.allowUnfree.extra = audio;
-    })
+        (config.features.media.audio.apps.enable or false)
+        || (config.features.media.audio.creation.enable or false)
+      ) {
+        features.allowUnfree.extra = audio;
+      })
 
     # Editors: allow when dev stack enabled
     (lib.mkIf (config.features.dev.enable or false) {

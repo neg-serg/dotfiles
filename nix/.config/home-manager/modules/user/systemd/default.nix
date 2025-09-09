@@ -78,7 +78,7 @@
         ExecStart = "${pkgs.quickshell}/bin/qs";
         # Reduce noisy MPRIS Position warnings while keeping other logs
         # The target name matches the warning source: quickshell.dbus.properties
-        Environment = [ "RUST_LOG=info,quickshell.dbus.properties=error" ];
+        Environment = ["RUST_LOG=info,quickshell.dbus.properties=error"];
         Restart = "on-failure";
         RestartSec = "1";
         Slice = "background-graphical.slice";

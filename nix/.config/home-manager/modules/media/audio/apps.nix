@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 lib.mkIf config.features.media.audio.apps.enable {
   home.packages = with pkgs; [
     ape # monkey audio codec

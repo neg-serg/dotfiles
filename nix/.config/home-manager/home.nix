@@ -2,7 +2,6 @@
   lib,
   config,
   pkgs,
-  inputs,
   ...
 }: let
   cachixSubstituters = import ./caches/substituters.nix;

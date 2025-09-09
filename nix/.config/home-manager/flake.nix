@@ -121,362 +121,398 @@
     chaotic,
     homeManagerInput,
     hy3,
-    hyprland,
     iosevkaNegInput,
     nixpkgs,
     nur,
-    nvfetcher,
-    quickshell,
-    rsmetrx,
     sopsNixInput,
     stylixInput,
     yandexBrowserInput,
     ...
-  }:
-    let
-      lib = nixpkgs.lib;
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
+  }: let
+    inherit (nixpkgs) lib;
+    systems = [
+      "x86_64-linux"
+      "aarch64-linux"
+    ];
 
-      # Nilla raw-loader compatibility: add a synthetic type to each input
-      # Safe no-op for regular flake usage; enables Nilla to accept raw inputs.
-      nillaInputs = builtins.mapAttrs (_: input: input // {type = "derivation";}) inputs;
+    # Nilla raw-loader compatibility: add a synthetic type to each input
+    # Safe no-op for regular flake usage; enables Nilla to accept raw inputs.
+    nillaInputs = builtins.mapAttrs (_: input: input // {type = "derivation";}) inputs;
 
-      # Build per-system attributes in one place
-      perSystem = lib.genAttrs systems (
-        system:
-          let
-            pkgs = import nixpkgs {
-              inherit system;
-              overlays = [
-                nur.overlays.default
-                (import ./packages/overlay.nix)
-              ]; # inject NUR and local packages overlay under pkgs.neg.*
-            };
-            iosevkaNeg = iosevkaNegInput.packages.${system};
-            yandexBrowser = yandexBrowserInput.packages.${system};
-            nurPkgs = nur.packages.${system};
-            fa = pkgs.nur.repos.rycee.firefox-addons;
-            _bzmenu = bzmenu.packages.${system};
-          in {
-            inherit pkgs iosevkaNeg yandexBrowser nurPkgs fa;
+    # Build per-system attributes in one place
+    perSystem = lib.genAttrs systems (
+      system: let
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [
+            nur.overlays.default
+            (import ./packages/overlay.nix)
+          ]; # inject NUR and local packages overlay under pkgs.neg.*
+        };
+        iosevkaNeg = iosevkaNegInput.packages.${system};
+        yandexBrowser = yandexBrowserInput.packages.${system};
+        nurPkgs = nur.packages.${system};
+        fa = pkgs.nur.repos.rycee.firefox-addons;
+      in {
+        inherit pkgs iosevkaNeg yandexBrowser nurPkgs fa;
 
-            devShells = {
-              default = pkgs.mkShell {
-                packages = with pkgs; [
-                  alejandra # Nix formatter
-                  age # modern encryption tool (for sops)
-                  deadnix # find dead Nix code
-                  git-absorb # autosquash fixups into commits
-                  gitoxide # fast Rust Git tools
-                  just # task runner
-                  nil # Nix language server
-                  sops # secrets management
-                  statix # Nix linter
-                  treefmt # formatter orchestrator
-                ];
-              };
-              # Consolidated from shell/flake.nix
-              rust = pkgs.mkShell {
-                packages = with pkgs; [
-                  cargo # Rust build tool
-                  rustc # Rust compiler
-                  hyperfine # CLI benchmarking
-                  kitty # terminal (for graphics/testing)
-                  wl-clipboard # Wayland clipboard helpers
-                ];
-                RUST_BACKTRACE = "1";
-              };
-              # Consolidated from fhs/flake.nix
-              fhs = (pkgs.buildFHSEnv {
-                name = "fhs-env";
-                targetPkgs = pkgs: with pkgs; [zsh];
-              })
+        devShells = {
+          default = pkgs.mkShell {
+            packages = with pkgs; [
+              alejandra # Nix formatter
+              age # modern encryption tool (for sops)
+              deadnix # find dead Nix code
+              git-absorb # autosquash fixups into commits
+              gitoxide # fast Rust Git tools
+              just # task runner
+              nil # Nix language server
+              sops # secrets management
+              statix # Nix linter
+              treefmt # formatter orchestrator
+            ];
+          };
+          # Consolidated from shell/flake.nix
+          rust = pkgs.mkShell {
+            packages = with pkgs; [
+              cargo # Rust build tool
+              rustc # Rust compiler
+              hyperfine # CLI benchmarking
+              kitty # terminal (for graphics/testing)
+              wl-clipboard # Wayland clipboard helpers
+            ];
+            RUST_BACKTRACE = "1";
+          };
+          # Consolidated from fhs/flake.nix
+          fhs =
+            (pkgs.buildFHSEnv {
+              name = "fhs-env";
+              targetPkgs = pkgs: with pkgs; [zsh];
+            })
               .env;
-            };
+        };
 
-            packages = {
-              default = pkgs.zsh;
-              hy3Plugin = hy3.packages.${system}.hy3;
-              # Publish options docs as a package for convenience
-              options-md = pkgs.writeText "OPTIONS.md" (
-                let
-                  evalCfg = mods: homeManagerInput.lib.homeManagerConfiguration {
-                    pkgs = pkgs;
-                    extraSpecialArgs = {
-                      inputs = nillaInputs;
-                      inherit hy3;
-                      iosevkaNeg = iosevkaNeg;
-                      yandexBrowser = yandexBrowser;
-                      fa = fa;
-                    };
-                    modules = mods;
+        packages = {
+          default = pkgs.zsh;
+          hy3Plugin = hy3.packages.${system}.hy3;
+          # Publish options docs as a package for convenience
+          options-md = pkgs.writeText "OPTIONS.md" (
+            let
+              evalCfg = mods:
+                homeManagerInput.lib.homeManagerConfiguration {
+                  inherit pkgs;
+                  extraSpecialArgs = {
+                    inputs = nillaInputs;
+                    inherit hy3;
+                    inherit iosevkaNeg;
+                    inherit yandexBrowser;
+                    inherit fa;
                   };
-                  negMods = [ ./home.nix stylixInput.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops ];
-                  liteMods = [ ({...}:{ features.profile = "lite"; }) ./home.nix stylixInput.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops ];
-                  fNeg = (evalCfg negMods).config.features;
-                  fLite = (evalCfg liteMods).config.features;
-                  toFlat = set: prefix:
-                    lib.foldl' (acc: name:
-                      let cur = lib.optionalString (prefix != "") (prefix + ".") + name;
-                          v = set.${name};
-                      in acc
-                        // (if builtins.isAttrs v then toFlat v cur else if builtins.isBool v then { ${cur} = v; } else {})
-                    ) {} (builtins.attrNames set);
-                  flatNeg = toFlat fNeg "features";
-                  flatLite = toFlat fLite "features";
-                  keys = lib.unique ((builtins.attrNames flatNeg) ++ (builtins.attrNames flatLite));
-                  rows = lib.concatStringsSep "\n" (map (k:
-                    let a = (flatNeg.${k} or null);
-                        b = (flatLite.${k} or null);
-                    in if a != b then "| ${k} | ${toString a} | ${toString b} |" else ""
-                  ) keys);
-                  deltas = ''
-                    ## Full vs Lite (feature deltas)
+                  modules = mods;
+                };
+              negMods = [./home.nix stylixInput.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops];
+              liteMods = [(_: {features.profile = "lite";}) ./home.nix stylixInput.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops];
+              fNeg = (evalCfg negMods).config.features;
+              fLite = (evalCfg liteMods).config.features;
+              toFlat = set: prefix:
+                lib.foldl' (
+                  acc: name: let
+                    cur = lib.optionalString (prefix != "") (prefix + ".") + name;
+                    v = set.${name};
+                  in
+                    acc
+                    // (
+                      if builtins.isAttrs v
+                      then toFlat v cur
+                      else if builtins.isBool v
+                      then {${cur} = v;}
+                      else {}
+                    )
+                ) {} (builtins.attrNames set);
+              flatNeg = toFlat fNeg "features";
+              flatLite = toFlat fLite "features";
+              keys = lib.unique ((builtins.attrNames flatNeg) ++ (builtins.attrNames flatLite));
+              rows = lib.concatStringsSep "\n" (map (
+                  k: let
+                    a = flatNeg.${k} or null;
+                    b = flatLite.${k} or null;
+                  in
+                    if a != b
+                    then "| ${k} | ${toString a} | ${toString b} |"
+                    else ""
+                )
+                keys);
+              deltas = ''
+                ## Full vs Lite (feature deltas)
 
-                    | Option | neg (full) | neg-lite |
-                    |---|---|---|
-                    ${lib.concatStringsSep "\n" (lib.filter (x: x != "") (lib.splitString "\n" rows))}
-                  '';
-                in
-                  (builtins.readFile ./OPTIONS.md)
-                  + "\n\n" + deltas
+                | Option | neg (full) | neg-lite |
+                |---|---|---|
+                ${lib.concatStringsSep "\n" (lib.filter (x: x != "") (lib.splitString "\n" rows))}
+              '';
+            in
+              (builtins.readFile ./OPTIONS.md)
+              + "\n\n"
+              + deltas
+          );
+          # Auto-generated docs for features.* options (Markdown + JSON)
+          features-options-md = pkgs.writeText "features-options.md" (
+            let
+              eval = lib.evalModules {modules = [./modules/features.nix];};
+              opts = eval.options;
+              toList = optSet: prefix:
+                lib.concatLists (
+                  lib.mapAttrsToList (
+                    name: v: let
+                      cur = lib.optionalString (prefix != "") (prefix + ".") + name;
+                    in
+                      if (v ? _type) && (v._type == "option")
+                      then [
+                        {
+                          path = cur;
+                          desc = v.description or "";
+                          type =
+                            if (v ? type) && (v.type ? name)
+                            then v.type.name
+                            else (v.type.description or "unknown");
+                          def =
+                            v.defaultText or (
+                              if v ? default
+                              then builtins.toJSON v.default
+                              else ""
+                            );
+                        }
+                      ]
+                      else if builtins.isAttrs v
+                      then toList v cur
+                      else []
+                  )
+                  optSet
+                );
+              items = toList opts "";
+              esc = s: lib.replaceStrings ["\n" "|"] [" " "\\|"] (toString s);
+              rows = lib.concatStringsSep "\n" (
+                map (o: "| ${o.path} | " + esc o.type + " | " + esc o.def + " | " + esc o.desc + " |") items
               );
-              # Auto-generated docs for features.* options (Markdown + JSON)
-              features-options-md = pkgs.writeText "features-options.md" (
-                let
-                  eval = lib.evalModules { modules = [ ./modules/features.nix ]; };
-                  opts = eval.options;
-                  toList = optSet: prefix:
-                    lib.concatLists (
-                      lib.mapAttrsToList (name: v:
-                        let cur = lib.optionalString (prefix != "") (prefix + ".") + name;
-                        in if (v ? _type) && (v._type == "option") then [
-                          {
-                            path = cur;
-                            desc = v.description or "";
-                            type = if (v ? type) && (v.type ? name) then v.type.name else (v.type.description or "unknown");
-                            def = if v ? defaultText then v.defaultText else (if v ? default then builtins.toJSON v.default else "");
-                          }
-                        ] else if builtins.isAttrs v then
-                          toList v cur
-                        else []
-                      ) optSet
-                    );
-                  items = toList opts "";
-                  esc = s: lib.replaceStrings ["\n" "|"] [" " "\\|"] (toString s);
-                  rows = lib.concatStringsSep "\n" (
-                    map (o: "| ${o.path} | " + esc o.type + " | " + esc o.def + " | " + esc o.desc + " |") items
-                  );
-                in ''
-                  # Features Options (auto-generated)
+            in ''
+              # Features Options (auto-generated)
 
-                  | Option | Type | Default | Description |
-                  |---|---|---|---|
-                  ${rows}
-                ''
-              );
+              | Option | Type | Default | Description |
+              |---|---|---|---|
+              ${rows}
+            ''
+          );
 
-              features-options-json = pkgs.writeText "features-options.json" (
-                let
-                  eval = lib.evalModules { modules = [ ./modules/features.nix ]; };
-                  opts = eval.options;
-                  toList = optSet: prefix:
-                    lib.concatLists (
-                      lib.mapAttrsToList (name: v:
-                        let cur = lib.optionalString (prefix != "") (prefix + ".") + name;
-                        in if (v ? _type) && (v._type == "option") then [
-                          {
-                            path = cur;
-                            description = v.description or "";
-                            type = if (v ? type) && (v.type ? name) then v.type.name else (v.type.description or "unknown");
-                            default = if v ? default then v.default else null;
-                            defaultText = if v ? defaultText then v.defaultText else null;
-                          }
-                        ] else if builtins.isAttrs v then
-                          toList v cur
-                        else []
-                      ) optSet
-                    );
-                  items = toList opts "";
-                in builtins.toJSON items
-              );
-            };
+          features-options-json = pkgs.writeText "features-options.json" (
+            let
+              eval = lib.evalModules {modules = [./modules/features.nix];};
+              opts = eval.options;
+              toList = optSet: prefix:
+                lib.concatLists (
+                  lib.mapAttrsToList (
+                    name: v: let
+                      cur = lib.optionalString (prefix != "") (prefix + ".") + name;
+                    in
+                      if (v ? _type) && (v._type == "option")
+                      then [
+                        {
+                          path = cur;
+                          description = v.description or "";
+                          type =
+                            if (v ? type) && (v.type ? name)
+                            then v.type.name
+                            else (v.type.description or "unknown");
+                          default = v.default or null;
+                          defaultText = v.defaultText or null;
+                        }
+                      ]
+                      else if builtins.isAttrs v
+                      then toList v cur
+                      else []
+                  )
+                  optSet
+                );
+              items = toList opts "";
+            in
+              builtins.toJSON items
+          );
+        };
 
-            # Formatter: treefmt wrapper pinned to repo config
-            formatter = pkgs.writeShellApplication {
-              name = "fmt";
-              runtimeInputs = [
-                pkgs.treefmt # tree-wide formatter orchestrator
-                pkgs.alejandra # Nix formatter
-                pkgs.statix # Nix linter
-                pkgs.deadnix # find dead Nix code
+        # Formatter: treefmt wrapper pinned to repo config
+        formatter = pkgs.writeShellApplication {
+          name = "fmt";
+          runtimeInputs = [
+            pkgs.treefmt # tree-wide formatter orchestrator
+            pkgs.alejandra # Nix formatter
+            pkgs.statix # Nix linter
+            pkgs.deadnix # find dead Nix code
+          ];
+          text = ''
+            set -euo pipefail
+            exec treefmt -c ${./treefmt.toml} "$@"
+          '';
+        };
+
+        # Checks: fail if formatting or linters would change files
+        checks = {
+          treefmt =
+            pkgs.runCommand "treefmt-check" {
+              nativeBuildInputs = [
+                pkgs.treefmt # orchestrate formatters
+                pkgs.alejandra # format Nix code
+                pkgs.statix # lint Nix expressions
+                pkgs.deadnix # detect unused let bindings/files
               ];
-              text = ''
-                set -euo pipefail
-                exec treefmt -c ${./treefmt.toml} "$@"
-              '';
-            };
-
-            # Checks: fail if formatting or linters would change files
-            checks = {
-              treefmt = pkgs.runCommand "treefmt-check" {
-                nativeBuildInputs = [
-                  pkgs.treefmt # orchestrate formatters
-                  pkgs.alejandra # format Nix code
-                  pkgs.statix # lint Nix expressions
-                  pkgs.deadnix # detect unused let bindings/files
-                ];
-              } ''
-                set -euo pipefail
-                treefmt -c ${./treefmt.toml} --fail-on-change .
-                touch "$out"
-              '';
-              # Build the options documentation as part of checks
-              options-md = pkgs.runCommand "options-md" {} ''
-                cp ${self.packages.${system}.options-md} "$out"
-              '';
-              features-options-md = pkgs.runCommand "features-options-md" {} ''
-                cp ${self.packages.${system}.features-options-md} "$out"
-              '';
-              features-options-json = pkgs.runCommand "features-options-json" {} ''
-                cp ${self.packages.${system}.features-options-json} "$out"
-              '';
-            };
-          }
-      );
-
-      # Choose default system for user HM config
-      defaultSystem = "x86_64-linux";
-    in {
-      devShells = lib.genAttrs systems (s: perSystem.${s}.devShells);
-      packages = lib.genAttrs systems (s: perSystem.${s}.packages);
-      formatter = lib.genAttrs systems (s: perSystem.${s}.formatter);
-      checks = lib.genAttrs systems (
-        s:
-          perSystem.${s}.checks
-          // lib.optionalAttrs (s == defaultSystem) {
-            # Run treefmt in check mode to ensure no changes would be made
-            hm = self.homeConfigurations."neg".activationPackage;
-            hm-lite = self.homeConfigurations."neg-lite".activationPackage;
-            # Fast eval matrix for RetroArch toggles (no heavy builds)
-            hm-eval-neg-retro-on = let
-              hmCfg = homeManagerInput.lib.homeManagerConfiguration {
-                pkgs = perSystem.${s}.pkgs;
-                extraSpecialArgs = {
-                  inputs = nillaInputs;
-                  inherit hy3;
-                  iosevkaNeg = perSystem.${s}.iosevkaNeg;
-                  yandexBrowser = perSystem.${s}.yandexBrowser;
-                  fa = perSystem.${s}.fa;
-                };
-                modules = [
-                  ./home.nix
-                  stylixInput.homeModules.stylix
-                  chaotic.homeManagerModules.default
-                  sopsNixInput.homeManagerModules.sops
-                  ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce true; })
-                ];
-              };
-            in perSystem.${s}.pkgs.writeText "hm-eval-neg-retro-on.json" (builtins.toJSON hmCfg.config.features);
-            hm-eval-neg-retro-off = let
-              hmCfg = homeManagerInput.lib.homeManagerConfiguration {
-                pkgs = perSystem.${s}.pkgs;
-                extraSpecialArgs = {
-                  inputs = nillaInputs;
-                  inherit hy3;
-                  iosevkaNeg = perSystem.${s}.iosevkaNeg;
-                  yandexBrowser = perSystem.${s}.yandexBrowser;
-                  fa = perSystem.${s}.fa;
-                };
-                modules = [
-                  ./home.nix
-                  stylixInput.homeModules.stylix
-                  chaotic.homeManagerModules.default
-                  sopsNixInput.homeManagerModules.sops
-                  ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce false; })
-                ];
-              };
-            in perSystem.${s}.pkgs.writeText "hm-eval-neg-retro-off.json" (builtins.toJSON hmCfg.config.features);
-            hm-eval-lite-retro-on = let
-              hmCfg = homeManagerInput.lib.homeManagerConfiguration {
-                pkgs = perSystem.${s}.pkgs;
-                extraSpecialArgs = {
-                  inputs = nillaInputs;
-                  inherit hy3;
-                  iosevkaNeg = perSystem.${s}.iosevkaNeg;
-                  yandexBrowser = perSystem.${s}.yandexBrowser;
-                  fa = perSystem.${s}.fa;
-                };
-                modules = [
-                  ({ ... }: { features.profile = "lite"; })
-                  ./home.nix
-                  stylixInput.homeModules.stylix
-                  chaotic.homeManagerModules.default
-                  sopsNixInput.homeManagerModules.sops
-                  ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce true; })
-                ];
-              };
-            in perSystem.${s}.pkgs.writeText "hm-eval-lite-retro-on.json" (builtins.toJSON hmCfg.config.features);
-            hm-eval-lite-retro-off = let
-              hmCfg = homeManagerInput.lib.homeManagerConfiguration {
-                pkgs = perSystem.${s}.pkgs;
-                extraSpecialArgs = {
-                  inputs = nillaInputs;
-                  inherit hy3;
-                  iosevkaNeg = perSystem.${s}.iosevkaNeg;
-                  yandexBrowser = perSystem.${s}.yandexBrowser;
-                  fa = perSystem.${s}.fa;
-                };
-                modules = [
-                  ({ ... }: { features.profile = "lite"; })
-                  ./home.nix
-                  stylixInput.homeModules.stylix
-                  chaotic.homeManagerModules.default
-                  sopsNixInput.homeManagerModules.sops
-                  ({ lib, ... }: { features.emulators.retroarch.full = lib.mkForce false; })
-                ];
-              };
-            in perSystem.${s}.pkgs.writeText "hm-eval-lite-retro-off.json" (builtins.toJSON hmCfg.config.features);
-          }
-      );
-
-      homeConfigurations."neg" = homeManagerInput.lib.homeManagerConfiguration {
-        pkgs = perSystem.${defaultSystem}.pkgs;
-        extraSpecialArgs = {
-          # Pass inputs mapped for Nilla raw-loader (issue #14 workaround)
-          inputs = nillaInputs;
-          inherit hy3;
-          iosevkaNeg = perSystem.${defaultSystem}.iosevkaNeg;
-          yandexBrowser = perSystem.${defaultSystem}.yandexBrowser;
-          fa = perSystem.${defaultSystem}.fa;
+            } ''
+              set -euo pipefail
+              treefmt -c ${./treefmt.toml} --fail-on-change .
+              touch "$out"
+            '';
+          # Build the options documentation as part of checks
+          options-md = pkgs.runCommand "options-md" {} ''
+            cp ${self.packages.${system}.options-md} "$out"
+          '';
+          features-options-md = pkgs.runCommand "features-options-md" {} ''
+            cp ${self.packages.${system}.features-options-md} "$out"
+          '';
+          features-options-json = pkgs.runCommand "features-options-json" {} ''
+            cp ${self.packages.${system}.features-options-json} "$out"
+          '';
         };
-        modules = [
-          ./home.nix
-          stylixInput.homeModules.stylix
-          chaotic.homeManagerModules.default
-          sopsNixInput.homeManagerModules.sops
-        ];
-      };
+      }
+    );
 
-      homeConfigurations."neg-lite" = homeManagerInput.lib.homeManagerConfiguration {
-        pkgs = perSystem.${defaultSystem}.pkgs;
-        extraSpecialArgs = {
-          inputs = nillaInputs;
-          inherit hy3;
-          iosevkaNeg = perSystem.${defaultSystem}.iosevkaNeg;
-          yandexBrowser = perSystem.${defaultSystem}.yandexBrowser;
-          fa = perSystem.${defaultSystem}.fa;
-        };
-        modules = [
-          ({ ... }: { features.profile = "lite"; })
-          ./home.nix
-          stylixInput.homeModules.stylix
-          chaotic.homeManagerModules.default
-          sopsNixInput.homeManagerModules.sops
-        ];
+    # Choose default system for user HM config
+    defaultSystem = "x86_64-linux";
+  in {
+    devShells = lib.genAttrs systems (s: perSystem.${s}.devShells);
+    packages = lib.genAttrs systems (s: perSystem.${s}.packages);
+    formatter = lib.genAttrs systems (s: perSystem.${s}.formatter);
+    checks = lib.genAttrs systems (
+      s:
+        perSystem.${s}.checks
+        // lib.optionalAttrs (s == defaultSystem) {
+          # Run treefmt in check mode to ensure no changes would be made
+          hm = self.homeConfigurations."neg".activationPackage;
+          hm-lite = self.homeConfigurations."neg-lite".activationPackage;
+          # Fast eval matrix for RetroArch toggles (no heavy builds)
+          hm-eval-neg-retro-on = let
+            hmCfg = homeManagerInput.lib.homeManagerConfiguration {
+              inherit (perSystem.${s}) pkgs;
+              extraSpecialArgs = {
+                inputs = nillaInputs;
+                inherit hy3;
+                inherit (perSystem.${s}) iosevkaNeg;
+                inherit (perSystem.${s}) yandexBrowser;
+                inherit (perSystem.${s}) fa;
+              };
+              modules = [
+                ./home.nix
+                stylixInput.homeModules.stylix
+                chaotic.homeManagerModules.default
+                sopsNixInput.homeManagerModules.sops
+                ({lib, ...}: {features.emulators.retroarch.full = lib.mkForce true;})
+              ];
+            };
+          in
+            perSystem.${s}.pkgs.writeText "hm-eval-neg-retro-on.json" (builtins.toJSON hmCfg.config.features);
+          hm-eval-neg-retro-off = let
+            hmCfg = homeManagerInput.lib.homeManagerConfiguration {
+              inherit (perSystem.${s}) pkgs;
+              extraSpecialArgs = {
+                inputs = nillaInputs;
+                inherit hy3;
+                inherit (perSystem.${s}) iosevkaNeg;
+                inherit (perSystem.${s}) yandexBrowser;
+                inherit (perSystem.${s}) fa;
+              };
+              modules = [
+                ./home.nix
+                stylixInput.homeModules.stylix
+                chaotic.homeManagerModules.default
+                sopsNixInput.homeManagerModules.sops
+                ({lib, ...}: {features.emulators.retroarch.full = lib.mkForce false;})
+              ];
+            };
+          in
+            perSystem.${s}.pkgs.writeText "hm-eval-neg-retro-off.json" (builtins.toJSON hmCfg.config.features);
+          hm-eval-lite-retro-on = let
+            hmCfg = homeManagerInput.lib.homeManagerConfiguration {
+              inherit (perSystem.${s}) pkgs;
+              extraSpecialArgs = {
+                inputs = nillaInputs;
+                inherit hy3;
+                inherit (perSystem.${s}) iosevkaNeg;
+                inherit (perSystem.${s}) yandexBrowser;
+                inherit (perSystem.${s}) fa;
+              };
+              modules = [
+                (_: {features.profile = "lite";})
+                ./home.nix
+                stylixInput.homeModules.stylix
+                chaotic.homeManagerModules.default
+                sopsNixInput.homeManagerModules.sops
+                ({lib, ...}: {features.emulators.retroarch.full = lib.mkForce true;})
+              ];
+            };
+          in
+            perSystem.${s}.pkgs.writeText "hm-eval-lite-retro-on.json" (builtins.toJSON hmCfg.config.features);
+          hm-eval-lite-retro-off = let
+            hmCfg = homeManagerInput.lib.homeManagerConfiguration {
+              inherit (perSystem.${s}) pkgs;
+              extraSpecialArgs = {
+                inputs = nillaInputs;
+                inherit hy3;
+                inherit (perSystem.${s}) iosevkaNeg;
+                inherit (perSystem.${s}) yandexBrowser;
+                inherit (perSystem.${s}) fa;
+              };
+              modules = [
+                (_: {features.profile = "lite";})
+                ./home.nix
+                stylixInput.homeModules.stylix
+                chaotic.homeManagerModules.default
+                sopsNixInput.homeManagerModules.sops
+                ({lib, ...}: {features.emulators.retroarch.full = lib.mkForce false;})
+              ];
+            };
+          in
+            perSystem.${s}.pkgs.writeText "hm-eval-lite-retro-off.json" (builtins.toJSON hmCfg.config.features);
+        }
+    );
+
+    homeConfigurations."neg" = homeManagerInput.lib.homeManagerConfiguration {
+      inherit (perSystem.${defaultSystem}) pkgs;
+      extraSpecialArgs = {
+        # Pass inputs mapped for Nilla raw-loader (issue #14 workaround)
+        inputs = nillaInputs;
+        inherit hy3;
+        inherit (perSystem.${defaultSystem}) iosevkaNeg;
+        inherit (perSystem.${defaultSystem}) yandexBrowser;
+        inherit (perSystem.${defaultSystem}) fa;
       };
+      modules = [
+        ./home.nix
+        stylixInput.homeModules.stylix
+        chaotic.homeManagerModules.default
+        sopsNixInput.homeManagerModules.sops
+      ];
     };
+
+    homeConfigurations."neg-lite" = homeManagerInput.lib.homeManagerConfiguration {
+      inherit (perSystem.${defaultSystem}) pkgs;
+      extraSpecialArgs = {
+        inputs = nillaInputs;
+        inherit hy3;
+        inherit (perSystem.${defaultSystem}) iosevkaNeg;
+        inherit (perSystem.${defaultSystem}) yandexBrowser;
+        inherit (perSystem.${defaultSystem}) fa;
+      };
+      modules = [
+        (_: {features.profile = "lite";})
+        ./home.nix
+        stylixInput.homeModules.stylix
+        chaotic.homeManagerModules.default
+        sopsNixInput.homeManagerModules.sops
+      ];
+    };
+  };
 }

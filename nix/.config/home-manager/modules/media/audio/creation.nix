@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 lib.mkIf config.features.media.audio.creation.enable {
   home.packages = with pkgs; [
     bespokesynth # nice modular synth

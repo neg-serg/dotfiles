@@ -1,7 +1,6 @@
 {
   runCommand,
   wineWowPackages,
-  fetchzip,
   xorg,
   squashfsTools,
   username ? "wineuser",

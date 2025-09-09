@@ -12,5 +12,5 @@ in {
   desktop = audio ++ editors ++ ai ++ browsers ++ forensics ++ misc;
 
   # Headless/server preset: no unfree packages allowed
-  headless = [ ];
+  headless = [];
 }

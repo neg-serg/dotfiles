@@ -8,14 +8,12 @@
   };
 
   outputs = {
-    self,
     nixpkgs,
     flake-utils,
   }:
     flake-utils.lib.eachDefaultSystem (
       system: let
         pkgs = import nixpkgs {inherit system;};
-        lib = pkgs.lib;
         python = pkgs.python3; # use default python3 for this channel
         pyPkgs = python.pkgs;
 

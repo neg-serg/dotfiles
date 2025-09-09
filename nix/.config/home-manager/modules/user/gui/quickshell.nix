@@ -1,4 +1,10 @@
-{ lib, pkgs, config, inputs, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  inputs,
+  ...
+}:
 with lib; let
   qsPath = pkgs.lib.makeBinPath [
     pkgs.fd # fast file finder used by QS scripts
@@ -25,29 +31,30 @@ with lib; let
         --prefix PATH : ${qsPath}
     '';
   };
-in mkIf config.features.gui {
-  home.packages = with pkgs; [
-    cantarell-fonts # GNOME Cantarell fonts
-    cava # console audio visualizer
-    inputs.rsmetrx.packages.${pkgs.system}.default # metrics/telemetry helper
-    kdePackages.kdialog # simple Qt dialog helper
-    kdePackages.qt5compat # needed for Qt5Compat modules in Qt6
-    kdePackages.qtdeclarative # Qt 6 QML
-    kdePackages.qtimageformats # extra image formats
-    kdePackages.qtmultimedia # multimedia QML/Qt
-    kdePackages.qtpositioning # positioning QML/Qt
-    kdePackages.qtquicktimeline # timeline QML
-    kdePackages.qtsensors # sensors QML/Qt
-    kdePackages.qtsvg # SVG support
-    kdePackages.qttools # Qt tooling
-    kdePackages.qttranslations # Qt translations
-    kdePackages.qtvirtualkeyboard # on-screen keyboard
-    kdePackages.qtwayland # Wayland platform plugin
-    kdePackages.syntax-highlighting # KSyntaxHighlighting
-    material-symbols # Material Symbols font
-    networkmanager # nmcli and helpers
-    qt6.qtimageformats # extra image formats (Qt6)
-    qt6.qtsvg # SVG support (Qt6)
-    quickshellWrapped # wrapper with required env paths
-  ];
-}
+in
+  mkIf config.features.gui {
+    home.packages = with pkgs; [
+      cantarell-fonts # GNOME Cantarell fonts
+      cava # console audio visualizer
+      inputs.rsmetrx.packages.${pkgs.system}.default # metrics/telemetry helper
+      kdePackages.kdialog # simple Qt dialog helper
+      kdePackages.qt5compat # needed for Qt5Compat modules in Qt6
+      kdePackages.qtdeclarative # Qt 6 QML
+      kdePackages.qtimageformats # extra image formats
+      kdePackages.qtmultimedia # multimedia QML/Qt
+      kdePackages.qtpositioning # positioning QML/Qt
+      kdePackages.qtquicktimeline # timeline QML
+      kdePackages.qtsensors # sensors QML/Qt
+      kdePackages.qtsvg # SVG support
+      kdePackages.qttools # Qt tooling
+      kdePackages.qttranslations # Qt translations
+      kdePackages.qtvirtualkeyboard # on-screen keyboard
+      kdePackages.qtwayland # Wayland platform plugin
+      kdePackages.syntax-highlighting # KSyntaxHighlighting
+      material-symbols # Material Symbols font
+      networkmanager # nmcli and helpers
+      qt6.qtimageformats # extra image formats (Qt6)
+      qt6.qtsvg # SVG support (Qt6)
+      quickshellWrapped # wrapper with required env paths
+    ];
+  }

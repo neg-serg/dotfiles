@@ -1,4 +1,3 @@
 [
   "lmstudio" # local LLM app
 ]
-

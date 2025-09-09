@@ -1,4 +1,4 @@
-{...}: {
+_: {
   programs = {
     mangohud = {
       enable = true; # gaming hud

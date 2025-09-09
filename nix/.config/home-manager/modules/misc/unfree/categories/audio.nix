@@ -5,4 +5,3 @@
   "vital" # digital synth
   "roomeqwizard" # room acoustics
 ]
-

@@ -1,6 +1,11 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 with lib; {
-  imports = [ ./neovim ];
+  imports = [./neovim];
   config = mkIf config.features.dev.enable {
     home.packages = with pkgs;
       [

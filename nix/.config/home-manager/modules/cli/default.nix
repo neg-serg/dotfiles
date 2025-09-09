@@ -1,6 +1,10 @@
-{ lib, config, pkgs, ... }:
-with lib;
-let
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
+with lib; let
   groups = with pkgs; rec {
     # Text/formatting/regex/CSV/TOML tools
     text = [
@@ -61,12 +65,12 @@ let
   };
 in {
   options.features.cli = {
-    text = mkEnableOption "enable text/formatting/CSV/TOML tools" // { default = true; };
-    fs = mkEnableOption "enable filesystem/archive/hash/mass-rename tools" // { default = true; };
-    net = mkEnableOption "enable network/cloud/URL tools" // { default = true; };
-    obs = mkEnableOption "enable observability/log tools" // { default = true; };
-    sys = mkEnableOption "enable system fetch utilities" // { default = true; };
-    dev = mkEnableOption "enable dev helpers/diffs/automation" // { default = true; };
+    text = mkEnableOption "enable text/formatting/CSV/TOML tools" // {default = true;};
+    fs = mkEnableOption "enable filesystem/archive/hash/mass-rename tools" // {default = true;};
+    net = mkEnableOption "enable network/cloud/URL tools" // {default = true;};
+    obs = mkEnableOption "enable observability/log tools" // {default = true;};
+    sys = mkEnableOption "enable system fetch utilities" // {default = true;};
+    dev = mkEnableOption "enable dev helpers/diffs/automation" // {default = true;};
   };
   imports = [
     ./direnv.nix # auto-load per-dir env with nix integration
@@ -97,6 +101,6 @@ in {
       ++ (optionals config.features.cli.obs groups.obs)
       ++ (optionals config.features.cli.sys groups.sys)
       ++ (optionals config.features.cli.dev groups.dev)
-      ++ [ pkgs.tealdeer ]; # tldr replacement written in Rust
+      ++ [pkgs.tealdeer]; # tldr replacement written in Rust
   };
 }

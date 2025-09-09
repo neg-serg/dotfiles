@@ -7,7 +7,6 @@
   };
 
   outputs = {
-    self,
     nixpkgs,
     flake-utils,
   }:
@@ -72,8 +71,8 @@
     in {
       packages = {
         default = blissify-rs;
-        blissify-rs = blissify-rs;
-        blissify-rs-src = blissify-rs-src;
+        inherit blissify-rs;
+        inherit blissify-rs-src;
       };
 
       devShells.default = pkgs.mkShell.override {inherit stdenv;} {

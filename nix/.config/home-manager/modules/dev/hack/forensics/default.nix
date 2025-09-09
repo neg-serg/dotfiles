@@ -1,5 +1,8 @@
-{ pkgs, lib, config, ... }:
-let
+{
+  pkgs,
+  config,
+  ...
+}: let
   groups = with pkgs; rec {
     fs = [
       ddrescue # data recovery utility

@@ -1,7 +1,16 @@
-{ config, pkgs, lib, fa ? null, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  fa ? null,
+  ...
+}:
 lib.mkIf (config.features.web.enable && config.features.web.floorp.enable) (let
   dlDir = "${config.home.homeDirectory}/dw";
-  fa' = if fa != null then fa else pkgs.nur.repos.rycee.firefox-addons; # requires NUR
+  fa' =
+    if fa != null
+    then fa
+    else pkgs.nur.repos.rycee.firefox-addons; # requires NUR
   addons = config.lib.neg.browserAddons fa';
 in {
   programs.floorp = {

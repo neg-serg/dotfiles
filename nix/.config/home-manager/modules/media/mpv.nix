@@ -31,7 +31,6 @@
       deband-grain = 48; # dynamic grain: set to "0" if using the static grain shader
       deband-iterations = 4; # deband steps
 
-
       deband = true; # enabled by default
       #--[ Interpolation ]---------------------------------------
       video-sync = "audio";
@@ -49,7 +48,6 @@
       video-output-levels = "full";
       #--[Scaling]-----------------------------------------------
       cscale = "ewa_lanczossharp";
-
 
       dscale = "mitchell";
       linear-downscaling = false;
@@ -139,7 +137,6 @@
       "protocol.http" = {
         cache-pause = false; # don't pause when the cache runs low
         cache = true;
-
       };
       "protocol.https" = {profile = "protocol.http";};
       "protocol.ytdl" = {profile = "protocol.http";};
@@ -257,10 +254,6 @@
         audio_types = "aac,ac3,aiff,ape,au,dsf,dts,flac,m4a,mid,midi,mka,mp3,mp4a,oga,ogg,opus,spx,tak,tta,wav,weba,wma,wv";
         subtitle_types = "aqt,ass,gsub,idx,jss,lrc,mks,pgs,pjs,psb,rt,slt,smi,sub,sup,srt,ssa,ssf,ttxt,txt,usf,vt,vtt";
         # Default open-file menu directory
-
-
-
-
       };
     };
 

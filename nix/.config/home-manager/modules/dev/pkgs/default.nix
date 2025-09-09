@@ -1,5 +1,9 @@
-{ lib, pkgs, config, ... }:
-let
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}: let
   inherit (lib) optionals;
   groups = with pkgs; rec {
     formatters = [
@@ -26,12 +30,13 @@ let
       deheader # remove unneeded C/C++ includes
     ];
   };
-in lib.mkIf config.features.dev.enable {
-  home.packages =
-    (optionals config.features.dev.pkgs.formatters groups.formatters)
-    ++ (optionals config.features.dev.pkgs.analyzers groups.analyzers)
-    ++ (optionals config.features.dev.pkgs.codecount groups.codecount)
-    ++ (optionals config.features.dev.pkgs.radicle groups.radicle)
-    ++ (optionals config.features.dev.pkgs.runtime groups.runtime)
-    ++ (optionals config.features.dev.pkgs.misc groups.misc);
-}
+in
+  lib.mkIf config.features.dev.enable {
+    home.packages =
+      (optionals config.features.dev.pkgs.formatters groups.formatters)
+      ++ (optionals config.features.dev.pkgs.analyzers groups.analyzers)
+      ++ (optionals config.features.dev.pkgs.codecount groups.codecount)
+      ++ (optionals config.features.dev.pkgs.radicle groups.radicle)
+      ++ (optionals config.features.dev.pkgs.runtime groups.runtime)
+      ++ (optionals config.features.dev.pkgs.misc groups.misc);
+  }
