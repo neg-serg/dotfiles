@@ -5,7 +5,7 @@
   ...
 }:
 lib.mkIf (config.features.web.enable && config.features.web.floorp.enable) (let
-  common = config.lib.neg.web.mozillaCommon;
+  common = import ./mozilla-common-lib.nix { inherit lib pkgs config; };
 in {
   programs.floorp = {
     enable = true;

@@ -7,7 +7,7 @@
 }:
 with lib;
 mkIf (config.features.web.enable && config.features.web.firefox.enable) (let
-  common = config.lib.neg.web.mozillaCommon;
+  common = import ./mozilla-common-lib.nix { inherit lib pkgs config fa; };
 in {
   programs.firefox = {
     enable = true;
@@ -23,4 +23,3 @@ in {
     policies = common.policies;
   };
 })
-
