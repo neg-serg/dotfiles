@@ -10,8 +10,10 @@ with rec {
       desktop = "kitty";
     };
     browser = {
-      cmd = "${pkgs.floorp}/bin/floorp";
-      desktop = "floorp";
+      cmd = config.lib.neg.web.defaultBrowser.bin;
+      # Historically we kept just the desktop ID without suffix here.
+      # Derive it from the full desktop file name.
+      desktop = lib.removeSuffix ".desktop" config.lib.neg.web.defaultBrowser.desktop;
     };
     editor = {
       cmd = "${pkgs.neovim}/bin/nvim";
@@ -19,7 +21,7 @@ with rec {
     };
   };
 
-  browser = "${defaultApplications.browser.desktop}.desktop";
+  browser = config.lib.neg.web.defaultBrowser.desktop;
   pdfreader = "org.pwmt.zathura.desktop";
   telegram = "org.telegram.desktop.desktop";
   torrent = "transmission.desktop";

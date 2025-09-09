@@ -6,7 +6,10 @@
   ...
 }:
 with lib; {
-  imports = [./floorp.nix];
+  imports = [
+    ./defaults.nix
+    ./floorp.nix
+  ];
 
   config = mkMerge [
     {

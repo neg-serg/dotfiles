@@ -12,7 +12,7 @@
     settings = {
       global = {
         alignment = "left";
-        browser = "${pkgs.floorp}/bin/floorp -new-tab";
+        browser = "${config.lib.neg.web.defaultBrowser.bin} ${config.lib.neg.web.defaultBrowser.newTabArg}";
         corner_radius = 4;
         ellipsize = "end";
         follow = "mouse";

@@ -21,7 +21,6 @@
     XDG_VIDEOS_DIR = "${config.home.homeDirectory}/vid";
     XDG_RUNTIME_DIR = "/run/user/$UID";
 
-    BROWSER = "${pkgs.floorp}/bin/floorp";
     CARGO_HOME = "${config.home.sessionVariables.XDG_DATA_HOME}/cargo";
     RUSTUP_HOME = "${config.home.sessionVariables.XDG_DATA_HOME}/rustup";
     CCACHE_CONFIGPATH = "${config.home.sessionVariables.XDG_CONFIG_HOME}/ccache.config";
