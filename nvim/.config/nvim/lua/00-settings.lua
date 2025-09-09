@@ -78,7 +78,6 @@ o.isfname='#,$,%,+,,,-,.,/,48-57,=,@,_,~,@-@'  -- Scan in filenames in such brac
 o.matchtime=0                                -- Default time to hi brackets too long for me
 o.matchpairs='(:),{:},[:],<:>'                 -- More matchpairs
 o.foldenable=false                           -- Disable folds as
-o.joinspaces=false                           -- Prevents inserting two spaces after punctuation on a join (J
 o.numberwidth=3                              -- Shorter number width
 o.signcolumn='yes:1'                         -- Merge sign and numbers
 o.pumblend=15                                -- setup pmenu transparency
@@ -116,6 +115,7 @@ o.winblend=15                                -- Pseudo-transparency for floating
 o.winminheight=0                             -- Windows can be 0 line high
 o.winminwidth=0                              -- Windows can be 0 line width
 o.wrap=false                                 -- Do not wrap lines by default
+o.mouse='a'                                  -- Add mouse support
 o.mousescroll={'ver:2','hor:1'}              -- More conservative mouse scroll
 o.backupdir=home_..'/trash/'               -- Setup backupdir
 o.directory=home_..'/trash/'               -- Directory for swap files
