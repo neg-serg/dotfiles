@@ -138,6 +138,30 @@
     # Safe no-op for regular flake usage; enables Nilla to accept raw inputs.
     nillaInputs = builtins.mapAttrs (_: input: input // {type = "derivation";}) inputs;
 
+    # Common Home Manager building blocks
+    hmBaseModules = {
+      profile ? null,
+      extra ? [],
+    }: let
+      base = [
+        ./home.nix
+        stylixInput.homeModules.stylix
+        chaotic.homeManagerModules.default
+        sopsNixInput.homeManagerModules.sops
+      ];
+      profMod = lib.optional (profile == "lite") (_: {features.profile = "lite";});
+    in
+      profMod ++ base ++ extra;
+
+    mkHMArgs = system: {
+      # Pass inputs mapped for Nilla raw-loader and common extras
+      inputs = nillaInputs;
+      inherit hy3;
+      inherit (perSystem.${system}) iosevkaNeg;
+      inherit (perSystem.${system}) yandexBrowser;
+      inherit (perSystem.${system}) fa;
+    };
+
     # Build per-system attributes in one place
     perSystem = lib.genAttrs systems (
       system: let
@@ -415,82 +439,38 @@
           hm-eval-neg-retro-on = let
             hmCfg = homeManagerInput.lib.homeManagerConfiguration {
               inherit (perSystem.${s}) pkgs;
-              extraSpecialArgs = {
-                inputs = nillaInputs;
-                inherit hy3;
-                inherit (perSystem.${s}) iosevkaNeg;
-                inherit (perSystem.${s}) yandexBrowser;
-                inherit (perSystem.${s}) fa;
-              };
-              modules = [
-                ./home.nix
-                stylixInput.homeModules.stylix
-                chaotic.homeManagerModules.default
-                sopsNixInput.homeManagerModules.sops
-                (_: {features.emulators.retroarch.full = true;})
-              ];
+              extraSpecialArgs = mkHMArgs s;
+              modules = hmBaseModules {extra = [(_: {features.emulators.retroarch.full = true;})];};
             };
           in
             perSystem.${s}.pkgs.writeText "hm-eval-neg-retro-on.json" (builtins.toJSON hmCfg.config.features);
           hm-eval-neg-retro-off = let
             hmCfg = homeManagerInput.lib.homeManagerConfiguration {
               inherit (perSystem.${s}) pkgs;
-              extraSpecialArgs = {
-                inputs = nillaInputs;
-                inherit hy3;
-                inherit (perSystem.${s}) iosevkaNeg;
-                inherit (perSystem.${s}) yandexBrowser;
-                inherit (perSystem.${s}) fa;
-              };
-              modules = [
-                ./home.nix
-                stylixInput.homeModules.stylix
-                chaotic.homeManagerModules.default
-                sopsNixInput.homeManagerModules.sops
-                (_: {features.emulators.retroarch.full = false;})
-              ];
+              extraSpecialArgs = mkHMArgs s;
+              modules = hmBaseModules {extra = [(_: {features.emulators.retroarch.full = false;})];};
             };
           in
             perSystem.${s}.pkgs.writeText "hm-eval-neg-retro-off.json" (builtins.toJSON hmCfg.config.features);
           hm-eval-lite-retro-on = let
             hmCfg = homeManagerInput.lib.homeManagerConfiguration {
               inherit (perSystem.${s}) pkgs;
-              extraSpecialArgs = {
-                inputs = nillaInputs;
-                inherit hy3;
-                inherit (perSystem.${s}) iosevkaNeg;
-                inherit (perSystem.${s}) yandexBrowser;
-                inherit (perSystem.${s}) fa;
+              extraSpecialArgs = mkHMArgs s;
+              modules = hmBaseModules {
+                profile = "lite";
+                extra = [(_: {features.emulators.retroarch.full = true;})];
               };
-              modules = [
-                (_: {features.profile = "lite";})
-                ./home.nix
-                stylixInput.homeModules.stylix
-                chaotic.homeManagerModules.default
-                sopsNixInput.homeManagerModules.sops
-                (_: {features.emulators.retroarch.full = true;})
-              ];
             };
           in
             perSystem.${s}.pkgs.writeText "hm-eval-lite-retro-on.json" (builtins.toJSON hmCfg.config.features);
           hm-eval-lite-retro-off = let
             hmCfg = homeManagerInput.lib.homeManagerConfiguration {
               inherit (perSystem.${s}) pkgs;
-              extraSpecialArgs = {
-                inputs = nillaInputs;
-                inherit hy3;
-                inherit (perSystem.${s}) iosevkaNeg;
-                inherit (perSystem.${s}) yandexBrowser;
-                inherit (perSystem.${s}) fa;
+              extraSpecialArgs = mkHMArgs s;
+              modules = hmBaseModules {
+                profile = "lite";
+                extra = [(_: {features.emulators.retroarch.full = false;})];
               };
-              modules = [
-                (_: {features.profile = "lite";})
-                ./home.nix
-                stylixInput.homeModules.stylix
-                chaotic.homeManagerModules.default
-                sopsNixInput.homeManagerModules.sops
-                (_: {features.emulators.retroarch.full = false;})
-              ];
             };
           in
             perSystem.${s}.pkgs.writeText "hm-eval-lite-retro-off.json" (builtins.toJSON hmCfg.config.features);
@@ -499,38 +479,14 @@
 
     homeConfigurations."neg" = homeManagerInput.lib.homeManagerConfiguration {
       inherit (perSystem.${defaultSystem}) pkgs;
-      extraSpecialArgs = {
-        # Pass inputs mapped for Nilla raw-loader (issue #14 workaround)
-        inputs = nillaInputs;
-        inherit hy3;
-        inherit (perSystem.${defaultSystem}) iosevkaNeg;
-        inherit (perSystem.${defaultSystem}) yandexBrowser;
-        inherit (perSystem.${defaultSystem}) fa;
-      };
-      modules = [
-        ./home.nix
-        stylixInput.homeModules.stylix
-        chaotic.homeManagerModules.default
-        sopsNixInput.homeManagerModules.sops
-      ];
+      extraSpecialArgs = mkHMArgs defaultSystem;
+      modules = hmBaseModules {};
     };
 
     homeConfigurations."neg-lite" = homeManagerInput.lib.homeManagerConfiguration {
       inherit (perSystem.${defaultSystem}) pkgs;
-      extraSpecialArgs = {
-        inputs = nillaInputs;
-        inherit hy3;
-        inherit (perSystem.${defaultSystem}) iosevkaNeg;
-        inherit (perSystem.${defaultSystem}) yandexBrowser;
-        inherit (perSystem.${defaultSystem}) fa;
-      };
-      modules = [
-        (_: {features.profile = "lite";})
-        ./home.nix
-        stylixInput.homeModules.stylix
-        chaotic.homeManagerModules.default
-        sopsNixInput.homeManagerModules.sops
-      ];
+      extraSpecialArgs = mkHMArgs defaultSystem;
+      modules = hmBaseModules {profile = "lite";};
     };
   };
 }
