@@ -7,10 +7,10 @@
 with lib;
   mkIf config.features.dev.enable {
     home.packages = with pkgs; [
-      act # local github actions
-      difftastic # syntax-aware diff
-      gh # github cli client
-      gist # manage github gists
+      act # run GitHub Actions locally
+      difftastic # syntax-aware diff viewer
+      gh # GitHub CLI
+      gist # manage GitHub gists
     ];
 
     home.file.".config/git/hooks/pre-commit" = {

@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    tdl # telegram cli downloader/uploader
-    telegram-desktop # famous cloud-based im
-    vesktop # alternative discord client
+    tdl # Telegram CLI downloader/uploader
+    telegram-desktop # cloud-based IM client
+    vesktop # alternative Discord client
   ];
 }

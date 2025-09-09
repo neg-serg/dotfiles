@@ -29,14 +29,14 @@ in
       systemd.variables = ["--all"];
     };
     home.packages = with pkgs; [
-      hyprcursor # is a new cursor theme format that has many advantages over the widely used xcursor.
+      hyprcursor # modern cursor theme format (replaces xcursor)
       hypridle # idle daemon
-      hyprland-qt-support # qt support
-      hyprland-qtutils # utility apps for hyprland
+      hyprland-qt-support # Qt integration fixes
+      hyprland-qtutils # Hyprland Qt helpers
       hyprpicker # color picker
-      hyprpolkitagent # better polkit agent
-      hyprprop # xrop for hyprland
-      hyprutils # small library for hyprland
+      hyprpolkitagent # polkit agent
+      hyprprop # xprop-like tool for Hyprland
+      hyprutils # core utils for Hyprland
       kdePackages.qt6ct # Qt6 config tool
       pyprland # Hyprland plugin system
       upower # power management daemon

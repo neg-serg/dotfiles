@@ -7,7 +7,7 @@
           "--set QT_ENABLE_VULKAN 1"
           "--set QT_QUICK_BACKEND vulkan"
           "--set QT_QPA_PLATFORM wayland"
-        ];
+        ]; # prefer Wayland + Vulkan
       preFixup =
         (oldAttrs.preFixup or "")
         + ''

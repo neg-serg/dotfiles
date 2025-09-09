@@ -8,14 +8,14 @@ with {
   dots = "${config.home.homeDirectory}/.dotfiles";
 }; {
   home.packages = with pkgs; [
-    bash-language-server # bash lsp
-    neovim # neovim from master
-    neovim-remote # nvr for neovim
-    nil # nixos language server
-    pylyzer # python type checker
-    pyright # python lsp
-    ruff # python linter
-    rust-analyzer # rust lsp
+    bash-language-server # Bash LSP
+    neovim # Neovim editor
+    neovim-remote # nvr (remote control for Neovim)
+    nil # Nix language server
+    pylyzer # Python type checker
+    pyright # Python LSP
+    ruff # Python linter
+    rust-analyzer # Rust LSP
   ];
   programs.neovim = {
     plugins = with pkgs.vimPlugins; [

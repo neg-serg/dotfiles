@@ -4,8 +4,8 @@
   ...
 }: {
   home.packages = with pkgs; [
-    fastfetch # nice fetch
-    onefetch # show you git stuff
+    fastfetch # modern, fast system fetch
+    onefetch # repository summary in terminal
   ];
   xdg.configFile."fastfetch/skull".text = ''
                           :::!~!!!!!:.

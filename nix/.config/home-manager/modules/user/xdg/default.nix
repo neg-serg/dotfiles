@@ -97,8 +97,8 @@ with rec {
   };
 }; {
   home.packages = with pkgs; [
-    handlr # xdg-open
-    xdg-ninja # autodetect stuff that should be moved from HOME dir
+    handlr # xdg-open replacement with per-handler rules
+    xdg-ninja # detect mislocated files in $HOME
   ];
   xdg = {
     enable = true;
