@@ -1,9 +1,24 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   # Install tig and provide its configuration via XDG
   home.packages = [ pkgs.tig ];
 
-  xdg.configFile."tig/config".text = ''
+  # Ensure ~/.config/tig is a real directory (remove stale/broken symlink)
+  home.activation.fixTigConfigDir = {
+    before = [ "linkGeneration" ];
+    data = ''
+      set -eu
+      TDIR="${config.xdg.configHome}/tig"
+      if [ -L "$TDIR" ]; then
+        rm -f "$TDIR"
+      fi
+      mkdir -p "$TDIR"
+    '';
+  };
+
+  xdg.configFile."tig/config" = {
+    force = true;
+    text = ''
 #--[ View settings ]-----------------------------------------------------------------------------------------------
 set main-view = line-number:no,interval=5 id:no date:relative author:full commit-title:yes,graph,refs,overflow=no
 set blame-view = date:relative author:full file-name:auto id:yes,color line-number:no,interval=5 text
@@ -205,5 +220,5 @@ set git-colors = \
     status.changed=stat-unstaged \
     status.untracked=stat-untracked
   '';
+  };
 }
-
