@@ -360,3 +360,6 @@ misc/.config/transmission-daemon/bandwidth-groups.json
 
 # MPV generated assets
 media/.config/mpv/fonts/
+# Nushell cache and compiled plugins (ignore if present locally)
+shell/.config/nushell/nupm/cache/
+shell/.config/nushell/plugin.msgpackz
