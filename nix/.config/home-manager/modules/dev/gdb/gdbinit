@@ -9,8 +9,9 @@ set $SHOWDATAWIN = 0
 set $SHOWREGCHANGES = 1
 set $SKIPEXECUTE = 0
 set $SKIPSTEP = 1
-set $ARMOPCODES = 1
-set $X86FLAVOR = 1
+# x64-only: drop ARM/X86 flavor switches
+# set $ARMOPCODES = 1
+# set $X86FLAVOR = 1
 
 set confirm off
 set verbose off
@@ -36,12 +37,17 @@ handle SIGSYS noprint nostop
 # start debugging malicious software...
 set auto-load safe-path /
 
+# GDB 16+ enhancements
+set debuginfod enabled on
+set disassemble-next-line on
+
 if $COLOUREDPROMPT == 1
 	set prompt \033[31mgdb$ \033[0m
 end
 
 set output-radix 0x10
 set input-radix 0x10
+set disassembly-flavor intel
 
 # These make gdb never pause in its output
 set height 0
@@ -2749,20 +2755,8 @@ end
 
 # ____________________misc____________________
 define hook-stop
-# Display instructions formats
-    if $ARM == 1
-        if $ARMOPCODES == 1
-            set arm show-opcode-bytes 1
-        else
-            set arm show-opcode-bytes 1
-        end
-    else
-        if $X86FLAVOR == 0
-            set disassembly-flavor intel
-        else
-            set disassembly-flavor att
-        end
-    end
+    # x64-only: keep Intel syntax
+    set disassembly-flavor intel
 
     # this makes 'context' be called at every BP/step
     if ($SHOW_CONTEXT > 0)
@@ -3112,41 +3106,12 @@ document disabledatawin
 Disable display of data window in the context window.
 end
 
-define 32bits
-	set $64BITS = 0
-    if $X86FLAVOR == 0
-        set disassembly-flavor intel
-    else
-        set disassembly-flavor att
-    end
-end
-document 32bits
-Set gdb to work with 32bits binaries.
-end
-
 define 64bits
-	set $64BITS = 1
-    if $X86FLAVOR == 0
-        set disassembly-flavor intel
-    else
-        set disassembly-flavor att
-    end
+    set $64BITS = 1
+    set disassembly-flavor intel
 end
 document 64bits
-Set gdb to work with 64bits binaries.
-end
-
-define arm
-    if $ARMOPCODES == 1
-        set arm show-opcode-bytes 1
-    else
-       set arm show-opcode-bytes 1
-    end
-    set $ARM = 1
-    set $64BITS = 0
-end
-document arm
-Set gdb to work with ARM binaries.
+Set gdb to work with 64-bit x86 binaries (Intel syntax).
 end
 
 define enablelib
