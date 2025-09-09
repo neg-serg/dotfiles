@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 set -eu
 if (set -o pipefail) 2>/dev/null; then
   set -o pipefail
