@@ -503,9 +503,67 @@ return function(ctx)
   }
   
   -- ── Default statusline ────────────────────────────────────────────────────
+  -- Helpers and left block for empty buffer (cwd/buffers/git)
+  local function cwd_git_branch()
+    local cwd = fn.getcwd()
+    local gitdir = fn.finddir('.git', cwd .. ';')
+    if gitdir == '' then return nil end
+    local ok, head = pcall(fn.readfile, gitdir .. '/HEAD')
+    if not ok or not head or #head == 0 then return nil end
+    local line = head[1]
+    if type(line) ~= 'string' then return nil end
+    if line:sub(1,5) == 'ref: ' then
+      local ref = line:sub(6)
+      return (ref:match('refs/heads/(.+)') or ref):gsub('%s+$','')
+    end
+    return line:sub(1,7)
+  end
+
+  local function listed_buffer_count()
+    local bufs = vim.api.nvim_list_bufs()
+    local n = 0
+    for _, b in ipairs(bufs) do
+      if vim.api.nvim_buf_is_loaded(b) and vim.bo[b].buflisted then n = n + 1 end
+    end
+    return n
+  end
+
+  local EmptyLeft = {
+    condition = is_empty,
+    { provider = S.folder .. ' ', hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
+    {
+      provider = prof('Empty.Cwd', function() return fn.fnamemodify(fn.getcwd(), ':~') .. ' ' end),
+      hl = function() return { fg = colors.white, bg = colors.base_bg } end,
+      update = { 'DirChanged', 'WinResized' },
+      on_click = { callback = vim.schedule_wrap(function() dbg_push('click: empty cwd'); open_file_browser_cwd() end), name = 'heirline_empty_cwd_open' },
+    },
+    { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
+    {
+      provider = prof('Empty.Buffers', function()
+        return 'Buffers ' .. listed_buffer_count() .. ' '
+      end),
+      hl = function() return { fg = colors.cyan, bg = colors.base_bg } end,
+      update = { 'BufAdd', 'BufDelete', 'BufEnter' },
+      on_click = { callback = vim.schedule_wrap(function()
+        dbg_push('click: empty buffers')
+        local ok, tb = pcall(require, 'telescope.builtin')
+        if ok then tb.buffers() else vim.cmd('ls') end
+      end), name = 'heirline_empty_buffers' },
+    },
+    {
+      condition = function() return not is_narrow() end,
+      provider = prof('Empty.Git', function()
+        local br = cwd_git_branch()
+        return br and (S.branch .. br .. ' ') or ''
+      end),
+      hl = function() return { fg = colors.blue, bg = colors.base_bg } end,
+      update = { 'DirChanged' },
+      on_click = { callback = vim.schedule_wrap(function() dbg_push('click: empty git'); open_git_ui() end), name = 'heirline_empty_git' },
+    },
+  }
   local DefaultStatusline = {
     utils.surround({ '', '' }, colors.base_bg, {
-      { condition = is_empty, provider = '[N]', hl = function() return { fg = colors.white, bg = colors.base_bg } end },
+      EmptyLeft,
       LeftComponents,
       components.search,
     }),
