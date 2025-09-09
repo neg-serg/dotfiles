@@ -7,6 +7,7 @@
     ./accounts
     ./isync
     ./imapnotify
+    ./mutt
     ./khal # better calendar
     ./msmtp
     ./notmuch

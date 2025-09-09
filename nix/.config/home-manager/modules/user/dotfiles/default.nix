@@ -13,8 +13,7 @@ in {
   xdg = {
     configFile = {
       # █▓▒░ mail ─────────────────────────────────────────────────────────────────────────
-      # isync (mbsync) config is now managed via Home Manager (modules/user/mail/isync)
-      "mutt" = mkSymlink "mail/.config/mutt" true;
+      # mutt/neomutt config is now managed via Home Manager (modules/user/mail/mutt)
 
       # █▓▒░ media ────────────────────────────────────────────────────────────────────────
       "swayimg" = mkSymlink "media/.config/swayimg" true;
