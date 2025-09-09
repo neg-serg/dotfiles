@@ -1,4 +1,3 @@
-set $ARM = 0
 set $64BITS = 1
 set $COLOUREDPROMPT = 1
 set $SETCOLOUR1STLINE = 0
@@ -10,8 +9,6 @@ set $SHOWREGCHANGES = 1
 set $SKIPEXECUTE = 0
 set $SKIPSTEP = 1
 # x64-only: drop ARM/X86 flavor switches
-# set $ARMOPCODES = 1
-# set $X86FLAVOR = 1
 
 set confirm off
 set verbose off
@@ -40,6 +37,11 @@ set auto-load safe-path /
 # GDB 16+ enhancements
 set debuginfod enabled on
 set disassemble-next-line on
+set style enabled on
+set style sources on
+set tui border-kind ascii
+set tui compact-source on
+set tui mouse-events off
 
 if $COLOUREDPROMPT == 1
 	set prompt \033[31mgdb$ \033[0m
