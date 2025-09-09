@@ -1,7 +1,9 @@
 _: {
-  programs.oh-my-posh.enable = true;
-  programs.oh-my-posh.useTheme = "atomic";
-  programs.nix-your-shell = {
-    enable = true;
+  programs = {
+    oh-my-posh = {
+      enable = true;
+      useTheme = "atomic";
+    };
+    nix-your-shell.enable = true;
   };
 }

@@ -7,26 +7,26 @@
 with {
   alkano-aio = pkgs.callPackage ./alkano-aio.nix {};
 }; {
-  home.packages = with pkgs; [
-    adw-gtk3 # adwaita port to gtk3
-    dconf # gnome registry
-    iosevkaNeg.nerd-font # install my custom iosevka build
-    kdePackages.qtstyleplugin-kvantum # nice qt6 themes
-    libsForQt5.qtstyleplugin-kvantum # nice qt5 themes
-  ];
-
-  home.pointerCursor = {
-    gtk.enable = true;
-    x11.enable = lib.mkForce false;
-    package = lib.mkDefault alkano-aio;
-    name = lib.mkDefault "Alkano-aio";
-    size = lib.mkDefault 23;
-  };
-
-  home.sessionVariables = {
-    XCURSOR_PATH = "${alkano-aio}/share/icons";
-    XCURSOR_SIZE = 23;
-    XCURSOR_THEME = "alkano-aio";
+  home = {
+    packages = with pkgs; [
+      adw-gtk3 # adwaita port to gtk3
+      dconf # gnome registry
+      iosevkaNeg.nerd-font # install my custom iosevka build
+      kdePackages.qtstyleplugin-kvantum # nice qt6 themes
+      libsForQt5.qtstyleplugin-kvantum # nice qt5 themes
+    ];
+    pointerCursor = {
+      gtk.enable = true;
+      x11.enable = lib.mkForce false;
+      package = lib.mkDefault alkano-aio;
+      name = lib.mkDefault "Alkano-aio";
+      size = lib.mkDefault 23;
+    };
+    sessionVariables = {
+      XCURSOR_PATH = "${alkano-aio}/share/icons";
+      XCURSOR_SIZE = 23;
+      XCURSOR_THEME = "alkano-aio";
+    };
   };
 
   fonts.fontconfig = {
@@ -109,16 +109,18 @@ with {
     enable = true;
     autoEnable = false;
 
-    targets.bemenu.enable = true;
-    targets.btop.enable = true;
-    targets.foot.enable = true;
-    targets.gnome.enable = true;
-    targets.gtk = {
-      enable = false;
-      flatpakSupport.enable = true;
+    targets = {
+      bemenu.enable = true;
+      btop.enable = true;
+      foot.enable = true;
+      gnome.enable = true;
+      gtk = {
+        enable = false;
+        flatpakSupport.enable = true;
+      };
+      helix.enable = true;
+      sxiv.enable = false;
     };
-    targets.helix.enable = true;
-    targets.sxiv.enable = false;
 
     base16Scheme = {
       base00 = "#020202"; # Background

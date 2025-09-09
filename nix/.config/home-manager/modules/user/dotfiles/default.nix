@@ -10,66 +10,67 @@
     inherit recursive;
   };
 in {
-  xdg.configFile = {
-    # █▓▒░ gdb ──────────────────────────────────────────────────────────────────────────
-    "gdb" = mkSymlink "gdb/.config/gdb" true;
+  xdg = {
+    configFile = {
+      # █▓▒░ gdb ──────────────────────────────────────────────────────────────────────────
+      "gdb" = mkSymlink "gdb/.config/gdb" true;
 
-    # █▓▒░ git ──────────────────────────────────────────────────────────────────────────
-    "tig" = mkSymlink "git/.config/tig" true;
+      # █▓▒░ git ──────────────────────────────────────────────────────────────────────────
+      "tig" = mkSymlink "git/.config/tig" true;
 
-    # █▓▒░ mail ─────────────────────────────────────────────────────────────────────────
-    "isync" = mkSymlink "mail/.config/isync" true;
-    "mutt" = mkSymlink "mail/.config/mutt" true;
+      # █▓▒░ mail ─────────────────────────────────────────────────────────────────────────
+      "isync" = mkSymlink "mail/.config/isync" true;
+      "mutt" = mkSymlink "mail/.config/mutt" true;
 
-    # █▓▒░ media ────────────────────────────────────────────────────────────────────────
-    "swayimg" = mkSymlink "media/.config/swayimg" true;
+      # █▓▒░ media ────────────────────────────────────────────────────────────────────────
+      "swayimg" = mkSymlink "media/.config/swayimg" true;
 
-    # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
-    "amfora" = mkSymlink "misc/.config/amfora" true;
-    "dosbox" = mkSymlink "misc/.config/dosbox" true;
-    "icedtea-web" = mkSymlink "misc/.config/icedtea-web" true;
-    "rustmission" = mkSymlink "misc/.config/rustmission" true;
-    "transmission-daemon" = mkSymlink "misc/.config/transmission-daemon" true;
-    "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
+      # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
+      "amfora" = mkSymlink "misc/.config/amfora" true;
+      "dosbox" = mkSymlink "misc/.config/dosbox" true;
+      "icedtea-web" = mkSymlink "misc/.config/icedtea-web" true;
+      "rustmission" = mkSymlink "misc/.config/rustmission" true;
+      "transmission-daemon" = mkSymlink "misc/.config/transmission-daemon" true;
+      "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
 
-    # █▓▒░ music ────────────────────────────────────────────────────────────────────────
-    "ncpamixer.conf" = mkSymlink "music/.config/ncpamixer.conf" true;
-    "rmpc" = mkSymlink "music/.config/rmpc" true;
+      # █▓▒░ music ────────────────────────────────────────────────────────────────────────
+      "ncpamixer.conf" = mkSymlink "music/.config/ncpamixer.conf" true;
+      "rmpc" = mkSymlink "music/.config/rmpc" true;
 
-    # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
-    "home-manager" = mkSymlink "nix/.config/home-manager" true;
+      # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
+      "home-manager" = mkSymlink "nix/.config/home-manager" true;
 
-    # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
-    "rofi" = mkSymlink "rofi/.config/rofi" true;
-    "fuzzel" = mkSymlink "fuzzel/.config/fuzzel" true;
-    "walker" = mkSymlink "walker/.config/walker" true;
+      # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
+      "rofi" = mkSymlink "rofi/.config/rofi" true;
+      "fuzzel" = mkSymlink "fuzzel/.config/fuzzel" true;
+      "walker" = mkSymlink "walker/.config/walker" true;
 
-    # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
-    "dircolors" = mkSymlink "shell/.config/dircolors" true;
-    "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
-    "inputrc" = mkSymlink "shell/.config/inputrc" true;
-    "nushell" = mkSymlink "shell/.config/nushell" true;
-    "tmux" = mkSymlink "shell/.config/tmux" true;
-    "zsh" = mkSymlink "shell/.config/zsh" false;
+      # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
+      "dircolors" = mkSymlink "shell/.config/dircolors" true;
+      "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
+      "inputrc" = mkSymlink "shell/.config/inputrc" true;
+      "nushell" = mkSymlink "shell/.config/nushell" true;
+      "tmux" = mkSymlink "shell/.config/tmux" true;
+      "zsh" = mkSymlink "shell/.config/zsh" false;
 
-    # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
-    "handlr" = mkSymlink "wm/.config/handlr" true;
-    "kitty" = mkSymlink "wm/.config/kitty" true;
+      # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
+      "handlr" = mkSymlink "wm/.config/handlr" true;
+      "kitty" = mkSymlink "wm/.config/kitty" true;
 
-    # Hyprland configuration files
-    "hypr/init.conf" = mkSymlink "wm/.config/hypr/init.conf" false;
-    "hypr/rules.conf" = mkSymlink "wm/.config/hypr/rules.conf" false;
-    "hypr/bindings.conf" = mkSymlink "wm/.config/hypr/bindings.conf" false;
-    "hypr/autostart.conf" = mkSymlink "wm/.config/hypr/autostart.conf" false;
-    "hypr/workspaces.conf" = mkSymlink "wm/.config/hypr/workspaces.conf" false;
-    "hypr/pyprland.toml" = mkSymlink "wm/.config/hypr/pyprland.toml" false;
+      # Hyprland configuration files
+      "hypr/init.conf" = mkSymlink "wm/.config/hypr/init.conf" false;
+      "hypr/rules.conf" = mkSymlink "wm/.config/hypr/rules.conf" false;
+      "hypr/bindings.conf" = mkSymlink "wm/.config/hypr/bindings.conf" false;
+      "hypr/autostart.conf" = mkSymlink "wm/.config/hypr/autostart.conf" false;
+      "hypr/workspaces.conf" = mkSymlink "wm/.config/hypr/workspaces.conf" false;
+      "hypr/pyprland.toml" = mkSymlink "wm/.config/hypr/pyprland.toml" false;
 
-    # █▓▒░ quickshell ───────────────────────────────────────────────────────────────────
-    "quickshell" = mkSymlink "quickshell/.config/quickshell" true;
+      # █▓▒░ quickshell ───────────────────────────────────────────────────────────────────
+      "quickshell" = mkSymlink "quickshell/.config/quickshell" true;
+    };
+    dataFile."hack-art" = mkSymlink "hack-art/.local/share/hack-art" true;
+    dataFile."fantasy-art" = mkSymlink "fantasy-art/.local/share/fantasy-art" true;
   };
-
-  xdg.dataFile."hack-art" = mkSymlink "hack-art/.local/share/hack-art" true;
-  xdg.dataFile."fantasy-art" = mkSymlink "fantasy-art/.local/share/fantasy-art" true;
 
   home.file = {
     "bin" = mkSymlink "bin" false;

@@ -29,14 +29,16 @@ with lib;
 
     accounts = {
       contact.basePath = ".config/vdirsyncer/contacts";
-      calendar.basePath = ".config/vdirsyncer/calendars";
-
-      calendar.accounts."calendar" = {
-        khal.enable = true;
-      };
-
-      calendar.accounts."contacts" = {
-        khal.enable = true;
+      calendar = {
+        basePath = ".config/vdirsyncer/calendars";
+        accounts = {
+          "calendar" = {
+            khal.enable = true;
+          };
+          "contacts" = {
+            khal.enable = true;
+          };
+        };
       };
     };
   }

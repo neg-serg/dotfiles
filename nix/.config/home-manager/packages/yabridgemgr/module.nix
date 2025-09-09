@@ -46,46 +46,48 @@ with lib;
         "d %h/yabridgemgr - - - - -"
         "C %h/.config/yabridgectl/config.toml - - - - ${ybcfg}"
       ];
-      systemd.user.services.yabridgemgr_mountprefix = let
-        build_prefix = pkgs.callPackage ./plumbing/build_prefix.nix {
-          username = cfg.user;
-          inherit (cfg) plugins;
+      systemd.user.services = {
+        yabridgemgr_mountprefix = let
+          build_prefix = pkgs.callPackage ./plumbing/build_prefix.nix {
+            username = cfg.user;
+            inherit (cfg) plugins;
+          };
+          mount_prefix = pkgs.callPackage ./plumbing/mount_prefix.nix {
+            wineprefix = build_prefix;
+          };
+          umount_prefix = pkgs.callPackage ./plumbing/umount_prefix.nix {};
+        in {
+          description = "Mount yabridge prefix";
+          after = [
+            "systemd-tmpfiles-setup.service" # ensure tmpfiles have run
+          ];
+          wantedBy = [
+            "default.target" # start by default in user session
+          ];
+          serviceConfig = {
+            RuntimeDirectory = "yabridgemgr";
+            ExecStart = "${mount_prefix}/bin/mount_prefix";
+            ExecStop = "${umount_prefix}/bin/umount_prefix";
+            RemainAfterExit = "yes";
+          };
+          unitConfig = {ConditionUser = "${cfg.user}";};
         };
-        mount_prefix = pkgs.callPackage ./plumbing/mount_prefix.nix {
-          wineprefix = build_prefix;
+        yabridgemgr_sync = {
+          description = "yabridgectl sync";
+          after = [
+            "yabridgemgr_mountprefix.service" # mount prefix before sync
+          ];
+          wantedBy = [
+            "default.target" # start by default in user session
+          ];
+          serviceConfig = {
+            ExecStart = "${pkgs.yabridgectl}/bin/yabridgectl sync";
+            ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
+            Environment = "NIX_PROFILES=/run/current-system/sw";
+            RemainAfterExit = "yes";
+          };
+          unitConfig = {ConditionUser = "${cfg.user}";};
         };
-        umount_prefix = pkgs.callPackage ./plumbing/umount_prefix.nix {};
-      in {
-        description = "Mount yabridge prefix";
-        after = [
-          "systemd-tmpfiles-setup.service" # ensure tmpfiles have run
-        ];
-        wantedBy = [
-          "default.target" # start by default in user session
-        ];
-        serviceConfig = {
-          RuntimeDirectory = "yabridgemgr";
-          ExecStart = "${mount_prefix}/bin/mount_prefix";
-          ExecStop = "${umount_prefix}/bin/umount_prefix";
-          RemainAfterExit = "yes";
-        };
-        unitConfig = {ConditionUser = "${cfg.user}";};
-      };
-      systemd.user.services.yabridgemgr_sync = {
-        description = "yabridgectl sync";
-        after = [
-          "yabridgemgr_mountprefix.service" # mount prefix before sync
-        ];
-        wantedBy = [
-          "default.target" # start by default in user session
-        ];
-        serviceConfig = {
-          ExecStart = "${pkgs.yabridgectl}/bin/yabridgectl sync";
-          ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
-          Environment = "NIX_PROFILES=/run/current-system/sw";
-          RemainAfterExit = "yes";
-        };
-        unitConfig = {ConditionUser = "${cfg.user}";};
       };
     };
   }
