@@ -62,7 +62,7 @@ def parse_file(path: str):
                 if key not in raw:
                     raw[key] = val
                 else:
-                    pass  # Will handle duplicates later if keep_last is set
+                    pass # Will handle duplicates later if keep_last is set
 
     return raw, theme_detected, matches
 
@@ -79,8 +79,8 @@ def compress(raw, theme, drop_nones=False, keep_last=False, min_group=2):
             last[k] = raw[k]
         raw = OrderedDict(reversed(list(last.items())))
 
-    gen = OrderedDict()   # Non-extension theme keys
-    ext2style = OrderedDict()  # ext -> style
+    gen = OrderedDict() # Non-extension theme keys
+    ext2style = OrderedDict() # ext -> style
 
     for k, v in raw.items():
         if drop_nones and v == "none":
@@ -90,7 +90,7 @@ def compress(raw, theme, drop_nones=False, keep_last=False, min_group=2):
             if ext not in ext2style:
                 ext2style[ext] = v
             else:
-                pass  # Ignore duplicates unless keep_last was applied earlier
+                pass # Ignore duplicates unless keep_last was applied earlier
         elif k.startswith(theme):
             if k not in gen:
                 gen[k] = v

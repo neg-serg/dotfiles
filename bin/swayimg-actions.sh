@@ -98,7 +98,7 @@ render_for_mode() {
 }
 
 # ---- helpers ---------------------------------------------------------------
-rotate() {  # modifies file in-place
+rotate() { # modifies file in-place
   angle="$1"
   shift
   while read -r file; do mogrify -rotate "$angle" "$file"; done

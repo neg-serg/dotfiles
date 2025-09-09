@@ -13,9 +13,9 @@ echo >> $output_file
 # Function: convert a style string
 convert_style() {
     local style=$1
-    style=${style//bg=/bg:}       # replace bg= with bg:
-    style=${style//fg=/}          # remove fg=
-    echo $style | sed 's/^,//; s/,$//; s/,,/,/g'  # clean up commas
+    style=${style//bg=/bg:} # replace bg= with bg:
+    style=${style//fg=/} # remove fg=
+    echo $style | sed 's/^,//; s/,$//; s/,,/,/g' # clean up commas
 }
 
 # Process each matching line

@@ -12,9 +12,9 @@ typeset -ga NEGCD_DIRS=(
 negcd_widget() {
   local seq=$KEYS idx
   case $seq in
-    ($'\e'[1-9])          idx=${seq[-1]} ;;        # ESC + 1..9
-    ($'\e'[0])            idx=10 ;;                # (optional) ESC + 0 -> 10th
-    ($'\e[''1;3'[0-9]~)   idx=${seq[-2]} ;;        # xterm Alt+digit: ^[[1;3X~
+    ($'\e'[1-9]) idx=${seq[-1]} ;; # ESC + 1..9
+    ($'\e'[0]) idx=10 ;; # (optional) ESC + 0 -> 10th
+    ($'\e[''1;3'[0-9]~) idx=${seq[-2]} ;; # xterm Alt+digit: ^[[1;3X~
     (*) return 0 ;;
   esac
 
@@ -33,8 +33,8 @@ zle -N negcd_widget
 
 # 3) Bind Alt-1..9 in both common formats
 for i in {1..9}; do
-  bindkey "^[${i}"          negcd_widget         # ESC + digit (most terminals)
-  bindkey $'^[[1;3'"$i"$'~' negcd_widget         # xterm Alt+digit
+  bindkey "^[${i}" negcd_widget # ESC + digit (most terminals)
+  bindkey $'^[[1;3'"$i"$'~' negcd_widget # xterm Alt+digit
 done
-bindkey "^[0"       negcd_widget                 # (optional) ESC + 0
-bindkey $'^[[1;30~' negcd_widget                 # (optional) xterm Alt+0
+bindkey "^[0" negcd_widget # (optional) ESC + 0
+bindkey $'^[[1;30~' negcd_widget # (optional) xterm Alt+0

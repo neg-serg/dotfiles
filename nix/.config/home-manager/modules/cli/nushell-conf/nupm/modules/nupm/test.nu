@@ -19,9 +19,9 @@ use utils/log.nu throw-error
   nupm test --show-stdout
 }
 export def main [
-    filter?: string  = ''  # Run only tests containing this substring
-    --dir: path  # Directory where to run tests (default: $env.PWD)
-    --show-stdout  # Show standard output of each test
+  filter?: string = '' # Run only tests containing this substring
+  --dir: path # Directory where to run tests (default: $env.PWD)
+  --show-stdout # Show standard output of each test
 ]: nothing -> nothing {
     let dir = ($dir | default $env.PWD | path expand -s)
     let pkg_root = find-root $dir
