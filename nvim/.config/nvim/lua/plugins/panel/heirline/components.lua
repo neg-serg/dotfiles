@@ -577,10 +577,58 @@ return function(ctx)
       update = { 'CursorHold', 'VimResized' },
     },
   }
+
+  -- Quick actions for empty statusline
+  local EmptyActions = {
+    condition = function() return is_empty() and not is_narrow() end,
+    { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
+    {
+      provider = function() return ' ' .. S.plus .. ' New ' end,
+      hl = function() return { fg = colors.green, bg = colors.base_bg } end,
+      on_click = { callback = vim.schedule_wrap(function()
+        dbg_push('click: empty new file')
+        local default = os.date('new-%Y%m%d-%H%M%S.txt')
+        vim.ui.input({ prompt = 'New file path: ', default = default }, function(path)
+          if not path or path == '' then return end
+          local dir = fn.fnamemodify(path, ':h')
+          if dir ~= '' and dir ~= '.' then pcall(fn.mkdir, dir, 'p') end
+          vim.cmd('edit ' .. fn.fnameescape(path))
+        end)
+      end), name = 'heirline_empty_new_file' },
+    },
+    {
+      provider = function() return S.search .. ' Find ' end,
+      hl = function() return { fg = colors.cyan, bg = colors.base_bg } end,
+      on_click = { callback = vim.schedule_wrap(function()
+        dbg_push('click: empty find files')
+        local ok, tb = pcall(require, 'telescope.builtin')
+        if ok then tb.find_files({ hidden = true }) else open_file_browser_cwd() end
+      end), name = 'heirline_empty_find_files' },
+    },
+    {
+      provider = function() return ' ' .. (USE_ICONS and '⏱' or 'Rec') .. ' Recent ' end,
+      hl = function() return { fg = colors.blue_light, bg = colors.base_bg } end,
+      on_click = { callback = vim.schedule_wrap(function()
+        dbg_push('click: empty recent files')
+        local ok, tb = pcall(require, 'telescope.builtin')
+        if ok then tb.oldfiles({ only_cwd = false }) else vim.cmd('browse oldfiles') end
+      end), name = 'heirline_empty_recent_files' },
+    },
+    {
+      provider = function() return ' ' .. (USE_ICONS and ' ' or '[?] ') .. 'Help ' end,
+      hl = function() return { fg = colors.white, bg = colors.base_bg } end,
+      on_click = { callback = vim.schedule_wrap(function()
+        dbg_push('click: empty help')
+        local ok, tb = pcall(require, 'telescope.builtin')
+        if ok then tb.help_tags() else vim.cmd('help') end
+      end), name = 'heirline_empty_help' },
+    },
+  }
   local DefaultStatusline = {
     utils.surround({ '', '' }, colors.base_bg, {
       EmptyLeft,
       EmptySpecial,
+      EmptyActions,
       LeftComponents,
       components.search,
     }),
