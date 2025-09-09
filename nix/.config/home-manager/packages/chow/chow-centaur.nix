@@ -28,19 +28,22 @@ stdenv.mkDerivation rec {
     fetchSubmodules = true;
   };
 
-  nativeBuildInputs = [cmake pkg-config];
+  nativeBuildInputs = [
+    cmake # build system
+    pkg-config # locate system libraries
+  ];
   buildInputs = [
-    cairo
-    libxkbcommon
-    xcbutilcursor
-    xcbutilkeysyms
-    xcbutil
-    libXrandr
-    libXinerama
-    libXcursor
-    alsa-lib
-    libjack2
-    lv2
+    cairo # 2D graphics
+    libxkbcommon # keymaps
+    xcbutilcursor # XCB cursor utils
+    xcbutilkeysyms # XCB key symbols
+    xcbutil # XCB utils
+    libXrandr # RandR
+    libXinerama # Xinerama
+    libXcursor # X11 cursor
+    alsa-lib # ALSA audio
+    libjack2 # JACK audio
+    lv2 # LV2 plugin SDK
   ];
 
   cmakeFlags = [

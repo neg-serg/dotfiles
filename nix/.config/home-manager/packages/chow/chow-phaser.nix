@@ -43,35 +43,38 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-9wo7ZFMruG3QNvlpILSvrFh/Sx6J1qnlWc8+aQyS4tQ=";
   };
 
-  nativeBuildInputs = [pkg-config cmake];
+  nativeBuildInputs = [
+    pkg-config # locate system libraries
+    cmake # build system
+  ];
 
   buildInputs = [
-    alsa-lib
-    at-spi2-core
-    curl
-    dbus
-    libepoxy
-    freeglut
-    freetype
-    gtk3
-    libGL
-    libXcursor
-    libXdmcp
-    libXext
-    libXinerama
-    libXrandr
-    libXtst
-    libdatrie
-    libjack2
-    libpsl
-    libselinux
-    libsepol
-    libsysprof-capture
-    libthai
-    libxkbcommon
-    pcre
-    python3
-    sqlite
+    alsa-lib # ALSA audio
+    at-spi2-core # a11y bus
+    curl # HTTP client
+    dbus # D-Bus IPC
+    libepoxy # GL dispatch
+    freeglut # OpenGL utility toolkit
+    freetype # font rendering
+    gtk3 # GUI toolkit
+    libGL # OpenGL
+    libXcursor # X11 cursor
+    libXdmcp # X11 display mgmt
+    libXext # X11 extensions
+    libXinerama # Xinerama
+    libXrandr # RandR
+    libXtst # XTest
+    libdatrie # trie lib (thai)
+    libjack2 # JACK audio
+    libpsl # PSL for libcurl
+    libselinux # SELinux libs
+    libsepol # SELinux policy
+    libsysprof-capture # profiling
+    libthai # Thai support
+    libxkbcommon # keymaps
+    pcre # regex
+    python3 # build scripts
+    sqlite # database
   ];
 
   cmakeFlags = [

@@ -52,40 +52,43 @@ in
       fetchSubmodules = true;
     };
 
-    nativeBuildInputs = [pkg-config cmake];
+    nativeBuildInputs = [
+      pkg-config # locate system libraries
+      cmake # build system
+    ];
 
     buildInputs = [
-      alsa-lib
-      at-spi2-core
-      curl
-      dbus
-      libepoxy
-      freeglut
-      freetype
-      gtk3
-      libGL
-      libXcursor
-      libXdmcp
-      libXext
-      libXinerama
-      libXrandr
-      libXtst
-      libdatrie
-      libjack2
-      libpsl
-      libselinux
-      libsepol
-      libsysprof-capture
-      libthai
-      libuuid
-      libxkbcommon
-      lv2
-      pcre
-      pcre2
-      python3
-      sqlite
-      webkitgtk
-      gcc11
+      alsa-lib # ALSA audio
+      at-spi2-core # a11y bus
+      curl # HTTP client
+      dbus # D-Bus IPC
+      libepoxy # GL dispatch
+      freeglut # OpenGL utility toolkit
+      freetype # font rendering
+      gtk3 # GUI toolkit
+      libGL # OpenGL
+      libXcursor # X11 cursor
+      libXdmcp # X11 display mgmt
+      libXext # X11 extensions
+      libXinerama # Xinerama
+      libXrandr # RandR
+      libXtst # XTest
+      libdatrie # trie lib (thai)
+      libjack2 # JACK audio
+      libpsl # PSL for libcurl
+      libselinux # SELinux libs
+      libsepol # SELinux policy
+      libsysprof-capture # profiling
+      libthai # Thai support
+      libuuid # UUIDs
+      libxkbcommon # keymaps
+      lv2 # LV2 plugin SDK
+      pcre # regex
+      pcre2 # regex (v2)
+      python3 # build scripts
+      sqlite # database
+      webkitgtk # WebKit GTK
+      gcc11 # toolchain compat
     ];
 
     cmakeFlags = [

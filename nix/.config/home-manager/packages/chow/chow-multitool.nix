@@ -42,33 +42,36 @@ stdenv.mkDerivation rec {
     fetchSubmodules = true;
   };
 
-  nativeBuildInputs = [pkg-config cmake];
+  nativeBuildInputs = [
+    pkg-config # locate system libraries
+    cmake # build system
+  ];
 
   buildInputs = [
-    alsa-lib
-    curl
-    libepoxy
-    freetype
-    gtk3
-    libXcursor
-    libXdmcp
-    libXext
-    libXinerama
-    libXrandr
-    libXtst
-    libdatrie
-    libjack2
-    libpsl
-    libselinux
-    libsepol
-    libsysprof-capture
-    libthai
-    libuuid
-    libxkbcommon
-    pcre
-    pcre2
-    sqlite
-    webkitgtk
+    alsa-lib # ALSA audio
+    curl # HTTP client
+    libepoxy # GL dispatch
+    freetype # font rendering
+    gtk3 # GUI toolkit
+    libXcursor # X11 cursor
+    libXdmcp # X11 display mgmt
+    libXext # X11 extensions
+    libXinerama # Xinerama
+    libXrandr # RandR
+    libXtst # XTest
+    libdatrie # trie lib (thai)
+    libjack2 # JACK audio
+    libpsl # PSL for libcurl
+    libselinux # SELinux libs
+    libsepol # SELinux policy
+    libsysprof-capture # profiling
+    libthai # Thai support
+    libuuid # UUIDs
+    libxkbcommon # keymaps
+    pcre # regex
+    pcre2 # regex (v2)
+    sqlite # database
+    webkitgtk # WebKit GTK
   ];
 
   cmakeFlags = [

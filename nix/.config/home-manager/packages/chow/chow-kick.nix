@@ -49,41 +49,41 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [
-    pkg-config
-    cmake
+    pkg-config # locate system libraries
+    cmake # build system
   ];
   buildInputs = [
-    alsa-lib
-    at-spi2-core
-    brotli
-    curl
-    dbus
-    libepoxy
-    freeglut
-    freetype
-    gtk2-x11
-    libGL
-    libXcursor
-    libXdmcp
-    libXext
-    libXinerama
-    libXrandr
-    libXtst
-    libdatrie
-    libjack2
-    libpsl
-    libselinux
-    libsepol
-    libsysprof-capture
-    libthai
-    libxkbcommon
-    lv2
-    pcre
-    pcre2
-    python3
-    sqlite
-    util-linuxMinimal
-    webkitgtk
+    alsa-lib # ALSA audio
+    at-spi2-core # a11y bus
+    brotli # compression
+    curl # HTTP client
+    dbus # D-Bus IPC
+    libepoxy # GL dispatch
+    freeglut # OpenGL utility toolkit
+    freetype # font rendering
+    gtk2-x11 # GTK2 (legacy UI)
+    libGL # OpenGL
+    libXcursor # X11 cursor
+    libXdmcp # X11 display mgmt
+    libXext # X11 extensions
+    libXinerama # Xinerama
+    libXrandr # RandR
+    libXtst # XTest
+    libdatrie # trie lib (thai)
+    libjack2 # JACK audio
+    libpsl # PSL for libcurl
+    libselinux # SELinux libs
+    libsepol # SELinux policy
+    libsysprof-capture # profiling
+    libthai # Thai support
+    libxkbcommon # keymaps
+    lv2 # LV2 plugin SDK
+    pcre # regex
+    pcre2 # regex (v2)
+    python3 # build scripts
+    sqlite # database
+    util-linuxMinimal # misc utils
+    webkitgtk # WebKit GTK
   ];
 
   cmakeFlags = [
