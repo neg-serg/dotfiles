@@ -39,13 +39,15 @@ in {
       # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
       "kitty" = mkSymlink "wm/.config/kitty" true;
 
-      # Hyprland configuration files
-      "hypr/init.conf" = mkSymlink "wm/.config/hypr/init.conf" false;
-      "hypr/rules.conf" = mkSymlink "wm/.config/hypr/rules.conf" false;
-      "hypr/bindings.conf" = mkSymlink "wm/.config/hypr/bindings.conf" false;
-      "hypr/autostart.conf" = mkSymlink "wm/.config/hypr/autostart.conf" false;
-      "hypr/workspaces.conf" = mkSymlink "wm/.config/hypr/workspaces.conf" false;
-      "hypr/pyprland.toml" = mkSymlink "wm/.config/hypr/pyprland.toml" false;
+      # Hyprland configuration files (live-editable symlinks to repo files)
+      # Keep these as out-of-store symlinks to allow real-time editing.
+      # Files are copied into this repo under modules/user/gui/hypr/conf.
+      "hypr/init.conf" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/init.conf"; recursive = false; };
+      "hypr/rules.conf" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/rules.conf"; recursive = false; };
+      "hypr/bindings.conf" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/bindings.conf"; recursive = false; };
+      "hypr/autostart.conf" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/autostart.conf"; recursive = false; };
+      "hypr/workspaces.conf" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/workspaces.conf"; recursive = false; };
+      "hypr/pyprland.toml" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/pyprland.toml"; recursive = false; };
 
       # █▓▒░ quickshell ───────────────────────────────────────────────────────────────────
       "quickshell" = mkSymlink "quickshell/.config/quickshell" true;
