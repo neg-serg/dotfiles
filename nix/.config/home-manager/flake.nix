@@ -360,9 +360,32 @@
                 pkgs.statix # lint Nix expressions
                 pkgs.deadnix # detect unused let bindings/files
               ];
+              src = ./.; # make repo contents available inside the build sandbox
             } ''
               set -euo pipefail
-              treefmt -c ${./treefmt.toml} --fail-on-change .
+              # Work on a writable copy of the repo
+              cp -r "$src" ./src
+              chmod -R u+w ./src
+              cd ./src
+              # Ensure cache dir is writable for treefmt/formatters
+              export XDG_CACHE_HOME="$PWD/.cache"
+              mkdir -p "$XDG_CACHE_HOME"
+              # 1) Strict Nix formatting check (alejandra only)
+              cat > ./.treefmt-check.toml <<'EOF'
+              [global]
+              excludes = ["flake.lock", ".git/*", "secrets/crypted/*"]
+              [formatter.nix]
+              command = "alejandra"
+              options = ["-q"]
+              includes = ["*.nix"]
+              EOF
+              treefmt --config-file ./.treefmt-check.toml --fail-on-change .
+
+              # 2) Lint checks: statix (no writes)
+              statix check -- .
+
+              # 3) Dead code check: deadnix (no writes, fail on findings)
+              deadnix --fail .
               touch "$out"
             '';
           # Build the options documentation as part of checks
