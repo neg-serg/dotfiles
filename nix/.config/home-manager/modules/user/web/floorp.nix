@@ -25,10 +25,6 @@ in {
       # Declarative extensions (NUR where available)
       extensions = {
         packages = addons.common;
-        # Example for per-addon config (keep empty if not needed):
-        # settings."[email protected]".settings = {
-        #   selectedFilterLists = [ "ublock-filters" ];
-        # };
       };
 
       # about:config prefs
@@ -97,24 +93,12 @@ in {
       # Optional toggles
       extraConfig = ''
         // Optional / disabled prefs (enable only if you really want them)
-
-        // SECURITY RISK: grants extensions access to internal pages
-        // user_pref("extensions.webextensions.restrictedDomains", "");
-
-        // SECURITY RISK: disables extension signature check
-        // user_pref("xpinstall.signatures.required", false);
-
-        // Fully disable built-in PDF viewer (not recommended)
-        // user_pref("pdfjs.disabled", true);
-
+        // user_pref("extensions.webextensions.restrictedDomains", ""); // SECURITY RISK: grants extensions access to internal pages
+        // user_pref("xpinstall.signatures.required", false); // SECURITY RISK: disables extension signature check
         // DoH template (fill if you want DoH)
         // user_pref("network.trr.mode", 3); // 2 = DoH only, 3 = DoH with fallback
         // user_pref("network.trr.uri", "https://dns.example/dns-query");
         // user_pref("network.trr.bootstrapAddress", "9.9.9.9");
-
-        // Forcing GPU acceleration may cause artifacts; usually unnecessary
-        // user_pref("gfx.webrender.all", true);
-        // user_pref("layers.acceleration.force-enabled", true);
       '';
 
       userChrome = ''
