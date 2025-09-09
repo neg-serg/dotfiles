@@ -36,16 +36,16 @@
         src = blissify-rs-src;
 
         nativeBuildInputs = [
-          pkgs.pkg-config
-          pkgs.cmake
+          pkgs.pkg-config # discover C libraries/flags
+          pkgs.cmake # build helper for C deps
         ];
 
         buildInputs = [
-          pkgs.ffmpeg
-          pkgs.llvmPackages.libclang
-          pkgs.stdenv.cc.cc.lib
-          pkgs.sqlite
-          pkgs.libcxx
+          pkgs.ffmpeg # audio decoding
+          pkgs.llvmPackages.libclang # headers for bindgen
+          pkgs.stdenv.cc.cc.lib # libstdc++ (or platform libc++)
+          pkgs.sqlite # embedded DB
+          pkgs.libcxx # libc++ runtime
         ];
 
         # Explicitly set all required header paths
@@ -78,21 +78,21 @@
 
       devShells.default = pkgs.mkShell.override {inherit stdenv;} {
         nativeBuildInputs = [
-          pkgs.pkg-config
-          pkgs.cmake
+          pkgs.pkg-config # discover C libraries/flags
+          pkgs.cmake # build helper for C deps
         ];
 
         buildInputs = with pkgs; [
-          rustc
-          cargo
-          rust-analyzer
-          ffmpeg
-          stdenv.cc.cc.lib
-          stdenv.cc.libc.dev
-          llvmPackages.libclang
-          sqlite # Add SQLite to dev shell
-          clang
-          libcxx
+          rustc # Rust compiler
+          cargo # package manager/build tool
+          rust-analyzer # IDE language server
+          ffmpeg # audio decoding
+          stdenv.cc.cc.lib # libstdc++
+          stdenv.cc.libc.dev # libc headers
+          llvmPackages.libclang # headers for bindgen
+          sqlite # database client/libs
+          clang # C/CPP compiler
+          libcxx # libc++ runtime
         ];
 
         shellHook = ''

@@ -26,9 +26,9 @@ rustPlatform.buildRustPackage rec {
   ];
 
   nativeBuildInputs = [
-    installShellFiles
-    pkg-config
-    cmake
+    installShellFiles # install manpages and completions
+    pkg-config # discover C libs for build
+    cmake # build helper for native deps
   ];
 
   env.VERGEN_GIT_DESCRIBE = version;

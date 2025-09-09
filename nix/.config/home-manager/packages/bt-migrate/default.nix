@@ -24,16 +24,16 @@ stdenv.mkDerivation {
   };
 
   nativeBuildInputs = [
-    cmake
+    cmake # CMake build system
   ];
 
   buildInputs = [
-    boost
-    cxxopts
-    fmt
-    jsoncons
-    pugixml
-    sqlite_orm
+    boost # C++ libraries
+    cxxopts # CLI options parser
+    fmt # string formatting
+    jsoncons # JSON library
+    pugixml # XML library
+    sqlite_orm # C++ ORM for SQLite
   ];
 
   cmakeFlags = [

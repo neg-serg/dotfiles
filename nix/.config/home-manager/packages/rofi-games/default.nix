@@ -21,13 +21,13 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-c1MV1QRsDJCh55rST/m17P37pCAvyi98+QbrVqwVfpM=";
 
   nativeBuildInputs = [
-    pkg-config
+    pkg-config # discover C libs for build
   ];
 
   buildInputs = [
-    cairo
-    glib
-    pango
+    cairo # 2D graphics
+    glib # core GNOME/GLib utils
+    pango # text layout
   ];
 
   meta = with lib; {

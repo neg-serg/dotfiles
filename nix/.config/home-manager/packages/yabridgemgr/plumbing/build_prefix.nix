@@ -8,7 +8,11 @@
   plugins ? [],
 }:
 runCommand "build_prefix" {
-  nativeBuildInputs = [wineWowPackages.full xorg.xorgserver squashfsTools];
+  nativeBuildInputs = [
+    wineWowPackages.full # 32/64-bit Wine for plugins
+    xorg.xorgserver # Xvfb headless X server
+    squashfsTools # mksquashfs to pack the prefix
+  ];
 } (''
     mkdir $out
     export WINEPREFIX=$(pwd)/prefix

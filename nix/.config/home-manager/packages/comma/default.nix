@@ -12,7 +12,7 @@ stdenvNoCC.mkDerivation rec {
   src = ./comma;
 
   nativeBuildInputs = [
-    makeWrapper
+    makeWrapper # wrap script with PATH to tools
   ];
 
   dontUnpack = true;
@@ -26,8 +26,8 @@ stdenvNoCC.mkDerivation rec {
   '';
 
   wrapperPath = lib.makeBinPath [
-    fzf
-    nix-index
+    fzf # fuzzy selector for store paths
+    nix-index # locate packages providing a command
   ];
 
   fixupPhase = ''
