@@ -34,6 +34,7 @@ with lib; {
     ./cachix
     ./editor
     ./git
+    ./gdb
     ./hack
     ./pkgs
     ./python

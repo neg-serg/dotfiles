@@ -13,7 +13,7 @@ in {
   xdg = {
     configFile = {
       # █▓▒░ gdb ──────────────────────────────────────────────────────────────────────────
-      "gdb" = mkSymlink "gdb/.config/gdb" true;
+      # gdb config is now managed via Home Manager (modules/dev/gdb)
 
       # █▓▒░ git ──────────────────────────────────────────────────────────────────────────
       # tig config is now managed via Home Manager (modules/cli/tig.nix)
