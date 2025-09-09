@@ -5,16 +5,17 @@
   ...
 }:
 with rec {
+  browserRec = import ../web/default-browser-lib.nix { inherit lib pkgs config; };
   defaultApplications = {
     terminal = {
       cmd = "${pkgs.kitty}/bin/kitty";
       desktop = "kitty";
     };
     browser = {
-      cmd = config.lib.neg.web.defaultBrowser.bin;
+      cmd = browserRec.bin;
       # Historically we kept just the desktop ID without suffix here.
       # Derive it from the full desktop file name.
-      desktop = lib.removeSuffix ".desktop" config.lib.neg.web.defaultBrowser.desktop;
+      desktop = lib.removeSuffix ".desktop" browserRec.desktop;
     };
     editor = {
       cmd = "${pkgs.neovim}/bin/nvim";
@@ -22,7 +23,7 @@ with rec {
     };
   };
 
-  browser = config.lib.neg.web.defaultBrowser.desktop;
+  browser = browserRec.desktop;
   pdfreader = "org.pwmt.zathura.desktop";
   telegram = "org.telegram.desktop.desktop";
   torrent = "transmission.desktop";
