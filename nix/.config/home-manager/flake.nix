@@ -431,7 +431,7 @@
                 stylixInput.homeModules.stylix
                 chaotic.homeManagerModules.default
                 sopsNixInput.homeManagerModules.sops
-                ({lib, ...}: {features.emulators.retroarch.full = lib.mkForce true;})
+                (_: {features.emulators.retroarch.full = true;})
               ];
             };
           in
@@ -451,7 +451,7 @@
                 stylixInput.homeModules.stylix
                 chaotic.homeManagerModules.default
                 sopsNixInput.homeManagerModules.sops
-                ({lib, ...}: {features.emulators.retroarch.full = lib.mkForce false;})
+                (_: {features.emulators.retroarch.full = false;})
               ];
             };
           in
@@ -472,7 +472,7 @@
                 stylixInput.homeModules.stylix
                 chaotic.homeManagerModules.default
                 sopsNixInput.homeManagerModules.sops
-                ({lib, ...}: {features.emulators.retroarch.full = lib.mkForce true;})
+                (_: {features.emulators.retroarch.full = true;})
               ];
             };
           in
@@ -493,7 +493,7 @@
                 stylixInput.homeModules.stylix
                 chaotic.homeManagerModules.default
                 sopsNixInput.homeManagerModules.sops
-                ({lib, ...}: {features.emulators.retroarch.full = lib.mkForce false;})
+                (_: {features.emulators.retroarch.full = false;})
               ];
             };
           in
