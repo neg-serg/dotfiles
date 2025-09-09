@@ -18,14 +18,10 @@ in {
       "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
       # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
       "home-manager" = mkSymlink "nix/.config/home-manager" true;
-      # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
-      "walker" = mkSymlink "walker/.config/walker" true;
       # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
       "dircolors" = mkSymlink "shell/.config/dircolors" true;
       "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
       "zsh" = mkSymlink "shell/.config/zsh" false;
-      # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
-      # kitty config is managed in modules/user/gui/kitty.nix (live-edit symlink)
       # █▓▒░ quickshell ───────────────────────────────────────────────────────────────────
       "quickshell" = mkSymlink "quickshell/.config/quickshell" true;
     };
