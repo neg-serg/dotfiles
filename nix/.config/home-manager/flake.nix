@@ -166,26 +166,26 @@
             devShells = {
               default = pkgs.mkShell {
                 packages = with pkgs; [
-                  alejandra
-                  age
-                  deadnix
-                  git-absorb
-                  gitoxide
-                  just
-                  nil
-                  sops
-                  statix
-                  treefmt
+                  alejandra # Nix formatter
+                  age # modern encryption tool (for sops)
+                  deadnix # find dead Nix code
+                  git-absorb # autosquash fixups into commits
+                  gitoxide # fast Rust Git tools
+                  just # task runner
+                  nil # Nix language server
+                  sops # secrets management
+                  statix # Nix linter
+                  treefmt # formatter orchestrator
                 ];
               };
               # Consolidated from shell/flake.nix
               rust = pkgs.mkShell {
                 packages = with pkgs; [
-                  cargo
-                  rustc
-                  hyperfine
-                  kitty
-                  wl-clipboard
+                  cargo # Rust build tool
+                  rustc # Rust compiler
+                  hyperfine # CLI benchmarking
+                  kitty # terminal (for graphics/testing)
+                  wl-clipboard # Wayland clipboard helpers
                 ];
                 RUST_BACKTRACE = "1";
               };
@@ -308,7 +308,12 @@
             # Formatter: treefmt wrapper pinned to repo config
             formatter = pkgs.writeShellApplication {
               name = "fmt";
-              runtimeInputs = [pkgs.treefmt pkgs.alejandra pkgs.statix pkgs.deadnix];
+              runtimeInputs = [
+                pkgs.treefmt # tree-wide formatter orchestrator
+                pkgs.alejandra # Nix formatter
+                pkgs.statix # Nix linter
+                pkgs.deadnix # find dead Nix code
+              ];
               text = ''
                 set -euo pipefail
                 exec treefmt -c ${./treefmt.toml} "$@"
@@ -318,7 +323,12 @@
             # Checks: fail if formatting or linters would change files
             checks = {
               treefmt = pkgs.runCommand "treefmt-check" {
-                nativeBuildInputs = [pkgs.treefmt pkgs.alejandra pkgs.statix pkgs.deadnix];
+                nativeBuildInputs = [
+                  pkgs.treefmt # orchestrate formatters
+                  pkgs.alejandra # format Nix code
+                  pkgs.statix # lint Nix expressions
+                  pkgs.deadnix # detect unused let bindings/files
+                ];
               } ''
                 set -euo pipefail
                 treefmt -c ${./treefmt.toml} --fail-on-change .

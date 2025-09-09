@@ -1,8 +1,14 @@
 { lib, pkgs, config, inputs, ... }:
 with lib; let
+  qsPath = pkgs.lib.makeBinPath [
+    pkgs.fd # fast file finder used by QS scripts
+    pkgs.coreutils # basic CLI utilities
+  ];
   quickshellWrapped = pkgs.stdenv.mkDerivation {
     name = "quickshell-wrapped";
-    buildInputs = [pkgs.makeWrapper];
+    buildInputs = [
+      pkgs.makeWrapper # provide wrapProgram for env setup
+    ];
     dontUnpack = true;
 
     installPhase = ''
@@ -16,7 +22,7 @@ with lib; let
         --prefix QML2_IMPORT_PATH : "${pkgs.kdePackages.syntax-highlighting}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
         --prefix QT_PLUGIN_PATH : "${pkgs.qt6.qtmultimedia}/${pkgs.qt6.qtbase.qtPluginPrefix}" \
         --prefix QML2_IMPORT_PATH : "${pkgs.qt6.qtmultimedia}/${pkgs.qt6.qtbase.qtQmlPrefix}" \
-        --prefix PATH : ${pkgs.lib.makeBinPath [pkgs.fd pkgs.coreutils]}
+        --prefix PATH : ${qsPath}
     '';
   };
 in mkIf config.features.gui {
