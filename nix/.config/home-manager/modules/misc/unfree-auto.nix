@@ -9,6 +9,7 @@
   browsers = import ./unfree/categories/browsers.nix;
   forensicsStego = import ./unfree/categories/forensics-stego.nix;
   forensicsAnalysis = import ./unfree/categories/forensics-analysis.nix;
+  iac = import ./unfree/categories/iac.nix;
 in {
   config = lib.mkMerge [
     # Audio: allow when audio apps or creation enabled
@@ -40,6 +41,11 @@ in {
     })
     (lib.mkIf (config.features.dev.hack.forensics.analysis or false) {
       features.allowUnfree.extra = forensicsAnalysis;
+    })
+
+    # IaC: allow Terraform when IaC toolchain is enabled
+    (lib.mkIf (config.features.dev.pkgs.iac or false) {
+      features.allowUnfree.extra = iac;
     })
   ];
 }
