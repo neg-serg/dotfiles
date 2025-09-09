@@ -7,6 +7,8 @@
 }:
 with lib; let
   hy3Plugin = hy3.packages.${pkgs.system}.hy3;
+  l = config.lib.file.mkOutOfStoreSymlink;
+  repoHyprConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf";
 in
   mkIf config.features.gui.enable {
     wayland.windowManager.hyprland = {
@@ -27,6 +29,40 @@ in
         hy3Plugin
       ];
       systemd.variables = ["--all"];
+    };
+    # Live-editable Hyprland configuration (out-of-store symlinks to repo files)
+    xdg.configFile = {
+      "hypr/init.conf" = {
+        source = l "${repoHyprConf}/init.conf";
+        recursive = false;
+        force = true;
+        # onChange = "${pkgs.hyprland}/bin/hyprctl reload || true"; # optional
+      };
+      "hypr/rules.conf" = {
+        source = l "${repoHyprConf}/rules.conf";
+        recursive = false;
+        force = true;
+      };
+      "hypr/bindings.conf" = {
+        source = l "${repoHyprConf}/bindings.conf";
+        recursive = false;
+        force = true;
+      };
+      "hypr/autostart.conf" = {
+        source = l "${repoHyprConf}/autostart.conf";
+        recursive = false;
+        force = true;
+      };
+      "hypr/workspaces.conf" = {
+        source = l "${repoHyprConf}/workspaces.conf";
+        recursive = false;
+        force = true;
+      };
+      "hypr/pyprland.toml" = {
+        source = l "${repoHyprConf}/pyprland.toml";
+        recursive = false;
+        force = true;
+      };
     };
     home.packages = with pkgs; [
       hyprcursor # modern cursor theme format (replaces xcursor)
