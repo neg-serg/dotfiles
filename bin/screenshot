@@ -18,14 +18,28 @@ EOF
 
 scr_dir=$HOME/pic/shots
 [ ! -d "$scr_dir" ] && mkdir "$scr_dir"
-filename="screenshot-$(date +%Y-%m-%d_%H-%M-%S).bmp"
+filename="screenshot-$(date +%Y-%m-%d_%H-%M-%S).png"
 summary_="$scr_dir/$filename"
-arglist=" -p 0 "
 
-Shot() { arglist="$arglist $summary_"; maim -m 1 $arglist && ~/bin/pic-notify "$summary_"; }
-Select() { arglist="$arglist -s "; Shot "$@"; }
-Current() { arglist="$arglist -d 0.5 "; arglist="$arglist -i \"$(xdotool getactivewindow)\" "; Shot "$@"; }
-Delay() { arglist="$arglist -d 5 "; Shot "$@"; }
+Shot() {
+  # Fullscreen screenshot via grim
+  grim "$summary_" && ~/bin/pic-notify "$summary_"
+}
+Select() {
+  # Region selection via slurp
+  grim -g "$(slurp)" "$summary_" && ~/bin/pic-notify "$summary_"
+}
+Current() {
+  # Try Hyprland active window, fall back to selection
+  if command -v hyprctl >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+    geo=$(hyprctl -j activewindow | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"') || geo=""
+    if [ -n "$geo" ]; then
+      grim -g "$geo" "$summary_" && ~/bin/pic-notify "$summary_" && return 0
+    fi
+  fi
+  Select "$@"
+}
+Delay() { sleep 5; Shot "$@"; }
 Full() { Shot "$@"; }
 
 Menu() {
@@ -40,10 +54,10 @@ Menu() {
 }
 
 OCR() {
-    maim -u -s -b 5 -l -c 0.3,0.4,0.6,0.4 -d 0.1 \
-        | tesseract --dpi 96 -l eng - - \
-        | wl-copy --type text/plain
-    notify-send -i ebook-reader "OCR" "Saved to clipboard"
+  grim -g "$(slurp)" - \
+    | tesseract --dpi 96 -l eng - - \
+    | wl-copy --type text/plain
+  notify-send -i ebook-reader "OCR" "Saved to clipboard"
 }
 
 case "${1:-}" in

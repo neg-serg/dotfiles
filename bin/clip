@@ -24,7 +24,11 @@ read_command() {
 
 send_key() {
     key="$1"
-    xdotool key --window "$window" "$key"
+    case "$key" in
+        'Control_L+c') wtype -M ctrl -k c -m ctrl ;;
+        'Control_L+v') wtype -M ctrl -k v -m ctrl ;;
+        *) : ;;
+    esac
 }
 
 clipboard_pipe() {
@@ -32,7 +36,7 @@ clipboard_pipe() {
     selection=""
     out=""
     paste=false
-    window=$(xdotool getwindowfocus|tr -d '\n')
+    # Wayland typing via wtype does not require window id
     while true; do
         case "$1" in
             --) shift; break ;;
@@ -83,7 +87,7 @@ yr() {
     negwm send 'scratchpad toggle youtube'
     sleep 1s
     echo "$@" | wl-copy
-    xdotool key shift+Insert
+    wtype -M ctrl -k v -m ctrl
 }
 
 youtube_url() {
