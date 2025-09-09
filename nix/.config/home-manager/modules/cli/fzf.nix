@@ -15,7 +15,7 @@
       "--bind='ctrl-space:select-all'"
       "--bind='ctrl-t:accept'"
       "--bind='ctrl-v:execute(~/bin/v {+})'"
-      "--bind='ctrl-y:execute-silent(echo {+} | xclip -i)'"
+      "--bind='ctrl-y:execute-silent(echo {+} | wl-copy)'"
       "--bind='tab:execute(handlr open {+})+abort'"
 
       # UI/UX polish

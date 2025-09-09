@@ -11,31 +11,35 @@ fi
 #   qr              # screenshot entire desktop → clipboard (PNG) + notify
 #   qr -h|--help    # this help
 
-alias maimselect='maim --noopengl --capturebackground --select --hidecursor --color=0.1,0.1,0.1,0.6 --highlight'
-alias clip='xclip -selection c -filter'
+maimselect() { grim -g "$(slurp)" -; }
+clip() { # usage: clip [-t mimetype] (reads from stdin)
+  local mimetype="${1:-}"
+  if [ "$1" = "-t" ] || [ "$1" = "--type" ]; then shift; mimetype="${1:-}"; shift || true; fi
+  if [ -n "$mimetype" ]; then wl-copy --type "$mimetype"; else wl-copy; fi
+}
 
 case "${1:-}" in
     -h|--help) sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
-    gen) qrencode -l H -d 75 -s 10 -o - "$(xsel)">~/tmp/qrcode.png ;;
+    gen) qrencode -l H -d 75 -s 10 -o - "$(wl-paste)">~/tmp/qrcode.png ;;
     # select a region to screenshot (or click to screenshot window)
-    select) maimselect | clip -t image/png; dunstify "Maim" "Screenshot taken" ;;
+    select) maimselect | clip -t image/png; dunstify "Screenshot" "Screenshot taken" ;;
     # scan a QR code
     qr)
         tmp_file=$(mktemp -t maimscript-XXXXXX)
-        maimselect > "$tmp_file"
+        grim -g "$(slurp)" "$tmp_file"
         scanresult=$(zbarimg --quiet --raw "$tmp_file" | tr -d '\n')
         if [ -z "$scanresult" ]; then
             dunstify "Maim" "No scan data found"
         else
             echo "$scanresult" | clip
             convert "$tmp_file" -resize 75x75 "$tmp_file"
-            dunstify -i "$tmp_file" "Maim" "$scanresult\n(copied to clipboard)"
+            dunstify -i "$tmp_file" "Screenshot" "$scanresult\n(copied to clipboard)"
         fi
         rm "$tmp_file"
         ;;
     # screenshot the entire desktop
     *)
-        maim --noopengl | clip -t image/png
-        dunstify "Maim" "Screenshot taken"
+        grim - | clip -t image/png
+        dunstify "Screenshot" "Screenshot taken"
         ;;
 esac

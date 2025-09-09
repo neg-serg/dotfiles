@@ -48,21 +48,21 @@ clipboard_pipe() {
             *) cmd="$(read_command)" ;;
         esac
         if [ "$paste" = true ]; then
-            command echo -n | xclip -i # clear clipboard first
+            wl-copy --clear # clear clipboard first
             send_key 'Control_L+c'; send_key 'Control_L+v'
         fi
         if [ "$cmd" != "" ]; then
             # read the selection
-            selection=$(xclip -o)
+            selection=$(wl-paste)
             if [ "$selection" = "" ] && [ "$paste" ]; then
                 echo "no input, aborting..."
                 exit 1
             fi
             # put it into the clipboard (and clear it first so Klipper doesn't interfere)
-            command echo -n | xclip -i -sel clipboard
-            clipboard=$(xclip -o)
+            wl-copy --clear
+            clipboard=$(wl-paste)
             out=$($clipboard | $cmd )
-            $out | xclip -i -sel clipboard
+            printf "%s" "$out" | wl-copy
             exit 0
         else
             dunstify "you need to specify a command"
@@ -82,7 +82,7 @@ clip_main() {
 yr() {
     negwm send 'scratchpad toggle youtube'
     sleep 1s
-    echo "$@" | xsel -i
+    echo "$@" | wl-copy
     xdotool key shift+Insert
 }
 
@@ -98,7 +98,7 @@ case "$1" in
         sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     pipe) shift; clipboard_pipe "$@" ;;
     youtube-dw-list) shift; cd "${XDG_VIDEOS_DIR:-$HOME/vid}/new" && yt "$(youtube_url)" ;;
-    youtube-dw) shift; cd "${XDG_VIDEOS_DIR:-$HOME/vid}/new" && yt "$(xclip -o)" ;;
+    youtube-dw) shift; cd "${XDG_VIDEOS_DIR:-$HOME/vid}/new" && yt "$(wl-paste)" ;;
     youtube-view) shift; ~/bin/yr clip ;;
     *) clip_main ;;
 esac

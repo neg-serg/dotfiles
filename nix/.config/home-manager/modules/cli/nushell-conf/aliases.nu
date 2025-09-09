@@ -162,11 +162,11 @@ def flakify [] {
 def carbonyl [] { docker run --rm -ti fathyb/carbonyl https://youtube.com }
 def ipmi_one [] {
   docker run -p 127.0.0.1:5900:5900 -p 127.0.0.1:8080:8080 gari123/ipmi-kvm-docker
-  echo "xdg-open http://127.0.0.1:8080" | xsel
+  echo "xdg-open http://127.0.0.1:8080" | wl-copy
 }
 def ipmi_two [] {
   docker run -p 8080:8080 solarkennedy/ipmi-kvm-docker
-  echo "xdg-open localhost:8080" | xsel
+  echo "xdg-open localhost:8080" | wl-copy
 }
 
 # Cryptsetup-based
