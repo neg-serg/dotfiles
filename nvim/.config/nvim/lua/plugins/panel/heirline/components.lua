@@ -561,9 +561,26 @@ return function(ctx)
       on_click = { callback = vim.schedule_wrap(function() dbg_push('click: empty git'); open_git_ui() end), name = 'heirline_empty_git' },
     },
   }
+
+  -- Greeting/time for empty statusline
+  local function time_greeting()
+    local h = tonumber(os.date('%H')) or 12
+    if h < 5 then return 'Night' elseif h < 12 then return 'Morning' elseif h < 18 then return 'Afternoon' else return 'Evening' end
+  end
+  local EmptySpecial = {
+    condition = function() return is_empty() and not is_tiny() end,
+    {
+      provider = prof('Empty.Greet', function()
+        return ' ' .. time_greeting() .. ' • ' .. os.date('%H:%M') .. ' '
+      end),
+      hl = function() return { fg = colors.blue_light, bg = colors.base_bg } end,
+      update = { 'CursorHold', 'VimResized' },
+    },
+  }
   local DefaultStatusline = {
     utils.surround({ '', '' }, colors.base_bg, {
       EmptyLeft,
+      EmptySpecial,
       LeftComponents,
       components.search,
     }),
