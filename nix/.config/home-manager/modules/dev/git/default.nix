@@ -18,9 +18,15 @@ with lib;
 
     home.file.".config/git/hooks/pre-commit" = {
       text = ''
-        #!/bin/sh
-        nix flake check && git diff --check
-        git ls-files '*.nix' | xargs alejandra --quiet
+        #!/usr/bin/env bash
+        set -euo pipefail
+        # Run flake checks for HM (format docs, evals, etc.)
+        (cd "$HOME/.dotfiles/nix/.config/home-manager" && nix flake check -L)
+        # Format the repo via treefmt (Nix, shell, Python, etc.)
+        (cd "$HOME/.dotfiles/nix/.config/home-manager" && nix fmt)
+        # Sanity: reject whitespace errors in staged diff
+        git diff --check
+        # Stage any formatter changes
         git add -u
       '';
       executable = true;
