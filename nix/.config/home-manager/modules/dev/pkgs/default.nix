@@ -31,8 +31,6 @@
     ];
     misc = [
       deheader # remove unneeded C/C++ includes
-      terraform # IaC CLI (HashiCorp Terraform)
-      terraform-ls # Terraform language server for editors
     ];
 
     # Infrastructure-as-Code toolchain
