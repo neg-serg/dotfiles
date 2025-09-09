@@ -80,6 +80,7 @@ in {
     ./fastfetch.nix
     ./fd.nix # better find
     ./amfora.nix
+    ./dosbox.nix
     ./fzf.nix
     ./tmux.nix
     ./ripgrep.nix

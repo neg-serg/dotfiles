@@ -17,7 +17,7 @@ in {
 
       # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
       # amfora config is now managed via Home Manager (modules/cli/amfora.nix)
-      "dosbox" = mkSymlink "misc/.config/dosbox" true;
+      # dosbox config is now managed via Home Manager (modules/cli/dosbox.nix)
       "icedtea-web" = mkSymlink "misc/.config/icedtea-web" true;
       "rustmission" = mkSymlink "misc/.config/rustmission" true;
       "transmission-daemon" = mkSymlink "misc/.config/transmission-daemon" true;
