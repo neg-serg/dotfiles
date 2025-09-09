@@ -35,7 +35,7 @@ with lib;
         core = {
           pager = "delta";
           whitespace = "trailing-space,cr-at-eol";
-          excludesfile = "/etc/gitignore";
+          excludesfile = "${config.xdg.configHome}/git/ignore";
           editor = "nvr --remote-wait-silent";
           untrackedCache = true;
           sshCommand = "ssh -i ~/.ssh/id_neg";
