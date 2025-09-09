@@ -152,33 +152,37 @@
         yandexBrowser = yandexBrowserInput.packages.${system};
         nurPkgs = nur.packages.${system};
         fa = pkgs.nur.repos.rycee.firefox-addons;
+
+        # Common toolsets for devShells to avoid duplication
+        devNixTools = with pkgs; [
+          alejandra # Nix formatter
+          age # modern encryption tool (for sops)
+          deadnix # find dead Nix code
+          git-absorb # autosquash fixups into commits
+          gitoxide # fast Rust Git tools
+          just # task runner
+          nil # Nix language server
+          sops # secrets management
+          statix # Nix linter
+          treefmt # formatter orchestrator
+        ];
+        rustBaseTools = with pkgs; [
+          cargo # Rust build tool
+          rustc # Rust compiler
+        ];
+        rustExtraTools = with pkgs; [
+          hyperfine # CLI benchmarking
+          kitty # terminal (for graphics/testing)
+          wl-clipboard # Wayland clipboard helpers
+        ];
       in {
         inherit pkgs iosevkaNeg yandexBrowser nurPkgs fa;
 
         devShells = {
-          default = pkgs.mkShell {
-            packages = with pkgs; [
-              alejandra # Nix formatter
-              age # modern encryption tool (for sops)
-              deadnix # find dead Nix code
-              git-absorb # autosquash fixups into commits
-              gitoxide # fast Rust Git tools
-              just # task runner
-              nil # Nix language server
-              sops # secrets management
-              statix # Nix linter
-              treefmt # formatter orchestrator
-            ];
-          };
+          default = pkgs.mkShell {packages = devNixTools;};
           # Consolidated from shell/flake.nix
           rust = pkgs.mkShell {
-            packages = with pkgs; [
-              cargo # Rust build tool
-              rustc # Rust compiler
-              hyperfine # CLI benchmarking
-              kitty # terminal (for graphics/testing)
-              wl-clipboard # Wayland clipboard helpers
-            ];
+            packages = rustBaseTools ++ rustExtraTools;
             RUST_BACKTRACE = "1";
           };
           # Consolidated from fhs/flake.nix
