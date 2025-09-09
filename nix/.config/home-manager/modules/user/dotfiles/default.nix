@@ -23,7 +23,6 @@ in {
       # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
       "home-manager" = mkSymlink "nix/.config/home-manager" true;
       # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
-      # rofi config is set in modules/user/gui/rofi.nix (live symlink)
       "walker" = mkSymlink "walker/.config/walker" true;
       # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
       "dircolors" = mkSymlink "shell/.config/dircolors" true;
