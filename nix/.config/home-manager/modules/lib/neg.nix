@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   config,
   ...
 }: {
@@ -132,6 +133,17 @@
       };
     in {
       inherit presets mkUnitFromPresets;
+    };
+
+    # Web helpers defaults
+    # Provide a safe fallback default browser so modules can refer to
+    # config.lib.neg.web.defaultBrowser even when features.web.enable = false.
+    web.defaultBrowser = lib.mkDefault {
+      name = "xdg-open";
+      pkg = pkgs.xdg-utils;
+      bin = "${pkgs.xdg-utils}/bin/xdg-open";
+      desktop = "xdg-open.desktop";
+      newTabArg = "";
     };
   };
 }
