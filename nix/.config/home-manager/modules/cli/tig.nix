@@ -1,12 +1,11 @@
-{ pkgs, config, ... }:
+{ pkgs, lib, config, ... }:
 {
   # Install tig and provide its configuration via XDG
   home.packages = [ pkgs.tig ];
 
   # Ensure ~/.config/tig is a real directory (remove stale/broken symlink)
-  home.activation.fixTigConfigDir = {
-    before = [ "linkGeneration" ];
-    data = ''
+  home.activation.fixTigConfigDir =
+    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
       set -eu
       TDIR="${config.xdg.configHome}/tig"
       if [ -L "$TDIR" ]; then
@@ -14,7 +13,6 @@
       fi
       mkdir -p "$TDIR"
     '';
-  };
 
   xdg.configFile."tig/config" = {
     force = true;
