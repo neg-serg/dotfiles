@@ -1,4 +1,5 @@
 {
+  lib,
   config,
   pkgs,
   ...
@@ -124,11 +125,16 @@ with rec {
       };
     };
     mime.enable = true;
-    mimeApps = {
-      enable = true;
-      associations.added = my_associations;
-      associations.removed = associations_removed;
-      defaultApplications = my_associations;
-    };
+    mimeApps =
+      {
+        enable = true;
+      }
+      // (lib.mkIf config.features.web.enable {
+        associations.added = my_associations;
+        defaultApplications = my_associations;
+      })
+      // {
+        associations.removed = associations_removed;
+      };
   };
 }
