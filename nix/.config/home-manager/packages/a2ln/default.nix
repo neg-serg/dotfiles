@@ -16,14 +16,14 @@ python3.pkgs.buildPythonApplication rec {
   };
 
   build-system = [
-    python3.pkgs.setuptools
+    python3.pkgs.setuptools # build backend (setup.py)
   ];
 
   dependencies = with python3.pkgs; [
-    pillow
-    pygobject
-    pyzmq
-    qrcode
+    pillow # image processing (icons/screens)
+    pygobject # GObject/GTK bindings
+    pyzmq # ZeroMQ messaging
+    qrcode # QR code generation
   ];
 
   pythonImportsCheck = [

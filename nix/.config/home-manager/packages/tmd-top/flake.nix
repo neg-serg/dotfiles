@@ -28,16 +28,18 @@
             inherit pname version;
             hash = "sha256-vsn+Y1R8HFUladG3XTCQOLfUVsA/ht+jcG3bCZsVE5k=";
           };
-          nativeBuildInputs = [pyPkgs.poetry-core];
+          nativeBuildInputs = [
+            pyPkgs.poetry-core # PEP 517 build backend for Textual
+          ];
           propagatedBuildInputs = [
-            pyPkgs.rich
-            pyPkgs."typing-extensions"
-            pyPkgs."markdown-it-py"
-            pyPkgs."linkify-it-py"
-            pyPkgs."uc-micro-py"
-            pyPkgs."mdit-py-plugins"
-            pyPkgs.pygments
-            pyPkgs.platformdirs
+            pyPkgs.rich # terminal rendering primitives
+            pyPkgs."typing-extensions" # typing backports for older Python
+            pyPkgs."markdown-it-py" # Markdown parser
+            pyPkgs."linkify-it-py" # URL/link detection
+            pyPkgs."uc-micro-py" # Unicode categories (for linkify/md)
+            pyPkgs."mdit-py-plugins" # Markdown-it plugins
+            pyPkgs.pygments # syntax highlighting
+            pyPkgs.platformdirs # cross‑platform config/cache dirs
           ];
           doCheck = false;
         };
@@ -49,10 +51,10 @@
           src = ./.;
 
           propagatedBuildInputs = [
-            textualPinned
-            pyPkgs.rich
-            pyPkgs.geoip2
-            pyPkgs."typing-extensions"
+            textualPinned # TUI framework
+            pyPkgs.rich # rich text output
+            pyPkgs.geoip2 # IP geolocation database access
+            pyPkgs."typing-extensions" # typing backports
           ];
 
           # no tests provided; disable pytest check phase
@@ -89,11 +91,11 @@
 
         devShells.default = pkgs.mkShell {
           packages = [
-            python
-            textualPinned
-            pyPkgs.rich
-            pyPkgs.geoip2
-            pyPkgs."typing-extensions"
+            python # Python interpreter for dev
+            textualPinned # TUI framework
+            pyPkgs.rich # terminal rendering
+            pyPkgs.geoip2 # GeoIP lib for testing
+            pyPkgs."typing-extensions" # typing backports
           ];
         };
       }

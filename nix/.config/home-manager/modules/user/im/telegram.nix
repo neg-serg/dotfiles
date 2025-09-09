@@ -9,8 +9,8 @@ python3Packages.buildPythonApplication rec {
   };
 
   propagatedBuildInputs = with python3Packages; [
-    python-telegram-bot
-    colorama
-    appdirs
+    python-telegram-bot # Telegram Bot API client
+    colorama # terminal colors in CLI output
+    appdirs # XDG/app dirs discovery
   ];
 }
