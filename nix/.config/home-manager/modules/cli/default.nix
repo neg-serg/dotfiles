@@ -80,6 +80,9 @@ in {
     ./fastfetch.nix
     ./fd.nix # better find
     ./nushell.nix
+    ./zsh.nix
+    ./dircolors.nix
+    ./f-sy-h.nix
     ./amfora.nix
     ./icedtea-web.nix
     ./dosbox.nix
