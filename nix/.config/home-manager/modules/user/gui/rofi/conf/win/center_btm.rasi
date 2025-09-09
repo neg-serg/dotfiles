@@ -1,0 +1,8 @@
+#window {
+    background-color: @blackdarkest;
+    location: south west;
+    anchor: south west;
+    y-offset: 0%;
+    x-offset: 2%;
+    width: 80%;
+}

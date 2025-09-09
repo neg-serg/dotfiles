@@ -1,0 +1,44 @@
+configuration {
+    terminal:                      "kitty";
+    run-command:                   "{cmd}";
+    run-shell-command:             "kitty {cmd}";
+    sort:                          true;
+    parse-hosts:                   false;
+    auto-select:                   false;
+    show-icons:                    false;
+    matching:                      "fuzzy";
+    tokenize:                      true;
+    case-sensitive:                false;
+    fixed-num-lines:               false;
+    threads:                       0;
+    dpi:                           0;
+
+    display-run:                   "ﰌ Run  ﰌ ";
+    display-drun:                  "󱓞 Applications 󱓞";
+    display-window:                "  Tasks  ";
+
+    kb-primary-paste:              "Control+Shift+v,Shift+Insert";
+    kb-secondary-paste:            "Control+v,Insert";
+    kb-move-front:                 "Control+a";
+    kb-move-end:                   "Control+e";
+    kb-move-word-back:             "Alt+b";
+    kb-move-word-forward:          "Alt+f";
+    kb-move-char-back:             "Control+b";
+    kb-move-char-forward:          "Control+f";
+    kb-remove-word-forward:        "Alt+d";
+    kb-remove-char-forward:        "Control+d";
+    kb-remove-char-back:           "Control+h,BackSpace";
+    kb-accept-entry:               "Control+j,Control+m,Return,KP_Enter";
+    kb-accept-custom:              "Control+Return";
+    kb-row-up:                     "Up,Control+p,Shift+Tab,Shift+ISO_Left_Tab,Alt+k";
+    kb-row-down:                   "Down,Control+n,Alt+j";
+    kb-page-prev:                  "Page_Up";
+    kb-page-next:                  "Page_Down";
+    kb-row-first:                  "Home,KP_Home";
+    kb-row-last:                   "End,KP_End";
+    kb-row-select:                 "Control+space";
+    kb-secondary-copy:             "";
+    kb-cancel:                     "Control-c,Escape";
+}
+
+@theme "neg"

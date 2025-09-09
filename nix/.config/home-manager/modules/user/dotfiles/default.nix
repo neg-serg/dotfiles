@@ -14,41 +14,28 @@ in {
     configFile = {
       # █▓▒░ media ────────────────────────────────────────────────────────────────────────
       "swayimg" = mkSymlink "media/.config/swayimg" true;
-
       # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
       "rustmission" = mkSymlink "misc/.config/rustmission" true;
       "transmission-daemon" = mkSymlink "misc/.config/transmission-daemon" true;
       "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
-
       # █▓▒░ music ────────────────────────────────────────────────────────────────────────
       "rmpc" = mkSymlink "music/.config/rmpc" true;
-
       # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
       "home-manager" = mkSymlink "nix/.config/home-manager" true;
-
       # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
-      "rofi" = mkSymlink "rofi/.config/rofi" true;
+      # rofi: live-editable out-of-store symlink to repo copy
+      "rofi" = {
+        source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/rofi/conf";
+        recursive = true;
+      };
       "walker" = mkSymlink "walker/.config/walker" true;
-
       # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
       "dircolors" = mkSymlink "shell/.config/dircolors" true;
       "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
       "nushell" = mkSymlink "shell/.config/nushell" true;
       "zsh" = mkSymlink "shell/.config/zsh" false;
-
       # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
       "kitty" = mkSymlink "wm/.config/kitty" true;
-
-      # Hyprland configuration files (live-editable symlinks to repo files)
-      # Keep these as out-of-store symlinks to allow real-time editing.
-      # Files are copied into this repo under modules/user/gui/hypr/conf.
-      "hypr/init.conf" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/init.conf"; recursive = false; };
-      "hypr/rules.conf" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/rules.conf"; recursive = false; };
-      "hypr/bindings.conf" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/bindings.conf"; recursive = false; };
-      "hypr/autostart.conf" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/autostart.conf"; recursive = false; };
-      "hypr/workspaces.conf" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/workspaces.conf"; recursive = false; };
-      "hypr/pyprland.toml" = { source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/hypr/conf/pyprland.toml"; recursive = false; };
-
       # █▓▒░ quickshell ───────────────────────────────────────────────────────────────────
       "quickshell" = mkSymlink "quickshell/.config/quickshell" true;
     };

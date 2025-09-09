@@ -1,0 +1,131 @@
+@import "theme.rasi"
+
+#message {
+    padding: 6px 6px;
+    background-color: @blackwidget;
+}
+
+#textbox {
+    text-color: @darkgray;
+    background-color: @blackwidget;
+}
+
+#listview {
+    fixed-height: false;
+    dynamic: true;
+    scrollbar: true;
+    spacing: 2px;
+    padding: 6px 6px 6px 6px;
+    margin: 0px 0px 0px 0px;
+    background: @blackdarkest;
+    lines: 12;
+}
+
+#element {
+    padding: 0 4mm;
+    border-color: @mainbg;
+    border-radius: 8px 8px 8px 8px;
+    border: 2px 0px 2px 0px;
+}
+
+#element.normal.normal {
+    padding: 0px 0px;
+    background-color: @mainbg;
+    text-color: @fggrey;
+}
+
+#element.alternate.normal {
+    background-color: @mainbg;
+    text-color: @fggrey;
+}
+
+#element.normal.urgent {
+    background-color: @mainbg;
+    text-color: @urgentcolor;
+}
+
+#element.normal.active {
+    background-color: @mainbg;
+    text-color: @maincolor;
+}
+
+#element.selected.normal {
+    background-color: @selectcolor;
+    text-color: @fgwhite;
+}
+
+#element.selected.urgent {
+    background-color: @urgentcolor;
+    text-color: @blackdarkest;
+}
+
+#element.selected.active {
+    background-color: @selectcolor;
+    text-color: @maincolor;
+}
+
+#element.alternate.urgent {
+    background-color: @mainbg;
+    text-color: @urgentcolor;
+}
+
+#element.alternate.active {
+    background-color: @mainbg;
+    text-color: @maincolor;
+}
+
+#scrollbar {
+    background-color: @blackwidget;
+    handle-color: @darkgray;
+    handle-width: 2px;
+}
+
+#sidebar {
+    background-color: @blackwidget;
+}
+
+#button {
+    background-color: @blackwidget;
+    text-color: @darkgray;
+}
+
+#button.selected {
+    text-color: @maincolor;
+}
+
+#inputbar {
+    background-color: @blackdarkest;
+    spacing: 0px;
+}
+
+#prompt {
+    spacing: 0px;
+    padding: 4px 4px;
+    background-color: @blackwidget;
+    text-color: @maincolor;
+}
+
+#entry {
+    padding: 4px 4px;
+    background-color: @blackwidget;
+    text-color: @fgwhite;
+}
+
+#case-indicator {
+    padding: 4px 4px;
+    text-color: @maincolor;
+    background-color: @blackwidget;
+}
+
+element-text {
+    background-color: inherit;
+    text-color:       inherit;
+}
+
+#window {
+    width:96%;
+    y-offset: 20;
+    location: north;
+    anchor: north;
+    background-color: @blackdarkest;
+}
