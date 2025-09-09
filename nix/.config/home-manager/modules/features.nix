@@ -90,5 +90,29 @@ in {
         dev.ai.enable = mkDefault true;
       };
     })
+    # If parent feature is disabled, default child toggles to false to avoid contradictions
+    (mkIf (! cfg.web.enable) {
+      features.web = {
+        tools.enable = mkDefault false;
+        floorp.enable = mkDefault false;
+        yandex.enable = mkDefault false;
+      };
+    })
+    (mkIf (! cfg.dev.enable) {
+      features.dev.ai.enable = mkDefault false;
+    })
+    # Consistency assertions for nested flags
+    {
+      assertions = [
+        {
+          assertion = cfg.web.enable || (! cfg.web.tools.enable && ! cfg.web.floorp.enable && ! cfg.web.yandex.enable);
+          message = "features.web.* flags require features.web.enable = true (disable sub-flags or enable web)";
+        }
+        {
+          assertion = cfg.dev.enable || (! cfg.dev.ai.enable);
+          message = "features.dev.ai.enable requires features.dev.enable = true";
+        }
+      ];
+    }
   ];
 }

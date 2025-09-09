@@ -259,7 +259,19 @@
           # Auto-generated docs for features.* options (Markdown + JSON)
           features-options-md = pkgs.writeText "features-options.md" (
             let
-              eval = lib.evalModules {modules = [./modules/features.nix];};
+              eval = lib.evalModules {
+                modules = [
+                  ./modules/features.nix
+                  # Shim to allow modules with `config.assertions` during plain eval
+                  ({lib, ...}: {
+                    options.assertions = lib.mkOption {
+                      type = lib.types.anything;
+                      visible = false;
+                      description = "internal";
+                    };
+                  })
+                ];
+              };
               opts = eval.options;
               toList = optSet: prefix:
                 lib.concatLists (
@@ -291,9 +303,10 @@
                   optSet
                 );
               items = toList opts "";
+              itemsClean = lib.filter (o: !(lib.hasPrefix "assertions" o.path)) items;
               esc = s: lib.replaceStrings ["\n" "|"] [" " "\\|"] (toString s);
               rows = lib.concatStringsSep "\n" (
-                map (o: "| ${o.path} | " + esc o.type + " | " + esc o.def + " | " + esc o.desc + " |") items
+                map (o: "| ${o.path} | " + esc o.type + " | " + esc o.def + " | " + esc o.desc + " |") itemsClean
               );
             in ''
               # Features Options (auto-generated)
@@ -306,7 +319,18 @@
 
           features-options-json = pkgs.writeText "features-options.json" (
             let
-              eval = lib.evalModules {modules = [./modules/features.nix];};
+              eval = lib.evalModules {
+                modules = [
+                  ./modules/features.nix
+                  ({lib, ...}: {
+                    options.assertions = lib.mkOption {
+                      type = lib.types.anything;
+                      visible = false;
+                      description = "internal";
+                    };
+                  })
+                ];
+              };
               opts = eval.options;
               toList = optSet: prefix:
                 lib.concatLists (
@@ -334,8 +358,9 @@
                   optSet
                 );
               items = toList opts "";
+              itemsClean = lib.filter (o: !(lib.hasPrefix "assertions" o.path)) items;
             in
-              builtins.toJSON items
+              builtins.toJSON itemsClean
           );
         };
 
