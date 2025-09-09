@@ -39,7 +39,7 @@ in {
       "dircolors" = mkSymlink "shell/.config/dircolors" true;
       "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
       "nushell" = mkSymlink "shell/.config/nushell" true;
-      "tmux" = mkSymlink "shell/.config/tmux" true;
+      # tmux config is now managed via Home Manager (modules/cli/tmux.nix)
       "zsh" = mkSymlink "shell/.config/zsh" false;
 
       # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,37 @@
+#!/usr/bin/python3
+
+
+def load_per_cpu(lavg_val):
+    return float(lavg_val) / 4.0
+
+
+def wrap(color, val):
+    return f'#[fg={color}]{val}#[fg=default]'
+
+
+def proc():
+    bad_load_color = 'red'
+    medium_load_color = 'yellow'
+    ok_load_color = 'green'
+    low_load_color = 'default'
+
+    delimiter = '  '
+
+    with open(loadavg_path, "r") as fp:
+        loadavg_data = fp.readlines()[0].split()[:3]
+        output = ''
+        for lavg_val in loadavg_data:
+            if load_per_cpu(lavg_val) <= 0.12:
+                output += f'{wrap(low_load_color, lavg_val)}{delimiter}'
+            elif load_per_cpu(lavg_val) <= 1.0:
+                output += f'{wrap(ok_load_color, lavg_val)}{delimiter}'
+            elif load_per_cpu(lavg_val) <= 1.5:
+                output += f'{wrap(medium_load_color, lavg_val)}{delimiter}'
+            else:
+                output += f'{wrap(bad_load_color, lavg_val)}{delimiter}'
+        print(output[:-1])
+
+
+loadavg_path = '/proc/loadavg'
+proc()
+
