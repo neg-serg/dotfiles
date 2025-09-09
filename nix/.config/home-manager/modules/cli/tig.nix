@@ -14,8 +14,18 @@
       mkdir -p "$TDIR"
     '';
 
-  xdg.configFile."tig/config" = {
-    force = true;
+  # Ensure no leftover file blocks linking our config
+  home.activation.fixTigConfigFile =
+    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+      set -eu
+      CFG="${config.xdg.configHome}/tig/config"
+      if [ -e "$CFG" ] && [ ! -L "$CFG" ]; then
+        rm -f "$CFG"
+      fi
+    '';
+
+  # Write tig config as a Home Manager-managed file under XDG
+  home.file."${config.xdg.configHome}/tig/config" = {
     text = ''
 #--[ View settings ]-----------------------------------------------------------------------------------------------
 set main-view = line-number:no,interval=5 id:no date:relative author:full commit-title:yes,graph,refs,overflow=no
