@@ -2,12 +2,11 @@
   lib,
   pkgs,
   config,
-  nyxt4 ? null,
   ...
 }:
 with lib;
 mkIf (config.features.web.enable && config.features.web.nyxt.enable) (let
-  nyxtPkg = if nyxt4 != null then nyxt4 else pkgs.nyxt;
+  nyxtPkg = pkgs.nyxt;
   dlDir = "${config.home.homeDirectory}/dw";
 in {
   home.packages = [ nyxtPkg ];
