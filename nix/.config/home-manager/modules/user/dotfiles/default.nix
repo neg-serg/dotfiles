@@ -16,15 +16,11 @@ in {
       "swayimg" = mkSymlink "media/.config/swayimg" true;
 
       # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
-      # amfora config is now managed via Home Manager (modules/cli/amfora.nix)
-      # dosbox config is now managed via Home Manager (modules/cli/dosbox.nix)
-      "icedtea-web" = mkSymlink "misc/.config/icedtea-web" true;
       "rustmission" = mkSymlink "misc/.config/rustmission" true;
       "transmission-daemon" = mkSymlink "misc/.config/transmission-daemon" true;
       "tridactyl" = mkSymlink "misc/.config/tridactyl" true;
 
       # █▓▒░ music ────────────────────────────────────────────────────────────────────────
-      "ncpamixer.conf" = mkSymlink "music/.config/ncpamixer.conf" true;
       "rmpc" = mkSymlink "music/.config/rmpc" true;
 
       # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
@@ -32,18 +28,15 @@ in {
 
       # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
       "rofi" = mkSymlink "rofi/.config/rofi" true;
-      "fuzzel" = mkSymlink "fuzzel/.config/fuzzel" true;
       "walker" = mkSymlink "walker/.config/walker" true;
 
       # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
       "dircolors" = mkSymlink "shell/.config/dircolors" true;
       "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
       "nushell" = mkSymlink "shell/.config/nushell" true;
-      # tmux config is now managed via Home Manager (modules/cli/tmux.nix)
       "zsh" = mkSymlink "shell/.config/zsh" false;
 
       # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
-      "handlr" = mkSymlink "wm/.config/handlr" true;
       "kitty" = mkSymlink "wm/.config/kitty" true;
 
       # Hyprland configuration files
