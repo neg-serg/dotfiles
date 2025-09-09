@@ -43,8 +43,11 @@ in {
       features.allowUnfree.extra = forensicsAnalysis;
     })
 
-    # IaC: allow Terraform when IaC toolchain is enabled
-    (lib.mkIf (config.features.dev.pkgs.iac or false) {
+    # IaC: allow Terraform only when selected backend is Terraform
+    (lib.mkIf (
+        (config.features.dev.pkgs.iac or false)
+        && ((config.features.dev.iac.backend or "terraform") == "terraform")
+      ) {
       features.allowUnfree.extra = iac;
     })
   ];

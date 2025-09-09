@@ -1,6 +1,13 @@
 {lib, ...}:
 with lib; {
   options.features.dev = {
+    iac = {
+      backend = mkOption {
+        type = types.enum ["terraform" "tofu"];
+        default = "terraform";
+        description = "Choose IaC backend: HashiCorp Terraform or OpenTofu (tofu).";
+      };
+    };
     pkgs = {
       formatters = mkEnableOption "enable CLI/code formatters" // {default = true;};
       codecount = mkEnableOption "enable code counting tools" // {default = true;};

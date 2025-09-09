@@ -34,11 +34,13 @@
     ];
 
     # Infrastructure-as-Code toolchain
-    iac = [
-      terraform      # main Terraform CLI
-      terraform-ls   # language server for editor integrations
-      terragrunt     # wrapper for DRY Terraform configs
-      tflint         # Terraform linter
+    iac = let
+      backend = config.features.dev.iac.backend or "terraform";
+      main = if backend == "tofu" then opentofu else terraform;
+    in [
+      main
+      terraform-ls
+      terragrunt
     ];
   };
 in
