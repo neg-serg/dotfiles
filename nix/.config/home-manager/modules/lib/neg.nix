@@ -7,7 +7,9 @@
   # Project-specific helpers under lib.neg
   config.lib.neg = {
     # Configurable root of your dotfiles repository
-    dotfilesRoot = lib.mkDefault "${config.home.homeDirectory}/.dotfiles";
+    # Note: avoid mkDefault here because config.lib.* is not a typed option;
+    # mkDefault would leave an override wrapper that breaks string coercion.
+    dotfilesRoot = "${config.home.homeDirectory}/.dotfiles";
 
     # mkEnabledList flags groups -> concatenated list of groups
     # flags: { a = true; b = false; }
