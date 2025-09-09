@@ -13,7 +13,7 @@ in {
   xdg = {
     configFile = {
       # █▓▒░ media ────────────────────────────────────────────────────────────────────────
-      "swayimg" = mkSymlink "media/.config/swayimg" true;
+      # swayimg config is managed in modules/media/images (live-edit symlink)
       # █▓▒░ misc ─────────────────────────────────────────────────────────────────────────
       "rustmission" = mkSymlink "misc/.config/rustmission" true;
       "transmission-daemon" = mkSymlink "misc/.config/transmission-daemon" true;

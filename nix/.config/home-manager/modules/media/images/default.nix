@@ -1,4 +1,6 @@
-{pkgs, ...}: let
+{ pkgs, lib, config, ... }: let
+  l = config.lib.file.mkOutOfStoreSymlink;
+  repoSwayimgConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/media/images/swayimg/conf";
   # Wrapper: start swayimg, export SWAYIMG_IPC, jump to first image via IPC.
   swayimg-first = pkgs.writeShellScriptBin "swayimg-first" ''
     set -euo pipefail
@@ -55,4 +57,19 @@ in {
     zbar # bar code reader
   ];
   home.file.".local/bin/swayimg".source = "${swayimg-first}/bin/swayimg-first";
+
+  # Live-editable Swayimg config: out-of-store symlink to repo copy
+  # Remove stale symlink to old HM generations before linking
+  home.activation.fixSwayimgConfig =
+    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+      set -eu
+      SDIR="${config.xdg.configHome}/swayimg"
+      if [ -L "$SDIR" ]; then
+        rm -f "$SDIR"
+      fi
+    '';
+  xdg.configFile."swayimg" = {
+    source = l repoSwayimgConf;
+    recursive = true;
+  };
 }

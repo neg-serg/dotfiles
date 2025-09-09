@@ -1,0 +1,8 @@
+include general.conf
+include viewer.conf
+include slideshow.conf
+include gallery.conf
+include list.conf
+include font.conf
+include info.conf
+include bindings.conf
