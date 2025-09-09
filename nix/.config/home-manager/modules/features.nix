@@ -27,6 +27,8 @@ in {
       enable = mkEnableOption "enable Web stack (browsers + tools)" // {default = true;};
       tools.enable = mkEnableOption "enable web tools (aria2, yt-dlp, misc)" // {default = true;};
       floorp.enable = mkEnableOption "enable Floorp browser" // {default = true;};
+      firefox.enable = mkEnableOption "enable Firefox browser" // {default = false;};
+      librewolf.enable = mkEnableOption "enable LibreWolf browser" // {default = false;};
       yandex.enable = mkEnableOption "enable Yandex browser" // {default = true;};
     };
 
@@ -78,6 +80,8 @@ in {
           enable = mkDefault true;
           tools.enable = mkDefault true;
           floorp.enable = mkDefault true;
+          firefox.enable = mkDefault false;
+          librewolf.enable = mkDefault false;
           yandex.enable = mkDefault true;
         };
         media.audio = {
@@ -95,6 +99,8 @@ in {
       features.web = {
         tools.enable = mkDefault false;
         floorp.enable = mkDefault false;
+        firefox.enable = mkDefault false;
+        librewolf.enable = mkDefault false;
         yandex.enable = mkDefault false;
       };
     })
@@ -116,6 +122,10 @@ in {
         {
           assertion = cfg.web.enable || (! cfg.web.tools.enable && ! cfg.web.floorp.enable && ! cfg.web.yandex.enable);
           message = "features.web.* flags require features.web.enable = true (disable sub-flags or enable web)";
+        }
+        {
+          assertion = ! (cfg.web.firefox.enable && cfg.web.librewolf.enable);
+          message = "Only one of features.web.firefox.enable or features.web.librewolf.enable can be true";
         }
         {
           assertion = cfg.dev.enable || (! cfg.dev.ai.enable);

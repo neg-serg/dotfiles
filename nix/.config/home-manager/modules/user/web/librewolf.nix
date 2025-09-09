@@ -1,36 +1,26 @@
 {
-  config,
-  pkgs,
   lib,
+  pkgs,
+  config,
+  fa ? null,
   ...
 }:
-lib.mkIf (config.features.web.enable && config.features.web.floorp.enable) (let
+with lib;
+mkIf (config.features.web.enable && config.features.web.librewolf.enable) (let
   common = config.lib.neg.web.mozillaCommon;
 in {
-  programs.floorp = {
+  programs.firefox = {
     enable = true;
+    package = pkgs.librewolf;
     nativeMessagingHosts = common.nativeMessagingHosts;
-
     profiles.${common.profileId} = {
       isDefault = true;
-      # Declarative extensions (NUR where available)
       extensions = { packages = common.addons.common; };
-
-      # about:config prefs
       settings = common.settings;
-
-      # Optional toggles
       extraConfig = common.extraConfig;
-
       userChrome = common.userChrome;
     };
-
-    # Policies: force-install addons missing in NUR (AMO latest.xpi)
     policies = common.policies;
   };
-
-  home.sessionVariables = {
-    MOZ_DBUS_REMOTE = "1";
-    MOZ_ENABLE_WAYLAND = "1";
-  };
 })
+

@@ -16,6 +16,18 @@ with lib; let
       bin = "${yandexBrowser.yandex-browser-stable}/bin/yandex-browser-stable";
       desktop = "yandex-browser.desktop";
       newTabArg = "--new-tab";
+    } else if (cfg.default or "floorp") == "firefox" then {
+      name = "firefox";
+      pkg = pkgs.firefox;
+      bin = "${pkgs.firefox}/bin/firefox";
+      desktop = "firefox.desktop";
+      newTabArg = "-new-tab";
+    } else if (cfg.default or "floorp") == "librewolf" then {
+      name = "librewolf";
+      pkg = pkgs.librewolf;
+      bin = "${pkgs.librewolf}/bin/librewolf";
+      desktop = "librewolf.desktop";
+      newTabArg = "-new-tab";
     } else {
       name = "floorp";
       pkg = pkgs.floorp;
@@ -26,7 +38,7 @@ with lib; let
 in {
   # Choose the default browser for system-wide handlers and $BROWSER
   options.features.web.default = mkOption {
-    type = types.enum ["floorp" "yandex"];
+    type = types.enum ["floorp" "firefox" "librewolf" "yandex"];
     default = "floorp";
     description = "Default browser used for XDG handlers, $BROWSER, and integrations.";
   };
@@ -56,4 +68,3 @@ in {
     };
   };
 }
-

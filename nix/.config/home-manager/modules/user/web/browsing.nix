@@ -9,6 +9,9 @@ with lib; {
   imports = [
     ./defaults.nix
     ./floorp.nix
+    ./mozilla-common.nix
+    ./firefox.nix
+    ./librewolf.nix
   ];
 
   config = mkMerge [
