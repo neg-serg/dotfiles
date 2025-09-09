@@ -23,11 +23,7 @@ in {
       # █▓▒░ nix ──────────────────────────────────────────────────────────────────────────
       "home-manager" = mkSymlink "nix/.config/home-manager" true;
       # █▓▒░ launcher ─────────────────────────────────────────────────────────────────────
-      # rofi: live-editable out-of-store symlink to repo copy
-      "rofi" = {
-        source = l "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/rofi/conf";
-        recursive = true;
-      };
+      # rofi config is set in modules/user/gui/rofi.nix (live symlink)
       "walker" = mkSymlink "walker/.config/walker" true;
       # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
       "dircolors" = mkSymlink "shell/.config/dircolors" true;

@@ -5,6 +5,10 @@
   ...
 }:
 with lib;
+let
+  l = config.lib.file.mkOutOfStoreSymlink;
+  repoRofiConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/rofi/conf";
+in
   mkIf config.features.gui.enable {
     home.packages = with pkgs; [
       rofi-pass-wayland # pass interface for rofi-wayland
@@ -15,4 +19,10 @@ with lib;
         ];
       }) # modern dmenu alternative
     ];
+
+    # Live-editable config: out-of-store symlink pointing to repo files
+    xdg.configFile."rofi" = {
+      source = l repoRofiConf;
+      recursive = true;
+    };
   }
