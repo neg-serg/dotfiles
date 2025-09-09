@@ -3,6 +3,7 @@
   pkgs,
   config,
   yandexBrowser ? null,
+  nyxt4 ? null,
   ...
 }:
 with lib; let
@@ -28,6 +29,12 @@ with lib; let
       bin = "${pkgs.librewolf}/bin/librewolf";
       desktop = "librewolf.desktop";
       newTabArg = "-new-tab";
+    } else if (cfg.default or "floorp") == "nyxt" then {
+      name = "nyxt";
+      pkg = if nyxt4 != null then nyxt4 else pkgs.nyxt;
+      bin = "${(if nyxt4 != null then nyxt4 else pkgs.nyxt)}/bin/nyxt";
+      desktop = "nyxt.desktop";
+      newTabArg = "";
     } else {
       name = "floorp";
       pkg = pkgs.floorp;
@@ -38,7 +45,7 @@ with lib; let
 in {
   # Choose the default browser for system-wide handlers and $BROWSER
   options.features.web.default = mkOption {
-    type = types.enum ["floorp" "firefox" "librewolf" "yandex"];
+    type = types.enum ["floorp" "firefox" "librewolf" "nyxt" "yandex"];
     default = "floorp";
     description = "Default browser used for XDG handlers, $BROWSER, and integrations.";
   };

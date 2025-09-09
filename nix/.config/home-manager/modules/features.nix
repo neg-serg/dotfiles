@@ -29,6 +29,7 @@ in {
       floorp.enable = mkEnableOption "enable Floorp browser" // {default = true;};
       firefox.enable = mkEnableOption "enable Firefox browser" // {default = false;};
       librewolf.enable = mkEnableOption "enable LibreWolf browser" // {default = false;};
+      nyxt.enable = mkEnableOption "enable Nyxt browser" // {default = true;};
       yandex.enable = mkEnableOption "enable Yandex browser" // {default = true;};
     };
 
@@ -82,6 +83,7 @@ in {
           floorp.enable = mkDefault true;
           firefox.enable = mkDefault false;
           librewolf.enable = mkDefault false;
+          nyxt.enable = mkDefault true;
           yandex.enable = mkDefault true;
         };
         media.audio = {
@@ -101,6 +103,7 @@ in {
         floorp.enable = mkDefault false;
         firefox.enable = mkDefault false;
         librewolf.enable = mkDefault false;
+        nyxt.enable = mkDefault false;
         yandex.enable = mkDefault false;
       };
     })
@@ -120,7 +123,7 @@ in {
     {
       assertions = [
         {
-          assertion = cfg.web.enable || (! cfg.web.tools.enable && ! cfg.web.floorp.enable && ! cfg.web.yandex.enable);
+          assertion = cfg.web.enable || (! cfg.web.tools.enable && ! cfg.web.floorp.enable && ! cfg.web.yandex.enable && ! cfg.web.firefox.enable && ! cfg.web.librewolf.enable && ! cfg.web.nyxt.enable);
           message = "features.web.* flags require features.web.enable = true (disable sub-flags or enable web)";
         }
         {
