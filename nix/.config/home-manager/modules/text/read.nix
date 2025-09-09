@@ -1,4 +1,14 @@
-{pkgs, ...}: {
+{pkgs, lib, config, ...}: {
+  # Remove stale ~/.config/zathura symlink that may point into this repo from older setups
+  home.activation.fixZathuraConfigDir =
+    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+      set -eu
+      ZDIR="${config.xdg.configHome}/zathura"
+      if [ -L "$ZDIR" ]; then
+        rm -f "$ZDIR"
+      fi
+    '';
+
   home.packages = with pkgs; [
     amfora # terminal browser for gemini
     antiword # convert ms word to text or ps

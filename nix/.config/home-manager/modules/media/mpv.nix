@@ -4,6 +4,16 @@
   pkgs,
   ...
 }: {
+  # Remove stale ~/.config/mpv symlink that may point into this repo from older setups
+  home.activation.fixMpvConfigDir =
+    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+      set -eu
+      MPVDIR="${config.xdg.configHome}/mpv"
+      if [ -L "$MPVDIR" ]; then
+        rm -f "$MPVDIR"
+      fi
+    '';
+
   programs.mpv = {
     enable = true;
 
