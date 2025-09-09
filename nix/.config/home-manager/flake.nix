@@ -280,6 +280,7 @@
               evalCfg = mods:
                 homeManagerInput.lib.homeManagerConfiguration {
                   inherit pkgs;
+                  # Use local per-system extras; avoid recursion into perSystem
                   extraSpecialArgs = {
                     inputs = nillaInputs;
                     inherit hy3;
@@ -289,10 +290,11 @@
                   };
                   modules = mods;
                 };
-              negMods = [./home.nix stylixInput.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops];
-              liteMods = [(_: {features.profile = "lite";}) ./home.nix stylixInput.homeModules.stylix chaotic.homeManagerModules.default sopsNixInput.homeManagerModules.sops];
-              fNeg = (evalCfg negMods).config.features;
-              fLite = (evalCfg liteMods).config.features;
+              # Shared helper: evaluate features for a given profile using hmBaseModules
+              hmFeaturesFor = profile:
+                (evalCfg (hmBaseModules {inherit profile;})).config.features;
+              fNeg = hmFeaturesFor null;
+              fLite = hmFeaturesFor "lite";
               toFlat = set: prefix:
                 lib.foldl' (
                   acc: name: let
