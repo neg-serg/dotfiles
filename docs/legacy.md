@@ -70,7 +70,7 @@ Some stuff from Gnome project:
 
 **gnome-keyring-daemon**: Gnome keyring daemon
 
-**gpaste**: GPaste clipboard manager daemon, using it with help of rofi.
+Clipboard history: greenclip or clipcat, integrated with rofi.
 
 and some misc stuff:
 
@@ -109,4 +109,3 @@ transmission-daemon. It's the most beautiful transmission-client as I know.
 
 If you like my stuff, you can [buy me a coffee](https://www.buymeacoffee.com/negserg).
 # nixos-home
-

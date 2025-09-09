@@ -3,18 +3,16 @@ set -eu
 if (set -o pipefail) 2>/dev/null; then
   set -o pipefail
 fi
-# clip: clipboard helper (greenclip/gpaste/clipcat + extras)
+# clip: clipboard helper (greenclip/clipcat + extras)
 # Usage:
-#   clip                       # open clipboard menu (greenclip/gpaste/clipcat)
+#   clip                       # open clipboard menu (greenclip/clipcat)
 #   clip pipe [-p|--paste] [-c|--command CMD] [--]
 #   clip youtube-dw-list       # pick video URL from history and download
 #   clip youtube-dw            # download URL currently in clipboard
 #   clip youtube-view          # open yt scratchpad and paste selection
 #   clip -h|--help|help        # this help
 # Env:
-#   USE_GPASTE=true            # use gpaste instead of greenclip
 #   USE_CLIPCAT=true           # use clipcat instead of greenclip
-[ -z "${USE_GPASTE-}" ] && USE_GPASTE=false
 [ -z "${USE_CLIPCAT-}" ] && USE_CLIPCAT=false
 alias yt='yt-dlp --downloader aria2c -f "(bestvideo+bestaudio/best)"'
 
@@ -74,15 +72,7 @@ clipboard_pipe() {
 }
 
 clip_main() {
-    if [ "$USE_GPASTE" = true ]; then
-        if command -v gpaste-client >/dev/null 2>&1; then
-            rofi_cmd="rofi -dmenu -lines 10 -no-plugins -sort -i -matching glob -dmenu -p '⟬clip⟭ ❯>' -theme clip.rasi"
-            selection="$(gpaste-client --oneline --raw | head -50 | nl -s ': ' -n rz -w 2 | eval "$rofi_cmd")"
-            num="$(echo "$selection" | awk -F ': ' '{print $1}')"
-            uuid="$(gpaste-client --oneline | awk -F ':' '{print $1}' | sed -n "$num""p")"
-            gpaste-client select "$uuid"
-        fi
-    elif [ "$USE_CLIPCAT" = true ]; then
+    if [ "$USE_CLIPCAT" = true ]; then
         clipcat-menu -c ~/.config/clipcat/clipcat-menu.toml
     else
         rofi -modi "clipboard:greenclip print" -show clipboard -theme clip
@@ -97,17 +87,10 @@ yr() {
 }
 
 youtube_url() {
-    if [ "$USE_GPASTE" = true ]; then
-        gpaste-client \
-            | rg -E 'https.*(youtube|vimeo).com' \
-            | cut -f2- -d ' ' \
-            | rofi -lines 7 -dmenu -p '⟬youtube⟭ ❯>'
-    else
-        CM_OUTPUT_CLIP=1 clipmenu \
-            | rg -E 'https.*(youtube|vimeo).com' \
-            | cut -f2- -d ' ' \
-            | rofi -lines 7 -dmenu -p '⟬youtube⟭ ❯>'
-    fi
+    CM_OUTPUT_CLIP=1 clipmenu \
+        | rg -E 'https.*(youtube|vimeo).com' \
+        | cut -f2- -d ' ' \
+        | rofi -lines 7 -dmenu -p '⟬youtube⟭ ❯>'
 }
 
 case "$1" in
