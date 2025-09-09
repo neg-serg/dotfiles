@@ -6,6 +6,8 @@
   ...
 }:
 with lib; let
+  l = config.lib.file.mkOutOfStoreSymlink;
+  repoQSConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/user/gui/quickshell/conf";
   qsPath = pkgs.lib.makeBinPath [
     pkgs.fd # fast file finder used by QS scripts
     pkgs.coreutils # basic CLI utilities
@@ -57,4 +59,20 @@ in
       qt6.qtsvg # SVG support (Qt6)
       quickshellWrapped # wrapper with required env paths
     ];
+
+    # Remove stale ~/.config/quickshell symlink from older generations before linking
+    home.activation.fixQuickshellConfigDir =
+      lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+        set -eu
+        QSDIR="${config.xdg.configHome}/quickshell"
+        if [ -L "$QSDIR" ]; then
+          rm -f "$QSDIR"
+        fi
+      '';
+
+    # Live-editable config: out-of-store symlink to repo copy
+    xdg.configFile."quickshell" = {
+      source = l repoQSConf;
+      recursive = true;
+    };
   }
