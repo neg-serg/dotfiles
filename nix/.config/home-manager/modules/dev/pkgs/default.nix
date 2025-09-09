@@ -33,6 +33,8 @@
       deheader # remove unneeded C/C++ includes
     ];
 
+    # IaC backend package (Terraform or OpenTofu) controlled by
+    # features.dev.iac.backend (default: "terraform").
     iac = let
       backend = config.features.dev.iac.backend or "terraform";
       main = if backend == "tofu" then opentofu else terraform;

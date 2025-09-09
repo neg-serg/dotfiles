@@ -13,6 +13,8 @@
 - Переключить профиль Home Manager:
   - Полный: `just hm-neg` (эквивалент `home-manager switch --flake .#neg`)
   - Лёгкий: `just hm-lite` (эквивалент `home-manager switch --flake .#neg-lite`)
+  - IaC: по умолчанию установлен Terraform (full‑профиль). Проверка: `terraform -version`.
+    - Переключить бэкенд на OpenTofu: `features.dev.iac.backend = "tofu"` в HM.
 - Включить локальные git-хуки (опционально):
   - `just hooks-enable` (ставит `core.hooksPath` на `.githooks` этого flake)
 

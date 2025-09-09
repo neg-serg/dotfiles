@@ -74,3 +74,9 @@ Switch examples:
 - Commit subjects are enforced to start with `[scope]` via a local hook in `.githooks/commit-msg`.
   - Enable it with: `git config core.hooksPath nix/.config/home-manager/.githooks`
 
+## IaC (Terraform / OpenTofu)
+
+- `features.dev.pkgs.iac` — include Infrastructure‑as‑Code CLI (default: true in full profile)
+- `features.dev.iac.backend` — choose backend: `"terraform" | "tofu"` (default: `"terraform"`)
+  - When `terraform` is selected, the unfree predicate auto‑allowlists it.
+  - Packages are added via `modules/dev/pkgs/default.nix`.
