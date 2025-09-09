@@ -6,6 +6,9 @@
 }: {
   # Project-specific helpers under lib.neg
   config.lib.neg = {
+    # Configurable root of your dotfiles repository
+    dotfilesRoot = lib.mkDefault "${config.home.homeDirectory}/.dotfiles";
+
     # mkEnabledList flags groups -> concatenated list of groups
     # flags: { a = true; b = false; }
     # groups: { a = [pkg1]; b = [pkg2]; }
@@ -29,10 +32,10 @@
     mkBool = desc: default:
       (lib.mkEnableOption desc) // {inherit default;};
 
-    # Create a Home Manager home.file symlink from ~/.dotfiles
+    # Create a Home Manager home.file symlink from dotfilesRoot
     # Usage: config.lib.neg.mkDotfilesSymlink "path/in/repo" false
     mkDotfilesSymlink = path: recursive: {
-      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/${path}";
+      source = config.lib.file.mkOutOfStoreSymlink "${config.lib.neg.dotfilesRoot}/${path}";
       inherit recursive;
     };
 
