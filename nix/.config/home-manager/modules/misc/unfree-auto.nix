@@ -2,8 +2,10 @@
 let
   audio = import ./unfree/categories/audio.nix;
   editors = import ./unfree/categories/editors.nix;
+  ai = import ./unfree/categories/ai-tools.nix;
   browsers = import ./unfree/categories/browsers.nix;
-  forensics = import ./unfree/categories/forensics.nix;
+  forensicsStego = import ./unfree/categories/forensics-stego.nix;
+  forensicsAnalysis = import ./unfree/categories/forensics-analysis.nix;
 in {
   config = lib.mkMerge [
     # Audio: allow when audio apps or creation enabled
@@ -14,9 +16,14 @@ in {
       features.allowUnfree.extra = audio;
     })
 
-    # Editors/AI tools: allow when dev stack enabled
+    # Editors: allow when dev stack enabled
     (lib.mkIf (config.features.dev.enable or false) {
       features.allowUnfree.extra = editors;
+    })
+
+    # AI tools: allow when features.dev.ai.enable
+    (lib.mkIf (config.features.dev.ai.enable or false) {
+      features.allowUnfree.extra = ai;
     })
 
     # Browser: allow Yandex when enabled
@@ -24,15 +31,12 @@ in {
       features.allowUnfree.extra = browsers;
     })
 
-    # Forensics: allow when any forensics group is enabled (simple OR)
-    (lib.mkIf (
-      (config.features.dev.hack.forensics.fs or false)
-      || (config.features.dev.hack.forensics.stego or false)
-      || (config.features.dev.hack.forensics.analysis or false)
-      || (config.features.dev.hack.forensics.network or false)
-    ) {
-      features.allowUnfree.extra = forensics;
+    # Forensics per-feature granularity
+    (lib.mkIf (config.features.dev.hack.forensics.stego or false) {
+      features.allowUnfree.extra = forensicsStego;
+    })
+    (lib.mkIf (config.features.dev.hack.forensics.analysis or false) {
+      features.allowUnfree.extra = forensicsAnalysis;
     })
   ];
 }
-

@@ -1,0 +1,4 @@
+[
+  "lmstudio" # local LLM app
+]
+

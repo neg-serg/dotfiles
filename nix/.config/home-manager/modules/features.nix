@@ -15,6 +15,9 @@ in {
     hack = mkEnableOption "enable Hack/security tooling stack" // { default = true; };
     dev = {
       enable = mkEnableOption "enable Dev stack (toolchains, editors, hack tooling)" // { default = true; };
+      ai = {
+        enable = mkEnableOption "enable AI tools (e.g., LM Studio)" // { default = true; };
+      };
     };
 
     web = {
@@ -45,6 +48,7 @@ in {
       features.mail = mkDefault false;
       features.hack = mkDefault false;
       features.dev.enable = mkDefault false;
+      features.dev.ai.enable = mkDefault false;
 
       # Slim down audio and web stacks in lite profile
       features.media.audio.core.enable = mkDefault false;
@@ -70,7 +74,7 @@ in {
       features.media.audio.mpd.enable = mkDefault true;
       # Enable retroarchFull by default in full profile
       features.emulators.retroarch.full = mkDefault true;
+      features.dev.ai.enable = mkDefault true;
     })
   ];
 }
-

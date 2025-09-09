@@ -1,0 +1,4 @@
+[
+  "stegsolve" # image stego analyzer
+]
+
