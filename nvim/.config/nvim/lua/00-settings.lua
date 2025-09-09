@@ -72,6 +72,7 @@ o.expandtab=true                             -- Tabs are spaces=not tabs
 o.fileencodings='utf-8,default'              -- Less file encodings
 o.gdefault=true                              -- This makes search/replace global by default
 o.ignorecase=true                            -- Case insensitive search
+o.iminsert=0                                 -- Use Latin input in Insert by default
 o.imsearch=0                                 -- Search with latin1 characters first
 o.isfname='#,$,%,+,,,-,.,/,48-57,=,@,_,~,@-@'  -- Scan in filenames in such brackets
 o.matchtime=0                                -- Default time to hi brackets too long for me
