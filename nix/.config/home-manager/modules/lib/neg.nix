@@ -29,6 +29,13 @@
     mkBool = desc: default:
       (lib.mkEnableOption desc) // {inherit default;};
 
+    # Create a Home Manager home.file symlink from ~/.dotfiles
+    # Usage: config.lib.neg.mkDotfilesSymlink "path/in/repo" false
+    mkDotfilesSymlink = path: recursive: {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/${path}";
+      inherit recursive;
+    };
+
     # Browser addons helper: produce well-known addon lists given NUR addons set
     browserAddons = fa: {
       common = with fa; [
