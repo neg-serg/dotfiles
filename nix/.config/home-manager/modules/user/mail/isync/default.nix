@@ -39,8 +39,12 @@ with lib;
     systemd.user.services."mbsync-gmail" = {
       Unit = {
         Description = "Sync mail via mbsync (gmail)";
-        After = ["network-online.target"];
-        Wants = ["network-online.target"];
+        After = [
+          "network-online.target" # require working network
+        ];
+        Wants = [
+          "network-online.target" # pull in network-online
+        ];
       };
       Service = {
         # Use simple so `systemctl start` doesn't block the caller
@@ -57,6 +61,10 @@ with lib;
         OnUnitActiveSec = "10m";
         Persistent = true;
       };
-      Install = {WantedBy = ["timers.target"];};
+      Install = {
+        WantedBy = [
+          "timers.target" # hook into user timers
+        ];
+      };
     };
   }

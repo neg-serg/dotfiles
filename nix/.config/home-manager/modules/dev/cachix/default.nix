@@ -78,8 +78,14 @@ in {
     systemd.user.services."cachix-watch-store" = lib.mkIf cfg.enable {
       Unit = {
         Description = "Cachix watch-store for ${cfg.cacheName}";
-        After = ["network-online.target" "sops-nix.service"];
-        Wants = ["network-online.target" "sops-nix.service"];
+        After = [
+          "network-online.target" # require working network
+          "sops-nix.service" # ensure secrets available if needed
+        ];
+        Wants = [
+          "network-online.target" # pull in network-online
+          "sops-nix.service" # pull in secrets availability
+        ];
       };
       Service = {
         Type = "simple";
@@ -120,7 +126,9 @@ in {
         RestrictAddressFamilies = lib.mkIf cfg.hardening.enable ["AF_INET" "AF_INET6"];
       };
       Install = {
-        WantedBy = ["default.target"];
+        WantedBy = [
+          "default.target" # start by default in user session
+        ];
       };
     };
   };

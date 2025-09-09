@@ -6,22 +6,32 @@
     openrgb = {
       Unit = {
         Description = "OpenRGB daemon with profile";
-        After = ["dbus.socket"];
-        PartOf = ["graphical-session.target"];
+        After = [
+          "dbus.socket" # requires D-Bus activation
+        ];
+        PartOf = [
+          "graphical-session.target" # tie lifecycle to graphical session
+        ];
       };
       Service = {
         ExecStart = "${pkgs.openrgb}/bin/openrgb --server -p neg.orp";
         RestartSec = "30";
         StartLimitBurst = "8";
       };
-      Install = {WantedBy = ["default.target"];};
+      Install = {
+        WantedBy = [
+          "default.target" # start by default in user session
+        ];
+      };
     };
 
     # Optimize screenshots automatically
     shot-optimizer = {
       Unit = {
         Description = "Optimize screenshots";
-        After = ["sockets.target"];
+        After = [
+          "sockets.target" # ensure sockets established first
+        ];
       };
       Service = {
         ExecStart = "%h/bin/shot-optimizer";
@@ -31,14 +41,20 @@
         RestartSec = "1";
         StartLimitBurst = "0";
       };
-      Install = {WantedBy = ["default.target"];};
+      Install = {
+        WantedBy = [
+          "default.target" # start by default in user session
+        ];
+      };
     };
 
     # Notify about picture directories
     pic-dirs = {
       Unit = {
         Description = "Pic dirs notification";
-        After = ["sockets.target"];
+        After = [
+          "sockets.target" # ensure sockets established first
+        ];
         StartLimitIntervalSec = "0";
       };
       Service = {
@@ -47,15 +63,23 @@
         Restart = "on-failure";
         RestartSec = "1";
       };
-      Install = {WantedBy = ["default.target"];};
+      Install = {
+        WantedBy = [
+          "default.target" # start by default in user session
+        ];
+      };
     };
 
     # Pyprland daemon
     pyprland = {
       Unit = {
         Description = "Pyprland daemon for Hyprland";
-        After = ["graphical-session.target"];
-        Wants = ["graphical-session.target"];
+        After = [
+          "graphical-session.target" # needs running session
+        ];
+        Wants = [
+          "graphical-session.target" # pull in the session target
+        ];
       };
       Service = {
         Type = "simple";
@@ -64,15 +88,23 @@
         RestartSec = "1";
         Slice = "background-graphical.slice";
       };
-      Install = {WantedBy = ["graphical-session.target"];};
+      Install = {
+        WantedBy = [
+          "graphical-session.target" # start with graphical session
+        ];
+      };
     };
 
     # Quickshell session
     quickshell = {
       Unit = {
         Description = "Quickshell Wayland shell";
-        After = ["graphical-session.target"];
-        Wants = ["graphical-session.target"];
+        After = [
+          "graphical-session.target" # ensure compositor/session up
+        ];
+        Wants = [
+          "graphical-session.target" # pull in session
+        ];
       };
       Service = {
         ExecStart = "${pkgs.quickshell}/bin/qs";
@@ -85,7 +117,11 @@
         # Uncomment if you need explicit env passing:
         # PassEnvironment = [ "WAYLAND_DISPLAY" "XDG_RUNTIME_DIR" ];
       };
-      Install = {WantedBy = ["graphical-session.target"];};
+      Install = {
+        WantedBy = [
+          "graphical-session.target" # start with graphical session
+        ];
+      };
     };
   };
 }

@@ -43,7 +43,11 @@ with {
         Type = "oneshot";
         ExecStart = "${pkgs.playerctl}/bin/playerctld daemon";
       };
-      Install = {WantedBy = ["default.target"];};
+      Install = {
+        WantedBy = [
+          "default.target" # start by default in user session
+        ];
+      };
     };
   };
 }

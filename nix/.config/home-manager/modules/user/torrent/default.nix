@@ -11,7 +11,9 @@ with {
   systemd.user.services.transmission-daemon = {
     Unit = {
       Description = "transmission service";
-      After = ["network.target"];
+      After = [
+        "network.target" # ensure network up before starting
+      ];
       ConditionPathExists = "${transmission}/bin/transmission-daemon";
     };
     Service = {
@@ -22,6 +24,10 @@ with {
       StartLimitBurst = "8";
       ExecReload = "${pkgs.util-linux}/bin/kill -s HUP $MAINPID";
     };
-    Install = {WantedBy = ["default.target"];};
+    Install = {
+      WantedBy = [
+        "default.target" # start in standard user session
+      ];
+    };
   };
 }

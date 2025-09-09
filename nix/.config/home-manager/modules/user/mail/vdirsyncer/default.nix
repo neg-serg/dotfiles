@@ -66,8 +66,12 @@ with lib;
     systemd.user.services.vdirsyncer = {
       Unit = {
         Description = "Vdirsyncer synchronization service";
-        After = ["network-online.target"];
-        Wants = ["network-online.target"];
+        After = [
+          "network-online.target" # require working network
+        ];
+        Wants = [
+          "network-online.target" # pull in network-online
+        ];
       };
       Service = {
         Type = "oneshot";
@@ -83,6 +87,10 @@ with lib;
         OnUnitActiveSec = "5m";
         Unit = "vdirsyncer.service";
       };
-      Install = {WantedBy = ["timers.target"];};
+      Install = {
+        WantedBy = [
+          "timers.target" # hook into user timers
+        ];
+      };
     };
   }
