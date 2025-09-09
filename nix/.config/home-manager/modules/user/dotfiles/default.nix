@@ -16,7 +16,7 @@ in {
       "gdb" = mkSymlink "gdb/.config/gdb" true;
 
       # █▓▒░ git ──────────────────────────────────────────────────────────────────────────
-      "tig" = mkSymlink "git/.config/tig" true;
+      # tig config is now managed via Home Manager (modules/cli/tig.nix)
 
       # █▓▒░ mail ─────────────────────────────────────────────────────────────────────────
       "isync" = mkSymlink "mail/.config/isync" true;
