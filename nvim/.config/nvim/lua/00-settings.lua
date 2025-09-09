@@ -76,7 +76,6 @@ o.ignorecase=true                            -- Case insensitive search
 o.iminsert=0                                 -- Write latin1 characters first
 o.imsearch=0                                 -- Search with latin1 characters first
 o.isfname='#,$,%,+,,,-,.,/,48-57,=,@,_,~,@-@'  -- Scan in filenames in such brackets
-o.jumpoptions='stack'                        -- Stack jumpoptions
 o.matchtime=0                                -- Default time to hi brackets too long for me
 o.matchpairs='(:),{:},[:],<:>'                 -- More matchpairs
 o.foldenable=false                           -- Disable folds as
