@@ -38,7 +38,7 @@
     iac = let
       backend = config.features.dev.iac.backend or "terraform";
       main = if backend == "tofu" then opentofu else terraform;
-    in [ main ];
+    in [ main ansible ];
   };
 in
   lib.mkIf config.features.dev.enable {
