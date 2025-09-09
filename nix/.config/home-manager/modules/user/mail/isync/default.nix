@@ -23,7 +23,9 @@ with lib;
 
     # Create base maildir on activation (mbsync can also create, but this avoids first-run hiccups)
     home.activation.createMaildirs = {
-      after = ["writeBoundary"];
+      after = [
+        "writeBoundary" # run after HM writes files to disk
+      ];
       before = [];
       data = ''
         set -eu

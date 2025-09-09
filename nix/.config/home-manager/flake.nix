@@ -117,7 +117,6 @@
 
   outputs = inputs @ {
     self,
-    bzmenu,
     chaotic,
     homeManagerInput,
     hy3,

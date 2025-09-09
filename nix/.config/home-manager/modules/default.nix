@@ -1,8 +1,4 @@
-{
-  lib,
-  config,
-  ...
-}:
+{lib, ...}:
 with lib; {
   imports = [
     ./lib/neg.nix

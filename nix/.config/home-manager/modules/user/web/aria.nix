@@ -32,7 +32,7 @@ in
       };
     };
 
-  systemd.user.services.aria2 = {
+    systemd.user.services.aria2 = {
       Unit.Description = "aria2 download manager";
       Service = {
         ExecStartPre = let
@@ -61,8 +61,8 @@ in
         Slice = "session.slice";
         ProtectSystem = "full";
       };
-    Install.WantedBy = [
-      "graphical-session.target" # start with the user graphical session
-    ];
-  };
-}
+      Install.WantedBy = [
+        "graphical-session.target" # start with the user graphical session
+      ];
+    };
+  }
