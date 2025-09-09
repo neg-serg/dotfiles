@@ -1,0 +1,12 @@
+video/*; $XDG_CONFIG_HOME/mutt/mutt_bgrun mpv -really-quiet -msglevel all=0 %s 2>/dev/null;
+application/pdf; pdftotext -layout %s - | ${PAGER:-less}; copiousoutput;
+application/pgp; /usr/bin/gpg --decrypt %s; copiousoutput;
+application/pgp-encrypted; /usr/bin/gpg --decrypt %s; copiousoutput;
+
+# HTML: lightweight terminal browser (inline in pager)
+text/html; w3m -T text/html -I utf-8 -O utf-8 -dump %s; copiousoutput;
+# Optional: open HTML externally in your terminal if desired
+#text/html; $XDG_CONFIG_HOME/mutt/mutt_bgrun ${TERMINAL:-foot} -e w3m %s;
+
+# Images: render inline in Kitty terminal
+image/*; kitty +kitten icat --transfer-mode=file %s; copiousoutput;

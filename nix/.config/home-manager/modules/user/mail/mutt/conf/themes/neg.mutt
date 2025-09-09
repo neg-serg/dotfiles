@@ -1,0 +1,128 @@
+color normal          default        default
+color tree            magenta        default
+color error           brightred      default
+color message         brightgreen    default
+color status          default        black
+color indicator       default        black
+
+color index           cyan           default  "~u"
+color index_author    default        default  '.*'
+color index_flags     default        red      '~F'
+color index_collapsed default        brightblue
+color index_date      color240       default
+color index_label     default        color240
+color index_number    red            default
+color index_size      cyan           default
+
+color status          white          default
+color status          color4         color236 '([a-zA-Z0-9]|\[|\])(\s)'
+color status          color4         color236 '(\s)([a-zA-Z0-9]|\[|\])'
+color status          color4         color236 '( )'
+color status          color4         color236 '(\% )'
+color status          color4         color236 '(\S)'
+color status          color236       default  '(|)'
+color status          green          color236 ''
+color status          white          color236 ''
+color status          yellow         color236 ''
+color status          red            color236 ''
+color tree            color15        color236
+color indicator       white          color236
+
+color index           color241       black    "~N"       # new messages
+color index           brightcolor248 default  "~F~p"     # flagged messages to me
+color index           brightcolor248 default  "~N~F"     # new flagged messages
+color index           brightcolor248 default  "~N~F~p"   # new flagged messages to me
+color index           brightcolor248 default  "~U~F~p"   # new flagged messages to me
+
+color index           brightcolor248 default  "~U"       # unread messages
+color index           brightcolor248 default  "~U~p!~F"  # unread messages to me
+
+color index           color242       default  "~P"       # messages from me
+color index           color242       default  "~N~p!~F"  # new messages to me
+color index           color242       default  "~R~p!~F"  # messages to me
+
+color index           color239       default  "~R"         # read messages
+
+color index           brightblack    default  "~O"         # old messages
+color index           brightyellow   default  "~Q"         # messages that have been replied to
+color index           brightyellow   default  "~U~$"       # unread, unreferenced  messages
+color index           color241       default  "~v"         # messages part of a collapsed thread
+color index           brightyellow   default  "~F"         # flagged messages
+color index           brightblack    color248 "~D"         # deleted messages
+color index           red            default  "~T"         # tagged messages
+
+color index           color245       default  "~v~(!~N)"   # collapsed thread with no unread
+color index           color136       default  "~v~(~N)"    # collapsed thread with some unread
+color index           color64        default  "~N~v~(~N)"  # collapsed thread with unread parent
+
+color header          brightmagenta  default  "^from:"
+color header          green          default  "^to:"
+color header          yellow         default  "^cc:"
+color header          blue           default  "^date:"
+color header          cyan           default  "^subject:"
+
+color attachment      brightblack    default
+color search          red            brightblack
+color signature       cyan           default
+color tilde           brightblack    default
+color hdrdefault      yellow         default
+color bold            brightyellow   default
+
+color body            brightblue     default  "(^|<| )mailto:[^ ]+@[^ ]( |>|$)"
+color body            brightblue     default  "(^|<| )(http|https|ftp|file|telnet|news|finger)://[^ ]+( |>|$)"
+
+color body            brightblue     default  "([a-z][a-z0-9+-]*://(((([a-z0-9_.!~*'();:&=+$,-]|%[0-9a-f][0-9a-f])*@)?((([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(:[0-9]+)?)|([a-z0-9_.!~*'()$,;:@&=+-]|%[0-9a-f][0-9a-f])+)(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?(#([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?|(www|ftp)\\.(([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?(:[0-9]+)?(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?(#([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?)[^].,:;!)? \t\r\n<>\"]"
+# email regex
+color body            brightblue     default  "((@(([0-9a-z-]+\\.)*[0-9a-z-]+\\.?|#[0-9]+|\\[[0-9]?[0-9]?[0-9]\\.[0-9]?[0-9]?[0-9]\\.[0-9]?[0-9]?[0-9]\\.[0-9]?[0-9]?[0-9]\\]),)*@(([0-9a-z-]+\\.)*[0-9a-z-]+\\.?|#[0-9]+|\\[[0-9]?[0-9]?[0-9]\\.[0-9]?[0-9]?[0-9]\\.[0-9]?[0-9]?[0-9]\\.[0-9]?[0-9]?[0-9]\\]):)?[0-9a-z_.+%$-]+@(([0-9a-z-]+\\.)*[0-9a-z-]+\\.?|#[0-9]+|\\[[0-2]?[0-9]?[0-9]\\.[0-2]?[0-9]?[0-9]\\.[0-2]?[0-9]?[0-9]\\.[0-2]?[0-9]?[0-9]\\])"
+color body            brightblue     default  "(my regex 1)"
+color body            brightcyan     default  "(my regex 2)"
+color body            brightred      default  "(my regex 3|my regex 4|my regex 5)"
+
+color body            brightmagenta  default  "(^| )+(|[<>|])[8;:](|[^ ])[)(/|DOPS]( |$)+"
+color body            brightmagenta  default  "(^| )+[)(/|DOPS](|[^ ])[8;:](|[<>|])( |$)+"
+
+color body            brightcyan     default  "(^| )\\*[^ ]+\\*( |$)"
+color body            brightcyan     default  "(^| )_[^ ]+_( |$)"
+color body            brightcyan     default  "(^| )/[^ ]+/( |$)"
+
+color quoted          magenta        default
+color quoted1         cyan           default
+color quoted2         green          default
+color quoted3         yellow         default
+color quoted4         brightmagenta  default
+color quoted5         brightgreen    default
+color quoted6         brightyellow   default
+color quoted7         brightcyan     default
+
+color body            brightgreen    default  "^gpg signature OK.*"
+color body            yellow         default  "^gpg "
+color body            brightred      default  "^gpg signature NOT OK. *"
+
+color body            brightwhite    default  ^[[:space:]].*
+color body            yellow         default  ^(diff).*
+color body            white          default  ^[\-\-\-].*
+color body            white          default  ^[\+\+\+].*
+color body            green          default  ^[\+].*
+color body            red            default  ^[\-].*
+color body            brightblue     default  [@@].*
+color body            brightwhite    default  ^(\s).*
+color body            cyan           default  ^(Signed-off-by).*
+color body            cyan           default  ^(Docker-DCO-1.1-Signed-off-by).*
+color body            brightwhite    default  ^(Cc)
+color body            yellow         default  "^diff \-.*"
+color body            brightwhite    default  "^index [a-f0-9].*"
+color body            brightblue     default  "^---$"
+color body            white          default  "^\-\-\- .*"
+color body            white          default  "^[\+]{3} .*"
+color body            green          default  "^[\+][^\+]+.*"
+color body            red            default  "^\-[^\-]+.*"
+color body            brightblue     default  "^@@ .*"
+color body            green          default  "LGTM"
+color body            brightmagenta  default  "-- Commit Summary --"
+color body            brightmagenta  default  "-- File Changes --"
+color body            brightmagenta  default  "-- Patch Links --"
+color body            green          default  "^Merged #.*"
+color body            red            default  "^Closed #.*"
+color body            brightblue     default  "^Reply to this email.*"
+
+# vim: ft=muttrc syntax=neomuttrc

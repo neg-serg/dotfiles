@@ -1,0 +1,91 @@
+set charset=utf-8                      # Local charset
+set use_from=yes
+set attribution="On %d, %n wrote:"
+set editor="nvim +':set textwidth=0' +':set wrapmargin=0' +':set wrap'"
+set folder="~/.local/mail"            # Mail root folder
+
+set delete=yes                         # Purge deleted messages without asking
+set copy=ask-no                        # Save a copy of outgoing message?
+set postpone=ask-no                    # Postpone unsent message?
+set print=ask-yes                      # Confirm printing
+set include=yes                        # Include message in replies (quoting)
+set quit=yes                           # Confirm exit
+set recall=ask-yes                     # Confirm working with unsent messages
+unset confirmappend                    # Don't prompt when appending to mbox
+set abort_nosubject=no                 # Don't abort on empty subject
+set attach_split                       # Store attachments separately
+set fast_reply                         # Skip To/Cc/Subject when replying
+set fcc_attach                         # Keep attachments with Fcc
+set followup_to                        # Add Mail-Followup-To for lists
+unset metoo                            # Don't CC myself on group-reply
+unset reply_self                       # Don't reply to self
+unset read_only                        # Read/write access to mailboxes
+unset collapse_unread                  # Don't collapse threads with new mail
+unset mark_old                         # Unread old messages stay unread
+set beep=no                            # No beeps
+set sleep_time=0                       # Speed up folder switches
+set forward_decode                     # Decode when forwarding
+set beep_new=no                        # No beep for new mail
+set askcc=no                           # Don't ask for Cc on compose
+unset markers                          # No '+' for wrapped lines
+set wait_key=no                        # Less prompts
+unset print_command                    # Disable printing command
+set forward_format="Fwd: %s"           # Simple forward format
+# Default shows keybindings help
+# set help                               # Show keybindings help
+set implicit_autoview                  # Use mailcap for MIME types
+
+set mailcap_path="~/.config/mutt/mailcap" # Use local mailcap database
+# mailcap_sanitize defaults to yes in NeoMutt
+# set mailcap_sanitize=yes               # Sanitize mailcap
+
+set menu_scroll                        # Menu scrolling
+set narrow_tree                        # Compact thread tree
+set user_agent=no                      # Hide real User-Agent
+
+# pager defaults to builtin
+# set pager=builtin
+set pager_stop                         # Don't auto-open next message
+set pager_index_lines=20               # Index lines to show above pager
+set pager_context=3                    # Context lines in pager
+set tilde                              # Show tildes like in vim
+
+set sort_aux=reverse-last-date-received  # Gmail-like sorting
+set uncollapse_jump                    # Don't collapse on unread
+
+set ssl_force_tls=yes
+set mail_check=10
+set timeout=10
+set auto_tag=yes
+set pgp_autosign=no
+set imap_keepalive=300
+set imap_check_subscribed
+set query_command="notmuch-addrlookup --mutt '%s'"
+
+# Let profiles control these
+unset spoolfile
+unset record
+unset signature
+
+set reply_regexp="^(([Rr][Ee]?(\[[0-9]+\])?: *)?(\[[^]]+\] *)?)*"
+set quote_regexp="^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
+
+unlists *
+unsubscribe *
+
+# Sync mailbox timers
+timeout-hook 'exec sync-mailbox'
+
+# notmuch defaults and virtual mailboxes (shared across profiles)
+set nm_default_uri = "notmuch://$HOME/.local/mail"
+virtual-mailboxes \
+  "gmail"   "notmuch://?query=tag:gmail-inbox" \
+  "Archive" "notmuch://?query=tag:archive" \
+  "Spam"    "notmuch://?query=tag:spam" \
+  "Trash"   "notmuch://?query=tag:trash" \
+  "Unread"  "notmuch://?query=tag:gmail-inbox and tag:unread and not tag:spam" \
+  "Today"   "notmuch://?query=date:today and tag:gmail-inbox and not tag:spam" \
+  "ToMe"    "notmuch://?query=(to:serg.zorg@gmail.com or cc:serg.zorg@gmail.com) and not tag:spam" \
+  "Flagged" "notmuch://?query=tag:flagged and not tag:spam"
+
+# vim: ft=muttrc syntax=neomuttrc

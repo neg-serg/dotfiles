@@ -1,0 +1,12 @@
+auto_view text/html
+auto_view text/x-diff
+auto_view text/x-patch
+auto_view text/x-vcard
+auto_view application/pdf
+auto_view application/pgp
+auto_view application/pgp-signature
+
+# Keep text first but prefer HTML when available
+alternative_order text/plain text/html *
+
+# vim: ft=muttrc syntax=neomuttrc

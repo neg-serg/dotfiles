@@ -1,0 +1,8 @@
+source $XDG_CONFIG_HOME/mutt/01-settings.mutt
+source $XDG_CONFIG_HOME/mutt/04-bindings.mutt
+source $XDG_CONFIG_HOME/mutt/05-autoview.mutt
+source $XDG_CONFIG_HOME/mutt/12-headers.mutt
+
+source $XDG_CONFIG_HOME/mutt/themes/neg.mutt
+source $XDG_CONFIG_HOME/mutt/14-pretty.mutt
+source "$XDG_CONFIG_HOME/mutt/profiles/home.mutt"

@@ -1,0 +1,45 @@
+#!/bin/sh
+# thx to https://copyninja.info/blog/email_setup.html
+export NOTMUCH_CONFIG="$XDG_CONFIG_HOME"/notmuch/notmuchrc
+export NMBGIT="$XDG_DATA_HOME"/notmuch/nmbug
+
+# Default to only gmail; override by exporting MDIRS if needed
+MDIRS=${MDIRS:-gmail}
+
+mbsync -a -c "$XDG_CONFIG_HOME"/isync/mbsyncrc
+notmuch new
+
+for mdir in $MDIRS; do
+    # Remove generic inbox tag within this account; use account-specific tags instead
+    notmuch tag -inbox -- folder:"$mdir/*" folder:"$mdir/INBOX" 2>/dev/null || true
+
+    # Tag account on all messages in this maildir
+    notmuch tag +"account:$mdir" -- folder:"$mdir/*" folder:"$mdir/INBOX" 2>/dev/null || true
+
+    # Ensure INBOX gets an account-specific inbox tag (no generic +inbox)
+    notmuch tag +"$mdir-inbox" -- folder:"$mdir/INBOX" 2>/dev/null || true
+
+    # Tag all other top-level folders: +<folder> and +<account>-<folder>, and remove inbox tag from them
+    while IFS= read -r fdir; do
+        base="$(basename "$fdir")"
+        [ "$base" = "INBOX" ] && continue
+        notmuch tag +"$base" +"$mdir-$base" -inbox -- folder:"$mdir/$base" 2>/dev/null || true
+    done < <(find ~/.local/mail/"$mdir" -maxdepth 1 -type d)
+
+    # Special-cases for Gmail naming
+    if [ "$mdir" = "gmail" ]; then
+        notmuch tag +archive  -inbox -- folder:"$mdir/[Gmail]/All Mail" 2>/dev/null || true
+        notmuch tag +draft    -inbox -- folder:"$mdir/[Gmail]/Drafts"   2>/dev/null || true
+        notmuch tag +sent     -inbox -- folder:"$mdir/[Gmail]/Sent Mail" 2>/dev/null || true
+        notmuch tag +trash    -inbox -- folder:"$mdir/[Gmail]/Trash"    2>/dev/null || true
+        notmuch tag +spam     -inbox -- folder:"$mdir/[Gmail]/Spam"     2>/dev/null || true
+    fi
+
+    # Generic common folders (case-insensitive) for non-Gmail accounts
+    notmuch tag +archive -inbox -- folder:"$mdir/*/[Aa]rchive" 2>/dev/null || true
+    notmuch tag +draft   -inbox -- folder:"$mdir/*/[Dd]rafts"  2>/dev/null || true
+    notmuch tag +sent    -inbox -- folder:"$mdir/*/[Ss]ent*"   2>/dev/null || true
+    notmuch tag +trash   -inbox -- folder:"$mdir/*/[Tt]rash"   2>/dev/null || true
+    notmuch tag +spam    -inbox -- folder:"$mdir/*/[Ss]pam"    2>/dev/null || true
+    notmuch tag +spam    -inbox -- folder:"$mdir/*/[Jj]unk"    2>/dev/null || true
+done

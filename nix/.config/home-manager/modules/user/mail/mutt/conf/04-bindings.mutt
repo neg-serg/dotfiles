@@ -1,0 +1,83 @@
+bind editor <Tab> complete-query
+bind editor ^T complete
+bind editor <space> noop
+
+bind index g noop
+bind pager g noop
+bind attach g noop
+
+bind index gg first-entry
+bind index G last-entry
+bind index R group-reply
+bind index u sync-mailbox
+bind index <space> collapse-thread
+bind index _ collapse-all
+
+bind compose p postpone-message
+
+bind pager k previous-line
+bind pager j next-line
+bind pager gg top
+bind pager G bottom
+bind pager R group-reply
+bind attach <return> view-mailcap
+
+bind attach,browser,pager,index ZZ exit
+
+macro index,pager X "|$XDG_CONFIG_HOME/mutt/scripts/mimedump"
+
+macro index gw '<sync-mailbox><enter-command>source $XDG_CONFIG_HOME/mutt/profiles/home.mutt<enter><change-folder>=gmail/INBOX<enter>'
+macro index gu '<change-vfolder>notmuch://?query=tag:gmail-inbox and tag:unread and not tag:spam<enter>' "Go to Unread"
+macro index gt '<change-vfolder>notmuch://?query=date:today and tag:gmail-inbox and not tag:spam<enter>' "Go to Today"
+macro index gm '<change-vfolder>notmuch://?query=(to:serg.zorg@gmail.com or cc:serg.zorg@gmail.com) and not tag:spam<enter>' "Go to ToMe"
+macro index gf '<change-vfolder>notmuch://?query=tag:flagged and not tag:spam<enter>' "Go to Flagged"
+
+macro attach s "<save-entry><kill-line>~/dw/<enter>" "save attachment to ~/dw"
+
+bind index < vfolder-window-backward
+bind index > vfolder-window-forward
+bind index,pager b change-vfolder
+
+macro index H "|bogofilter -n\ns="      "Learn as ham and save"
+macro pager H "|bogofilter -n\ns="      "Learn as ham and save"
+
+macro index,pager	<f5> '<enter-command> set my_status="Reloaded configuration"; source $XDG_CONFIG_HOME/mutt/muttrc; set ?my_status<enter>'	"reload muttrc"
+
+macro pager W "|urlscan 2> /dev/null\n"
+macro index \w "\
+:set my_tmp_pipe_decode=\$pipe_decode\n\
+:set pipe_decode\n\
+|urlscan 2> /dev/null\n\
+:set pipe_decode=\$my_tmp_pipe_decode\n\
+:unset my_tmp_pipe_decode\n" \
+
+macro pager ,@aoh= "\
+<enter-command> unalternative_order *; \
+alternative_order text/enriched text/html text/plain text *; \
+macro pager V ,@aot= 'toggle alternative order'<enter>\
+<exit><display-message>"
+macro pager ,@aot= "\
+<enter-command> unalternative_order *; \
+alternative_order text/enriched text/plain text/html text *; \
+macro pager V ,@aoh= 'toggle alternative order'<enter>\
+<exit><display-message>"
+macro pager V ,@aot= "toggle alternative order"
+
+# Inline image preview in Kitty from the attachment browser
+# Usage: open attachments (v), navigate to an image, press 'i'
+macro attach i "<pipe-entry>kitty +kitten icat --transfer-mode=stream --stdin yes\n" "Preview image inline in Kitty"
+
+# Preview first page of a PDF inline in Kitty
+# Usage: in attachment list, select a PDF and press 'p'
+macro attach p "<pipe-entry>sh -c 'pdftoppm -png -singlefile -f 1 -l 1 - - 2>/dev/null | kitty +kitten icat --transfer-mode=stream --stdin yes'\n" "Preview first page of PDF in Kitty"
+
+# Preview (animated) images via a temp file to enable animation
+# Usage: in attachment list, press 'I' (capital i)
+macro attach I "<pipe-entry>sh -c 'f=$(mktemp /tmp/mutt-img.XXXXXX); cat >\"$f\"; kitty +kitten icat --transfer-mode=file \"$f\"; rm -f \"$f\"'\n" "Preview image/animation in Kitty using a temp file"
+
+# Show attach-mode hints when opening attachments
+macro pager v "<enter-command> set my_status=\"Attach: i=icat  p=PDF  I=anim\"; set ?my_status<enter><view-attachments>" "Open attachments with hints"
+macro index v "<enter-command> set my_status=\"Attach: i=icat  p=PDF  I=anim\"; set ?my_status<enter><view-attachments>" "Open attachments with hints (from index)"
+macro attach q "<enter-command> set my_status=\"\"; set ?my_status<enter><exit>" "Close attachments and clear hint"
+
+# vim: ft=muttrc syntax=neomuttrc

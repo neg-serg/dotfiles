@@ -1,0 +1,33 @@
+set from = "serg.zorg@gmail.com"
+set realname = "Sergey Miroshnichenko"
+set spoolfile = "+gmail/INBOX"
+
+set header_cache="$XDG_CACHE_HOME/mutt/home.gmail/hcache"
+set message_cachedir="$XDG_CACHE_HOME/mutt/home.gmail/cache"
+
+set mbox = "+gmail/[Gmail]/All Mail"
+set postponed = "+gmail/[Gmail]/Drafts"
+set record = "+gmail/[Gmail]/Sent Mail"
+set trash = "+gmail/[Gmail]/Trash"
+
+set move=no # gmail does that
+set sendmail="/usr/bin/msmtp -a gmail"
+
+folder-hook . 'unset trash'
+folder-hook imaps://imap.gmail.com 'set trash="=[Gmail]/Trash"'
+
+macro index o "<shell-escape>mbsync gmail<enter>" "run mbsync to sync mail for this account"
+macro index,pager A \
+ "<save-message>+gmail/[Gmail]/All Mail<enter>"  \
+ "move message to the archive"
+macro index,pager I \
+ "<save-message>+gmail/INBOX<enter>"  \
+ "move message to the inbox"
+
+macro index ? '<change-vfolder>notmuch://?query=tag:gmail-inbox and NOT tag:archive and '
+
+macro index S "|bogofilter -s\ns=gmail/[Gmail]/Spam"  "Learn as spam and save to junk"
+macro pager S "|bogofilter -s\ns=gmail/[Gmail]/Spam"  "Learn as spam and save to junk"
+
+
+# vim: ft=muttrc syntax=neomuttrc
