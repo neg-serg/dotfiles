@@ -23,10 +23,9 @@ in {
       # █▓▒░ shell ────────────────────────────────────────────────────────────────────────
       "dircolors" = mkSymlink "shell/.config/dircolors" true;
       "f-sy-h" = mkSymlink "shell/.config/f-sy-h" false;
-      # nushell config is managed in modules/cli/nushell.nix (live-edit symlink)
       "zsh" = mkSymlink "shell/.config/zsh" false;
       # █▓▒░ wm ───────────────────────────────────────────────────────────────────────────
-      "kitty" = mkSymlink "wm/.config/kitty" true;
+      # kitty config is managed in modules/user/gui/kitty.nix (live-edit symlink)
       # █▓▒░ quickshell ───────────────────────────────────────────────────────────────────
       "quickshell" = mkSymlink "quickshell/.config/quickshell" true;
     };
