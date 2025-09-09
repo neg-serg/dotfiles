@@ -66,6 +66,8 @@ typeset -gx TIMEFMT="[37m[34m⟬[37m[37m%J[34m⟭[39m[34m⟬[37m%U[34m�
 typeset -gx WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 typeset -gx READNULLCMD="wbat"
 typeset -gx LS_COLORS
+typeset -gx ZSH_CACHE_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
+[[ -d $ZSH_CACHE_DIR ]] || mkdir -p -- $ZSH_CACHE_DIR
 typeset -gx HISTFILE=${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history
 [[ -d ${HISTFILE:h} ]] || mkdir -p -- ${HISTFILE:h}
 typeset -gx SAVEHIST=10000000
