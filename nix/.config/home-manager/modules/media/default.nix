@@ -5,7 +5,7 @@
 }:
 with {
   l = config.lib.file.mkOutOfStoreSymlink;
-  dots = "${config.home.homeDirectory}/.dotfiles";
+  dots = config.lib.neg.dotfilesRoot;
 }; {
   imports = [
     ./audio

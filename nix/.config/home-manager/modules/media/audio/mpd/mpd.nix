@@ -6,7 +6,7 @@
 }:
 with {
   l = config.lib.file.mkOutOfStoreSymlink;
-  dots = "${config.home.homeDirectory}/.dotfiles";
+  dots = config.lib.neg.dotfilesRoot;
 };
   lib.mkIf config.features.media.audio.mpd.enable {
     home.packages = with pkgs; [

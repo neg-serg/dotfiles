@@ -2,7 +2,7 @@
 let
   l = config.lib.file.mkOutOfStoreSymlink;
   # Point ~/.config/home-manager to the repo root for convenience (hm switch --flake ~/.config/home-manager)
-  repoRoot = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager";
+  repoRoot = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager";
 in {
   programs = {
     home-manager.enable = true; # Let Home Manager install and manage itself.

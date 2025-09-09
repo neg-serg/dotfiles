@@ -5,7 +5,7 @@
 }:
 with {
   l = config.lib.file.mkOutOfStoreSymlink;
-  dots = "${config.home.homeDirectory}/.dotfiles";
+  dots = config.lib.neg.dotfilesRoot;
 }; {
   home.packages = with pkgs; [
     bash-language-server # Bash LSP

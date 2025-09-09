@@ -1,7 +1,7 @@
 { lib, pkgs, config, ... }:
 let
   l = config.lib.file.mkOutOfStoreSymlink;
-  repoRmpcConf = "${config.home.homeDirectory}/.dotfiles/nix/.config/home-manager/modules/media/audio/rmpc/conf";
+  repoRmpcConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/media/audio/rmpc/conf";
 in {
   # Ensure rmpc is installed
   home.packages = [ pkgs.rmpc ];
@@ -21,4 +21,3 @@ in {
     recursive = true;
   };
 }
-

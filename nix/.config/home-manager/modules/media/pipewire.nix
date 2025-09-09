@@ -1,6 +1,6 @@
 {config, ...}: let
   l = config.lib.file.mkOutOfStoreSymlink;
-  dots = "${config.home.homeDirectory}/.dotfiles";
+  dots = config.lib.neg.dotfilesRoot;
 in {
   xdg.configFile = {
     "wireplumber" = {
