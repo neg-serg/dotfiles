@@ -12,7 +12,6 @@
 in {
   home.file = {
     "bin" = mkSymlink "bin" false;
-    ".ugrep" = mkSymlink "shell/.ugrep" true;
     "${config.xdg.configHome}/nixpkgs/config.nix".text = let
       # Render current allowlist into a Nix list literal in the written config
       allowedList = lib.concatStringsSep " " (map (s: "\"${s}\"") config.features.allowUnfree.allowed);
