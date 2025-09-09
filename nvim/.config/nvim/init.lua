@@ -9,6 +9,8 @@ if vim.fn.has("nvim-0.9.2") ~= 1 then
     vim.notify(message, vim.log.levels.ERROR)
 end
 if vim.loader then vim.loader.enable() end
+vim.g.mapleader = ','
+vim.g.maplocalleader = ','
 require'00-settings'
 require'01-helpers'
 require'01-plugins'
