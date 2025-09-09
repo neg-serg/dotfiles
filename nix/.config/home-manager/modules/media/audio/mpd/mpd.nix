@@ -29,14 +29,21 @@ with {
       mpdas = {
         Unit = {
           Description = "mpdas last.fm scrobbler";
-          After = ["network.target" "sound.target"];
+          After = [
+            "network.target" # require network before scrobbling
+            "sound.target" # ensure sound stack initialized
+          ];
         };
         Service = {
           ExecStart = "${pkgs.mpdas}/bin/mpdas -c ${config.sops.secrets.mpdas_negrc.path}";
           Restart = "on-failure";
           RestartSec = "10";
         };
-        Install = {WantedBy = ["default.target"];};
+        Install = {
+          WantedBy = [
+            "default.target" # start by default in user session
+          ];
+        };
       };
     };
   }
