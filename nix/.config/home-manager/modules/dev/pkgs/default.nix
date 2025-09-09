@@ -34,6 +34,14 @@
       terraform # IaC CLI (HashiCorp Terraform)
       terraform-ls # Terraform language server for editors
     ];
+
+    # Infrastructure-as-Code toolchain
+    iac = [
+      terraform      # main Terraform CLI
+      terraform-ls   # language server for editor integrations
+      terragrunt     # wrapper for DRY Terraform configs
+      tflint         # Terraform linter
+    ];
   };
 in
   lib.mkIf config.features.dev.enable {
@@ -41,6 +49,7 @@ in
       (optionals config.features.dev.pkgs.formatters groups.formatters)
       ++ (optionals config.features.dev.pkgs.analyzers groups.analyzers)
       ++ (optionals config.features.dev.pkgs.codecount groups.codecount)
+      ++ (optionals config.features.dev.pkgs.iac groups.iac)
       ++ (optionals config.features.dev.pkgs.radicle groups.radicle)
       ++ (optionals config.features.dev.pkgs.runtime groups.runtime)
       ++ (optionals config.features.dev.pkgs.misc groups.misc);

@@ -5,6 +5,7 @@ with lib; {
       formatters = mkEnableOption "enable CLI/code formatters" // {default = true;};
       codecount = mkEnableOption "enable code counting tools" // {default = true;};
       analyzers = mkEnableOption "enable analyzers/linters" // {default = true;};
+      iac = mkEnableOption "enable infrastructure-as-code tooling (Terraform, etc.)" // {default = true;};
       radicle = mkEnableOption "enable radicle tooling" // {default = true;};
       runtime = mkEnableOption "enable general dev runtimes (node etc.)" // {default = true;};
       misc = mkEnableOption "enable misc dev helpers" // {default = true;};
