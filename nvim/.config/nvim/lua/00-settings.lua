@@ -63,7 +63,6 @@ o.concealcursor='n'                          -- Conceal cursor
 o.keymap='russian-jcukenwin'                 -- Add ru keymap
 o.backup=true                                -- Backuping is good
 o.cedit='<C-y>'                              -- Enter Command-line Mode from command-mode
-o.writebackup=true                           -- Backuping is good for write
 o.clipboard='unnamedplus'                    -- Always clipboard all operations
 o.cindent=true                               -- Smart indenting for c-like code
 o.cinoptions='b1,g0,N-s,t0,(0,W4'            -- See :h cinoptions-values
