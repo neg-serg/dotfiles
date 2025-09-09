@@ -8,10 +8,13 @@
   groups = with pkgs; rec {
     formatters = [
       shfmt # shell script formatter
+      black # Python formatter
       stylua # Lua code formatter
     ];
     analyzers = [
       flawfinder # examine C/C++ code for security flaws
+      ruff # Python linter
+      shellcheck # shell linter
       mypy # optional static typing checker for Python
     ];
     codecount = [

@@ -365,6 +365,10 @@
             pkgs.alejandra # Nix formatter
             pkgs.statix # Nix linter
             pkgs.deadnix # find dead Nix code
+            pkgs.shfmt # shell formatter
+            pkgs.shellcheck # shell linter
+            pkgs.black # Python formatter
+            pkgs.ruff # Python linter/fixer
           ];
           text = ''
             set -euo pipefail
@@ -381,6 +385,10 @@
                 pkgs.alejandra # format Nix code
                 pkgs.statix # lint Nix expressions
                 pkgs.deadnix # detect unused let bindings/files
+                pkgs.shfmt # shell formatter
+                pkgs.shellcheck # shell linter
+                pkgs.black # Python formatter
+                pkgs.ruff # Python linter/fixer
               ];
               src = ./.; # make repo contents available inside the build sandbox
             } ''
@@ -400,6 +408,18 @@
               command = "alejandra"
               options = ["-q"]
               includes = ["*.nix"]
+              [formatter.shfmt]
+              command = "shfmt"
+              options = ["-w", "-i", "2", "-ci", "-bn", "-sr"]
+              includes = ["**/*.sh", "**/*.bash"]
+              [formatter.black]
+              command = "black"
+              options = ["--quiet", "--line-length", "100"]
+              includes = ["**/*.py"]
+              [formatter.ruff]
+              command = "ruff"
+              options = ["--fix"]
+              includes = ["**/*.py"]
               EOF
               treefmt --config-file ./.treefmt-check.toml --fail-on-change .
 
@@ -408,6 +428,13 @@
 
               # 3) Dead code check: deadnix (no writes, fail on findings)
               deadnix --fail .
+
+              # 4) Shell lint (no writes): run only on *.sh / *.bash to avoid zsh files
+              shopt -s globstar nullglob
+              files=(**/*.sh **/*.bash)
+              if (( ${#files[@]} )); then
+                shellcheck -S style -x "${files[@]}"
+              fi
               touch "$out"
             '';
           # Build the options documentation as part of checks

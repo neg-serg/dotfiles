@@ -6,6 +6,7 @@ excludes = [
   "flake.lock",
   ".git/*",
   "secrets/crypted/*",
+  "shell/.config/tmux/plugins/tpm/**",
 ]
 
 # Nix files: format with alejandra
@@ -26,3 +27,24 @@ command = "statix"
 options = ["fix"]
 includes = ["*.nix"]
 
+# Shell: format POSIX/Bash scripts (exclude zsh)
+[formatter.shfmt]
+command = "shfmt"
+options = ["-w", "-i", "2", "-ci", "-bn", "-sr"]
+includes = ["**/*.sh", "**/*.bash"]
+
+[formatter.shellcheck]
+command = "shellcheck"
+options = ["-S", "style", "-x"]
+includes = ["**/*.sh", "**/*.bash"]
+
+# Python: auto-fix with ruff, then format with black
+[formatter.ruff]
+command = "ruff"
+options = ["--fix"]
+includes = ["**/*.py"]
+
+[formatter.black]
+command = "black"
+options = ["--quiet", "--line-length", "100"]
+includes = ["**/*.py"]
