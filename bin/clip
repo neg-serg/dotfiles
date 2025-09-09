@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 # clip: clipboard helper (greenclip/gpaste/clipcat + extras)
 # Usage:
 #   clip                       # open clipboard menu (greenclip/gpaste/clipcat)
@@ -10,7 +14,8 @@
 # Env:
 #   USE_GPASTE=true            # use gpaste instead of greenclip
 #   USE_CLIPCAT=true           # use clipcat instead of greenclip
-[ -z "$USE_GPASTE" ] && USE_GPASTE=false
+[ -z "${USE_GPASTE-}" ] && USE_GPASTE=false
+[ -z "${USE_CLIPCAT-}" ] && USE_CLIPCAT=false
 alias yt='yt-dlp --downloader aria2c -f "(bestvideo+bestaudio/best)"'
 
 read_command() {
@@ -109,8 +114,8 @@ case "$1" in
     -h|--help|help)
         sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     pipe) shift; clipboard_pipe "$@" ;;
-    youtube-dw-list) shift; cd "$XDG_VIDEOS_DIR/new" && yt "$(youtube_url)" ;;
-    youtube-dw) shift; cd "$XDG_VIDEOS_DIR/new" && yt "$(xclip -o)" ;;
+    youtube-dw-list) shift; cd "${XDG_VIDEOS_DIR:-$HOME/vid}/new" && yt "$(youtube_url)" ;;
+    youtube-dw) shift; cd "${XDG_VIDEOS_DIR:-$HOME/vid}/new" && yt "$(xclip -o)" ;;
     youtube-view) shift; ~/bin/yr clip ;;
     *) clip_main ;;
 esac

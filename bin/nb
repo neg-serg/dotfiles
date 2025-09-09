@@ -1,8 +1,13 @@
 #!/usr/bin/env sh
+# POSIX safety
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 # nb: update personal notes repo (1st_level) and music list, auto-commit if changed
 # Usage: nb [-h|--help]
 
-if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   printf "nb: update notes and push if changed\n" >&2
   exit 0
 fi

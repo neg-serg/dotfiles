@@ -1,10 +1,14 @@
 #!/usr/bin/env sh
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 # pic-notify: send image preview notification and copy path to clipboard
 # Usage: pic-notify IMAGE
 #   Shows a notification with basic EXIF and copies path (png extension) to clipboard.
 
-img="$1"
-if [ -z "$img" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+img="${1:-}"
+if [ -z "${img}" ] || [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,6p' "$0" | sed 's/^# \{0,1\}//'
   exit 1
 fi

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
 # CIDR - the CIDR block calc & cheatsheet
 # CC0 xero | https://x-e.ro | https://github.com/xero
 
@@ -110,7 +112,7 @@ inside() {
 }
 
 # parse command arguments
-case "$1" in
+case "${1:-}" in
 	--chart|"chart"|-c)
 		chart
 	;;

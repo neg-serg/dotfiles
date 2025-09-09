@@ -1,7 +1,11 @@
 #!/bin/sh
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 # nix-updates: show diffs between booted/current system profiles
 # Usage: nix-updates
-if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,3p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
 nix profile diff-closures --profile /nix/var/nix/profiles/system && nvd diff /run/booted-system /run/current-system

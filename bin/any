@@ -1,9 +1,13 @@
 #!/usr/bin/env sh
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 # any: show processes matching a pattern (pgrep -f -> ps uwwwp)
 # Usage: any PATTERN [PGREP_ARGS...]
 # Example: any firefox
 
-if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ -z "$1" ]; then
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ] || [ -z "${1:-}" ]; then
   printf "Usage: any PATTERN\n" >&2
   exit 1
 fi

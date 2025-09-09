@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 show_help() {
   cat <<'EOF'
 Usage: screenshot [-r|-c|-d|-m|-o]
@@ -42,7 +46,7 @@ OCR() {
     notify-send -i ebook-reader "OCR" "Saved to clipboard"
 }
 
-case "$1" in
+case "${1:-}" in
     -r) Select "$@";;
     -c) Current "$@";;
     -d) Delay "$@";;

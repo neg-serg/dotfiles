@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 # qr: quick QR and screenshot helper
 # Usage:
 #   qr gen          # generate QR from current selection to ~/tmp/qrcode.png
@@ -10,7 +14,7 @@
 alias maimselect='maim --noopengl --capturebackground --select --hidecursor --color=0.1,0.1,0.1,0.6 --highlight'
 alias clip='xclip -selection c -filter'
 
-case "$1" in
+case "${1:-}" in
     -h|--help) sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     gen) qrencode -l H -d 75 -s 10 -o - "$(xsel)">~/tmp/qrcode.png ;;
     # select a region to screenshot (or click to screenshot window)

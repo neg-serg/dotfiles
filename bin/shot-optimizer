@@ -1,11 +1,15 @@
 #!/bin/sh
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 # shot-optimizer: convert new BMP screenshots to PNG and remove BMP
 # Usage: shot-optimizer
 #   Watches ~/pic/shots for new .bmp files, converts them to .png and deletes .bmp
-if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,4p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
-source /etc/profile
+. /etc/profile
 shots=$HOME/pic/shots
 command -v parallel>/dev/null || exit 1
 [ ! -d "$shots" ] && mkdir "$shots"

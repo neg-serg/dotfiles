@@ -1,8 +1,12 @@
 #!/usr/bin/env sh
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 # v: open Neovim with system profile sourced
 # Usage: v [ARGS...]
 . /etc/profile
-if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   printf "v: wrapper for nvim (sources /etc/profile)\n" >&2
   exit 0
 fi

@@ -1,4 +1,12 @@
 #!/usr/bin/env sh
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
+# Usage: pic-dirs-list
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+  sed -n '2,2p' "$0" | sed 's/^# \{0,1\}//'; exit 0
+fi
 # pic-dirs-list: index $XDG_PICTURES_DIR dirs with fasd on changes (writes to swayimg DB)
 if [ -n "$XDG_PICTURES_DIR" ]; then
     inotifywait -q -m -e DELETE,ISDIR -e CREATE,ISDIR "$XDG_PICTURES_DIR"/ | while read -r _; do

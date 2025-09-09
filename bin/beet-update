@@ -1,5 +1,12 @@
 #!/bin/sh
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 # beet-update: run beets update without modifying tags or moving files
 # Usage: beet-update
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+  sed -n '2,3p' "$0" | sed 's/^# \{0,1\}//'; exit 0
+fi
 # Only refreshes deleted/missing files to stay in sync with mpd.
 beet update -F field_that_isnt -M

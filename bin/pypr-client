@@ -1,7 +1,11 @@
 #!/bin/sh
+set -eu
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 # pypr-client: send JSON-RPC to pyprland socket
 # Usage: pypr-client '{"cmd": "..."}'
-if [ -z "$1" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+if [ -z "${1:-}" ] || [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   echo "Usage: pypr-client '{\"cmd\": \"...\"}'" >&2
   exit 1
 fi
