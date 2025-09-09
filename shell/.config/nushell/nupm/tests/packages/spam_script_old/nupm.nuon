@@ -1,5 +1,0 @@
-{
-    name: spam_script,
-    type: script,
-    version: "0.1.0",
-}

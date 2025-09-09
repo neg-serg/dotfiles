@@ -1,3 +1,0 @@
-[submodule "shell/.config/nushell/nupm"]
-	path = shell/.config/nushell/nupm
-	url = https://github.com/nushell/nupm
