@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 echo '                      :::!~!!!!!:.'
 echo '                  .xUHWH!! !!?M88WHX:.'
 echo '                .X*#M@$!!  !X!M$$$$$$WWx:.'
