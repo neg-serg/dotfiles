@@ -12,6 +12,8 @@ with {
     ./audio
     ./images
     ./mpv.nix
+    ./pipewire.nix
+    ./playerctld.nix
   ];
   home.packages = with pkgs; [
     ffmpeg-full # famous multimedia lib
@@ -24,24 +26,5 @@ with {
     mpvc # CLI controller for mpv
     playerctl # media controller for everything
   ];
-  xdg.configFile = {
-    "wireplumber" = {
-      source = l "${dots}/media/.config/wireplumber";
-      recursive = true;
-    };
-    "pipewire" = {
-      source = l "${dots}/media/.config/pipewire";
-      recursive = true;
-    };
-  };
-
-  systemd.user.services = {
-    playerctld = lib.recursiveUpdate {
-      Unit.Description = "Keep track of media player activity";
-      Service = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.playerctl}/bin/playerctld daemon";
-      };
-    } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["defaultWanted"];});
-  };
+  # moved to playerctld.nix and pipewire.nix
 }
