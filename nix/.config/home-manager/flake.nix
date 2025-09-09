@@ -389,6 +389,8 @@
                 pkgs.shellcheck # shell linter
                 pkgs.black # Python formatter
                 pkgs.ruff # Python linter/fixer
+                pkgs.findutils # find, xargs
+                pkgs.gnugrep # grep
               ];
               src = ./.; # make repo contents available inside the build sandbox
             } ''
@@ -429,11 +431,10 @@
               # 3) Dead code check: deadnix (no writes, fail on findings)
               deadnix --fail .
 
-              # 4) Shell lint (no writes): run only on *.sh / *.bash to avoid zsh files
-              shopt -s globstar nullglob
-              files=(**/*.sh **/*.bash)
-              if (( ${#files[@]} )); then
-                shellcheck -S style -x "${files[@]}"
+              # 4) Shell lint (POSIX): only *.sh and *.bash to avoid zsh files
+              if find . -type f \( -name '*.sh' -o -name '*.bash' \) -print -quit | grep -q .; then
+                find . -type f \( -name '*.sh' -o -name '*.bash' \) -print0 \
+                  | xargs -0 shellcheck -S style -x
               fi
               touch "$out"
             '';
