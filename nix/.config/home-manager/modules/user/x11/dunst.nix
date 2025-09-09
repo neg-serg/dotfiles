@@ -3,7 +3,9 @@
   pkgs,
   config,
   ...
-}: {
+}: let
+  browserRec = import ../web/default-browser-lib.nix { inherit lib pkgs config; };
+in {
   services.dunst = {
     enable = true;
     iconTheme = {
@@ -13,7 +15,7 @@
     settings = {
       global = {
         alignment = "left";
-        browser = "${config.lib.neg.web.defaultBrowser.bin} ${config.lib.neg.web.defaultBrowser.newTabArg}";
+        browser = "${browserRec.bin} ${browserRec.newTabArg}";
         corner_radius = 4;
         ellipsize = "end";
         follow = "mouse";
