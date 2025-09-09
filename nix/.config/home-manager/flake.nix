@@ -152,6 +152,59 @@
         yandexBrowser = yandexBrowserInput.packages.${system};
         nurPkgs = nur.packages.${system};
         fa = pkgs.nur.repos.rycee.firefox-addons;
+        # Collect features.* options once and reuse for MD/JSON
+        featureOptionsItems = let
+          eval = lib.evalModules {
+            modules = [
+              ./modules/features.nix
+              # Shim to allow modules with `config.assertions` during plain eval
+              ({lib, ...}: {
+                options.assertions = lib.mkOption {
+                  type = lib.types.anything;
+                  visible = false;
+                  description = "internal";
+                };
+              })
+            ];
+          };
+          opts = eval.options;
+          toList = optSet: prefix:
+            lib.concatLists (
+              lib.mapAttrsToList (
+                name: v: let
+                  cur = lib.optionalString (prefix != "") (prefix + ".") + name;
+                in
+                  if (v ? _type) && (v._type == "option")
+                  then [
+                    {
+                      path = cur;
+                      description = v.description or "";
+                      # Keep short alias used by MD renderer
+                      desc = v.description or "";
+                      type =
+                        if (v ? type) && (v.type ? name)
+                        then v.type.name
+                        else (v.type.description or "unknown");
+                      default = v.default or null;
+                      defaultText = v.defaultText or null;
+                      # String form used in Markdown table
+                      def =
+                        v.defaultText or (
+                          if v ? default
+                          then builtins.toJSON v.default
+                          else ""
+                        );
+                    }
+                  ]
+                  else if builtins.isAttrs v
+                  then toList v cur
+                  else []
+              )
+              optSet
+            );
+          items = toList opts "";
+        in
+          lib.filter (o: !(lib.hasPrefix "assertions" o.path)) items;
 
         # Common toolsets for devShells to avoid duplication
         devNixTools = with pkgs; [
@@ -256,57 +309,13 @@
               + "\n\n"
               + deltas
           );
-          # Auto-generated docs for features.* options (Markdown + JSON)
+          # Auto-generated docs for features.* options (from shared items)
           features-options-md = pkgs.writeText "features-options.md" (
             let
-              eval = lib.evalModules {
-                modules = [
-                  ./modules/features.nix
-                  # Shim to allow modules with `config.assertions` during plain eval
-                  ({lib, ...}: {
-                    options.assertions = lib.mkOption {
-                      type = lib.types.anything;
-                      visible = false;
-                      description = "internal";
-                    };
-                  })
-                ];
-              };
-              opts = eval.options;
-              toList = optSet: prefix:
-                lib.concatLists (
-                  lib.mapAttrsToList (
-                    name: v: let
-                      cur = lib.optionalString (prefix != "") (prefix + ".") + name;
-                    in
-                      if (v ? _type) && (v._type == "option")
-                      then [
-                        {
-                          path = cur;
-                          desc = v.description or "";
-                          type =
-                            if (v ? type) && (v.type ? name)
-                            then v.type.name
-                            else (v.type.description or "unknown");
-                          def =
-                            v.defaultText or (
-                              if v ? default
-                              then builtins.toJSON v.default
-                              else ""
-                            );
-                        }
-                      ]
-                      else if builtins.isAttrs v
-                      then toList v cur
-                      else []
-                  )
-                  optSet
-                );
-              items = toList opts "";
-              itemsClean = lib.filter (o: !(lib.hasPrefix "assertions" o.path)) items;
+              items = featureOptionsItems;
               esc = s: lib.replaceStrings ["\n" "|"] [" " "\\|"] (toString s);
               rows = lib.concatStringsSep "\n" (
-                map (o: "| ${o.path} | " + esc o.type + " | " + esc o.def + " | " + esc o.desc + " |") itemsClean
+                map (o: "| ${o.path} | " + esc o.type + " | " + esc o.def + " | " + esc o.desc + " |") items
               );
             in ''
               # Features Options (auto-generated)
@@ -318,49 +327,7 @@
           );
 
           features-options-json = pkgs.writeText "features-options.json" (
-            let
-              eval = lib.evalModules {
-                modules = [
-                  ./modules/features.nix
-                  ({lib, ...}: {
-                    options.assertions = lib.mkOption {
-                      type = lib.types.anything;
-                      visible = false;
-                      description = "internal";
-                    };
-                  })
-                ];
-              };
-              opts = eval.options;
-              toList = optSet: prefix:
-                lib.concatLists (
-                  lib.mapAttrsToList (
-                    name: v: let
-                      cur = lib.optionalString (prefix != "") (prefix + ".") + name;
-                    in
-                      if (v ? _type) && (v._type == "option")
-                      then [
-                        {
-                          path = cur;
-                          description = v.description or "";
-                          type =
-                            if (v ? type) && (v.type ? name)
-                            then v.type.name
-                            else (v.type.description or "unknown");
-                          default = v.default or null;
-                          defaultText = v.defaultText or null;
-                        }
-                      ]
-                      else if builtins.isAttrs v
-                      then toList v cur
-                      else []
-                  )
-                  optSet
-                );
-              items = toList opts "";
-              itemsClean = lib.filter (o: !(lib.hasPrefix "assertions" o.path)) items;
-            in
-              builtins.toJSON itemsClean
+            let items = featureOptionsItems; in builtins.toJSON items
           );
         };
 
