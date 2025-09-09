@@ -503,7 +503,6 @@ return function(ctx)
   }
   
   -- ── Default statusline ────────────────────────────────────────────────────
-  -- Helpers and left block for empty buffer (cwd/buffers/git)
   local function cwd_git_branch()
     local cwd = fn.getcwd()
     local gitdir = fn.finddir('.git', cwd .. ';')
@@ -562,7 +561,6 @@ return function(ctx)
     },
   }
 
-  -- Greeting/time for empty statusline
   local function time_greeting()
     local h = tonumber(os.date('%H')) or 12
     if h < 5 then return 'Night' elseif h < 12 then return 'Morning' elseif h < 18 then return 'Afternoon' else return 'Evening' end
@@ -578,7 +576,6 @@ return function(ctx)
     },
   }
 
-  -- Quick actions for empty statusline
   local EmptyActions = {
     condition = function() return is_empty() and not is_narrow() end,
     { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
