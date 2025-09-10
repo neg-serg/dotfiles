@@ -1,6 +1,10 @@
 #!/bin/sh
 # main-menu: rofi-driven helper actions for music/clipboard/network/etc
 # Usage: main-menu
+# shellcheck shell=sh
+set -eu
+IFS=' 	
+'
 
 main_menu='
 title_copy
@@ -18,7 +22,7 @@ generate_menu() {
     count=0
     for item in $main_menu; do
         count=$((count+1))
-        echo "$(printf %X $count):$blue⟬</span>$item$blue⟭</span>"
+        printf '%s\n' "$(printf %X "$count"):${blue}⟬</span>${item}${blue}⟭</span>"
     done
 }
 
@@ -73,18 +77,24 @@ termbin(){
 }
 
 handler() {
-    while IFS= read -r arg; do
-        for t in $main_menu; do
-            if echo "$arg" | rg "$t" >/dev/null; then
-                eval "$t"
-            fi
-        done
+    while IFS= read -r line; do
+        sel_item=$(printf '%s' "$line" \
+          | sed -e 's/^[^:]*://' -e 's/<[^>]*>//g' -e 's/.*⟬//' -e 's/⟭.*//')
+        if [ -n "$sel_item" ]; then
+            for t in $main_menu; do
+                if [ "$sel_item" = "$t" ]; then
+                    "$t"
+                    break
+                fi
+            done
+        fi
     done
 }
 
 dac_name='RME ADI-2/4 PRO SE'
-rofi_options="-auto-select -markup-rows -b -lines 1 -theme neg -dmenu -p '❯>'"
+rofi_options="-auto-select -markup-rows -b -lines 1 -theme neg -dmenu -p ❯>"
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,2p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
-generate_menu | eval "rofi $rofi_options" | handler
+# no eval; pass options directly
+generate_menu | rofi $rofi_options | handler
