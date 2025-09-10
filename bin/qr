@@ -7,6 +7,15 @@
 #   qr              # screenshot entire desktop → clipboard (PNG) + notify
 #   qr -h|--help    # this help
 
+set -eu
+IFS=' 	
+'
+
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'qr: missing %s\n' "$1" >&2; exit 1; }; }
+need grim
+need slurp
+need wl-copy
+
 maimselect() { grim -g "$(slurp)" -; }
 clip() { # usage: clip [-t mimetype] (reads from stdin)
   local mimetype="${1:-}"
@@ -16,26 +25,28 @@ clip() { # usage: clip [-t mimetype] (reads from stdin)
 
 case "${1:-}" in
     -h|--help) sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
-    gen) qrencode -l H -d 75 -s 10 -o - "$(wl-paste)">~/tmp/qrcode.png ;;
+    gen) need qrencode; mkdir -p "$HOME/tmp"; qrencode -l H -d 75 -s 10 -o - "$(wl-paste)" > "$HOME/tmp/qrcode.png" ;;
     # select a region to screenshot (or click to screenshot window)
     select) maimselect | clip -t image/png; dunstify "Screenshot" "Screenshot taken" ;;
     # scan a QR code
     qr)
-        tmp_file=$(mktemp -t maimscript-XXXXXX)
-        grim -g "$(slurp)" "$tmp_file"
-        scanresult=$(zbarimg --quiet --raw "$tmp_file" | tr -d '\n')
+        need zbarimg; tmp_file=$(mktemp -t maimscript-XXXXXX)
+        if ! grim -g "$(slurp)" "$tmp_file"; then rm -f "$tmp_file"; exit 1; fi
+        scanresult=$(zbarimg --quiet --raw "$tmp_file" | tr -d '\n' || true)
         if [ -z "$scanresult" ]; then
-            dunstify "Screenshot" "No scan data found"
+            command -v dunstify >/dev/null 2>&1 && dunstify "Screenshot" "No scan data found" || true
         else
             echo "$scanresult" | clip
-            convert "$tmp_file" -resize 75x75 "$tmp_file"
-            dunstify -i "$tmp_file" "Screenshot" "$scanresult\n(copied to clipboard)"
+            if command -v convert >/dev/null 2>&1; then
+                convert "$tmp_file" -resize 75x75 "$tmp_file"
+            fi
+            command -v dunstify >/dev/null 2>&1 && dunstify -i "$tmp_file" "QR" "$scanresult\n(copied to clipboard)" || true
         fi
-        rm "$tmp_file"
+        rm -f "$tmp_file"
         ;;
     # screenshot the entire desktop
     *)
         grim - | clip -t image/png
-        dunstify "Screenshot" "Screenshot taken"
+        command -v dunstify >/dev/null 2>&1 && dunstify "Screenshot" "Screenshot taken" || true
         ;;
 esac
