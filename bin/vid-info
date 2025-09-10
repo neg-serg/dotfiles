@@ -26,8 +26,8 @@ import json
 import math
 import datetime
 from enum import Enum
-from docopt import docopt
 from pretty_printer import PrettyPrinter
+import shutil
 
 
 class SizeUnit(Enum):
@@ -36,7 +36,7 @@ class SizeUnit(Enum):
     KIB = 2
     MIB = 3
     GIB = 4
-    TIB = 4
+    TIB = 5
 
 
 def convert_unit(size_in_bytes, unit):
@@ -52,42 +52,69 @@ def convert_unit(size_in_bytes, unit):
     return size_in_bytes
 
 
-def media_info(filename):
-    """ Extract media info by filename """
-    mediainfo_ret = None
+def media_info(filename: str):
+    """Extract media info by filename via ffprobe (JSON)."""
+    if not shutil.which("ffprobe"):
+        print("[vid-info] missing ffprobe in PATH", file=sys.stderr)
+        return
     try:
-        mediainfo_ret = subprocess.Popen([
-            'ffprobe', '-hide_banner', '-loglevel', 'fatal',
-            '-show_error', '-show_format', '-show_streams',
-            '-print_format', 'json',
-            str(filename)], stdout=subprocess.PIPE).communicate()[0]
-
-        if mediainfo_ret is not None:
-            mediainfo_ret = mediainfo_ret.decode().split('\n')
-    except subprocess.CalledProcessError as proc_err:
-        print(proc_err)
-
-    if mediainfo_ret is None:
+        proc = subprocess.run(
+            [
+                "ffprobe",
+                "-v",
+                "error",
+                "-show_format",
+                "-show_streams",
+                "-print_format",
+                "json",
+                str(filename),
+            ],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"[vid-info] ffprobe failed for {filename}: {e.stderr.strip()}", file=sys.stderr)
         return
 
-    ret = json.loads(''.join(mediainfo_ret))
+    try:
+        ret = json.loads(proc.stdout)
+    except Exception as e:
+        print(f"[vid-info] bad ffprobe JSON for {filename}: {e}", file=sys.stderr)
+        return
     pp = PrettyPrinter
     out, vid_frame_rate = "", ""
     audio_bitrate, audio_sample_rate = "", ""
     if not ret.get('streams', []):
         sys.exit(0)
-    for stream in ret['streams']:
-        if stream['codec_type'] == 'video':
-            out += pp.wrap(str(stream['width']) + 'x' + str(stream['height']))
-            frame_rate = stream['avg_frame_rate'].split('/')
-            if float(frame_rate[1]): 
-                vid_frame_rate = round(float(frame_rate[0]) / float(frame_rate[1]))
-        if stream['codec_type'] == 'audio':
-            if stream.get('bit_rate', ''):
-                audio_bitrate = math.floor(convert_unit(
-                    float(stream['bit_rate']), SizeUnit.KIB
-                ))
-            audio_sample_rate = float(stream['sample_rate']) / 1000
+    for stream in ret.get('streams', []):
+        if stream.get('codec_type') == 'video':
+            w = stream.get('width'); h = stream.get('height')
+            if w and h:
+                out += pp.wrap(f"{w}x{h}")
+            afr = stream.get('avg_frame_rate') or ''
+            try:
+                num, den = afr.split('/') if '/' in afr else (afr, '1')
+                num_f = float(num)
+                den_f = float(den)
+                if den_f:
+                    vid_frame_rate = round(num_f / den_f)
+            except Exception:
+                pass
+        if stream.get('codec_type') == 'audio':
+            br = stream.get('bit_rate')
+            if br:
+                try:
+                    audio_bitrate = math.floor(convert_unit(float(br), SizeUnit.KIB))
+                except Exception:
+                    audio_bitrate = ""
+            sr = stream.get('sample_rate')
+            try:
+                if sr:
+                    audio_sample_rate = float(sr) / 1000
+            except Exception:
+                audio_sample_rate = ""
 
     file_format = ret['format']
 
@@ -102,9 +129,11 @@ def media_info(filename):
         float(file_format['bit_rate']), SizeUnit.KIB
     ))
     out += pp.size(str(video_bitrate), 'kbps', pref='vidbrate')
-    out += pp.wrap(str(vid_frame_rate), postfix='fps')
+    if vid_frame_rate:
+        out += pp.wrap(str(vid_frame_rate), postfix='fps')
 
-    out += pp.size(str(audio_sample_rate), 'K', pref='')
+    if audio_sample_rate != "":
+        out += pp.size(str(audio_sample_rate), 'K', pref='')
     if str(audio_bitrate):
         out += pp.size(str(audio_bitrate), 'kbps', pref='audbrate')
 
@@ -113,14 +142,19 @@ def media_info(filename):
 
 def main():
     """ Entry point """
-    cmd_args = docopt(__doc__, version='1.0')
-    files = cmd_args['FILES']
+    # Prefer docopt, but allow fallback to argv if not available
+    try:
+        from docopt import docopt  # type: ignore
+        cmd_args = docopt(__doc__, version='1.0')
+        files = cmd_args['FILES']
+    except Exception:
+        files = sys.argv[1:]
     pp = PrettyPrinter
     print_cwd, dir_name = False, ""
 
     for fname in files:
         if not os.path.exists(fname):
-            break
+            continue
         if os.path.dirname(fname):
             dir_name = os.path.dirname(fname)
         elif print_cwd:
