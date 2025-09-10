@@ -162,7 +162,6 @@ bind D tabclose
 bind s hint -S
 bind ;S hint -s
 command hint_focus hint -;
-bind ;C composite hint_focus; !s xdotool key Menu
 
 quickmark A magazine.artstation.com/
 quickmark E projecteuler.net/
