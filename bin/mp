@@ -3,22 +3,34 @@
 # Usage: mp FILES...
 #   Spawns vid-info for provided files/dirs and plays them via mpv.
 
+set -eu
+IFS=' 	
+'
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,4p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
 
 main() {
+    # Info for directories
     for arg in "$@"; do
-        [ -d "$arg" ] && find "$arg" -maxdepth 1 -type f -print0 | xargs -0n10 -P 10 vid-info &
+        if [ -d "$arg" ]; then
+            find -- "$arg" -maxdepth 1 -type f -print0 | xargs -0 -n10 -P 10 vid-info &
+        fi
     done
+    # Info for files
     {
-        args=""
+        found=false
         for arg in "$@"; do
-            [ -f "$arg" ] && args="$args$(printf '%s' "$arg")";
+            if [ -f "$arg" ]; then found=true; fi
         done
-        command echo -n "$args" | xargs -0n10 -P 10 vid-info
+        if [ "$found" = true ]; then
+            printf '%s\0' "$@" \
+              | xargs -0 -I{} sh -c '[ -f "$1" ] && printf "%s\0" "$1" || true' _ {} \
+              | xargs -0 -n10 -P 10 vid-info
+        fi
     } &
-    mpv --quiet "$@" > "$HOME/tmp/mpv.log"
+    mkdir -p -- "$HOME/tmp"
+    mpv --quiet -- "$@" > "$HOME/tmp/mpv.log" 2>&1
 }
 
 main "$@"
