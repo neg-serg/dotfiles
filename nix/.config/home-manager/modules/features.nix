@@ -5,6 +5,7 @@
 }:
 with lib; let
   cfg = config.features;
+  mkBool = config.lib.neg.mkBool;
 in {
   options.features = {
     profile = mkOption {
@@ -13,42 +14,42 @@ in {
       description = "Profile preset that adjusts feature defaults: full or lite.";
     };
 
-    gui.enable = mkEnableOption "enable GUI stack (wayland/hyprland, quickshell, etc.)" // {default = true;};
-    mail.enable = mkEnableOption "enable Mail stack (notmuch, isync, vdirsyncer, etc.)" // {default = true;};
-    hack.enable = mkEnableOption "enable Hack/security tooling stack" // {default = true;};
+    gui.enable = mkBool "enable GUI stack (wayland/hyprland, quickshell, etc.)" true;
+    mail.enable = mkBool "enable Mail stack (notmuch, isync, vdirsyncer, etc.)" true;
+    hack.enable = mkBool "enable Hack/security tooling stack" true;
     dev = {
-      enable = mkEnableOption "enable Dev stack (toolchains, editors, hack tooling)" // {default = true;};
+      enable = mkBool "enable Dev stack (toolchains, editors, hack tooling)" true;
       ai = {
-        enable = mkEnableOption "enable AI tools (e.g., LM Studio)" // {default = true;};
+        enable = mkBool "enable AI tools (e.g., LM Studio)" true;
       };
     };
 
     web = {
-      enable = mkEnableOption "enable Web stack (browsers + tools)" // {default = true;};
-      tools.enable = mkEnableOption "enable web tools (aria2, yt-dlp, misc)" // {default = true;};
-      floorp.enable = mkEnableOption "enable Floorp browser" // {default = true;};
-      firefox.enable = mkEnableOption "enable Firefox browser" // {default = false;};
-      librewolf.enable = mkEnableOption "enable LibreWolf browser" // {default = false;};
-      nyxt.enable = mkEnableOption "enable Nyxt browser" // {default = true;};
-      yandex.enable = mkEnableOption "enable Yandex browser" // {default = true;};
+      enable = mkBool "enable Web stack (browsers + tools)" true;
+      tools.enable = mkBool "enable web tools (aria2, yt-dlp, misc)" true;
+      floorp.enable = mkBool "enable Floorp browser" true;
+      firefox.enable = mkBool "enable Firefox browser" false;
+      librewolf.enable = mkBool "enable LibreWolf browser" false;
+      nyxt.enable = mkBool "enable Nyxt browser" true;
+      yandex.enable = mkBool "enable Yandex browser" true;
     };
 
     media = {
       audio = {
-        core.enable = mkEnableOption "enable audio core (PipeWire routing tools)" // {default = true;};
-        apps.enable = mkEnableOption "enable audio apps (players, tools)" // {default = true;};
-        creation.enable = mkEnableOption "enable audio creation stack (DAW, synths)" // {default = true;};
-        mpd.enable = mkEnableOption "enable MPD stack (mpd, clients, mpdris2)" // {default = true;};
+        core.enable = mkBool "enable audio core (PipeWire routing tools)" true;
+        apps.enable = mkBool "enable audio apps (players, tools)" true;
+        creation.enable = mkBool "enable audio creation stack (DAW, synths)" true;
+        mpd.enable = mkBool "enable MPD stack (mpd, clients, mpdris2)" true;
       };
     };
 
     emulators = {
-      retroarch.full = mkEnableOption "use retroarchFull with extended (unfree) cores" // {default = false;};
+      retroarch.full = mkBool "use retroarchFull with extended (unfree) cores" false;
     };
 
     # Fun/extras (e.g., curated art assets) that are nice-to-have
     fun = {
-      enable = mkEnableOption "enable fun extras (art collections, etc.)" // { default = true; };
+      enable = mkBool "enable fun extras (art collections, etc.)" true;
     };
   };
 
