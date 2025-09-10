@@ -13,7 +13,12 @@ _image_viewer () {
 
 fix_layout=false
 layout_cmd () {
-  setxkbmap us
+  # Prefer Wayland/Hyprland live layout change; fall back to system default
+  if command -v hyprctl >/dev/null 2>&1; then
+    hyprctl keyword input:kb_layout us >/dev/null 2>&1 || true
+  elif command -v localectl >/dev/null 2>&1; then
+    localectl set-x11-keymap us >/dev/null 2>&1 || true
+  fi
 }
 
 # fields to be used
