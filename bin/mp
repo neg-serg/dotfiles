@@ -1,8 +1,4 @@
 #!/bin/sh
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 # mp: play with mpv and print media info for inputs concurrently
 # Usage: mp FILES...
 #   Spawns vid-info for provided files/dirs and plays them via mpv.

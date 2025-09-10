@@ -1,9 +1,5 @@
 #!/bin/sh
 # POSIX safety
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 # nb: update personal notes repo (1st_level) and music list, auto-commit if changed
 # Usage: nb [-h|--help]
 

@@ -1,8 +1,4 @@
 #!/bin/sh
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 # clip: clipboard helper (cliphist/clipcat + extras)
 # Usage:
 #   clip                       # open clipboard menu (cliphist/clipcat)

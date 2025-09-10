@@ -1,8 +1,4 @@
 #!/bin/sh
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 # nix-updates: show diffs between booted/current system profiles
 # Usage: nix-updates
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then

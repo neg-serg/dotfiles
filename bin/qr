@@ -1,8 +1,4 @@
 #!/bin/sh
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 # qr: quick QR and screenshot helper
 # Usage:
 #   qr gen          # generate QR from current selection to ~/tmp/qrcode.png

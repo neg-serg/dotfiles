@@ -1,8 +1,4 @@
 #!/bin/sh
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 # pngoptim: optimize a PNG file with optipng/advpng/advdef
 # Usage: pngoptim FILE.png
 

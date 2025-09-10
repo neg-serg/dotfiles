@@ -1,8 +1,4 @@
 #!/bin/sh
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 # any: show processes matching a pattern (pgrep -f -> ps uwwwp)
 # Usage: any PATTERN [PGREP_ARGS...]
 # Example: any firefox

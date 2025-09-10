@@ -1,8 +1,4 @@
 #!/bin/sh
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 # shot-optimizer: convert new BMP screenshots to PNG and remove BMP
 # Usage: shot-optimizer
 #   Watches ~/pic/shots for new .bmp files, converts them to .png and deletes .bmp

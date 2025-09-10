@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 # CIDR - the CIDR block calc & cheatsheet
 # CC0 xero | https://x-e.ro | https://github.com/xero
 

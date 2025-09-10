@@ -4,7 +4,6 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
   sed -n '2,7p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
 
-set -eu
 cache="${HOME}/tmp"
 mkdir -p "${cache}"
 ff="${cache}/swayimg.$$"

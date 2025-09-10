@@ -1,8 +1,4 @@
 #!/bin/sh
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 # pic-notify: send image preview notification and copy path to clipboard
 # Usage: pic-notify IMAGE
 #   Shows a notification with basic EXIF and copies path (png extension) to clipboard.

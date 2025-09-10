@@ -7,8 +7,7 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
   sed -n '2,3p' "$0" | sed 's/^# \{0,1\}//'
   exit 0
 fi
-set -e
-set -o pipefail
+
 
 state=$(hyprctl -j clients)
 active_window=$(hyprctl -j activewindow)

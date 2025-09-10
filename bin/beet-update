@@ -1,8 +1,4 @@
 #!/bin/sh
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 # beet-update: run beets update without modifying tags or moving files
 # Usage: beet-update
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then

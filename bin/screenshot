@@ -1,8 +1,4 @@
 #!/bin/sh
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 show_help() {
   cat <<'EOF'
 Usage: screenshot [-r|-c|-d|-m|-o]
