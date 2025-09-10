@@ -128,6 +128,11 @@ with lib; let
         installation_mode = "force_installed";
         install_url = "https://addons.mozilla.org/firefox/downloads/latest/kellyc-show-youtube-dislikes/latest.xpi";
       };
+
+      # Explicitly block Tampermonkey userscript manager
+      "firefox@tampermonkey.net" = {
+        installation_mode = "blocked";
+      };
     };
 
     Extensions = {
@@ -142,4 +147,3 @@ in {
     profileId = "bqtlgdxw.default";
   };
 }
-
