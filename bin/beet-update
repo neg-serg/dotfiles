@@ -1,8 +1,12 @@
 #!/bin/sh
 # beet-update: run beets update without modifying tags or moving files
 # Usage: beet-update
+set -eu
+IFS=' 	
+'
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,3p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
 # Only refreshes deleted/missing files to stay in sync with mpd.
+command -v beet >/dev/null 2>&1 || { printf 'beet-update: missing beets\n' >&2; exit 1; }
 beet update -F field_that_isnt -M
