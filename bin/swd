@@ -54,26 +54,28 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-wallpaper_url="https://$site/search?" # Address for the wallpaper website
-[[ -n "$categories" ]] && wallpaper_url+="categories=$categories"
-[[ -n "$purity" ]] && wallpaper_url+="&purity=$purity"
-[[ -n "$order" ]] && wallpaper_url+="&order=$order"
-[[ -n "$colors" ]] && wallpaper_url+="&colors=$colors"
-[[ -n "$ratios" ]] && wallpaper_url+="&ratios=$ratios"
-[[ -n "$atleast" ]] && wallpaper_url+="&atleast=$atleast"
-wallpaper_url+="&page=$(("$RANDOM" % 30 + 1))"
+# Build API URL instead of scraping HTML
+api_url="https://$site/api/v1/search?"
+[[ -n "$categories" ]] && api_url+="categories=$categories"
+[[ -n "$purity" ]] && api_url+="&purity=$purity"
+[[ -n "$order" ]] && api_url+="&order=$order"
+[[ -n "$colors" ]] && api_url+="&colors=$colors"
+[[ -n "$ratios" ]] && api_url+="&ratios=$ratios"
+[[ -n "$atleast" ]] && api_url+="&atleast=$atleast"
+api_url+="&page=$(("$RANDOM" % 30 + 1))"
 
 case "$sorting" in
-  "latest") wallpaper_url+="&sorting=date_added" ;;
-  "views") wallpaper_url+="&sorting=views" ;;
-  "toplist") wallpaper_url+="&sorting=toplist" ;;
-  "favorites") wallpaper_url+="&sorting=favorites" ;;
-  *) wallpaper_url+="&sorting=random" ;;
+  "latest") api_url+="&sorting=date_added" ;;
+  "views") api_url+="&sorting=views" ;;
+  "toplist") api_url+="&sorting=toplist" ;;
+  "favorites") api_url+="&sorting=favorites" ;;
+  *) api_url+="&sorting=random" ;;
 esac
 
-mapfile -t img_urls < <(curl -s "$wallpaper_url" | grep -oE 'https://'$site'/w/[[:alnum:]]{6}') # Selected images
-rand_img_url=${img_urls[$RANDOM % ${#img_urls[@]}]} # Randomly selected image
-rand_img=$(curl -s "$rand_img_url" | grep -oE 'https://w.'$site'/full/[[:alnum:]]{2}/wallhaven-[[:alnum:]]{6}\.(jpg|png)') # Parse out the image url
-wallpaper="$location/${rand_img##*/}" # Combine the two above
-curl --create-dirs -s "$rand_img" -o "$wallpaper" >/dev/null # Download it
+# Read JSON and pick random wallpaper path (.data[].path)
+json="$(curl -s "$api_url")"
+mapfile -t img_paths < <(jq -r '.data[]?.path' <<< "$json")
+rand_img="${img_paths[$RANDOM % ${#img_paths[@]}]}"
+wallpaper="$location/${rand_img##*/}"
+curl --create-dirs -s "$rand_img" -o "$wallpaper" >/dev/null
 echo "$wallpaper"
