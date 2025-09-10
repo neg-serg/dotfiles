@@ -1,12 +1,18 @@
 #!/bin/sh
 # flacspec: generate spectrograms for all .flac in current directory
 # Usage: flacspec
+set -eu
+IFS=' \t\n'
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,2p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
-mkdir -p Spectrograms
+
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'flacspec: missing %s\n' "$1" >&2; exit 1; }; }
+need sox
+
+mkdir -p -- Spectrograms
 for file in *.flac; do
   [ -f "$file" ] || continue
   outfile="${file%.*}.flac.png"
-  sox "$file" -n spectrogram -o "$outfile" && mv "$outfile" Spectrograms/
+  sox "$file" -n spectrogram -o "$outfile" && mv -- "$outfile" Spectrograms/
 done
