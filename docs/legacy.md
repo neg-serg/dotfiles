@@ -70,7 +70,7 @@ Some stuff from Gnome project:
 
 **gnome-keyring-daemon**: Gnome keyring daemon
 
-Clipboard history: greenclip or clipcat, integrated with rofi.
+Clipboard history: cliphist or clipcat, integrated with rofi.
 
 and some misc stuff:
 

@@ -28,8 +28,7 @@ in
           pkgs.neg.rofi_games # custom games launcher
         ];
       }) # modern dmenu alternative
-      greenclip # clipboard history provider used by bin/clip
-      clipmenu # used by bin/clip for URL history selection
+      # cliphist is provided in gui/apps.nix; no need for greenclip/clipmenu
     ];
 
     # Live-editable config: out-of-store symlink pointing to repo files
