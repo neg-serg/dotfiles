@@ -28,4 +28,7 @@
 - Structure
   - Factor large package lists into local `groups = { ... }` sets.
   - Use `config.lib.neg.mkEnabledList` to flatten groups based on flags.
+    - Prefer over manual chains of `lib.optionals` for readability and consistency.
+    - Pattern: `home.packages = config.lib.neg.mkEnabledList config.features.<area> groups;`
+    - For nested scopes (e.g., Python withPackages) build `groups` first, then flatten.
   - For systemd user units, prefer `config.lib.neg.systemdUser.mkUnitFromPresets` to set `After`/`Wants`/`WantedBy`/`PartOf` via presets instead of hardcoding targets in each module. Extend with `after`/`wants`/`partOf`/`wantedBy` args only for truly extra dependencies.
