@@ -30,7 +30,7 @@ pl() {
     )
     run_command=(fzf)
     find_result="$(eval ${run_command[@]})"
-    xsel <<< "${find_result}"
+    wl-copy <<< "${find_result}"
     if [[ ! -z ${find_result} ]]; then
         mp "${find_result}"
     fi
@@ -54,7 +54,7 @@ pl_rofi() {
     else
         find_result="$rg_cmd_result"
     fi
-    xsel <<< "${find_result}"
+    wl-copy <<< "${find_result}"
     if [[ ! -z ${find_result} ]]; then
         mp "${find_result}"
     fi
