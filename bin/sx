@@ -4,25 +4,29 @@
 
 IFS=$'\n\t'
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" || "$#" -eq 0 ]]; then
-  echo "Usage: sx DIR..." >&2; exit 0
+  echo "Usage: sx DIR..." >&2
+  exit 0
 fi
 
 swimg_bin="${HOME}/.local/bin/swayimg"
 [[ -x "$swimg_bin" ]] || swimg_bin="swayimg"
-command -v "$swimg_bin" >/dev/null 2>&1 || { print -u2 'sx: swayimg not found'; :; }
+if ! command -v "$swimg_bin" >/dev/null 2>&1; then
+  print -u2 'sx: swayimg not found in PATH or ~/.local/bin'
+  exit 1
+fi
 
 filter_ext() {
   if command -v ug >/dev/null 2>&1; then
-    ug -G -iE '\\.(jpe?g|png|gif|svg|webp|tiff|heif|avif|ico|bmp)$'
+    ug -iE '\.(jpe?g|png|gif|svg|webp|tiff|heif|heic|avif|ico|bmp)$'
   else
-    grep -Ei '\\.(jpe?g|png|gif|svg|webp|tiff|heif|avif|ico|bmp)$'
+    grep -Ei '\.(jpe?g|png|gif|svg|webp|tiff|heif|heic|avif|ico|bmp)$'
   fi
 }
 
 "$swimg_bin" -C "${XDG_CONFIG_HOME:-$HOME/.config}/swayimg/config" -g -f -F <(
-  find "$@" -type f -printf '%C@ %p\n' \
+  # Follow symlinks and sort by ctime (newest first)
+  find -L "$@" -type f -printf '%C@ %p\n' \
   | sort -rn \
   | cut -d ' ' -f 2- \
-  | cut -d ':' -f 1 \
   | filter_ext
 )
