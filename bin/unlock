@@ -1,23 +1,43 @@
 #!/bin/sh
 # unlock: unlock SSH keys (optionally Yubikey) via expect using pass(1) secrets
 # Usage: unlock
+set -eu
+IFS=' 	
+'
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,2p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
-. /etc/profile
+
+# shell environment (PATH, etc.)
+[ -f /etc/profile ] && . /etc/profile || true
+
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'unlock: missing %s\n' "$1" >&2; exit 1; }; }
+need expect
+need pass
+
+# Retrieve secrets
 pp0="$(pass show ssh-key)"
-pp2="$(pass show wrk/ssh-key)"
+pp2="$(pass show wrk/ssh-key || true)"
+
+cleanup() { unset pp0 pp1 pp2 || true; }
+trap cleanup EXIT HUP INT TERM
+
+# Optional YubiKey unlock
 if lsusb | grep -q "0407 Yubico"; then
     pp1="$(pass show pin)"
     expect << EOF
+        log_user 0
         spawn "$XDG_CONFIG_HOME/zsh-nix/ylock"
         expect "Enter passphrase"
         send "$pp1\r"
         expect eof
 EOF
 fi
+
+# Add SSH key
 expect << EOF
-    spawn ssh-add $HOME/.ssh/id_neg
+    log_user 0
+    spawn ssh-add "$HOME/.ssh/id_neg"
     expect "Enter passphrase"
     send "$pp0\r"
     expect eof
