@@ -2,20 +2,31 @@
 # vol: adjust PipeWire default sink volume via wpctl
 # Usage: vol [+DELTA|-DELTA]
 #   Example: vol +0.05 (increase), vol -0.05 (decrease)
-if [[ "$1" == "-h" || "$1" == "--help" || -z "$1" ]]; then
+set -o errexit -o nounset -o pipefail
+IFS=$'\n\t'
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" || -z "${1:-}" ]]; then
   sed -n '2,4p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
 
-sign(){ echo "$1"|rev|cut -b1 }
+command -v wpctl >/dev/null 2>&1 || { print -u2 'vol: wpctl not found'; exit 1; }
+
+sign(){
+  case "$1" in
+    -*) echo '-' ;;
+    +*) echo '+' ;;
+    *) echo '' ;;
+  esac
+}
 get_volume_(){ wpctl get-volume @DEFAULT_SINK@ }
-get_volume(){ get_volume_|cut -d: -f2|tr -d '[:space:]' }
+get_volume(){ get_volume_ | cut -d: -f2 | tr -d '[:space:]' }
 set_volume(){ wpctl set-volume @DEFAULT_SINK@ "$1" }
 set_volume_safe(){
-    set_volume "$(echo "$(get_volume)" "$1"|awk '{if (($1+$2) >= 1.0) print 1.00; else print ($1+$2)}')"
+    # Clamp to 1.00 when increasing
+    set_volume "$(printf '%s %s' "$(get_volume)" "$1" | awk '{v=$1+$2; if (v>=1.0) print 1.00; else if (v<0) print 0.00; else print v}')"
 }
 
-if [[ $(sign $1) == '-' ]]; then
-    set_volume "$1"
-elif [[ $(sign $1) == '+' ]]; then
-    set_volume_safe "$1"
-fi
+case "$(sign "$1")" in
+  '-') set_volume "$1" ;;
+  '+') set_volume_safe "$1" ;;
+   *) print -u2 'vol: expected +DELTA or -DELTA'; exit 2 ;;
+esac
