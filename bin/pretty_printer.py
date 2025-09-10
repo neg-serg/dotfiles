@@ -2,7 +2,18 @@
 import os
 import re
 import subprocess
-import colored
+from typing import Optional, Union
+
+# Safe import for colored; fall back to no-op if unavailable
+try:  # pragma: no cover
+    import colored  # type: ignore
+except Exception:  # pragma: no cover
+    class _NoColor:
+        @staticmethod
+        def fg(_color: int) -> str:
+            return ""
+
+    colored = _NoColor()  # type: ignore
 
 
 class PrettyPrinter():
@@ -14,17 +25,17 @@ class PrettyPrinter():
     default = colored.fg(0)
 
     @classmethod
-    def fg(cls, color: int):
+    def fg(cls, color: int) -> str:
         """ Print fg esc-seq """
         return colored.fg(color)
 
     @classmethod
-    def _wrap(cls, out):
+    def _wrap(cls, out: str) -> str:
         """ generic string wrapper """
         return cls.darkblue + "⟮" + cls.darkwhite + out + cls.darkblue + "⟯"
 
     @classmethod
-    def wrap(cls, text, delim='', postfix=''):
+    def wrap(cls, text: str, delim: str = '', postfix: str = '') -> str:
         """ Fancy wrapper """
         if delim:
             delim = cls.nicecyan + delim
@@ -33,7 +44,13 @@ class PrettyPrinter():
         return cls._wrap(text + delim + postfix)
 
     @classmethod
-    def size(cls, size, unit=None, pref='', wrap=True):
+    def size(
+        cls,
+        size: Union[str, int, float],
+        unit: Optional[str] = None,
+        pref: Optional[str] = '',
+        wrap: bool = True,
+    ) -> str:
         """ Print file size """
         def nop(out):
             return out
@@ -90,10 +107,11 @@ class PrettyPrinter():
         return cls.nicecyan + cls.default
 
     @classmethod
-    def fancy_file(cls, filename):
+    def fancy_file(cls, filename: str) -> str:
         """ Pretty printing for filename """
         filename = re.sub('~', colored.fg(2) + "~" + colored.fg(7), filename)
-        filename = re.sub(os.environ["HOME"], colored.fg(2) + "~" + colored.fg(7), filename)
+        home = os.environ.get("HOME", os.path.expanduser("~"))
+        filename = re.sub(re.escape(home), colored.fg(2) + "~" + colored.fg(7), filename)
         filename = re.sub("([/·])", colored.fg(4) + r"\1" + colored.fg(7), filename)
         filename = re.sub(
             r"(-\[)([0-9]+)(x)([0-9A-Z]+)(\]-)",
@@ -108,12 +126,12 @@ class PrettyPrinter():
 # file info printer
 class FileInfoPrinter():
     """ Prints info about files """
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     # counting with external wc is faster than everything else
     @staticmethod
-    def wccount(filename):
+    def wccount(filename: str) -> int:
         """ Print file line-length """
         out = subprocess.Popen(
             ['wc', '-l', filename],
@@ -124,7 +142,7 @@ class FileInfoPrinter():
         return int(out.partition(b' ')[0])
 
     @staticmethod
-    def nonexistsfile(filename):
+    def nonexistsfile(filename: str) -> None:
         """ Print info about non-existing file """
         print(
             PrettyPrinter.prefix() +
@@ -134,7 +152,7 @@ class FileInfoPrinter():
         )
 
     @staticmethod
-    def existsfile(filename):
+    def existsfile(filename: str) -> None:
         """ Print info about existing file """
         print(
             PrettyPrinter.prefix() +
@@ -146,7 +164,7 @@ class FileInfoPrinter():
         )
 
     @staticmethod
-    def currentdir(filename):
+    def currentdir(filename: str) -> None:
         """ Current directory printer """
         print(
             PrettyPrinter.prefix() +
@@ -156,7 +174,7 @@ class FileInfoPrinter():
         )
 
     @staticmethod
-    def dir(filename):
+    def dir(filename: str) -> None:
         """ Directory printer """
         print(
             PrettyPrinter.prefix() +
