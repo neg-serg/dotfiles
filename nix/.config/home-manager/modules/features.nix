@@ -5,7 +5,10 @@
 }:
 with lib; let
   cfg = config.features;
-  mkBool = config.lib.neg.mkBool;
+  mkBool =
+    if (config ? lib) && (config.lib ? neg) && (config.lib.neg ? mkBool)
+    then config.lib.neg.mkBool
+    else (desc: default: (lib.mkEnableOption desc) // { inherit default; });
 in {
   options.features = {
     profile = mkOption {

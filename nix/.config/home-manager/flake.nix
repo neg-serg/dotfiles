@@ -180,6 +180,10 @@
         featureOptionsItems = let
           eval = lib.evalModules {
             modules = [
+              # Provide minimal mkBool to avoid depending on pkgs during eval
+              ({ lib, ... }: {
+                config.lib.neg.mkBool = desc: default: (lib.mkEnableOption desc) // { inherit default; };
+              })
               ./modules/features.nix
               # Shim to allow modules with `config.assertions` during plain eval
               ({lib, ...}: {
@@ -190,6 +194,8 @@
                 };
               })
             ];
+            # Allow setting config.lib.neg.mkBool without declaring an option
+            check = false;
           };
           opts = eval.options;
           toList = optSet: prefix:
