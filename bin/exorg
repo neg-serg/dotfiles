@@ -2,7 +2,9 @@
 # exorg: start a headless Xvfb session for clipboard (clipmenud)
 # Usage: exorg
 #   Starts Xvfb on :1 if not running, exports DISPLAY and restarts clipmenud.
-if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+set -euo pipefail
+IFS=$'\n\t'
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   sed -n '2,4p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
 #
@@ -15,9 +17,11 @@ fi
 #
 # Xvfb session for a headless xorg clipboard
 
-if ! pgrep -x "Xvfb" >/dev/null; then
-	export DISPLAY=:1
-	Xvfb :1 -screen 0 1x1x8 &
-	systemctl --user import-environment DISPLAY
-	systemctl --user restart clipmenud.service
+if ! pgrep -x "Xvfb" >/dev/null 2>&1; then
+    export DISPLAY=:1
+    Xvfb :1 -screen 0 1x1x8 >/dev/null 2>&1 &
+    if command -v systemctl >/dev/null 2>&1; then
+        systemctl --user import-environment DISPLAY || true
+        systemctl --user restart clipmenud.service || true
+    fi
 fi
