@@ -255,20 +255,8 @@
       in {
         inherit pkgs iosevkaNeg yandexBrowser nurPkgs fa;
 
-        devShells = {
-          default = pkgs.mkShell {packages = devNixTools;};
-          # Consolidated from shell/flake.nix
-          rust = pkgs.mkShell {
-            packages = rustBaseTools ++ rustExtraTools;
-            RUST_BACKTRACE = "1";
-          };
-          # Consolidated from fhs/flake.nix
-          fhs =
-            (pkgs.buildFHSEnv {
-              name = "fhs-env";
-              targetPkgs = pkgs: with pkgs; [zsh];
-            })
-              .env;
+        devShells = import ./flake/devshells.nix {
+          inherit pkgs rustBaseTools rustExtraTools devNixTools;
         };
 
         packages = {
@@ -377,77 +365,9 @@
         };
 
         # Checks: fail if formatting or linters would change files
-        checks = {
-          treefmt =
-            pkgs.runCommand "treefmt-check" {
-              nativeBuildInputs = [
-                pkgs.treefmt # orchestrate formatters
-                pkgs.alejandra # format Nix code
-                pkgs.statix # lint Nix expressions
-                pkgs.deadnix # detect unused let bindings/files
-                pkgs.shfmt # shell formatter
-                pkgs.shellcheck # shell linter
-                pkgs.black # Python formatter
-                pkgs.ruff # Python linter/fixer
-                pkgs.findutils # find, xargs
-                pkgs.gnugrep # grep
-              ];
-              src = ./.; # make repo contents available inside the build sandbox
-            } ''
-              set -euo pipefail
-              # Work on a writable copy of the repo
-              cp -r "$src" ./src
-              chmod -R u+w ./src
-              cd ./src
-              # Ensure cache dir is writable for treefmt/formatters
-              export XDG_CACHE_HOME="$PWD/.cache"
-              mkdir -p "$XDG_CACHE_HOME"
-              # 1) Strict Nix formatting check (alejandra only)
-              cat > ./.treefmt-check.toml <<'EOF'
-              [global]
-              excludes = ["flake.lock", ".git/*", "secrets/crypted/*"]
-              [formatter.nix]
-              command = "alejandra"
-              options = ["-q"]
-              includes = ["*.nix"]
-              [formatter.shfmt]
-              command = "shfmt"
-              options = ["-w", "-i", "2", "-ci", "-bn", "-sr"]
-              includes = ["**/*.sh", "**/*.bash"]
-              [formatter.black]
-              command = "black"
-              options = ["--quiet", "--line-length", "100"]
-              includes = ["**/*.py"]
-              [formatter.ruff]
-              command = "ruff"
-              options = ["--fix"]
-              includes = ["**/*.py"]
-              EOF
-              treefmt --config-file ./.treefmt-check.toml --fail-on-change .
-
-              # 2) Lint checks: statix (no writes)
-              statix check -- .
-
-              # 3) Dead code check: deadnix (no writes, fail on findings)
-              deadnix --fail .
-
-              # 4) Shell lint (POSIX): only *.sh and *.bash to avoid zsh files
-              if find . -type f \( -name '*.sh' -o -name '*.bash' \) -print -quit | grep -q .; then
-                find . -type f \( -name '*.sh' -o -name '*.bash' \) -print0 \
-                  | xargs -0 shellcheck -S style -x
-              fi
-              touch "$out"
-            '';
-          # Build the options documentation as part of checks
-          options-md = pkgs.runCommand "options-md" {} ''
-            cp ${self.packages.${system}.options-md} "$out"
-          '';
-          features-options-md = pkgs.runCommand "features-options-md" {} ''
-            cp ${self.packages.${system}.features-options-md} "$out"
-          '';
-          features-options-json = pkgs.runCommand "features-options-json" {} ''
-            cp ${self.packages.${system}.features-options-json} "$out"
-          '';
+        checks = import ./flake/checks.nix {
+          inherit pkgs self system;
+          treefmtToml = ./treefmt.toml;
         };
       }
     );
@@ -461,50 +381,31 @@
     checks = lib.genAttrs systems (
       s:
         perSystem.${s}.checks
-        // lib.optionalAttrs (s == defaultSystem) {
+        // lib.optionalAttrs (s == defaultSystem) (
+          let
+            # Factor out repeated HM eval for retroarch toggle
+            evalWith = profile: retroFlag: let
+              hmCfg = homeManagerInput.lib.homeManagerConfiguration {
+                inherit (perSystem.${s}) pkgs;
+                extraSpecialArgs = mkHMArgs s;
+                modules = hmBaseModules {
+                  inherit profile;
+                  extra = [(_: {features.emulators.retroarch.full = retroFlag;})];
+                };
+              };
+            in perSystem.${s}.pkgs.writeText
+              "hm-eval-${if profile == "lite" then "lite" else "neg"}-retro-${if retroFlag then "on" else "off"}.json"
+              (builtins.toJSON hmCfg.config.features);
+          in {
           # Run treefmt in check mode to ensure no changes would be made
           hm = self.homeConfigurations."neg".activationPackage;
           hm-lite = self.homeConfigurations."neg-lite".activationPackage;
           # Fast eval matrix for RetroArch toggles (no heavy builds)
-          hm-eval-neg-retro-on = let
-            hmCfg = homeManagerInput.lib.homeManagerConfiguration {
-              inherit (perSystem.${s}) pkgs;
-              extraSpecialArgs = mkHMArgs s;
-              modules = hmBaseModules {extra = [(_: {features.emulators.retroarch.full = true;})];};
-            };
-          in
-            perSystem.${s}.pkgs.writeText "hm-eval-neg-retro-on.json" (builtins.toJSON hmCfg.config.features);
-          hm-eval-neg-retro-off = let
-            hmCfg = homeManagerInput.lib.homeManagerConfiguration {
-              inherit (perSystem.${s}) pkgs;
-              extraSpecialArgs = mkHMArgs s;
-              modules = hmBaseModules {extra = [(_: {features.emulators.retroarch.full = false;})];};
-            };
-          in
-            perSystem.${s}.pkgs.writeText "hm-eval-neg-retro-off.json" (builtins.toJSON hmCfg.config.features);
-          hm-eval-lite-retro-on = let
-            hmCfg = homeManagerInput.lib.homeManagerConfiguration {
-              inherit (perSystem.${s}) pkgs;
-              extraSpecialArgs = mkHMArgs s;
-              modules = hmBaseModules {
-                profile = "lite";
-                extra = [(_: {features.emulators.retroarch.full = true;})];
-              };
-            };
-          in
-            perSystem.${s}.pkgs.writeText "hm-eval-lite-retro-on.json" (builtins.toJSON hmCfg.config.features);
-          hm-eval-lite-retro-off = let
-            hmCfg = homeManagerInput.lib.homeManagerConfiguration {
-              inherit (perSystem.${s}) pkgs;
-              extraSpecialArgs = mkHMArgs s;
-              modules = hmBaseModules {
-                profile = "lite";
-                extra = [(_: {features.emulators.retroarch.full = false;})];
-              };
-            };
-          in
-            perSystem.${s}.pkgs.writeText "hm-eval-lite-retro-off.json" (builtins.toJSON hmCfg.config.features);
-        }
+          hm-eval-neg-retro-on = evalWith null true;
+          hm-eval-neg-retro-off = evalWith null false;
+          hm-eval-lite-retro-on = evalWith "lite" true;
+          hm-eval-lite-retro-off = evalWith "lite" false;
+        })
     );
 
     homeConfigurations."neg" = homeManagerInput.lib.homeManagerConfiguration {
