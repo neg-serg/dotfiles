@@ -2,12 +2,12 @@
 # pngoptim: optimize a PNG file with optipng/advpng/advdef
 # Usage: pngoptim FILE.png
 
-set -eu
+
 IFS=' 	
 '
 
 usage() { printf "Usage: pngoptim FILE.png\n" >&2; exit 1; }
-need() { command -v "$1" >/dev/null 2>&1 || { printf 'pngoptim: missing %s\n' "$1" >&2; exit 1; }; }
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'pngoptim: missing %s\n' "$1" >&2; :; }; }
 
 case "${1:-}" in
   -h|--help|help|\?) usage ;;

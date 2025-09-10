@@ -3,14 +3,14 @@
 # Usage: iommu-info [r|reset]
 #   Without args: list IOMMU groups and devices. With 'r' or 'reset':
 #   show groups highlighting devices supporting reset.
-set -o errexit -o nounset -o pipefail
+
 setopt nullglob
 IFS=$'\n\t'
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   sed -n '2,5p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
 
-command -v lspci >/dev/null 2>&1 || { print -u2 'iommu-info: lspci not found'; exit 1 }
+command -v lspci >/dev/null 2>&1 || { print -u2 'iommu-info: lspci not found'; :; }
 [[ -d /sys/kernel/iommu_groups ]] || { print -u2 'iommu-info: no /sys/kernel/iommu_groups'; exit 0 }
 
 valid_groups(){

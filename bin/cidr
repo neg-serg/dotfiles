@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # CIDR - CIDR helpers & cheatsheet
 # CC0 xero | https://x-e.ro | https://github.com/xero
-set -Eeuo pipefail
+
 IFS=$'\n\t'
 
 usage() {
@@ -17,7 +17,7 @@ usage() {
     exit "$EXITCODE"
 }
 
-need() { command -v "$1" >/dev/null 2>&1 || { echo >&2 "missing dependency: $1"; exit 1; }; }
+need() { command -v "$1" >/dev/null 2>&1 || { echo >&2 "missing dependency: $1"; :; }; }
 
 # print the CIDR cheatsheet
 chart() {

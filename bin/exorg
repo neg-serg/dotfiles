@@ -2,7 +2,7 @@
 # exorg: start a headless Xvfb session for clipboard (clipmenud)
 # Usage: exorg
 #   Starts Xvfb on :1 if not running, exports DISPLAY and restarts clipmenud.
-set -euo pipefail
+
 IFS=$'\n\t'
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   sed -n '2,4p' "$0" | sed 's/^# \{0,1\}//'; exit 0

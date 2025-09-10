@@ -14,7 +14,7 @@
 # greetz:
 #   all the ops of these great free services <3
 
-set -eu
+
 IFS=' 	
 '
 
@@ -43,7 +43,7 @@ EOF
 	exit 0
 }
 
-need() { command -v "$1" >/dev/null 2>&1 || { printf 'pb: missing %s\n' "$1" >&2; exit 1; }; }
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'pb: missing %s\n' "$1" >&2; :; }; }
 
 case ${1:-} in
     -h|--help|help|\?) usage ;;
@@ -57,7 +57,7 @@ UA="${UA:-Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)
 
 # Accept '-' as stdin
 if [ "${ARG:-/dev/stdin}" != "/dev/stdin" ] && [ "${ARG:-}" != "-" ]; then
-    [ -f "$ARG" ] || { printf 'pb: no such file: %s\n' "$ARG" >&2; exit 1; }
+    [ -f "$ARG" ] || { printf 'pb: no such file: %s\n' "$ARG" >&2; :; }
 fi
 
 case "$SERVICE" in

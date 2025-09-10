@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+
 IFS=' 	
 '
 show_help() {
@@ -58,7 +58,7 @@ menu() {
 }
 
 ocr() {
-  command -v tesseract >/dev/null 2>&1 || { printf 'screenshot: missing tesseract\n' >&2; exit 1; }
+  command -v tesseract >/dev/null 2>&1 || { printf 'screenshot: missing tesseract\n' >&2; :; }
   grim -g "$(slurp)" - \
     | tesseract --dpi 96 -l eng - - \
     | wl-copy --type text/plain

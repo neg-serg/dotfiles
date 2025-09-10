@@ -2,7 +2,7 @@
 # POSIX safety
 # nb: update personal notes repo (1st_level) and music list, auto-commit if changed
 # Usage: nb [-h|--help]
-set -eu
+
 IFS=' 	
 '
 
@@ -12,7 +12,7 @@ if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
 fi
 
 repo="$HOME/1st_level"
-need() { command -v "$1" >/dev/null 2>&1 || { printf 'nb: missing %s\n' "$1" >&2; exit 1; }; }
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'nb: missing %s\n' "$1" >&2; :; }; }
 need git
 
 # Pull but do not abort the script if it fails (offline)

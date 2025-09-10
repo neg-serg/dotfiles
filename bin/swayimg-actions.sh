@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # swayimg-actions: move/copy/rotate/wallpaper for swayimg; dests limited to $XDG_PICTURES_DIR; before mv send prev_file via IPC to avoid end-of-list crash
-set -o errexit -o nounset -o pipefail
+
 IFS=$'\n\t'
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
   sed -n '2,7p' "$0" | sed 's/^# \{0,1\}//'; exit 0

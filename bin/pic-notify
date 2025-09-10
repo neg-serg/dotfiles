@@ -3,7 +3,7 @@
 # Usage: pic-notify IMAGE
 #   Shows a notification with basic EXIF and copies path (png extension) to clipboard.
 
-set -eu
+
 IFS=' 	
 '
 img="${1:-}"

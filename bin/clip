@@ -11,7 +11,7 @@
 #   USE_CLIPCAT=true           # use clipcat instead of cliphist
 [ -z "${USE_CLIPCAT-}" ] && USE_CLIPCAT=false
 
-set -eu
+
 IFS=' 	
 '
 

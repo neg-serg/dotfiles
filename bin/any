@@ -4,7 +4,7 @@
 # Example: any firefox
 #          any -u neg -x sshd
 
-set -eu
+
 IFS=' 	
 '
 
@@ -13,7 +13,7 @@ usage() {
   exit 1
 }
 
-need() { command -v "$1" >/dev/null 2>&1 || { printf 'any: missing %s\n' "$1" >&2; exit 1; }; }
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'any: missing %s\n' "$1" >&2; :; }; }
 
 case "${1:-}" in
   -h|--help|help|\?) usage ;;

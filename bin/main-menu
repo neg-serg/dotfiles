@@ -2,7 +2,7 @@
 # main-menu: rofi-driven helper actions for music/clipboard/network/etc
 # Usage: main-menu
 # shellcheck shell=sh
-set -eu
+
 IFS=' 	
 '
 

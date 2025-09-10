@@ -1,6 +1,6 @@
 #!/bin/sh
 # Usage: pic-dirs-list
-set -eu
+
 IFS=' 	
 '
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then

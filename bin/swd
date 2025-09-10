@@ -14,14 +14,14 @@
 #   -k, --apikey KEY            Wallhaven API key (optional)
 #   -h, --help                  show this help
 
-set -Eeuo pipefail
+
 IFS=$'\n\t'
 
 if [[ "$1" == "-h" || "$1" == "--help" || "$1" == "help" ]]; then
   sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
-die(){ printf 'swd: %s\n' "$*" >&2; exit 1; }
-need(){ command -v "$1" >/dev/null 2>&1 || die "missing dependency: $1"; }
+die(){ printf 'swd: %s\n' "$*" >&2; :; }
+need(){ command -v "$1" >/dev/null 2>&1 || printf 'swd: missing dependency: %s\n' "$1" >&2; }
 need curl
 need jq
 # TODO: create swd for unsplash

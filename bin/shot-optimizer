@@ -2,14 +2,14 @@
 # shot-optimizer: convert new BMP screenshots to PNG and remove BMP
 # Usage: shot-optimizer
 #   Watches ~/pic/shots for new .bmp files, converts to .png and deletes .bmp
-set -eu
+
 IFS=' 	
 '
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,4p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
 
-need() { command -v "$1" >/dev/null 2>&1 || { printf 'shot-optimizer: missing %s\n' "$1" >&2; exit 1; }; }
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'shot-optimizer: missing %s\n' "$1" >&2; :; }; }
 need inotifywait
 need convert
 

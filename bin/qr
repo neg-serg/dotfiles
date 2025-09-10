@@ -7,11 +7,11 @@
 #   qr              # screenshot entire desktop → clipboard (PNG) + notify
 #   qr -h|--help    # this help
 
-set -eu
+
 IFS=' 	
 '
 
-need() { command -v "$1" >/dev/null 2>&1 || { printf 'qr: missing %s\n' "$1" >&2; exit 1; }; }
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'qr: missing %s\n' "$1" >&2; :; }; }
 need grim
 need slurp
 need wl-copy

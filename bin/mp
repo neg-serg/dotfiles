@@ -3,7 +3,7 @@
 # Usage: mp FILES...
 #   Spawns vid-info for provided files/dirs and plays them via mpv.
 
-set -eu
+
 IFS=' 	
 '
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then

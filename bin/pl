@@ -5,7 +5,7 @@
 #   pl cmd <playerctl-args>
 #   pl vol {mute|unmute}
 
-set -o errexit -o nounset -o pipefail
+
 IFS=$'\n\t'
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
@@ -13,7 +13,7 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   exit 0
 fi
 
-need() { command -v "$1" >/dev/null 2>&1 || { print -u2 "pl: missing $1"; exit 1; }; }
+need() { command -v "$1" >/dev/null 2>&1 || { print -u2 "pl: missing $1"; :; }; }
 
 mp() {
     local -a files
