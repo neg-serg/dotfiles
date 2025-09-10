@@ -1,24 +1,31 @@
 #!/bin/sh
 # shot-optimizer: convert new BMP screenshots to PNG and remove BMP
 # Usage: shot-optimizer
-#   Watches ~/pic/shots for new .bmp files, converts them to .png and deletes .bmp
+#   Watches ~/pic/shots for new .bmp files, converts to .png and deletes .bmp
+set -eu
+IFS=' 	
+'
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,4p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
-. /etc/profile
-shots=$HOME/pic/shots
-command -v parallel>/dev/null || exit 1
-[ ! -d "$shots" ] && mkdir "$shots"
-if [ -n "$shots" ]; then
-    inotifywait -q -m -e CREATE "$shots"/ | while read -r _; do
-    find "$shots" -name "*.bmp" \
-        -not -path "$XDG_PICTURES_DIR/.git/*" \
-        -not -path "$XDG_PICTURES_DIR/.git" \
-        | parallel convert -quality 10 '{}' '{.}.png'
-    sleep 3
-    find "$shots" -name "*.bmp" \
-        -not -path "$XDG_PICTURES_DIR/.git/*" \
-        -not -path "$XDG_PICTURES_DIR/.git" \
-        -delete
+
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'shot-optimizer: missing %s\n' "$1" >&2; exit 1; }; }
+need inotifywait
+need convert
+
+shots_dir="${HOME}/pic/shots"
+mkdir -p -- "$shots_dir"
+
+# Monitor only BMP creations/close_write, handle per-file to avoid rescans
+inotifywait -q -m -e close_write -e create --format '%w%f' "$shots_dir" \
+  | while IFS= read -r path; do
+        case "$path" in
+            *.bmp|*.BMP)
+                png="${path%.*}.png"
+                if convert -quality 10 -- "$path" "$png"; then
+                    rm -f -- "$path"
+                fi
+                ;;
+            *) :;;
+        esac
     done
-fi
