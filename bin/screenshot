@@ -1,4 +1,7 @@
 #!/bin/sh
+set -eu
+IFS=' 	
+'
 show_help() {
   cat <<'EOF'
 Usage: screenshot [-r|-c|-d|-m|-o]
@@ -13,7 +16,7 @@ EOF
 }
 
 scr_dir=$HOME/pic/shots
-[ ! -d "$scr_dir" ] && mkdir "$scr_dir"
+mkdir -p -- "$scr_dir"
 filename="screenshot-$(date +%Y-%m-%d_%H-%M-%S).png"
 summary_="$scr_dir/$filename"
 
@@ -39,21 +42,27 @@ Delay() { sleep 5; Shot "$@"; }
 Full() { Shot "$@"; }
 
 Menu() {
-    rofi_cmd="rofi -dmenu -theme clip"
-    opts='"Full shot" "Rectangular selection shot" "Current window" "Delayed shot"'
-    case $(for opt in $opts; do echo $opt; done | eval $rofi_cmd) in
-        -r) Select "$@" ;;
-        -f) Full "$@" ;;
-        -c) Current "$@" ;;
-        -d) Delay "$@" ;;
+    sel=$(printf '%s\n' \
+        "Full screen" \
+        "Rectangular selection" \
+        "Current window" \
+        "Delayed (5s)" \
+        | rofi -dmenu -theme clip -p '⟬shot⟭ ❯>' || true)
+    case "$sel" in
+        "Full screen") Full "$@" ;;
+        "Rectangular selection") Select "$@" ;;
+        "Current window") Current "$@" ;;
+        "Delayed (5s)") Delay "$@" ;;
+        *) : ;;
     esac
 }
 
 OCR() {
+  command -v tesseract >/dev/null 2>&1 || { printf 'screenshot: missing tesseract\n' >&2; exit 1; }
   grim -g "$(slurp)" - \
     | tesseract --dpi 96 -l eng - - \
     | wl-copy --type text/plain
-  notify-send -i ebook-reader "OCR" "Saved to clipboard"
+  command -v notify-send >/dev/null 2>&1 && notify-send -i ebook-reader "OCR" "Saved to clipboard" || true
 }
 
 case "${1:-}" in
