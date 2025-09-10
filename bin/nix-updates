@@ -1,7 +1,17 @@
 #!/bin/sh
 # nix-updates: show diffs between booted/current system profiles
 # Usage: nix-updates
+set -eu
+IFS=' 	
+'
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,3p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
-nix profile diff-closures --profile /nix/var/nix/profiles/system && nvd diff /run/booted-system /run/current-system
+
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'nix-updates: missing %s\n' "$1" >&2; exit 1; }; }
+need nix
+
+nix profile diff-closures --profile /nix/var/nix/profiles/system || true
+if command -v nvd >/dev/null 2>&1; then
+  nvd diff /run/booted-system /run/current-system || true
+fi
