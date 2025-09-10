@@ -1,8 +1,4 @@
 #!/bin/sh
-set -eu
-if (set -o pipefail) 2>/dev/null; then
-  set -o pipefail
-fi
 # unlock: unlock SSH keys (optionally Yubikey) via expect using pass(1) secrets
 # Usage: unlock
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
