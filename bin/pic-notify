@@ -3,6 +3,9 @@
 # Usage: pic-notify IMAGE
 #   Shows a notification with basic EXIF and copies path (png extension) to clipboard.
 
+set -eu
+IFS=' 	
+'
 img="${1:-}"
 if [ -z "${img}" ] || [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,6p' "$0" | sed 's/^# \{0,1\}//'
@@ -17,19 +20,25 @@ send_notify() {
     header="$(echo "$header" | sed -e "s:$HOME:~:" \
                 -e "s:\/:$c1/$clear:g" \
                 -e "s:\(⟬\|⟭\):$c1\1$clear:g" -e "s:~:$c2~$clear:g")"
-    inf="$(exiftool -ImageSize -MIMEType -Megapixels "$img")"
+    if command -v exiftool >/dev/null 2>&1; then
+        inf="$(exiftool -ImageSize -MIMEType -Megapixels "$img")"
+    else
+        inf="ImageSize: N/A\nMIMEType: N/A\nMegapixels: N/A"
+    fi
     output=$(echo "$inf" | xargs -n4 \
         | sed -e 's/^/⟬/' -e 's/$/⟭/' \
         -e "s;\(.*\):;$b\\1$c1:$clear$clear;" \
         -e "s:\(⟬\|⟭\):$c1\1$clear:g"
     )
-    notify-send -h "string:fgcolor:#6C7E96" -a "pic" -i "$img" ' ' "$header\n$output"
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send -h "string:fgcolor:#6C7E96" -a "pic" -i "$img" ' ' "$header\n$output"
+    fi
 }
 
 main() {
     shots_pikz="$HOME/tmp/shots"
     [ ! -d "$shots_pikz" ] && mkdir -p "$shots_pikz"
-    echo "$img"|sed -e "s/.bmp$/.png/" | wl-copy
+    echo "$img" | sed -e "s/.bmp$/.png/" | wl-copy
     send_notify
 }
 
