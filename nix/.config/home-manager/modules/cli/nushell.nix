@@ -1,4 +1,4 @@
-{ lib, pkgs, config, ... }:
+{ lib, config, pkgs, ... }:
 let
   l = config.lib.file.mkOutOfStoreSymlink;
   repoNuConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/cli/nushell-conf";

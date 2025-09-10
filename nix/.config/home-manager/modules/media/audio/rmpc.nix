@@ -1,4 +1,4 @@
-{ lib, pkgs, config, ... }:
+{ lib, config, pkgs, ... }:
 let
   l = config.lib.file.mkOutOfStoreSymlink;
   repoRmpcConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/media/audio/rmpc/conf";

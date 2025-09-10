@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }: let
+{ lib, config, pkgs, ... }: let
   l = config.lib.file.mkOutOfStoreSymlink;
   repoSwayimgConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/media/images/swayimg/conf";
   # Wrapper: start swayimg, export SWAYIMG_IPC, jump to first image via IPC.

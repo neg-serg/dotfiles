@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ lib, config, pkgs, ... }:
 {
   # Install gdb and manage its config under XDG
   home.packages = [ pkgs.gdb ];

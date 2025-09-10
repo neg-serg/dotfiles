@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ lib, config, pkgs, ... }:
 {
   # Install tig and provide its configuration via XDG
   home.packages = [ pkgs.tig ];
