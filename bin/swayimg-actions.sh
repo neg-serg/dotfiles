@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 # swayimg-actions: move/copy/rotate/wallpaper for swayimg; dests limited to $XDG_PICTURES_DIR; before mv send prev_file via IPC to avoid end-of-list crash
+set -o errexit -o nounset -o pipefail
+IFS=$'\n\t'
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
   sed -n '2,7p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
@@ -73,6 +75,9 @@ screen_wh() {
 # writes output path to $tmp_wall
 render_for_mode() {
   local mode="$1" file="$2" wh
+  if ! command -v convert >/dev/null 2>&1; then
+    return 1
+  fi
   wh="$(screen_wh)"
   rm -f "$tmp_wall" 2>/dev/null || true
   case "$mode" in
@@ -185,7 +190,7 @@ copy_name() { # copy absolute path to clipboard
 wall() { # wall <mode> <file> via swww
   local mode="$1" file="$2"
   ensure_swww
-  render_for_mode "$mode" "$file"
+  render_for_mode "$mode" "$file" || return 0
   # Allow user to override transition opts via $SWWW_FLAGS
   swww img "${SWWW_IMAGE_OVERRIDE:-$tmp_wall}" ${SWWW_FLAGS:-} >/dev/null 2>&1 || true
   echo "$file" >> "${XDG_DATA_HOME:-$HOME/.local/share}/wl/wallpaper.list" 2>/dev/null || true
