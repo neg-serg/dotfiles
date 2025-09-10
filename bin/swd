@@ -13,9 +13,16 @@
 #   -l, --location DIR          download directory (default: ~/pic/wl)
 #   -h, --help                  show this help
 
+set -Eeuo pipefail
+IFS=$'\n\t'
+
 if [[ "$1" == "-h" || "$1" == "--help" || "$1" == "help" ]]; then
   sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
+die(){ printf 'swd: %s\n' "$*" >&2; exit 1; }
+need(){ command -v "$1" >/dev/null 2>&1 || die "missing dependency: $1"; }
+need curl
+need jq
 # TODO: create swd for unsplash
 location="/home/neg/pic/wl"
 atleast="3840x2160"
@@ -73,9 +80,13 @@ case "$sorting" in
 esac
 
 # Read JSON and pick random wallpaper path (.data[].path)
-json="$(curl -s "$api_url")"
+json="$(curl -fsS --retry 3 --retry-delay 1 "$api_url")" || die "failed to query API"
 mapfile -t img_paths < <(jq -r '.data[]?.path' <<< "$json")
+if [[ ${#img_paths[@]} -eq 0 ]]; then
+  die "no wallpapers found for the given filters"
+fi
 rand_img="${img_paths[$RANDOM % ${#img_paths[@]}]}"
+mkdir -p -- "$location"
 wallpaper="$location/${rand_img##*/}"
-curl --create-dirs -s "$rand_img" -o "$wallpaper" >/dev/null
-echo "$wallpaper"
+curl -fsS --retry 3 --retry-delay 1 -o "$wallpaper" "$rand_img" >/dev/null || die "failed to download image"
+printf '%s\n' "$wallpaper"
