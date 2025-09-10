@@ -14,6 +14,10 @@
 # greetz:
 #   all the ops of these great free services <3
 
+set -eu
+IFS=' 	
+'
+
 usage() {
 	cat <<EOF
 
@@ -39,14 +43,32 @@ EOF
 	exit 0
 }
 
-ARG="${2:-/dev/stdin}"
-UA=${UA:="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"}
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'pb: missing %s\n' "$1" >&2; exit 1; }; }
+
 case ${1:-} in
-    -h|--help|help) usage ;;
-    temp | tmp | temp.sh) curl -A "$UA" -sF 'file=@-' https://temp.sh/upload <"$ARG" ;;
-    iotek | iopaste | p.iotek.org | iop*) curl -A "$UA" -sT- https://p.iotek.org <"$ARG" ;;
-    uguu | uguu.se | u*) curl -A "$UA" -sF 'files[]=@-' https://uguu.se/upload?output=text <"$ARG" ;;
-    catbox | catbox.moe | cat*) curl -A "$UA" -sF 'reqtype=fileupload' -F 'fileToUpload=@-' https://catbox.moe/user/api.php <"$ARG" ;;
+    -h|--help|help|\?) usage ;;
+esac
+
+need curl
+
+SERVICE="${1:-}"
+ARG="${2:-/dev/stdin}"
+UA="${UA:-Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36}"
+
+# Accept '-' as stdin
+if [ "${ARG:-/dev/stdin}" != "/dev/stdin" ] && [ "${ARG:-}" != "-" ]; then
+    [ -f "$ARG" ] || { printf 'pb: no such file: %s\n' "$ARG" >&2; exit 1; }
+fi
+
+case "$SERVICE" in
+    temp|tmp|temp.sh)
+        curl -fsS -A "$UA" -F 'file=@-' https://temp.sh/upload <"$ARG" ;;
+    iotek|iopaste|p.iotek.org|iop*)
+        curl -fsS -A "$UA" -T - https://p.iotek.org <"$ARG" ;;
+    uguu|uguu.se|u*)
+        curl -fsS -A "$UA" -F 'files[]=@-' 'https://uguu.se/upload?output=text' <"$ARG" ;;
+    catbox|catbox.moe|cat*)
+        curl -fsS -A "$UA" -F 'reqtype=fileupload' -F 'fileToUpload=@-' https://catbox.moe/user/api.php <"$ARG" ;;
     *) usage ;;
 esac
 
