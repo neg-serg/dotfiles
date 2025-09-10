@@ -2,9 +2,32 @@
 # pngoptim: optimize a PNG file with optipng/advpng/advdef
 # Usage: pngoptim FILE.png
 
-if [ -z "${1:-}" ] || [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
-  printf "Usage: pngoptim FILE.png\n" >&2
-  exit 1
-fi
+set -eu
+IFS=' 	
+'
 
-optipng -o7 "$1" && advpng -z4 "$1" && advdef -z4 "$1"
+usage() { printf "Usage: pngoptim FILE.png\n" >&2; exit 1; }
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'pngoptim: missing %s\n' "$1" >&2; exit 1; }; }
+
+case "${1:-}" in
+  -h|--help|help|\?) usage ;;
+esac
+[ -n "${1:-}" ] || usage
+[ -f "$1" ] || { printf 'pngoptim: no such file: %s\n' "$1" >&2; exit 1; }
+
+file="$1"
+case "$file" in
+  *.png|*.PNG) :;;
+  *) printf 'pngoptim: not a PNG: %s\n' "$file" >&2; exit 1;;
+esac
+
+need optipng
+optipng -o7 -- "$file"
+
+# Optional extra compression if tools are available
+if command -v advpng >/dev/null 2>&1; then
+  advpng -z4 -- "$file" || true
+fi
+if command -v advdef >/dev/null 2>&1; then
+  advdef -z4 -- "$file" || true
+fi
