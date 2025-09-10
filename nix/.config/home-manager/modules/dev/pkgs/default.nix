@@ -42,12 +42,5 @@
   };
 in
   lib.mkIf config.features.dev.enable {
-    home.packages =
-      (optionals config.features.dev.pkgs.formatters groups.formatters)
-      ++ (optionals config.features.dev.pkgs.analyzers groups.analyzers)
-      ++ (optionals config.features.dev.pkgs.codecount groups.codecount)
-      ++ (optionals config.features.dev.pkgs.iac groups.iac)
-      ++ (optionals config.features.dev.pkgs.radicle groups.radicle)
-      ++ (optionals config.features.dev.pkgs.runtime groups.runtime)
-      ++ (optionals config.features.dev.pkgs.misc groups.misc);
+    home.packages = config.lib.neg.mkEnabledList config.features.dev.pkgs groups;
   }

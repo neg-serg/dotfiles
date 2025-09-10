@@ -25,9 +25,6 @@ in {
     ./sdr
   ];
   config = mkIf (config.features.dev.enable && config.features.hack.enable) {
-    home.packages =
-      (optionals config.features.dev.hack.core.secrets groups.secrets)
-      ++ (optionals config.features.dev.hack.core.reverse groups.reverse)
-      ++ (optionals config.features.dev.hack.core.crawl groups.crawl);
+    home.packages = config.lib.neg.mkEnabledList config.features.dev.hack.core groups;
   };
 }
