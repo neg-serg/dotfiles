@@ -1,10 +1,14 @@
 #!/bin/sh
 # v: open Neovim with system profile sourced
 # Usage: v [ARGS...]
-. /etc/profile
+set -eu
+IFS=' 	
+'
+[ -f /etc/profile ] && . /etc/profile || true
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   printf "v: wrapper for nvim (sources /etc/profile)\n" >&2
   exit 0
 fi
-nvim "$@"
+command -v nvim >/dev/null 2>&1 || { printf 'v: nvim not found\n' >&2; exit 1; }
+exec nvim "$@"
 # vim:filetype=sh
