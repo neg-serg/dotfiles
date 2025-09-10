@@ -68,7 +68,7 @@ typeset -gx READNULLCMD="wbat"
 typeset -gx LS_COLORS
 typeset -gx ZSH_CACHE_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
 [[ -d $ZSH_CACHE_DIR ]] || mkdir -p -- $ZSH_CACHE_DIR
-typeset -gx HISTFILE=${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history
+typeset -gx HISTFILE=${XDG_CONFIG_HOME:-$HOME/.config}/zsh/zsh_history
 [[ -d ${HISTFILE:h} ]] || mkdir -p -- ${HISTFILE:h}
 typeset -gx SAVEHIST=10000000
 typeset -gx HISTSIZE=$((SAVEHIST * 1.10))
