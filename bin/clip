@@ -10,7 +10,13 @@
 # Env:
 #   USE_CLIPCAT=true           # use clipcat instead of cliphist
 [ -z "${USE_CLIPCAT-}" ] && USE_CLIPCAT=false
-alias yt='yt-dlp --downloader aria2c -f "(bestvideo+bestaudio/best)"'
+
+
+
+# POSIX sh: avoid alias; provide function instead
+yt() {
+    yt-dlp --downloader aria2c -f "(bestvideo+bestaudio/best)" "$@"
+}
 
 read_command() {
     rofi_cmd="rofi -dmenu -matching glob -dmenu -p ❯>"
@@ -47,22 +53,26 @@ clipboard_pipe() {
             ;;
             *) cmd="$(read_command)" ;;
         esac
-        if [ "$paste" = true ]; then
-            wl-copy --clear # clear clipboard first
-            send_key 'Control_L+c'; send_key 'Control_L+v'
-        fi
         if [ "$cmd" != "" ]; then
-            # read the selection
+            # If paste mode: first copy selection from active app
+            if [ "$paste" = true ]; then
+                send_key 'Control_L+c'
+                sleep 0.05
+            fi
+            # Read current clipboard contents
             selection=$(wl-paste)
-            if [ "$selection" = "" ] && [ "$paste" ]; then
-                echo "no input, aborting..."
+            if [ -z "$selection" ] && [ "$paste" = true ]; then
+                echo "no input, aborting..." >&2
                 exit 1
             fi
-            # put it into the clipboard (and clear it first so Klipper doesn't interfere)
-            wl-copy --clear
-            clipboard=$(wl-paste)
-            out=$($clipboard | $cmd )
+            # Transform selection through the provided command
+            out=$(printf "%s" "$selection" | sh -c "$cmd")
             printf "%s" "$out" | wl-copy
+            # If paste mode: paste transformed result back
+            if [ "$paste" = true ]; then
+                sleep 0.05
+                send_key 'Control_L+v'
+            fi
             exit 0
         else
             dunstify "you need to specify a command"
@@ -91,8 +101,13 @@ yr() {
 }
 
 youtube_url() {
+    if command -v rg >/dev/null 2>&1; then
+        filter='rg -E "https.*(youtube|vimeo)\\.com"'
+    else
+        filter='grep -E "https.*(youtube|vimeo)\\.com"'
+    fi
     sel=$(cliphist list \
-        | rg -E 'https.*(youtube|vimeo)\.com' \
+        | sh -c "$filter" \
         | rofi -lines 7 -dmenu -p '⟬youtube⟭ ❯>')
     [ -z "$sel" ] && exit 1
     idx="$(printf '%s' "$sel" | awk -F ':' '{print $1}')"

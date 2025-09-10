@@ -3,9 +3,12 @@
 # Usage: any PATTERN [PGREP_ARGS...]
 # Example: any firefox
 
+
+
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ] || [ -z "${1:-}" ]; then
   printf "Usage: any PATTERN\n" >&2
   exit 1
 fi
 
-ps uwwwp $(pgrep -f "$@")
+pids="$(pgrep -f -- "$@")" || { echo "no matches" >&2; exit 1; }
+ps uwww -p "$(printf '%s' "$pids" | paste -sd, -)"
