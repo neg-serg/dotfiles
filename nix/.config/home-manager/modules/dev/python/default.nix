@@ -23,8 +23,12 @@
       pynvim # Python client for Neovim
     ];
   pyPackages = ps:
-    (optionals config.features.dev.python.core (core ps))
-    ++ (optionals config.features.dev.python.tools (tools ps));
+    let
+      groups = {
+        core = core ps;
+        tools = tools ps;
+      };
+    in config.lib.neg.mkEnabledList config.features.dev.python groups;
 in
   lib.mkIf config.features.dev.enable {
     nixpkgs = {
