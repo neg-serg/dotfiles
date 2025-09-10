@@ -11,6 +11,10 @@
 #   USE_CLIPCAT=true           # use clipcat instead of cliphist
 [ -z "${USE_CLIPCAT-}" ] && USE_CLIPCAT=false
 
+set -eu
+IFS=' 	
+'
+
 
 
 # POSIX sh: avoid alias; provide function instead
@@ -19,9 +23,9 @@ yt() {
 }
 
 read_command() {
-    rofi_cmd="rofi -dmenu -matching glob -dmenu -p ❯>"
-    cmd_=$(command echo -n "sort tac"| tr -s ' ' '\n' | eval "$rofi_cmd")
-    echo "$cmd_"
+    # Offer a tiny preset list; user can also type arbitrary command
+    printf '%s\n' sort tac \
+      | rofi -dmenu -matching glob -p '❯>'
 }
 
 send_key() {
@@ -38,52 +42,51 @@ clipboard_pipe() {
     selection=""
     out=""
     paste=false
-    # Wayland typing via wtype does not require window id
-    while true; do
+    # Parse options once
+    while [ $# -gt 0 ]; do
         case "$1" in
             --) shift; break ;;
-            -p | --paste) paste=true; shift ;;
-            -c | -e | --command)
-                if [ "$2" != "" ]; then
-                    cmd="$2"
+            -p|--paste) paste=true; shift ;;
+            -c|-e|--command)
+                if [ "${2-}" ]; then
+                    cmd="$2"; shift 2
                 else
+                    shift
                     cmd="$(read_command)"
                 fi
-                shift
-            ;;
-            *) cmd="$(read_command)" ;;
+                ;;
+            *) cmd="$(read_command)"; break ;;
         esac
-        if [ "$cmd" != "" ]; then
-            # If paste mode: first copy selection from active app
-            if [ "$paste" = true ]; then
-                send_key 'Control_L+c'
-                sleep 0.05
-            fi
-            # Read current clipboard contents
-            selection=$(wl-paste)
-            if [ -z "$selection" ] && [ "$paste" = true ]; then
-                echo "no input, aborting..." >&2
-                exit 1
-            fi
-            # Transform selection through the provided command
-            out=$(printf "%s" "$selection" | sh -c "$cmd")
-            printf "%s" "$out" | wl-copy
-            # If paste mode: paste transformed result back
-            if [ "$paste" = true ]; then
-                sleep 0.05
-                send_key 'Control_L+v'
-            fi
-            exit 0
-        else
-            dunstify "you need to specify a command"
-            exit 1
-        fi
     done
+    if [ -z "$cmd" ]; then
+        cmd="$(read_command)"
+    fi
+
+    # If paste mode: first copy selection from active app
+    if [ "$paste" = true ]; then
+        send_key 'Control_L+c'
+        sleep 0.05
+    fi
+    # Read current clipboard contents
+    selection=$(wl-paste || true)
+    if [ -z "$selection" ] && [ "$paste" = true ]; then
+        echo "no input, aborting..." >&2
+        exit 1
+    fi
+    # Transform selection through the provided command
+    out=$(printf "%s" "$selection" | sh -c "$cmd")
+    printf "%s" "$out" | wl-copy
+    # If paste mode: paste transformed result back
+    if [ "$paste" = true ]; then
+        sleep 0.05
+        send_key 'Control_L+v'
+    fi
+    exit 0
 }
 
 clip_main() {
     if [ "$USE_CLIPCAT" = true ]; then
-        clipcat-menu -c ~/.config/clipcat/clipcat-menu.toml
+        clipcat-menu -c "$HOME/.config/clipcat/clipcat-menu.toml"
     else
         # cliphist: show history -> decode -> copy
         sel=$(cliphist list | rofi -dmenu -lines 10 -i -matching glob -p '⟬clip⟭ ❯>' -theme clip.rasi)
@@ -102,13 +105,12 @@ yr() {
 
 youtube_url() {
     if command -v rg >/dev/null 2>&1; then
-        filter='rg -E "https.*(youtube|vimeo)\\.com"'
+        sel=$(cliphist list | rg -E 'https.*(youtube|vimeo)\\.com' \
+            | rofi -lines 7 -dmenu -p '⟬youtube⟭ ❯>')
     else
-        filter='grep -E "https.*(youtube|vimeo)\\.com"'
+        sel=$(cliphist list | grep -E 'https.*(youtube|vimeo)\\.com' \
+            | rofi -lines 7 -dmenu -p '⟬youtube⟭ ❯>')
     fi
-    sel=$(cliphist list \
-        | sh -c "$filter" \
-        | rofi -lines 7 -dmenu -p '⟬youtube⟭ ❯>')
     [ -z "$sel" ] && exit 1
     idx="$(printf '%s' "$sel" | awk -F ':' '{print $1}')"
     cliphist decode "$idx" | tr -d '\n'
@@ -120,6 +122,6 @@ case "$1" in
     pipe) shift; clipboard_pipe "$@" ;;
     youtube-dw-list) shift; cd "${XDG_VIDEOS_DIR:-$HOME/vid}/new" && yt "$(youtube_url)" ;;
     youtube-dw) shift; cd "${XDG_VIDEOS_DIR:-$HOME/vid}/new" && yt "$(wl-paste)" ;;
-    youtube-view) shift; ~/bin/yr clip ;;
+    youtube-view) shift; yr clip ;;
     *) clip_main ;;
 esac
