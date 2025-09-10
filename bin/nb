@@ -2,17 +2,29 @@
 # POSIX safety
 # nb: update personal notes repo (1st_level) and music list, auto-commit if changed
 # Usage: nb [-h|--help]
+set -eu
+IFS=' 	
+'
 
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   printf "nb: update notes and push if changed\n" >&2
   exit 0
 fi
 
-git -C "$HOME/1st_level" pull
-find "$HOME"/music -maxdepth 1 -type d | sort > "$HOME"/1st_level/notes/music/list
-if [ "$(git -C "$HOME"/1st_level status --short -b | wc -l)" -ge 2 ]; then
-    zk -W "$HOME"/1st_level index
-    git -C "$HOME"/1st_level add . \
-        && git -C "$HOME"/1st_level commit -am "update notes $(date '+%d-%m-%Y %H:%M:%S')" \
-        && git -C "$HOME"/1st_level push
-fi 
+repo="$HOME/1st_level"
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'nb: missing %s\n' "$1" >&2; exit 1; }; }
+need git
+
+# Pull but do not abort the script if it fails (offline)
+git -C "$repo" pull || true
+find "$HOME"/music -maxdepth 1 -type d | sort > "$repo"/notes/music/list
+
+changed_lines="$(git -C "$repo" status --short -b | wc -l | tr -d '[:space:]')"
+if [ "${changed_lines:-0}" -ge 2 ]; then
+    if command -v zk >/dev/null 2>&1; then
+        zk -W "$repo" index || true
+    fi
+    git -C "$repo" add .
+    git -C "$repo" commit -am "update notes $(date '+%d-%m-%Y %H:%M:%S')" || true
+    git -C "$repo" push || true
+fi
