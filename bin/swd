@@ -3,14 +3,15 @@
 # Usage:
 #   swd [options]
 # Options:
-#   -C, --colors HEX[,HEX...]   dominant colors (e.g. 424153)
+#   -C, --colors HEX[,HEX...]   dominant colors (e.g. 424153 or 424153,ffffff)
 #   -a, --atleast WxH           minimum resolution (default: 3840x2160)
 #   -p, --purity STR            purity flags (SFW=100, Sketchy=010, Both=110)
 #   -c, --categories STR        categories (General=100, Anime=010, People=001)
 #   -r, --ratios LIST           aspect ratios (e.g. 16x9,21x9)
 #   -s, --sorting MODE          latest|views|toplist|favorites|random
 #   -o, --order ORDER           asc|desc (default: desc)
-#   -l, --location DIR          download directory (default: ~/pic/wl)
+#   -l, --location DIR          download directory (default: $XDG_PICTURES_DIR/wl or ~/pic/wl)
+#   -k, --apikey KEY            Wallhaven API key (optional)
 #   -h, --help                  show this help
 
 set -Eeuo pipefail
@@ -24,16 +25,15 @@ need(){ command -v "$1" >/dev/null 2>&1 || die "missing dependency: $1"; }
 need curl
 need jq
 # TODO: create swd for unsplash
-location="/home/neg/pic/wl"
+location="${XDG_PICTURES_DIR:-$HOME/pic}/wl"
 atleast="3840x2160"
-purity="0" # Set the purity filter setting, SFW = 100, Sketchy = 010, Both = 110, NOTE: Can combine them
-categories="100" # Set the category, General = 100, Anime = 010, People = 001, NOTE: Can combine them
-order="desc" # Set the order
-
-# Set the aspect ratio of the image
-# All = Do not include for all, Square = 1x1 3x2 4x3 5x4, Portrait = 9x16 10x16 9x18
-# Wide = 16x9 16x10, Ultrawide = 21x9 32x9 48x9, NOTE: Can combine them by seperating with ,
+purity="100"
+categories="100"
+order="desc"
 ratios="16x9"
+sorting="random"
+colors=""
+apikey="${WALLHAVEN_API_KEY:-}"
 
 # Set the dominant colors of the image
 # All           = Do not include for all
@@ -46,20 +46,43 @@ ratios="16x9"
 # Set the site address
 site="wallhaven.cc"
 
-while [[ $# -gt 0 ]]; do
-    key="$1"
-    case $key in
-      -C | --colors) colors="$2" shift shift ;;
-      -a | --atleast) atleast="$2" shift shift ;;
-      -p | --purity) purity="$2" shift shift ;;
-      -c | --categories) categories="$2" shift shift ;;
-      -r | --ratios) ratios="$2" shift shift ;;
-      -s | --sorting) sorting="$2" shift shift ;;
-      -o | --order) order="$2" shift shift ;;
-      -l | --location) location="$2" shift shift ;;
-    *) shift ;;
-    esac
+# Translate long options to short and parse via getopts
+_args=()
+while (($#)); do
+  case "$1" in
+    --help) _args+=("-h"); shift ;;
+    --colors) _args+=("-C" "$2"); shift 2 ;;
+    --atleast) _args+=("-a" "$2"); shift 2 ;;
+    --purity) _args+=("-p" "$2"); shift 2 ;;
+    --categories) _args+=("-c" "$2"); shift 2 ;;
+    --ratios) _args+=("-r" "$2"); shift 2 ;;
+    --sorting) _args+=("-s" "$2"); shift 2 ;;
+    --order) _args+=("-o" "$2"); shift 2 ;;
+    --location) _args+=("-l" "$2"); shift 2 ;;
+    --apikey) _args+=("-k" "$2"); shift 2 ;;
+    --*) die "unknown option: $1" ;;
+    *) _args+=("$1"); shift ;;
+  esac
 done
+set -- "${_args[@]}"
+
+while getopts ":C:a:p:c:r:s:o:l:k:h" opt; do
+  case "$opt" in
+    C) colors="$OPTARG" ;;
+    a) atleast="$OPTARG" ;;
+    p) purity="$OPTARG" ;;
+    c) categories="$OPTARG" ;;
+    r) ratios="$OPTARG" ;;
+    s) sorting="$OPTARG" ;;
+    o) order="$OPTARG" ;;
+    l) location="$OPTARG" ;;
+    k) apikey="$OPTARG" ;;
+    h) sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    :) die "option -$OPTARG requires an argument" ;;
+    \?) die "unknown option: -$OPTARG" ;;
+  esac
+done
+shift $((OPTIND-1))
 
 # Build API URL instead of scraping HTML
 api_url="https://$site/api/v1/search?"
@@ -80,6 +103,8 @@ case "$sorting" in
 esac
 
 # Read JSON and pick random wallpaper path (.data[].path)
+[[ -n "$colors" ]] && colors="${colors//#/}"
+[[ -n "$apikey" ]] && api_url+="&apikey=$apikey"
 json="$(curl -fsS --retry 3 --retry-delay 1 "$api_url")" || die "failed to query API"
 mapfile -t img_paths < <(jq -r '.data[]?.path' <<< "$json")
 if [[ ${#img_paths[@]} -eq 0 ]]; then
