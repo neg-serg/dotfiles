@@ -1,20 +1,8 @@
 #!/bin/sh
 # pypr-client: send JSON-RPC to pyprland socket
 # Usage: pypr-client '{"cmd": "..."}'
-set -eu
-IFS=' 	
-'
 if [ -z "${1:-}" ] || [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   echo "Usage: pypr-client '{\"cmd\": \"...\"}'" >&2
   exit 1
 fi
-need() { command -v "$1" >/dev/null 2>&1 || { printf 'pypr-client: missing %s\n' "$1" >&2; exit 1; }; }
-need socat
-
-sock="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr/${HYPRLAND_INSTANCE_SIGNATURE:-}/.pyprland.sock"
-if [ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ] || [ ! -S "$sock" ]; then
-  echo "pypr-client: socket not found: $sock" >&2
-  exit 2
-fi
-
-printf '%s' "$1" | socat - "UNIX-CONNECT:$sock"
+socat - "UNIX-CONNECT:${XDG_RUNTIME_DIR}/hypr/${HYPRLAND_INSTANCE_SIGNATURE}/.pyprland.sock" <<< "$@"
