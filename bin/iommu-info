@@ -3,28 +3,37 @@
 # Usage: iommu-info [r|reset]
 #   Without args: list IOMMU groups and devices. With 'r' or 'reset':
 #   show groups highlighting devices supporting reset.
-if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+set -o errexit -o nounset -o pipefail
+setopt nullglob
+IFS=$'\n\t'
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   sed -n '2,5p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
 
+command -v lspci >/dev/null 2>&1 || { print -u2 'iommu-info: lspci not found'; exit 1 }
+[[ -d /sys/kernel/iommu_groups ]] || { print -u2 'iommu-info: no /sys/kernel/iommu_groups'; exit 0 }
+
 valid_groups(){
     for d in /sys/kernel/iommu_groups/*/devices/*; do
+        [[ -e "$d" ]] || continue
         n=${d#*/iommu_groups/*}; n=${n%%/*}
         printf 'IOMMU Group %s ' "$n"
         lspci -nns "${d##*/}"
-    done;
+    done
 }
 
 reset_groups(){
-    setopt nullglob
-    for iommu_group in $(find /sys/kernel/iommu_groups/ -maxdepth 1 -mindepth 1 -type d);do
-        echo "IOMMU group $(basename "$iommu_group")";
-        for device in $(\ls -1 "$iommu_group"/devices/); do
-            if [[ -e "$iommu_group"/devices/"$device"/reset ]]; then
-                echo -n "[RESET]";
-            fi;
-            echo -n $'\t';lspci -nns "$device";
-        done;
+    for iommu_group in /sys/kernel/iommu_groups/*; do
+        [[ -d "$iommu_group" ]] || continue
+        echo "IOMMU group $(basename -- "$iommu_group")"
+        for devpath in "$iommu_group"/devices/*; do
+            [[ -e "$devpath" ]] || continue
+            device="${devpath##*/}"
+            if [[ -e "$devpath/reset" ]]; then
+                echo -n "[RESET]"
+            fi
+            echo -n $'\t'; lspci -nns "$device"
+        done
     done
 }
 
