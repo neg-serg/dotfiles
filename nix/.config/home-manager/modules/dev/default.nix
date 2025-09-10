@@ -40,6 +40,7 @@ with lib; {
     ./android
     ./benchmarks
     ./cachix
+    ./ansible
     ./editor
     ./git
     ./gdb
