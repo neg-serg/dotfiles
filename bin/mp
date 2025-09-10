@@ -19,15 +19,9 @@ main() {
     done
     # Info for files
     {
-        found=false
         for arg in "$@"; do
-            if [ -f "$arg" ]; then found=true; fi
-        done
-        if [ "$found" = true ]; then
-            printf '%s\0' "$@" \
-              | xargs -0 -I{} sh -c '[ -f "$1" ] && printf "%s\0" "$1" || true' _ {} \
-              | xargs -0 -n10 -P 10 vid-info
-        fi
+            [ -f "$arg" ] && printf '%s\0' "$arg"
+        done | xargs -0 -n10 -P 10 vid-info
     } &
     mkdir -p -- "$HOME/tmp"
     mpv --quiet -- "$@" > "$HOME/tmp/mpv.log" 2>&1

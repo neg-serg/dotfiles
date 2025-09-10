@@ -9,7 +9,7 @@ if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
 fi
 
 # shell environment (PATH, etc.)
-[ -f /etc/profile ] && . /etc/profile || true
+if [ -f /etc/profile ]; then . /etc/profile; fi
 
 need() { command -v "$1" >/dev/null 2>&1 || { printf 'unlock: missing %s\n' "$1" >&2; exit 1; }; }
 need expect
@@ -17,7 +17,7 @@ need pass
 
 # Retrieve secrets
 pp0="$(pass show ssh-key)"
-pp2="$(pass show wrk/ssh-key || true)"
+pp2="$(pass show wrk/ssh-key || true)" # unused fallback; kept for compatibility
 
 cleanup() { unset pp0 pp1 pp2 || true; }
 trap cleanup EXIT HUP INT TERM

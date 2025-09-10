@@ -20,15 +20,15 @@ mkdir -p -- "$scr_dir"
 filename="screenshot-$(date +%Y-%m-%d_%H-%M-%S).png"
 summary_="$scr_dir/$filename"
 
-Shot() {
+shot() {
   # Fullscreen screenshot via grim
   grim "$summary_" && ~/bin/pic-notify "$summary_"
 }
-Select() {
+select_region() {
   # Region selection via slurp
   grim -g "$(slurp)" "$summary_" && ~/bin/pic-notify "$summary_"
 }
-Current() {
+current_window() {
   # Try Hyprland active window, fall back to selection
   if command -v hyprctl >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
     geo=$(hyprctl -j activewindow | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"') || geo=""
@@ -38,10 +38,10 @@ Current() {
   fi
   Select "$@"
 }
-Delay() { sleep 5; Shot "$@"; }
-Full() { Shot "$@"; }
+delay() { sleep 5; shot "$@"; }
+full() { shot "$@"; }
 
-Menu() {
+menu() {
     sel=$(printf '%s\n' \
         "Full screen" \
         "Rectangular selection" \
@@ -49,15 +49,15 @@ Menu() {
         "Delayed (5s)" \
         | rofi -dmenu -theme clip -p '⟬shot⟭ ❯>' || true)
     case "$sel" in
-        "Full screen") Full "$@" ;;
-        "Rectangular selection") Select "$@" ;;
-        "Current window") Current "$@" ;;
-        "Delayed (5s)") Delay "$@" ;;
+        "Full screen") full "$@" ;;
+        "Rectangular selection") select_region "$@" ;;
+        "Current window") current_window "$@" ;;
+        "Delayed (5s)") delay "$@" ;;
         *) : ;;
     esac
 }
 
-OCR() {
+ocr() {
   command -v tesseract >/dev/null 2>&1 || { printf 'screenshot: missing tesseract\n' >&2; exit 1; }
   grim -g "$(slurp)" - \
     | tesseract --dpi 96 -l eng - - \
@@ -66,12 +66,12 @@ OCR() {
 }
 
 case "${1:-}" in
-    -r) Select "$@";;
-    -c) Current "$@";;
-    -d) Delay "$@";;
-    -m) Menu "$@";;
-    -o) OCR "$@" ;; # thx to vincentbernat
+    -r) select_region "$@";;
+    -c) current_window "$@";;
+    -d) delay "$@";;
+    -m) menu "$@";;
+    -o) ocr "$@" ;; # thx to vincentbernat
     --help) show_help;;
     -h) show_help;;
-    *) Full "$@";;
+    *) full "$@";;
 esac

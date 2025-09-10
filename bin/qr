@@ -18,8 +18,8 @@ need wl-copy
 
 maimselect() { grim -g "$(slurp)" -; }
 clip() { # usage: clip [-t mimetype] (reads from stdin)
-  local mimetype="${1:-}"
-  if [ "$1" = "-t" ] || [ "$1" = "--type" ]; then shift; mimetype="${1:-}"; shift || true; fi
+  mimetype="${1:-}"
+  if [ "${1:-}" = "-t" ] || [ "${1:-}" = "--type" ]; then shift; mimetype="${1:-}"; shift || true; fi
   if [ -n "$mimetype" ]; then wl-copy --type "$mimetype"; else wl-copy; fi
 }
 
@@ -34,19 +34,19 @@ case "${1:-}" in
         if ! grim -g "$(slurp)" "$tmp_file"; then rm -f "$tmp_file"; exit 1; fi
         scanresult=$(zbarimg --quiet --raw "$tmp_file" | tr -d '\n' || true)
         if [ -z "$scanresult" ]; then
-            command -v dunstify >/dev/null 2>&1 && dunstify "Screenshot" "No scan data found" || true
+            if command -v dunstify >/dev/null 2>&1; then dunstify "Screenshot" "No scan data found"; fi
         else
             echo "$scanresult" | clip
             if command -v convert >/dev/null 2>&1; then
                 convert "$tmp_file" -resize 75x75 "$tmp_file"
             fi
-            command -v dunstify >/dev/null 2>&1 && dunstify -i "$tmp_file" "QR" "$scanresult\n(copied to clipboard)" || true
+            if command -v dunstify >/dev/null 2>&1; then dunstify -i "$tmp_file" "QR" "$scanresult\n(copied to clipboard)"; fi
         fi
         rm -f "$tmp_file"
         ;;
     # screenshot the entire desktop
     *)
         grim - | clip -t image/png
-        command -v dunstify >/dev/null 2>&1 && dunstify "Screenshot" "Screenshot taken" || true
+        if command -v dunstify >/dev/null 2>&1; then dunstify "Screenshot" "Screenshot taken"; fi
         ;;
 esac

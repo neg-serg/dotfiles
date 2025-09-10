@@ -4,7 +4,7 @@
 set -eu
 IFS=' 	
 '
-[ -f /etc/profile ] && . /etc/profile || true
+if [ -f /etc/profile ]; then . /etc/profile; fi
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   printf "v: wrapper for nvim (sources /etc/profile)\n" >&2
   exit 0

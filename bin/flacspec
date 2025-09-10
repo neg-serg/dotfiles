@@ -2,7 +2,9 @@
 # flacspec: generate spectrograms for all .flac in current directory
 # Usage: flacspec
 set -eu
-IFS=' \t\n'
+# Avoid backslash literals in IFS; default IFS is usually fine
+IFS=' 	
+'
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   sed -n '2,2p' "$0" | sed 's/^# \{0,1\}//'; exit 0
 fi
