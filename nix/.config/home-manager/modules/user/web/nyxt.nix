@@ -11,6 +11,12 @@ mkIf (config.features.web.enable && config.features.web.nyxt.enable) (let
 in {
   home.packages = [ nyxtPkg ];
 
+  # Ensure Nyxt config dir exists and file is not blocking linking
+  home.activation.fixNyxtConfigDir =
+    config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/nyxt";
+  home.activation.fixNyxtConfigFile =
+    config.lib.neg.mkEnsureAbsent "${config.xdg.configHome}/nyxt/init.lisp";
+
   # Nyxt 4 config with vim-friendly behavior
   xdg.configFile."nyxt/init.lisp".text = ''
     ;; Nyxt init (HM-managed). Safe defaults + Vim-friendly tweaks.

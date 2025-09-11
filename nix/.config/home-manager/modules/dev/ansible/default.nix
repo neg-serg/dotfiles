@@ -7,6 +7,10 @@ let
   XDG_CACHE = config.home.sessionVariables.XDG_CACHE_HOME or "${config.home.homeDirectory}/.cache";
 in
 lib.mkIf enableIac {
+  # Ensure ~/.config/ansible is a real directory
+  home.activation.fixAnsibleConfigDir =
+    config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/ansible";
+
   # XDG-friendly ansible configuration + galaxy install paths
   xdg.configFile."ansible/ansible.cfg".text = ''
     [defaults]

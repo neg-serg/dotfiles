@@ -9,7 +9,7 @@
 
   # Ensure no leftover file blocks linking our config
   home.activation.fixTigConfigFile =
-    config.lib.neg.mkRemoveIfNotSymlink "${config.xdg.configHome}/tig/config";
+    config.lib.neg.mkEnsureAbsent "${config.xdg.configHome}/tig/config";
 
   # Write tig config as a Home Manager-managed file under XDG
   home.file."${config.xdg.configHome}/tig/config" = {

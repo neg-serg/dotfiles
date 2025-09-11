@@ -63,13 +63,7 @@ in
 
     # Remove stale ~/.config/quickshell symlink from older generations before linking
     home.activation.fixQuickshellConfigDir =
-      lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-        set -eu
-        QSDIR="${config.xdg.configHome}/quickshell"
-        if [ -L "$QSDIR" ]; then
-          rm -f "$QSDIR"
-        fi
-      '';
+      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/quickshell";
 
     # Live-editable config: out-of-store symlink to repo copy
     xdg.configFile."quickshell" = {

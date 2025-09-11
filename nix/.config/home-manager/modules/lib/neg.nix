@@ -210,5 +210,34 @@
           set -eu
           ${body}
         '';
+
+    # Ensure a path is absent before HM links/writes files.
+    # Removes regular files with rm -f and directories with rm -rf, ignores symlinks
+    # (combine with mkRemoveIfSymlink if needed).
+    mkEnsureAbsent = path:
+      lib.hm.dag.entryBefore ["linkGeneration"] ''
+        set -eu
+        if [ -e "${path}" ] && [ ! -L "${path}" ]; then
+          if [ -d "${path}" ]; then
+            rm -rf "${path}"
+          else
+            rm -f "${path}"
+          fi
+        fi
+      '';
+
+    mkEnsureAbsentMany = paths:
+      let
+        scriptFor = p: ''
+          if [ -e "${p}" ] && [ ! -L "${p}" ]; then
+            if [ -d "${p}" ]; then rm -rf "${p}"; else rm -f "${p}"; fi
+          fi
+        '';
+        body = lib.concatStringsSep "\n" (map scriptFor paths);
+      in
+        lib.hm.dag.entryBefore ["linkGeneration"] ''
+          set -eu
+          ${body}
+        '';
   };
 }
