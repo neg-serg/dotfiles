@@ -1,8 +1,5 @@
 { lib, config, pkgs, ... }:
-let
-  l = config.lib.file.mkOutOfStoreSymlink;
-  repoNuConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/cli/nushell-conf";
-in {
+{
   # Ensure Nushell is available
   home.packages = [ pkgs.nushell ];
 
@@ -11,8 +8,6 @@ in {
     config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/nushell";
 
   # Live-editable config: out-of-store symlink to repo copy
-  xdg.configFile."nushell" = {
-    source = l repoNuConf;
-    recursive = true;
-  };
+  xdg.configFile."nushell" =
+    config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/cli/nushell-conf" true;
 }

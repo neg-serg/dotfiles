@@ -1,5 +1,4 @@
 { lib, config, pkgs, ... }: let
-  l = config.lib.file.mkOutOfStoreSymlink;
   repoSwayimgConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/media/images/swayimg/conf";
   # Wrapper: start swayimg, export SWAYIMG_IPC, jump to first image via IPC.
   swayimg-first = pkgs.writeShellScriptBin "swayimg-first" ''
@@ -70,15 +69,13 @@ in let
   };
   flags = (builtins.listToAttrs (map (n: { name = n; value = true; }) (builtins.attrNames groups)));
 in {
-  home.packages = config.lib.neg.mkEnabledList flags groups;
+  home.packages = config.lib.neg.filterByExclude (config.lib.neg.mkEnabledList flags groups);
   home.file.".local/bin/swayimg".source = "${swayimg-first}/bin/swayimg-first";
 
   # Live-editable Swayimg config: out-of-store symlink to repo copy
   # Remove stale symlink to old HM generations before linking
   home.activation.fixSwayimgConfig =
     config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/swayimg";
-  xdg.configFile."swayimg" = {
-    source = l repoSwayimgConf;
-    recursive = true;
-  };
+  xdg.configFile."swayimg" =
+    config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/media/images/swayimg/conf" true;
 }

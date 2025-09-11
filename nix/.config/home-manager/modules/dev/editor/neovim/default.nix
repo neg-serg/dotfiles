@@ -3,10 +3,7 @@
   pkgs,
   ...
 }:
-with {
-  l = config.lib.file.mkOutOfStoreSymlink;
-  dots = config.lib.neg.dotfilesRoot;
-}; {
+with { }; {
   home.packages = with pkgs; [
     bash-language-server # Bash LSP
     neovim # Neovim editor
@@ -38,9 +35,6 @@ with {
   };
   xdg.configFile = {
     # █▓▒░ nvim ─────────────────────────────────────────────────────────────────────────
-    "nvim" = {
-      source = l "${dots}/nvim/.config/nvim";
-      recursive = true;
-    };
+    "nvim" = config.lib.neg.mkDotfilesSymlink "nvim/.config/nvim" true;
   };
 }

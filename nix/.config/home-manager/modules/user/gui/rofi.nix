@@ -5,10 +5,6 @@
   ...
 }:
 with lib;
-let
-  l = config.lib.file.mkOutOfStoreSymlink;
-  repoRofiConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/user/gui/rofi/conf";
-in
   mkIf config.features.gui.enable {
     # Remove stale ~/.config/rofi symlink from older generations before linking
     home.activation.fixRofiConfigDir =
@@ -26,8 +22,6 @@ in
     ];
 
     # Live-editable config: out-of-store symlink pointing to repo files
-    xdg.configFile."rofi" = {
-      source = l repoRofiConf;
-      recursive = true;
-    };
+    xdg.configFile."rofi" =
+      config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf" true;
   }

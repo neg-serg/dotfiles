@@ -7,8 +7,6 @@
 }:
 with lib; let
   hy3Plugin = hy3.packages.${pkgs.system}.hy3;
-  l = config.lib.file.mkOutOfStoreSymlink;
-  repoHyprConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/user/gui/hypr/conf";
 in
   mkIf config.features.gui.enable {
     wayland.windowManager.hyprland = {
@@ -32,37 +30,12 @@ in
     };
     # Live-editable Hyprland configuration (out-of-store symlinks to repo files)
     xdg.configFile = {
-      "hypr/init.conf" = {
-        source = l "${repoHyprConf}/init.conf";
-        recursive = false;
-        force = true;
-        # onChange = "${pkgs.hyprland}/bin/hyprctl reload || true"; # optional
-      };
-      "hypr/rules.conf" = {
-        source = l "${repoHyprConf}/rules.conf";
-        recursive = false;
-        force = true;
-      };
-      "hypr/bindings.conf" = {
-        source = l "${repoHyprConf}/bindings.conf";
-        recursive = false;
-        force = true;
-      };
-      "hypr/autostart.conf" = {
-        source = l "${repoHyprConf}/autostart.conf";
-        recursive = false;
-        force = true;
-      };
-      "hypr/workspaces.conf" = {
-        source = l "${repoHyprConf}/workspaces.conf";
-        recursive = false;
-        force = true;
-      };
-      "hypr/pyprland.toml" = {
-        source = l "${repoHyprConf}/pyprland.toml";
-        recursive = false;
-        force = true;
-      };
+      "hypr/init.conf" = config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/init.conf" false;
+      "hypr/rules.conf" = config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/rules.conf" false;
+      "hypr/bindings.conf" = config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings.conf" false;
+      "hypr/autostart.conf" = config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/autostart.conf" false;
+      "hypr/workspaces.conf" = config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/workspaces.conf" false;
+      "hypr/pyprland.toml" = config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/pyprland.toml" false;
     };
     home.packages = with pkgs; [
       hyprcursor # modern cursor theme format (replaces xcursor)

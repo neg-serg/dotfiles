@@ -6,10 +6,7 @@
 }: {
   # Project-specific helpers under lib.neg
   config.lib.neg = {
-    # Configurable root of your dotfiles repository
-    # Note: avoid mkDefault here because config.lib.* is not a typed option;
-    # mkDefault would leave an override wrapper that breaks string coercion.
-    dotfilesRoot = "${config.home.homeDirectory}/.dotfiles";
+    # Configurable root of your dotfiles repository (see options.neg.dotfilesRoot)
 
     # mkEnabledList flags groups -> concatenated list of groups
     # flags: { a = true; b = false; }
@@ -24,6 +21,13 @@
 
     # Alias
     mkPackagesFromGroups = flags: groups: (config.lib.neg.mkEnabledList flags groups);
+
+    # Package list helpers
+    pnameOf = pkg: (pkg.pname or (builtins.parseDrvName (pkg.name or "")).name);
+    filterByNames = names: pkgsList:
+      builtins.filter (p: !(builtins.elem (config.lib.neg.pnameOf p) names)) pkgsList;
+    filterByExclude = pkgsList:
+      config.lib.neg.filterByNames (config.features.excludePkgs or []) pkgsList;
 
     # Emit a warning (non-fatal) when condition holds
     mkWarnIf = cond: msg: {
@@ -240,4 +244,14 @@
           ${body}
         '';
   };
+
+  # Provide a typed option for dotfiles root, and mirror it under lib.neg
+  options.neg.dotfilesRoot = lib.mkOption {
+    type = lib.types.str;
+    default = "${config.home.homeDirectory}/.dotfiles";
+    description = "Path to the root of the user's dotfiles repository.";
+    example = "/home/neg/.cfg";
+  };
+
+  config.lib.neg.dotfilesRoot = config.neg.dotfilesRoot;
 }

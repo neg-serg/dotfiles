@@ -7,8 +7,7 @@
 with lib;
   mkIf config.features.dev.enable {
     # Link user excludes file from repo into ~/.config/git/ignore
-    xdg.configFile."git/ignore".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.lib.neg.dotfilesRoot}/git/.config/git/ignore";
+    xdg.configFile."git/ignore" = config.lib.neg.mkDotfilesSymlink "git/.config/git/ignore" false;
     home.packages = with pkgs; [
       act # run GitHub Actions locally
       difftastic # syntax-aware diff viewer

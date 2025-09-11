@@ -105,7 +105,7 @@ in {
       visidata = {enable = true;}; # interactive multitool for tabular data
     };
     home.packages =
-      (config.lib.neg.mkEnabledList config.features.cli groups)
+      (config.lib.neg.filterByExclude (config.lib.neg.mkEnabledList config.features.cli groups))
       ++ [pkgs.tealdeer]; # tldr replacement written in Rust
   };
 }

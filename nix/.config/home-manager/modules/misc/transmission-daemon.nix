@@ -1,14 +1,12 @@
 { lib, config, ... }:
-let
-  l = config.lib.file.mkOutOfStoreSymlink;
-  repoTxConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/misc/transmission-daemon/conf";
-in {
+{
   # Ensure ~/.config/transmission-daemon is a real directory (not a stale HM symlink)
   home.activation.fixTransmissionDaemonDir =
     config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/transmission-daemon";
 
   # Link selected config files from repo; runtime subdirs (resume,torrents) remain local
-  xdg.configFile."transmission-daemon/settings.json".source = l "${repoTxConf}/settings.json";
-  xdg.configFile."transmission-daemon/bandwidth-groups.json".source =
-    l "${repoTxConf}/bandwidth-groups.json";
+  xdg.configFile."transmission-daemon/settings.json" =
+    config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/misc/transmission-daemon/conf/settings.json" false;
+  xdg.configFile."transmission-daemon/bandwidth-groups.json" =
+    config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/misc/transmission-daemon/conf/bandwidth-groups.json" false;
 }
