@@ -3,7 +3,7 @@ with {
   pinentryRofi = pkgs.writeShellApplication {
     name = "pinentry-rofi-with-env";
     text = ''
-      PATH="$PATH:${pkgs.coreutils}/bin:${pkgs.rofi-wayland}/bin"
+      PATH="$PATH:${pkgs.coreutils}/bin:${pkgs.rofi}/bin"
       "${pkgs.pinentry-rofi}/bin/pinentry-rofi" "$@"
     '';
   };

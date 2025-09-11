@@ -22,7 +22,7 @@ in
 
     home.packages = with pkgs; [
       rofi-pass-wayland # pass interface for rofi-wayland
-      (rofi-wayland.override {
+      (rofi.override {
         plugins = [
           rofi-file-browser # file browser plugin
           pkgs.neg.rofi_games # custom games launcher
