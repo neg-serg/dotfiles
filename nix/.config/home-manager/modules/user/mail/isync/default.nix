@@ -60,20 +60,13 @@ with lib;
     ];
 
     # Create base maildir on activation (mbsync can also create, but this avoids first-run hiccups)
-    home.activation.createMaildirs = {
-      after = [
-        "writeBoundary" # run after HM writes files to disk
+    home.activation.createMaildirs =
+      config.lib.neg.mkEnsureMaildirs "$HOME/.local/mail/gmail" [
+        "INBOX"
+        "[Gmail]/Sent Mail"
+        "[Gmail]/Drafts"
+        "[Gmail]/All Mail"
       ];
-      before = [];
-      data = ''
-        set -eu
-        base="$HOME/.local/mail/gmail"
-        mkdir -p "$base/INBOX/cur" "$base/INBOX/new" "$base/INBOX/tmp"
-        mkdir -p "$base/[Gmail]/Sent Mail/cur" "$base/[Gmail]/Sent Mail/new" "$base/[Gmail]/Sent Mail/tmp" || true
-        mkdir -p "$base/[Gmail]/Drafts/cur" "$base/[Gmail]/Drafts/new" "$base/[Gmail]/Drafts/tmp" || true
-        mkdir -p "$base/[Gmail]/All Mail/cur" "$base/[Gmail]/All Mail/new" "$base/[Gmail]/All Mail/tmp" || true
-      '';
-    };
 
     # Periodic sync in addition to imapnotify (fallback / catch-up)
     systemd.user.services."mbsync-gmail" = lib.recursiveUpdate {

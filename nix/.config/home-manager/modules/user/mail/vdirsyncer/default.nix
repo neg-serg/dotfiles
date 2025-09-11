@@ -11,9 +11,10 @@ with lib;
     ];
 
     # Ensure local storage directories exist
-    home.activation.vdirsyncerDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      mkdir -p "$HOME/.config/vdirsyncer/calendars" "$HOME/.config/vdirsyncer/contacts"
-    '';
+    home.activation.vdirsyncerDirs = config.lib.neg.mkEnsureDirsAfterWrite [
+      "$HOME/.config/vdirsyncer/calendars"
+      "$HOME/.config/vdirsyncer/contacts"
+    ];
 
     # Provide a starter config. Fill in URL/username/password below.
     xdg.configFile."vdirsyncer/config".text = ''

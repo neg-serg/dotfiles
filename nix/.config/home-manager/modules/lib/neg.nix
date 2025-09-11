@@ -187,5 +187,28 @@
           rm -f "${path}"
         fi
       '';
+
+    # Ensure directories exist after HM writes files
+    # Useful for app runtime dirs that must be present before services start.
+    mkEnsureDirsAfterWrite = paths:
+      let
+        quoted = lib.concatStringsSep " " (map (p: "\"" + p + "\"") paths);
+      in
+        lib.hm.dag.entryAfter ["writeBoundary"] ''
+          set -eu
+          mkdir -p ${quoted}
+        '';
+
+    # Ensure a set of Maildir-style folders exist under a base path.
+    # Example: mkEnsureMaildirs "$HOME/.local/mail/gmail" ["INBOX" "[Gmail]/Sent Mail" ...]
+    mkEnsureMaildirs = base: boxes:
+      let
+        mkLine = b: ''mkdir -p "${base}/${b}/cur" "${base}/${b}/new" "${base}/${b}/tmp"'';
+        body = lib.concatStringsSep "\n" (map mkLine boxes);
+      in
+        lib.hm.dag.entryAfter ["writeBoundary"] ''
+          set -eu
+          ${body}
+        '';
   };
 }
