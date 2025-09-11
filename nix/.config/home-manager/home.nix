@@ -10,7 +10,13 @@ in {
   # Profile presets (full | lite). Full is default; set to "lite" for headless/minimal.
   features.profile = lib.mkDefault "full";
   # Exclude problematic packages from curated lists without editing modules
-  features.excludePkgs = ["dsniff" "crowbar"]; 
+  features.excludePkgs = [
+    # Network sniffing/passwords
+    "dsniff" "crowbar"
+    # Backdoor/tunneling tool candidates kept off by default
+    "dns2tcp" "exe2hexbat" "laudanum" "mimikatz" "nishang" "powersploit"
+    "ptunnel" "sbd" "shellter" "stunnel4" "veil" "webacoo" "weevely"
+  ]; 
 
   # Unfree policy centralized in modules/misc/unfree.nix (features.allowUnfree.allowed)
 
