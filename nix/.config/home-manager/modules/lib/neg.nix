@@ -157,5 +157,35 @@
       desktop = "xdg-open.desktop";
       newTabArg = "";
     };
+
+    # Home activation DAG helpers to avoid repeating small shell snippets
+    # Usage patterns:
+    #   home.activation.fixZsh = config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/zsh";
+    #   home.activation.fixGdbDir = config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/gdb";
+    #   home.activation.fixTigFile = config.lib.neg.mkRemoveIfNotSymlink "${config.xdg.configHome}/tig/config";
+    mkRemoveIfSymlink = path:
+      lib.hm.dag.entryBefore ["linkGeneration"] ''
+        set -eu
+        if [ -L "${path}" ]; then
+          rm -f "${path}"
+        fi
+      '';
+
+    mkEnsureRealDir = path:
+      lib.hm.dag.entryBefore ["linkGeneration"] ''
+        set -eu
+        if [ -L "${path}" ]; then
+          rm -f "${path}"
+        fi
+        mkdir -p "${path}"
+      '';
+
+    mkRemoveIfNotSymlink = path:
+      lib.hm.dag.entryBefore ["linkGeneration"] ''
+        set -eu
+        if [ -e "${path}" ] && [ ! -L "${path}" ]; then
+          rm -f "${path}"
+        fi
+      '';
   };
 }
