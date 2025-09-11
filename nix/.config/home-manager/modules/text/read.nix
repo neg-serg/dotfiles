@@ -1,13 +1,7 @@
 { lib, config, pkgs, ... }: {
   # Remove stale ~/.config/zathura symlink that may point into this repo from older setups
   home.activation.fixZathuraConfigDir =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      ZDIR="${config.xdg.configHome}/zathura"
-      if [ -L "$ZDIR" ]; then
-        rm -f "$ZDIR"
-      fi
-    '';
+    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/zathura";
 
   home.packages = with pkgs; [
     amfora # terminal browser for gemini

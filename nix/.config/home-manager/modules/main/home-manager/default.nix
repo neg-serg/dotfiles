@@ -10,13 +10,7 @@ in {
 
   # Remove stale ~/.config/home-manager symlink from older generations before linking
   home.activation.fixHomeManagerConfigDir =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      HMDIR="${config.xdg.configHome}/home-manager"
-      if [ -L "$HMDIR" ]; then
-        rm -f "$HMDIR"
-      fi
-    '';
+    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/home-manager";
 
   # Make the repo available at ~/.config/home-manager for convenience
   xdg.configFile."home-manager" = {

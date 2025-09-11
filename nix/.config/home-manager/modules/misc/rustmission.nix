@@ -5,13 +5,7 @@ let
 in {
   # Remove stale ~/.config/rustmission symlink before linking
   home.activation.fixRustmissionConfigDir =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      RDIR="${config.xdg.configHome}/rustmission"
-      if [ -L "$RDIR" ]; then
-        rm -f "$RDIR"
-      fi
-    '';
+    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/rustmission";
 
   # Live-editable out-of-store symlink to repo copy
   xdg.configFile."rustmission" = {

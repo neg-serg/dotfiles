@@ -5,24 +5,11 @@
 
   # Ensure ~/.config/tig is a real directory (remove stale/broken symlink)
   home.activation.fixTigConfigDir =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      TDIR="${config.xdg.configHome}/tig"
-      if [ -L "$TDIR" ]; then
-        rm -f "$TDIR"
-      fi
-      mkdir -p "$TDIR"
-    '';
+    config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/tig";
 
   # Ensure no leftover file blocks linking our config
   home.activation.fixTigConfigFile =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      CFG="${config.xdg.configHome}/tig/config"
-      if [ -e "$CFG" ] && [ ! -L "$CFG" ]; then
-        rm -f "$CFG"
-      fi
-    '';
+    config.lib.neg.mkRemoveIfNotSymlink "${config.xdg.configHome}/tig/config";
 
   # Write tig config as a Home Manager-managed file under XDG
   home.file."${config.xdg.configHome}/tig/config" = {

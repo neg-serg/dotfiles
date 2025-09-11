@@ -8,13 +8,7 @@ in {
 
   # Remove stale ~/.config/nushell symlink from older generations before linking
   home.activation.fixNuConfigDir =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      NDIR="${config.xdg.configHome}/nushell"
-      if [ -L "$NDIR" ]; then
-        rm -f "$NDIR"
-      fi
-    '';
+    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/nushell";
 
   # Live-editable config: out-of-store symlink to repo copy
   xdg.configFile."nushell" = {

@@ -9,13 +9,7 @@ in
 
     # Remove stale ~/.config/walker symlink from older generations before linking
     home.activation.fixWalkerConfigDir =
-      lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-        set -eu
-        WDIR="${config.xdg.configHome}/walker"
-        if [ -L "$WDIR" ]; then
-          rm -f "$WDIR"
-        fi
-      '';
+      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/walker";
 
     # Live-editable config: out-of-store symlink to repo copy
     xdg.configFile."walker" = {

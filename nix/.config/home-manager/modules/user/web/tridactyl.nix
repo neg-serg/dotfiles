@@ -6,13 +6,7 @@ with lib; let
 in mkIf config.features.web.enable {
   # Remove stale ~/.config/tridactyl symlink from older generations before linking
   home.activation.fixTridactylConfigDir =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      TDIR="${config.xdg.configHome}/tridactyl"
-      if [ -L "$TDIR" ]; then
-        rm -f "$TDIR"
-      fi
-    '';
+    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/tridactyl";
 
   # Live-editable config: out-of-store symlink to repo copy
   xdg.configFile."tridactyl" = {

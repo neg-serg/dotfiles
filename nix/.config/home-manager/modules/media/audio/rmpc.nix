@@ -8,13 +8,7 @@ in {
 
   # Remove stale ~/.config/rmpc symlink from older generations, then link live
   home.activation.fixRmpcConfigDir =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      RDIR="${config.xdg.configHome}/rmpc"
-      if [ -L "$RDIR" ]; then
-        rm -f "$RDIR"
-      fi
-    '';
+    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/rmpc";
 
   xdg.configFile."rmpc" = {
     source = l repoRmpcConf;

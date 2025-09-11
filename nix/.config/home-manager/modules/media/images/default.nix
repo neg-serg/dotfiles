@@ -76,13 +76,7 @@ in {
   # Live-editable Swayimg config: out-of-store symlink to repo copy
   # Remove stale symlink to old HM generations before linking
   home.activation.fixSwayimgConfig =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      SDIR="${config.xdg.configHome}/swayimg"
-      if [ -L "$SDIR" ]; then
-        rm -f "$SDIR"
-      fi
-    '';
+    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/swayimg";
   xdg.configFile."swayimg" = {
     source = l repoSwayimgConf;
     recursive = true;

@@ -5,14 +5,7 @@ let
   repoZshConf = "${config.lib.neg.dotfilesRoot}/shell/.config/zsh";
 in {
   # Remove stale ~/.config/zsh symlink from older generations before linking
-  home.activation.fixZshConfigDir =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      ZDIR="${config.xdg.configHome}/zsh"
-      if [ -L "$ZDIR" ]; then
-        rm -f "$ZDIR"
-      fi
-    '';
+  home.activation.fixZshConfigDir = config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/zsh";
 
   # Live-editable config: out-of-store symlink to repo copy
   xdg.configFile."zsh" = {

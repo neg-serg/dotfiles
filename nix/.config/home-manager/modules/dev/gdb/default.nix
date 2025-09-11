@@ -11,12 +11,5 @@
 
   # Ensure ~/.config/gdb is a real directory (remove stale/broken symlink from older generations)
   home.activation.fixGdbConfigDir =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      GDB_DIR="${config.xdg.configHome}/gdb"
-      if [ -L "$GDB_DIR" ]; then
-        rm -f "$GDB_DIR"
-      fi
-      mkdir -p "$GDB_DIR"
-    '';
+    config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/gdb";
 }

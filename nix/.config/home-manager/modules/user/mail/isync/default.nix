@@ -11,14 +11,7 @@ with lib;
 
     # Fix stale ~/.config/isync symlink and ensure the directory exists
     home.activation.fixIsyncConfigDir =
-      lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-        set -eu
-        IDIR="${config.xdg.configHome}/isync"
-        if [ -L "$IDIR" ]; then
-          rm -f "$IDIR"
-        fi
-        mkdir -p "$IDIR"
-      '';
+      config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/isync";
 
     # Inline mbsyncrc so it is not sourced from dotfiles; force overwrite
     xdg.configFile."isync/mbsyncrc" = {

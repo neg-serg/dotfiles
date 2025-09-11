@@ -6,13 +6,7 @@ let
 in {
   # Remove stale ~/.config/dircolors symlink from older generations before linking
   home.activation.fixDircolorsConfigDir =
-    lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-      set -eu
-      DDIR="${config.xdg.configHome}/dircolors"
-      if [ -L "$DDIR" ]; then
-        rm -f "$DDIR"
-      fi
-    '';
+    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/dircolors";
 
   # Live-editable config: out-of-store symlink to repo copy
   xdg.configFile."dircolors" = {
