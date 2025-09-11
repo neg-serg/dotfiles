@@ -10,7 +10,7 @@ in {
   # Profile presets (full | lite). Full is default; set to "lite" for headless/minimal.
   features.profile = lib.mkDefault "full";
   # Exclude problematic packages from curated lists without editing modules
-  features.excludePkgs = ["dsniff"]; 
+  features.excludePkgs = ["dsniff" "crowbar"]; 
 
   # Unfree policy centralized in modules/misc/unfree.nix (features.allowUnfree.allowed)
 
