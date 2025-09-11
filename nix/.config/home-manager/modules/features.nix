@@ -11,6 +11,12 @@ with lib; let
     else (desc: default: (lib.mkEnableOption desc) // { inherit default; });
 in {
   options.features = {
+    # Global package exclusions for curated lists in modules that adopt this filter.
+    excludePkgs = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "List of package names (pname) to exclude from curated home.packages lists.";
+    };
     profile = mkOption {
       type = types.enum ["full" "lite"];
       default = "full";
