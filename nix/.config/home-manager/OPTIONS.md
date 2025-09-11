@@ -54,6 +54,12 @@ You can always extend with your own names via:
 - `features.allowUnfree.extra = [ "pkgName1" "pkgName2" ];`
 - Or override entirely via `features.allowUnfree.allowed`.
 
+## Package Exclusions
+
+- `features.excludePkgs = [ "pkgName" ... ]`
+  - Globally exclude packages (by `pname`) from curated module lists that adopt this filter (e.g., pentest/sniffing).
+  - Useful to avoid building/adding problematic packages without modifying module files.
+
 ## Extra Arguments (flake extraSpecialArgs)
 
 These are passed from `flake.nix` into modules for convenience (camelCase):
