@@ -1,11 +1,16 @@
 #!/usr/bin/env zsh
 # sx: view images in swayimg sorted by ctime (newest first)
-# Usage: sx DIR...
+# Usage: sx [DIR...]
 
 IFS=$'\n\t'
-if [[ "${1:-}" == "-h" || "${1:-}" == "--help" || "$#" -eq 0 ]]; then
-  echo "Usage: sx DIR..." >&2
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  echo "Usage: sx [DIR...]" >&2
   exit 0
+fi
+
+# If no arguments provided, default to current directory
+if [[ "$#" -eq 0 ]]; then
+  set -- "."
 fi
 
 swimg_bin="${HOME}/.local/bin/swayimg"
