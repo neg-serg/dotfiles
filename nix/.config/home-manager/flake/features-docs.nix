@@ -37,6 +37,7 @@ in rec {
     eval = lib.evalModules {
       modules = [
         ({lib, ...}: {
+          config._module.check = false; # silence deprecation: pass via module instead of evalModules.check
           config.lib.neg.mkBool = desc: default: (lib.mkEnableOption desc) // {inherit default;};
         })
         featuresModule
@@ -48,7 +49,6 @@ in rec {
           };
         })
       ];
-      check = false;
     };
     opts = eval.options;
     items = toList opts "";
