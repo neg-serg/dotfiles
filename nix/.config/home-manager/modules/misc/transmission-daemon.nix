@@ -3,9 +3,16 @@
   config,
   ...
 }: {
-  # Ensure ~/.config/transmission-daemon is a real directory (not a stale HM symlink)
+  # Keep existing config directory as-is; only remove if symlink is broken.
+  # This avoids nuking a valid symlinked external config (preserves history/resume).
   home.activation.fixTransmissionDaemonDir =
-    config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/transmission-daemon";
+    lib.hm.dag.entryBefore ["linkGeneration"] ''
+      set -eu
+      p="${config.xdg.configHome}/transmission-daemon"
+      if [ -L "$p" ] && [ ! -e "$p" ]; then
+        rm -f "$p"
+      fi
+    '';
 
   # Link selected config files from repo; runtime subdirs (resume,torrents) remain local
   xdg.configFile."transmission-daemon/settings.json" =
