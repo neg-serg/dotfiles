@@ -6,7 +6,7 @@
 }:
 with lib; {
   imports = [./neovim];
-  config = mkIf config.features.dev.enable {
+  config = mkIf config.features.dev.enable ({
     home.packages = config.lib.neg.filterByExclude (
       with pkgs; (
         [
@@ -18,6 +18,8 @@ with lib; {
         ])
       )
     );
+  }
+  // (mkIf (config.features.dev.ai.enable or false) {
     programs.claude-code.enable = true;
-  };
+  });
 }
