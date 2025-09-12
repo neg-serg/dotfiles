@@ -8,8 +8,10 @@
   XDG_CFG = config.home.sessionVariables.XDG_CONFIG_HOME or "${config.home.homeDirectory}/.config";
   XDG_DATA = config.home.sessionVariables.XDG_DATA_HOME or "${config.home.homeDirectory}/.local/share";
   XDG_CACHE = config.home.sessionVariables.XDG_CACHE_HOME or "${config.home.homeDirectory}/.cache";
+  xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
 in
-  lib.mkIf enableIac {
+  lib.mkIf enableIac (lib.mkMerge [
+    {
     # Ensure ~/.config/ansible is a real directory
     home.activation.fixAnsibleConfigDir =
       config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/ansible";
@@ -20,18 +22,21 @@ in
     home.activation.fixAnsibleHostsSymlink =
       config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/ansible/hosts";
 
-    # Ensure XDG data/cache subdirectories are real directories before writing .keep files
-    home.activation.fixAnsibleDataRolesDir =
-      config.lib.neg.mkEnsureRealDir "${config.xdg.dataHome or "$HOME/.local/share"}/ansible/roles";
-    home.activation.fixAnsibleDataCollectionsDir =
-      config.lib.neg.mkEnsureRealDir "${config.xdg.dataHome or "$HOME/.local/share"}/ansible/collections";
-    home.activation.fixAnsibleCacheFactsDir =
-      config.lib.neg.mkEnsureRealDir "${config.xdg.cacheHome or "$HOME/.cache"}/ansible/facts";
-    home.activation.fixAnsibleCacheSshDir =
-      config.lib.neg.mkEnsureRealDir "${config.xdg.cacheHome or "$HOME/.cache"}/ansible/ssh";
+    # Ensure galaxy target dirs exist under XDG data
+    # using pure helpers that guard parent dirs and target files
+    # (roles, collections)
+    
+    # Ensure cache dirs exist for fact cache and SSH control sockets
+    # (facts, ssh)
 
-    # XDG-friendly ansible configuration + galaxy install paths
-    xdg.configFile."ansible/ansible.cfg".text = ''
+    # Environment hints for tools that prefer env vars over ansible.cfg
+    home.sessionVariables = {
+      ANSIBLE_CONFIG = "${XDG_CFG}/ansible/ansible.cfg";
+      ANSIBLE_ROLES_PATH = "${XDG_DATA}/ansible/roles";
+      ANSIBLE_GALAXY_COLLECTIONS_PATHS = "${XDG_DATA}/ansible/collections";
+    };
+  }
+  (xdg.mkXdgText "ansible/ansible.cfg" ''
       [defaults]
       roles_path = ${XDG_DATA}/ansible/roles
       collections_paths = ${XDG_DATA}/ansible/collections
@@ -58,22 +63,11 @@ in
       pipelining = True
       control_path_dir = ${XDG_CACHE}/ansible/ssh
       ssh_args = -o ControlMaster=auto -o ControlPersist=60s
-    '';
-
-    # Minimal inventory placeholder (safe to edit/remove)
-    xdg.configFile."ansible/hosts".text = ''# Add your inventory groups/hosts here\n'';
-
-    # Ensure galaxy target dirs exist under XDG data
-    xdg.dataFile."ansible/roles/.keep".text = "";
-    xdg.dataFile."ansible/collections/.keep".text = "";
-    # Ensure cache dirs exist for fact cache and SSH control sockets
-    xdg.cacheFile."ansible/facts/.keep".text = "";
-    xdg.cacheFile."ansible/ssh/.keep".text = "";
-
-    # Environment hints for tools that prefer env vars over ansible.cfg
-    home.sessionVariables = {
-      ANSIBLE_CONFIG = "${XDG_CFG}/ansible/ansible.cfg";
-      ANSIBLE_ROLES_PATH = "${XDG_DATA}/ansible/roles";
-      ANSIBLE_GALAXY_COLLECTIONS_PATHS = "${XDG_DATA}/ansible/collections";
-    };
-  }
+    '')
+  (xdg.mkXdgText "ansible/hosts" ''# Add your inventory groups/hosts here\n'')
+  # Data/cache .keep files via helpers (ensure real dirs + safe writes)
+  (xdg.mkXdgDataText "ansible/roles/.keep" "")
+  (xdg.mkXdgDataText "ansible/collections/.keep" "")
+  (xdg.mkXdgCacheText "ansible/facts/.keep" "")
+  (xdg.mkXdgCacheText "ansible/ssh/.keep" "")
+])
