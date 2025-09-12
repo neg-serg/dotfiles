@@ -20,6 +20,16 @@ in
     home.activation.fixAnsibleHostsSymlink =
       config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/ansible/hosts";
 
+    # Ensure XDG data/cache subdirectories are real directories before writing .keep files
+    home.activation.fixAnsibleDataRolesDir =
+      config.lib.neg.mkEnsureRealDir "${config.xdg.dataHome or "$HOME/.local/share"}/ansible/roles";
+    home.activation.fixAnsibleDataCollectionsDir =
+      config.lib.neg.mkEnsureRealDir "${config.xdg.dataHome or "$HOME/.local/share"}/ansible/collections";
+    home.activation.fixAnsibleCacheFactsDir =
+      config.lib.neg.mkEnsureRealDir "${config.xdg.cacheHome or "$HOME/.cache"}/ansible/facts";
+    home.activation.fixAnsibleCacheSshDir =
+      config.lib.neg.mkEnsureRealDir "${config.xdg.cacheHome or "$HOME/.cache"}/ansible/ssh";
+
     # XDG-friendly ansible configuration + galaxy install paths
     xdg.configFile."ansible/ansible.cfg".text = ''
       [defaults]
