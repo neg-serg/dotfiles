@@ -4,26 +4,47 @@
   config,
   ...
 }:
-with lib;
-  mkIf config.features.mail.enable {
-    home.packages = config.lib.neg.filterByExclude (with pkgs; [
-      vdirsyncer # add vdirsyncer binary for sync and initialization
-    ]);
+let
+  # Robust relative import: resolves in normal and docs eval (same modules/ tree)
+  xdg = import ../../../lib/xdg-helpers.nix { inherit lib; };
+in with lib;
+  mkIf config.features.mail.enable (lib.mkMerge [
+    {
+      home.packages = config.lib.neg.filterByExclude (with pkgs; [
+        vdirsyncer # add vdirsyncer binary for sync and initialization
+      ]);
 
-    # Ensure config dir exists and guard against stray symlink at the config file path
-    home.activation.vdirsyncerConfigDir =
-      config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/vdirsyncer";
-    home.activation.vdirsyncerConfigFileSymlink =
-      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/vdirsyncer/config";
+      # Ensure config dir exists and guard against stray symlink at the config file path
+      home.activation.vdirsyncerConfigDir =
+        config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/vdirsyncer";
+      home.activation.vdirsyncerConfigFileSymlink =
+        config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/vdirsyncer/config";
 
-    # Ensure local storage directories exist
-    home.activation.vdirsyncerDirs = config.lib.neg.mkEnsureDirsAfterWrite [
-      "$HOME/.config/vdirsyncer/calendars"
-      "$HOME/.config/vdirsyncer/contacts"
-    ];
+      # Ensure local storage directories exist
+      home.activation.vdirsyncerDirs = config.lib.neg.mkEnsureDirsAfterWrite [
+        "$HOME/.config/vdirsyncer/calendars"
+        "$HOME/.config/vdirsyncer/contacts"
+      ];
 
-    # Provide a starter config. Fill in URL/username/password below.
-    xdg.configFile."vdirsyncer/config".text = ''
+      systemd.user.services.vdirsyncer = lib.recursiveUpdate {
+        Unit.Description = "Vdirsyncer synchronization service";
+        Service = {
+          Type = "oneshot";
+          ExecStartPre = "${pkgs.vdirsyncer}/bin/vdirsyncer metasync";
+          ExecStart = "${pkgs.vdirsyncer}/bin/vdirsyncer sync";
+        };
+      } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["netOnline"];});
+
+      systemd.user.timers.vdirsyncer = lib.recursiveUpdate {
+        Unit.Description = "Vdirsyncer synchronization timer";
+        Timer = {
+          OnBootSec = "2m";
+          OnUnitActiveSec = "5m";
+          Unit = "vdirsyncer.service";
+        };
+      } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["timers"];});
+    }
+    (xdg.mkXdgText "vdirsyncer/config" ''
       [general]
       status_path = "${config.xdg.stateHome or "$HOME/.local/state"}/vdirsyncer"
 
@@ -69,22 +90,5 @@ with lib;
       username = "REPLACE-ME-USER"
       password = "REPLACE-ME-PASSWORD"
       verify = true
-    '';
-    systemd.user.services.vdirsyncer = lib.recursiveUpdate {
-      Unit.Description = "Vdirsyncer synchronization service";
-      Service = {
-        Type = "oneshot";
-        ExecStartPre = "${pkgs.vdirsyncer}/bin/vdirsyncer metasync";
-        ExecStart = "${pkgs.vdirsyncer}/bin/vdirsyncer sync";
-      };
-    } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["netOnline"];});
-
-    systemd.user.timers.vdirsyncer = lib.recursiveUpdate {
-      Unit.Description = "Vdirsyncer synchronization timer";
-      Timer = {
-        OnBootSec = "2m";
-        OnUnitActiveSec = "5m";
-        Unit = "vdirsyncer.service";
-      };
-    } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["timers"];});
-  }
+    '')
+  ])
