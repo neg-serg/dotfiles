@@ -3,23 +3,13 @@
   config,
   pkgs,
   ...
-}: {
+}: let
+  xdg = import ../lib/xdg-helpers.nix { inherit lib; };
+in {
   # Install tig and provide its configuration via XDG
   home.packages = config.lib.neg.filterByExclude [pkgs.tig];
-
-  # Ensure ~/.config/tig is a real directory (remove stale/broken symlink)
-  home.activation.fixTigConfigDir =
-    config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/tig";
-
-  # Ensure no leftover file blocks linking our config
-  home.activation.fixTigConfigFileSymlink =
-    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/tig/config";
-  home.activation.fixTigConfigFile =
-    config.lib.neg.mkEnsureAbsent "${config.xdg.configHome}/tig/config";
-
-  # Write tig config as a Home Manager-managed file under XDG
-  home.file."${config.xdg.configHome}/tig/config" = {
-    text = ''
+}
+// (xdg.mkXdgText "tig/config" ''
       #--[ View settings ]-----------------------------------------------------------------------------------------------
       set main-view = line-number:no,interval=5 id:no date:relative author:full commit-title:yes,graph,refs,overflow=no
       set blame-view = date:relative author:full file-name:auto id:yes,color line-number:no,interval=5 text
@@ -220,6 +210,4 @@
           status.updated=stat-staged \
           status.changed=stat-unstaged \
           status.untracked=stat-untracked
-    '';
-  };
-}
+'' )
