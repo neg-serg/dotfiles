@@ -2,11 +2,9 @@
   lib,
   config,
   ...
-}: {
-  # Remove stale ~/.config/f-sy-h symlink from older generations before linking
-  home.activation.fixFSyHConfigDir =
-    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/f-sy-h";
-
-  # Live-editable config: out-of-store symlink to repo copy
-  xdg.configFile."f-sy-h" = config.lib.neg.mkDotfilesSymlink "shell/.config/f-sy-h" true;
-}
+}: let
+  xdg = import ../lib/xdg-helpers.nix { inherit lib; };
+in lib.mkMerge [
+  # Live-editable config via pure helper (guards parent dir and target)
+  (xdg.mkXdgSource "f-sy-h" (config.lib.neg.mkDotfilesSymlink "shell/.config/f-sy-h" true))
+]

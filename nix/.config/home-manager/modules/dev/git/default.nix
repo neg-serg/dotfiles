@@ -5,12 +5,10 @@
   ...
 }:
 with lib;
-  mkIf config.features.dev.enable {
-    # Ensure ~/.config/git is a real directory before linking files into it
-    home.activation.fixGitConfigDir =
-      config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/git";
-    # Link user excludes file from repo into ~/.config/git/ignore
-    xdg.configFile."git/ignore" = config.lib.neg.mkDotfilesSymlink "git/.config/git/ignore" false;
+  mkIf config.features.dev.enable (let xdg = import ../../lib/xdg-helpers.nix { inherit lib; }; in lib.mkMerge [
+    # Link user excludes file from repo into ~/.config/git/ignore with guards
+    (xdg.mkXdgSource "git/ignore" (config.lib.neg.mkDotfilesSymlink "git/.config/git/ignore" false))
+    {
     home.packages = config.lib.neg.filterByExclude (with pkgs; [
       act # run GitHub Actions locally
       difftastic # syntax-aware diff viewer
@@ -209,4 +207,5 @@ with lib;
         };
       };
     };
-  }
+    }
+  ])
