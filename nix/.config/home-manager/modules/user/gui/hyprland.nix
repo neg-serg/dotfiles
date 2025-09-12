@@ -41,13 +41,82 @@ in
     }
     # Ensure Hyprland reload happens after all files are linked/written, to avoid
     # a brief window where configs are absent (which could trigger prompts/crashes).
+    # Add guards + diagnostics to avoid reloading into an "empty" config if includes
+    # are not yet in place and to help identify the root cause.
     {
       home.activation.hyprlandSafeReload = lib.hm.dag.entryAfter ["linkGeneration"] ''
         set -eu
+        cfg_dir="${config.xdg.configHome or "${config.home.homeDirectory}/.config"}/hypr"
+        main_cfg="$cfg_dir/hyprland.conf"
+
+        log() { printf "%s\n" "$*"; }
+
+        # Collect basic diagnostics for troubleshooting
+        if [ -e "$main_cfg" ]; then
+          log "[hyprlandSafeReload] main config present: $main_cfg"
+        else
+          log "[hyprlandSafeReload] main config MISSING: $main_cfg"
+        fi
+
+        # Verify that sources referenced from the main config resolve and are non-empty
+        # (best-effort: only checks obvious source lines)
+        src_missing=0
+        if [ -e "$main_cfg" ]; then
+          while IFS= read -r line; do
+            case "$line" in
+              source*=*)
+                src="${line#*=}"
+                # Trim possible surrounding spaces
+                src="${src# }"; src="${src% }"
+                # Expand ~ for our test
+                eval src_expanded="$src"
+                if [ ! -s "$src_expanded" ]; then
+                  log "[hyprlandSafeReload] include missing/empty: $src_expanded (from: $line)"
+                  src_missing=1
+                fi
+                ;;
+            esac
+          done < "$main_cfg"
+        fi
+
+        # If Hyprland isn't reachable, skip silently
         if command -v hyprctl >/dev/null 2>&1; then
-          # Probe that we can talk to a running Hyprland instance before reloading
           if hyprctl -j monitors >/dev/null 2>&1; then
-            hyprctl reload >/dev/null 2>&1 || true
+            # Optional: validate the config syntax via Hyprland itself if available
+            if command -v hyprland >/dev/null 2>&1; then
+              if ! hyprland --verify-config --config "$main_cfg" >/dev/null 2>&1; then
+                log "[hyprlandSafeReload] hyprland --verify-config failed, skipping reload"
+                exit 0
+              fi
+            fi
+
+            # If includes look missing, wait briefly to avoid a race, then re-check once
+            if [ "$src_missing" -ne 0 ]; then
+              sleep 0.75
+              src_missing=0
+              if [ -e "$main_cfg" ]; then
+                while IFS= read -r line; do
+                  case "$line" in
+                    source*=*)
+                      src="${line#*=}"
+                      src="${src# }"; src="${src% }"
+                      eval src_expanded="$src"
+                      if [ ! -s "$src_expanded" ]; then
+                        src_missing=1
+                      fi
+                      ;;
+                  esac
+                done < "$main_cfg"
+              fi
+            fi
+
+            if [ "$src_missing" -eq 0 ]; then
+              # Perform reload; keep stderr for troubleshooting but not too noisy
+              hyprctl reload 2>&1 || true
+              log "[hyprlandSafeReload] hyprctl reload requested"
+            else
+              log "[hyprlandSafeReload] skipped reload: includes missing"
+            fi
           fi
         fi
       '';
