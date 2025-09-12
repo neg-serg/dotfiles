@@ -14,6 +14,12 @@ in
     home.activation.fixAnsibleConfigDir =
       config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/ansible";
 
+    # Guard: avoid writing through unexpected symlinks for ansible config files
+    home.activation.fixAnsibleCfgSymlink =
+      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/ansible/ansible.cfg";
+    home.activation.fixAnsibleHostsSymlink =
+      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/ansible/hosts";
+
     # XDG-friendly ansible configuration + galaxy install paths
     xdg.configFile."ansible/ansible.cfg".text = ''
       [defaults]

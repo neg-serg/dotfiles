@@ -14,6 +14,9 @@ with lib;
     # Ensure Nyxt config dir exists and file is not blocking linking
     home.activation.fixNyxtConfigDir =
       config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/nyxt";
+    # Remove a stray symlink at init.lisp to avoid writing through it
+    home.activation.fixNyxtInitSymlink =
+      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/nyxt/init.lisp";
     home.activation.fixNyxtConfigFile =
       config.lib.neg.mkEnsureAbsent "${config.xdg.configHome}/nyxt/init.lisp";
 

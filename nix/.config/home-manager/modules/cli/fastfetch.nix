@@ -11,6 +11,11 @@
   # Ensure ~/.config/fastfetch exists as a real dir before writing nested files
   home.activation.fixFastfetchConfigDir =
     config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/fastfetch";
+  # Guard: avoid writing through unexpected symlinks at file paths
+  home.activation.fixFastfetchSkullSymlink =
+    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/fastfetch/skull";
+  home.activation.fixFastfetchConfigSymlink =
+    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/fastfetch/config.jsonc";
   xdg.configFile."fastfetch/skull".text = ''
                           :::!~!!!!!:.
                       .xUHWH!! !!?M88WHX:.
