@@ -12,6 +12,8 @@
     config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/tig";
 
   # Ensure no leftover file blocks linking our config
+  home.activation.fixTigConfigFileSymlink =
+    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/tig/config";
   home.activation.fixTigConfigFile =
     config.lib.neg.mkEnsureAbsent "${config.xdg.configHome}/tig/config";
 
