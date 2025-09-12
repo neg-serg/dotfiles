@@ -2,7 +2,6 @@
   pkgs,
   self,
   system,
-  treefmtToml,
 }: let
   # Formatters-only check (auto-fixes applied in a throwaway copy, then fail on diff)
   fmtCheck =

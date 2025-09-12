@@ -296,7 +296,6 @@
         checks =
           (import ./flake/checks.nix {
             inherit pkgs self system;
-            treefmtToml = ./treefmt.toml;
           })
           // {
             caches-consistency = pkgs.runCommand "caches-consistency" {} ''
