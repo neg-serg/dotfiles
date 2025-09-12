@@ -8,6 +8,9 @@
     fastfetch # modern, fast system fetch
     onefetch # repository summary in terminal
   ]);
+  # Ensure ~/.config/fastfetch exists as a real dir before writing nested files
+  home.activation.fixFastfetchConfigDir =
+    config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/fastfetch";
   xdg.configFile."fastfetch/skull".text = ''
                           :::!~!!!!!:.
                       .xUHWH!! !!?M88WHX:.
