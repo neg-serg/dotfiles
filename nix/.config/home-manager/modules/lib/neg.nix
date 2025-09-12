@@ -175,6 +175,15 @@
         fi
       '';
 
+    # Remove the path only if it is a broken symlink (preserve valid symlinks)
+    mkRemoveIfBrokenSymlink = path:
+      lib.hm.dag.entryBefore ["linkGeneration"] ''
+        set -eu
+        if [ -L "${path}" ] && [ ! -e "${path}" ]; then
+          rm -f "${path}"
+        fi
+      '';
+
     mkEnsureRealDir = path:
       lib.hm.dag.entryBefore ["linkGeneration"] ''
         set -eu
