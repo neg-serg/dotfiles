@@ -14,12 +14,6 @@ in with lib;
         vdirsyncer # add vdirsyncer binary for sync and initialization
       ]);
 
-      # Ensure config dir exists and guard against stray symlink at the config file path
-      home.activation.vdirsyncerConfigDir =
-        config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/vdirsyncer";
-      home.activation.vdirsyncerConfigFileSymlink =
-        config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/vdirsyncer/config";
-
       # Ensure local storage directories exist
       home.activation.vdirsyncerDirs = config.lib.neg.mkEnsureDirsAfterWrite [
         "$HOME/.config/vdirsyncer/calendars"

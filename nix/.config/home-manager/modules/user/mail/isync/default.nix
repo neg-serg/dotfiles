@@ -9,13 +9,9 @@ with lib;
     # Install isync/mbsync and keep using the XDG config at ~/.config/isync/mbsyncrc
     programs.mbsync.enable = true;
 
-    # Fix stale ~/.config/isync symlink and ensure the directory exists
-    home.activation.fixIsyncConfigDir =
-      config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/isync";
-
-    # Inline mbsyncrc so it is not sourced from dotfiles; force overwrite
+    # Inline mbsyncrc under XDG with automatic guards via helper
+    # (ensures parent dir is real and removes stale file/symlink)
     xdg.configFile."isync/mbsyncrc" = {
-      force = true;
       text = ''
         #-- gmail
         IMAPAccount gmail
