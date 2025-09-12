@@ -11,17 +11,9 @@ with lib;
   in {
     home.packages = config.lib.neg.filterByExclude [nyxtPkg];
 
-    # Ensure Nyxt config dir exists and file is not blocking linking
-    home.activation.fixNyxtConfigDir =
-      config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/nyxt";
-    # Remove a stray symlink at init.lisp to avoid writing through it
-    home.activation.fixNyxtInitSymlink =
-      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/nyxt/init.lisp";
-    home.activation.fixNyxtConfigFile =
-      config.lib.neg.mkEnsureAbsent "${config.xdg.configHome}/nyxt/init.lisp";
-
-    # Nyxt 4 config with vim-friendly behavior
-    xdg.configFile."nyxt/init.lisp".text = ''
+    # Nyxt 4 config with vim-friendly behavior (pure XDG helper handles guards)
+  }
+  // (let xdg = import ../../lib/xdg-helpers.nix { inherit lib; }; in xdg.mkXdgText "nyxt/init.lisp" ''
       ;; Nyxt init (HM-managed). Safe defaults + Vim-friendly tweaks.
       (in-package :nyxt-user)
 
@@ -60,5 +52,5 @@ with lib;
           (declare (ignore c))
           ;; Ignore keybinding errors to keep startup resilient.
           nil))
-    '';
-  })
+    '')
+  )

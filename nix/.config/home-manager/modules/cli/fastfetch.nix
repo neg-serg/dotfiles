@@ -3,20 +3,16 @@
   lib,
   config,
   ...
-}: {
-  home.packages = config.lib.neg.filterByExclude (with pkgs; [
-    fastfetch # modern, fast system fetch
-    onefetch # repository summary in terminal
-  ]);
-  # Ensure ~/.config/fastfetch exists as a real dir before writing nested files
-  home.activation.fixFastfetchConfigDir =
-    config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/fastfetch";
-  # Guard: avoid writing through unexpected symlinks at file paths
-  home.activation.fixFastfetchSkullSymlink =
-    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/fastfetch/skull";
-  home.activation.fixFastfetchConfigSymlink =
-    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/fastfetch/config.jsonc";
-  xdg.configFile."fastfetch/skull".text = ''
+}: let
+  xdg = import ../lib/xdg-helpers.nix { inherit lib; };
+in lib.mkMerge [
+  {
+    home.packages = config.lib.neg.filterByExclude (with pkgs; [
+      fastfetch # modern, fast system fetch
+      onefetch # repository summary in terminal
+    ]);
+  }
+  (xdg.mkXdgText "fastfetch/skull" ''
                           :::!~!!!!!:.
                       .xUHWH!! !!?M88WHX:.
                     .X*#M@$!!  !X!M$$$$$$WWx:.
@@ -37,8 +33,8 @@
     Wi.~!X$?!-~    : ?$$$B$Wu("**$RM!
     $R@i.~~ !     :   ~$$$$$B$$en:``
     ?MXT@Wx.~    :     ~"##*$$$$M~
-  '';
-  xdg.configFile."fastfetch/config.jsonc".text = builtins.toJSON {
+  '')
+  (xdg.mkXdgText "fastfetch/config.jsonc" (builtins.toJSON {
     "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json";
     logo = {
       source = "~/.config/fastfetch/skull";
@@ -163,5 +159,5 @@
         key = "";
       }
     ];
-  };
-}
+  }))
+]
