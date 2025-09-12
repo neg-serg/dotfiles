@@ -4,6 +4,7 @@
   pkgs,
   ...
 }: let
+  xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
   repoSwayimgConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/media/images/swayimg/conf";
   # Wrapper: start swayimg, export SWAYIMG_IPC, jump to first image via IPC.
   swayimg-first = pkgs.writeShellScriptBin "swayimg-first" ''
@@ -86,10 +87,24 @@ in {
   home.activation.fixSwayimgBinFile =
     config.lib.neg.mkEnsureAbsent "${config.home.homeDirectory}/.local/bin/swayimg";
 
-  # Live-editable Swayimg config: out-of-store symlink to repo copy
-  # Remove stale symlink to old HM generations before linking
-  home.activation.fixSwayimgConfig =
-    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/swayimg";
-  xdg.configFile."swayimg" =
-    config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/media/images/swayimg/conf" true;
-}
+  # Live-editable Swayimg config via helper (guards parent dir and target)
+  # Keep bin guards above since that’s outside XDG
+  # xdg.configFile for directory link
+  # Importantly, use repo-relative path so it stays editable
+  # and guard parent dir (swayimg)
+  #
+  # NOTE: use mkDotfilesSymlink with recursive to preserve directory
+  # structure from repo under ~/.config/swayimg
+  #
+  # Equivalent to the prior xdg.configFile but with safe guards
+  # implemented in the helper.
+  #
+  # We still keep the .local/bin adjustments as separate activation steps above.
+  #
+  # Apply helper:
+  #   (xdg.mkXdgSource "swayimg" (config.lib.neg.mkDotfilesSymlink ... true))
+  
+  # Merge helper output
+  # (we’re inside a single attrset here; append using recursiveUpdate style via //)
+  # But simpler: directly include attribute produced by helper using lib.mkMerge outside.
+} // (xdg.mkXdgSource "swayimg" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/media/images/swayimg/conf" true))
