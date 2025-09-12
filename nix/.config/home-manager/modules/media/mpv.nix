@@ -4,8 +4,9 @@
   pkgs,
   ...
 }: {
-  # Remove stale ~/.config/mpv symlink that may point into this repo from older setups
+  # Ensure ~/.config/mpv is a real directory
   home.activation.fixMpvConfigDir = config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/mpv";
+  home.activation.ensureMpvConfigDir = config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/mpv";
 
   programs.mpv = {
     enable = true;
