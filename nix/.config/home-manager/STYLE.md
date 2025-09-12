@@ -32,3 +32,12 @@
     - Pattern: `home.packages = config.lib.neg.mkEnabledList config.features.<area> groups;`
     - For nested scopes (e.g., Python withPackages) build `groups` first, then flatten.
   - For systemd user units, prefer `config.lib.neg.systemdUser.mkUnitFromPresets` to set `After`/`Wants`/`WantedBy`/`PartOf` via presets instead of hardcoding targets in each module. Extend with `after`/`wants`/`partOf`/`wantedBy` args only for truly extra dependencies.
+
+- Systemd (user) sockets/paths
+  - Apply the same presets helper to `systemd.user.sockets.*` and `systemd.user.paths.*`.
+  - Sockets: tie activation to `sockets.target`; add `wantedBy = ["sockets.target"]` explicitly.
+    - Example:
+      `systemd.user.sockets.my-sock = lib.recursiveUpdate { Unit.Description = "My socket"; Socket.ListenStream = "%t/my.sock"; } (config.lib.neg.systemdUser.mkUnitFromPresets { presets = ["socketsTarget"]; wantedBy = ["sockets.target"]; });`
+  - Paths: usually want `default.target` so the path unit is active in the session.
+    - Example:
+      `systemd.user.paths.my-path = lib.recursiveUpdate { Unit.Description = "Watch foo"; Path.PathChanged = "%h/.config/foo/config"; } (config.lib.neg.systemdUser.mkUnitFromPresets { presets = ["defaultWanted"]; });`
