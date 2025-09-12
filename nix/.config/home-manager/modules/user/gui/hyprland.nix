@@ -29,6 +29,9 @@ in
       systemd.variables = ["--all"];
     };
     # Live-editable Hyprland configuration (out-of-store symlinks to repo files)
+    # Remove stale ~/.config/hypr symlink from older generations before linking
+    home.activation.fixHyprConfigDir =
+      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/hypr";
     xdg.configFile = {
       "hypr/init.conf" = config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/init.conf" false;
       "hypr/rules.conf" = config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/rules.conf" false;
