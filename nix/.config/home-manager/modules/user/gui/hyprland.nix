@@ -8,9 +8,6 @@
 with lib; let
   hy3Plugin = hy3.packages.${pkgs.system}.hy3;
   xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
-  # Fallback: if repo init.conf is absent for any reason, generate a minimal one
-  repoInit = ./conf/init.conf;
-  hasRepoInit = builtins.pathExists repoInit;
 in
   mkIf config.features.gui.enable (lib.mkMerge [
     {
@@ -49,14 +46,7 @@ in
       programs.hyprlock.enable = true;
     }
     # Live-editable Hyprland configuration (safe guards via helper)
-    (lib.mkIf hasRepoInit (xdg.mkXdgSource "hypr/init.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/init.conf" false)))
-    (lib.mkIf (!hasRepoInit) (xdg.mkXdgText "hypr/init.conf" ''
-      # Minimal Hyprland init (auto-generated fallback)
-      source = ~/.config/hypr/autostart.conf
-      source = ~/.config/hypr/rules.conf
-      source = ~/.config/hypr/bindings.conf
-      source = ~/.config/hypr/workspaces.conf
-    ''))
+    (xdg.mkXdgSource "hypr/init.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/init.conf" false))
     (xdg.mkXdgSource "hypr/rules.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/rules.conf" false))
     (xdg.mkXdgSource "hypr/bindings.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings.conf" false))
     (xdg.mkXdgSource "hypr/autostart.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/autostart.conf" false))
