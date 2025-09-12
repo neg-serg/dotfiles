@@ -21,7 +21,9 @@ in {
       if [ -z "$config_home" ]; then config_home="$HOME/.config"; fi
       cfg="$config_home/${relPath}"
       if [ -L "$cfg" ]; then rm -f "$cfg"; fi
-      if [ -e "$cfg" ] && [ ! -L "$cfg" ]; then rm -f "$cfg"; fi
+      if [ -e "$cfg" ] && [ ! -L "$cfg" ]; then
+        if [ -d "$cfg" ]; then rm -rf "$cfg"; else rm -f "$cfg"; fi
+      fi
     '';
     xdg.configFile."${relPath}".text = text;
   };
@@ -45,7 +47,9 @@ in {
       if [ -z "$config_home" ]; then config_home="$HOME/.config"; fi
       cfg="$config_home/${relPath}"
       if [ -L "$cfg" ]; then rm -f "$cfg"; fi
-      if [ -e "$cfg" ] && [ ! -L "$cfg" ]; then rm -f "$cfg"; fi
+      if [ -e "$cfg" ] && [ ! -L "$cfg" ]; then
+        if [ -d "$cfg" ]; then rm -rf "$cfg"; else rm -f "$cfg"; fi
+      fi
     '';
     xdg.configFile."${relPath}" = attrs;
   };
@@ -72,7 +76,9 @@ in {
       if [ -z "$data_home" ]; then data_home="$HOME/.local/share"; fi
       tgt="$data_home/${relPath}"
       if [ -L "$tgt" ]; then rm -f "$tgt"; fi
-      if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then rm -f "$tgt"; fi
+      if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then
+        if [ -d "$tgt" ]; then rm -rf "$tgt"; else rm -f "$tgt"; fi
+      fi
     '';
     xdg.dataFile."${relPath}".text = text;
   };
@@ -99,7 +105,9 @@ in {
       if [ -z "$cache_home" ]; then cache_home="$HOME/.cache"; fi
       tgt="$cache_home/${relPath}"
       if [ -L "$tgt" ]; then rm -f "$tgt"; fi
-      if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then rm -f "$tgt"; fi
+      if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then
+        if [ -d "$tgt" ]; then rm -rf "$tgt"; else rm -f "$tgt"; fi
+      fi
     '';
     xdg.cacheFile."${relPath}".text = text;
   };
@@ -124,7 +132,9 @@ in {
       if [ -z "$data_home" ]; then data_home="$HOME/.local/share"; fi
       tgt="$data_home/${relPath}"
       if [ -L "$tgt" ]; then rm -f "$tgt"; fi
-      if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then rm -f "$tgt"; fi
+      if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then
+        if [ -d "$tgt" ]; then rm -rf "$tgt"; else rm -f "$tgt"; fi
+      fi
     '';
     xdg.dataFile."${relPath}" = attrs;
   };
@@ -149,7 +159,9 @@ in {
       if [ -z "$cache_home" ]; then cache_home="$HOME/.cache"; fi
       tgt="$cache_home/${relPath}"
       if [ -L "$tgt" ]; then rm -f "$tgt"; fi
-      if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then rm -f "$tgt"; fi
+      if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then
+        if [ -d "$tgt" ]; then rm -rf "$tgt"; else rm -f "$tgt"; fi
+      fi
     '';
     xdg.cacheFile."${relPath}" = attrs;
   };
