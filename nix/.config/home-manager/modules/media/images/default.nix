@@ -82,10 +82,14 @@ in lib.mkMerge [
   home.file.".local/bin/swayimg".source = "${swayimg-first}/bin/swayimg-first";
 
   # Guard: ensure we don't write through an unexpected symlink or file at ~/.local/bin/swayimg
-  home.activation.fixSwayimgBinSymlink =
-    config.lib.neg.mkRemoveIfSymlink "${config.home.homeDirectory}/.local/bin/swayimg";
-  home.activation.fixSwayimgBinFile =
-    config.lib.neg.mkEnsureAbsent "${config.home.homeDirectory}/.local/bin/swayimg";
+  # Collapse to a single step that removes any pre-existing file/dir/symlink.
+  home.activation.fixSwayimgBin = lib.hm.dag.entryBefore ["linkGeneration"] ''
+    set -eu
+    tgt="${config.home.homeDirectory}/.local/bin/swayimg"
+    if [ -e "$tgt" ] || [ -L "$tgt" ]; then
+      rm -rf "$tgt"
+    fi
+  '';
 
   # Live-editable Swayimg config via helper (guards parent dir and target)
   }

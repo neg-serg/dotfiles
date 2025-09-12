@@ -4,8 +4,7 @@
   pkgs,
   ...
 }: {
-  # Ensure ~/.config/mpv is a real directory
-  home.activation.fixMpvConfigDir = config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/mpv";
+  # Ensure ~/.config/mpv is a real directory (single aggregated fix)
   home.activation.ensureMpvConfigDir = config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/mpv";
 
   programs.mpv = {

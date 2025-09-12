@@ -67,7 +67,5 @@ in {
     enable = true;
     cacheName = "neg-serg";
     authTokenFile = config.sops.secrets."cachix_env".path;
-    # Enable for troubleshooting when re-enabling the service
-    extraArgs = ["--verbose"];
   };
 }
