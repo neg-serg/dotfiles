@@ -54,8 +54,10 @@
     - Config (text/link): `mkXdgText`, `mkXdgSource`
     - Data (text/link): `mkXdgDataText`, `mkXdgDataSource`
     - Cache (text/link): `mkXdgCacheText`, `mkXdgCacheSource`
-    - They ensure parent directories are real dirs (not symlinks), remove a
-      stray symlink/regular file at target path, then write/link the file.
+    - They ensure parent directories are real dirs (not symlinks), remove any
+      existing target (symlink, regular file, or directory), then write/link
+      the file. This prevents activation failures when a directory exists where
+      a file/link is expected.
   - Examples:
     - Config text: `(xdg.mkXdgText "nyxt/init.lisp" "... Lisp ...")`
     - Config source: `(xdg.mkXdgSource "swayimg" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/media/images/swayimg/conf" true))`

@@ -77,7 +77,8 @@ in let
     name = n;
     value = true;
   }) (builtins.attrNames groups));
-in {
+in lib.mkMerge [
+  {
   home.packages = config.lib.neg.filterByExclude (config.lib.neg.mkEnabledList flags groups);
   home.file.".local/bin/swayimg".source = "${swayimg-first}/bin/swayimg-first";
 
@@ -107,4 +108,6 @@ in {
   # Merge helper output
   # (we’re inside a single attrset here; append using recursiveUpdate style via //)
   # But simpler: directly include attribute produced by helper using lib.mkMerge outside.
-} // (xdg.mkXdgSource "swayimg" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/media/images/swayimg/conf" true))
+  }
+  (xdg.mkXdgSource "swayimg" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/media/images/swayimg/conf" true))
+]
