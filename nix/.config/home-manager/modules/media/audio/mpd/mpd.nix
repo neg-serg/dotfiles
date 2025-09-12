@@ -4,10 +4,6 @@
   pkgs,
   ...
 }:
-with {
-  l = config.lib.file.mkOutOfStoreSymlink;
-  dots = config.lib.neg.dotfilesRoot;
-};
   lib.mkIf config.features.media.audio.mpd.enable {
     home.packages = config.lib.neg.filterByExclude (with pkgs; [
       rmpc # alternative tui client with album cover

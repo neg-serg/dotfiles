@@ -6,9 +6,6 @@
   ...
 }:
 with lib; let
-  l = config.lib.file.mkOutOfStoreSymlink;
-  # Use existing Quickshell config stored in repo under quickshell/.config/quickshell
-  repoQSConf = "${config.lib.neg.dotfilesRoot}/quickshell/.config/quickshell";
   qsPath = pkgs.lib.makeBinPath [
     pkgs.fd # fast file finder used by QS scripts
     pkgs.coreutils # basic CLI utilities
@@ -66,8 +63,6 @@ in
       config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/quickshell";
 
     # Live-editable config: out-of-store symlink to repo copy
-    xdg.configFile."quickshell" = {
-      source = l repoQSConf;
-      recursive = true;
-    };
+    xdg.configFile."quickshell" =
+      config.lib.neg.mkDotfilesSymlink "quickshell/.config/quickshell" true;
   }
