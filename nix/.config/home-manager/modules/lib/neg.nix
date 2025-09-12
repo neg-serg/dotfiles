@@ -262,60 +262,12 @@
         mkdir -p "$parent_dir"
       '';
 
-    # Convenience: declare an XDG config file with automatic guards
-    # - Ensures parent dir exists as a real dir
-    # - Removes a stale/broken symlink or regular file at target path
-    # - Sets xdg.configFile.<path> with provided text
-    # Usage: config.lib.neg.mkXdgText "nyxt/init.lisp" "..."
-    mkXdgText = relPath: text: let
-      keyParent = "fixXdgParent_" + (lib.replaceStrings ["/" "." "-" " "] ["_" "_" "_" "_"] relPath);
-      keyFile = "fixXdgFile_" + (lib.replaceStrings ["/" "." "-" " "] ["_" "_" "_" "_"] relPath);
-    in {
-      home.activation."${keyParent}" = lib.hm.dag.entryBefore ["linkGeneration"] ''
-        set -eu
-        config_home="$XDG_CONFIG_HOME"
-        if [ -z "$config_home" ]; then config_home="$HOME/.config"; fi
-        cfg="$config_home/${relPath}"
-        parent_dir="$(dirname "$cfg")"
-        if [ -L "$parent_dir" ]; then rm -f "$parent_dir"; fi
-        mkdir -p "$parent_dir"
-      '';
-      home.activation."${keyFile}" = lib.hm.dag.entryBefore ["linkGeneration"] ''
-        set -eu
-        config_home="$XDG_CONFIG_HOME"
-        if [ -z "$config_home" ]; then config_home="$HOME/.config"; fi
-        cfg="$config_home/${relPath}"
-        if [ -L "$cfg" ]; then rm -f "$cfg"; fi
-        if [ -e "$cfg" ] && [ ! -L "$cfg" ]; then rm -f "$cfg"; fi
-      '';
-      xdg.configFile."${relPath}".text = text;
-    };
-
-    # Same as mkXdgText but allows passing a full attribute set for xdg.configFile.
-    # Example: mkXdgSource "swayimg" (config.lib.neg.mkDotfilesSymlink "..." true)
-    mkXdgSource = relPath: attrs: let
-      keyParent = "fixXdgParent_" + (lib.replaceStrings ["/" "." "-" " "] ["_" "_" "_" "_"] relPath);
-      keyFile = "fixXdgFile_" + (lib.replaceStrings ["/" "." "-" " "] ["_" "_" "_" "_"] relPath);
-    in {
-      home.activation."${keyParent}" = lib.hm.dag.entryBefore ["linkGeneration"] ''
-        set -eu
-        config_home="$XDG_CONFIG_HOME"
-        if [ -z "$config_home" ]; then config_home="$HOME/.config"; fi
-        cfg="$config_home/${relPath}"
-        parent_dir="$(dirname "$cfg")"
-        if [ -L "$parent_dir" ]; then rm -f "$parent_dir"; fi
-        mkdir -p "$parent_dir"
-      '';
-      home.activation."${keyFile}" = lib.hm.dag.entryBefore ["linkGeneration"] ''
-        set -eu
-        config_home="$XDG_CONFIG_HOME"
-        if [ -z "$config_home" ]; then config_home="$HOME/.config"; fi
-        cfg="$config_home/${relPath}"
-        if [ -L "$cfg" ]; then rm -f "$cfg"; fi
-        if [ -e "$cfg" ] && [ ! -L "$cfg" ]; then rm -f "$cfg"; fi
-      '';
-      xdg.configFile."${relPath}" = attrs;
-    };
+    # XDG file helpers were split into a dedicated pure helper module
+    # to avoid config/lib coupling in regular modules. Prefer importing
+    # modules/lib/xdg-helpers.nix locally where needed:
+    #   let xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
+    #   in xdg.mkXdgText "path/in/config" "...contents..."
+    # See STYLE.md ("XDG file helpers") for examples and guidance.
   };
 
   # Provide a typed option for dotfiles root, and mirror it under lib.neg
