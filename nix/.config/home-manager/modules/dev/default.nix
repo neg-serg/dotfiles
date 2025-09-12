@@ -1,4 +1,4 @@
-{lib, ...}:
+{lib, config, ...}:
 with lib; {
   options.features.dev = {
     iac = {
@@ -9,30 +9,30 @@ with lib; {
       };
     };
     pkgs = {
-      formatters = mkEnableOption "enable CLI/code formatters" // {default = true;};
-      codecount = mkEnableOption "enable code counting tools" // {default = true;};
-      analyzers = mkEnableOption "enable analyzers/linters" // {default = true;};
-      iac = mkEnableOption "enable infrastructure-as-code tooling (Terraform, etc.)" // {default = true;};
-      radicle = mkEnableOption "enable radicle tooling" // {default = true;};
-      runtime = mkEnableOption "enable general dev runtimes (node etc.)" // {default = true;};
-      misc = mkEnableOption "enable misc dev helpers" // {default = true;};
+      formatters = config.lib.neg.mkBool "enable CLI/code formatters" true;
+      codecount = config.lib.neg.mkBool "enable code counting tools" true;
+      analyzers = config.lib.neg.mkBool "enable analyzers/linters" true;
+      iac = config.lib.neg.mkBool "enable infrastructure-as-code tooling (Terraform, etc.)" true;
+      radicle = config.lib.neg.mkBool "enable radicle tooling" true;
+      runtime = config.lib.neg.mkBool "enable general dev runtimes (node etc.)" true;
+      misc = config.lib.neg.mkBool "enable misc dev helpers" true;
     };
     hack = {
       core = {
-        secrets = mkEnableOption "enable git secret scanners" // {default = true;};
-        reverse = mkEnableOption "enable reverse/disasm helpers" // {default = true;};
-        crawl = mkEnableOption "enable web crawling tools" // {default = true;};
+        secrets = config.lib.neg.mkBool "enable git secret scanners" true;
+        reverse = config.lib.neg.mkBool "enable reverse/disasm helpers" true;
+        crawl = config.lib.neg.mkBool "enable web crawling tools" true;
       };
       forensics = {
-        fs = mkEnableOption "enable FS/disk forensics" // {default = true;};
-        stego = mkEnableOption "enable steganography tools" // {default = true;};
-        analysis = mkEnableOption "enable reverse/binary analysis" // {default = true;};
-        network = mkEnableOption "enable network forensics" // {default = true;};
+        fs = config.lib.neg.mkBool "enable FS/disk forensics" true;
+        stego = config.lib.neg.mkBool "enable steganography tools" true;
+        analysis = config.lib.neg.mkBool "enable reverse/binary analysis" true;
+        network = config.lib.neg.mkBool "enable network forensics" true;
       };
     };
     python = {
-      core = mkEnableOption "enable core Python dev packages" // {default = true;};
-      tools = mkEnableOption "enable Python tooling (LSP, utils)" // {default = true;};
+      core = config.lib.neg.mkBool "enable core Python dev packages" true;
+      tools = config.lib.neg.mkBool "enable Python tooling (LSP, utils)" true;
     };
   };
 

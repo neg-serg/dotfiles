@@ -65,12 +65,12 @@ with lib; let
   };
 in {
   options.features.cli = {
-    text = mkEnableOption "enable text/formatting/CSV/TOML tools" // {default = true;};
-    fs = mkEnableOption "enable filesystem/archive/hash/mass-rename tools" // {default = true;};
-    net = mkEnableOption "enable network/cloud/URL tools" // {default = true;};
-    obs = mkEnableOption "enable observability/log tools" // {default = true;};
-    sys = mkEnableOption "enable system fetch utilities" // {default = true;};
-    dev = mkEnableOption "enable dev helpers/diffs/automation" // {default = true;};
+    text = config.lib.neg.mkBool "enable text/formatting/CSV/TOML tools" true;
+    fs = config.lib.neg.mkBool "enable filesystem/archive/hash/mass-rename tools" true;
+    net = config.lib.neg.mkBool "enable network/cloud/URL tools" true;
+    obs = config.lib.neg.mkBool "enable observability/log tools" true;
+    sys = config.lib.neg.mkBool "enable system fetch utilities" true;
+    dev = config.lib.neg.mkBool "enable dev helpers/diffs/automation" true;
   };
   imports = [
     ./direnv.nix # auto-load per-dir env with nix integration
