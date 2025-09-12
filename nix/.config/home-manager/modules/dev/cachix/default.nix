@@ -32,11 +32,7 @@ in {
     };
 
     ownCache = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Add this cache to Nix substituters and trusted keys.";
-      };
+      enable = config.lib.neg.mkBool "Add this cache to Nix substituters and trusted keys" false;
       name = lib.mkOption {
         type = lib.types.str;
         default = "";
@@ -52,11 +48,7 @@ in {
     };
 
     hardening = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Apply systemd hardening options to the service.";
-      };
+      enable = config.lib.neg.mkBool "Apply systemd hardening options to the service" true;
     };
 
     extraArgs = lib.mkOption {
