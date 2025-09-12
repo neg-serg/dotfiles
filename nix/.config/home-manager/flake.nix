@@ -288,7 +288,8 @@
           ];
           text = ''
             set -euo pipefail
-            exec treefmt -c ${./treefmt.toml} "$@"
+            # Use project-local config to keep path inside tree root for treefmt
+            exec treefmt -c treefmt.toml "$@"
           '';
         };
 
