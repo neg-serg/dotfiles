@@ -12,30 +12,13 @@
 in
   lib.mkIf enableIac (lib.mkMerge [
     {
-    # Ensure ~/.config/ansible is a real directory
-    home.activation.fixAnsibleConfigDir =
-      config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/ansible";
-
-    # Guard: avoid writing through unexpected symlinks for ansible config files
-    home.activation.fixAnsibleCfgSymlink =
-      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/ansible/ansible.cfg";
-    home.activation.fixAnsibleHostsSymlink =
-      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/ansible/hosts";
-
-    # Ensure galaxy target dirs exist under XDG data
-    # using pure helpers that guard parent dirs and target files
-    # (roles, collections)
-    
-    # Ensure cache dirs exist for fact cache and SSH control sockets
-    # (facts, ssh)
-
-    # Environment hints for tools that prefer env vars over ansible.cfg
-    home.sessionVariables = {
-      ANSIBLE_CONFIG = "${XDG_CFG}/ansible/ansible.cfg";
-      ANSIBLE_ROLES_PATH = "${XDG_DATA}/ansible/roles";
-      ANSIBLE_GALAXY_COLLECTIONS_PATHS = "${XDG_DATA}/ansible/collections";
-    };
-  }
+      # Environment hints for tools that prefer env vars over ansible.cfg
+      home.sessionVariables = {
+        ANSIBLE_CONFIG = "${XDG_CFG}/ansible/ansible.cfg";
+        ANSIBLE_ROLES_PATH = "${XDG_DATA}/ansible/roles";
+        ANSIBLE_GALAXY_COLLECTIONS_PATHS = "${XDG_DATA}/ansible/collections";
+      };
+    }
   (xdg.mkXdgText "ansible/ansible.cfg" ''
       [defaults]
       roles_path = ${XDG_DATA}/ansible/roles

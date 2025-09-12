@@ -8,23 +8,8 @@ with lib;
   mkIf config.features.dev.enable (let xdg = import ../../lib/xdg-helpers.nix { inherit lib; }; in lib.mkMerge [
     # Link user excludes file from repo into ~/.config/git/ignore with guards
     (xdg.mkXdgSource "git/ignore" (config.lib.neg.mkDotfilesSymlink "git/.config/git/ignore" false))
-    {
-    home.packages = config.lib.neg.filterByExclude (with pkgs; [
-      act # run GitHub Actions locally
-      difftastic # syntax-aware diff viewer
-      gh # GitHub CLI
-      gist # manage GitHub gists
-    ]);
-
-    # Guard: avoid writing through a symlinked hook path; ensure hooks dir exists later
-    home.activation.fixGitPrecommitSymlink =
-      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/git/hooks/pre-commit";
-
-    # Guard: avoid writing through a symlinked commit-msg hook
-    home.activation.fixGitCommitMsgSymlink =
-      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/git/hooks/commit-msg";
-
-    home.file.".config/git/hooks/pre-commit" = {
+    # Git hooks via helper: ensure parent dir is real and mark as executable
+    (xdg.mkXdgSource "git/hooks/pre-commit" {
       text = ''
         #!/usr/bin/env bash
         set -euo pipefail
@@ -38,10 +23,8 @@ with lib;
         git add -u
       '';
       executable = true;
-    };
-
-    # Enforce bracketed commit style: "[scope] subject"; allow Merge/Revert/fixup!/squash!/WIP
-    home.file.".config/git/hooks/commit-msg" = {
+    })
+    (xdg.mkXdgSource "git/hooks/commit-msg" {
       text = ''
         #!/usr/bin/env bash
         set -euo pipefail
@@ -62,7 +45,14 @@ with lib;
         exit 1
       '';
       executable = true;
-    };
+    })
+    {
+    home.packages = config.lib.neg.filterByExclude (with pkgs; [
+      act # run GitHub Actions locally
+      difftastic # syntax-aware diff viewer
+      gh # GitHub CLI
+      gist # manage GitHub gists
+    ]);
 
     programs.git = {
       enable = true;
