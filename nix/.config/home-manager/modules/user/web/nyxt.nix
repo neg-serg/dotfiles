@@ -8,12 +8,13 @@ with lib;
   mkIf (config.features.web.enable && config.features.web.nyxt.enable) (let
     nyxtPkg = pkgs.nyxt;
     dlDir = "${config.home.homeDirectory}/dw";
-  in {
-    home.packages = config.lib.neg.filterByExclude [nyxtPkg];
-
+    xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
+  in lib.mkMerge [
+    {
+      home.packages = config.lib.neg.filterByExclude [nyxtPkg];
+    }
     # Nyxt 4 config with vim-friendly behavior (pure XDG helper handles guards)
-  }
-  // (let xdg = import ../../lib/xdg-helpers.nix { inherit lib; }; in xdg.mkXdgText "nyxt/init.lisp" ''
+    (xdg.mkXdgText "nyxt/init.lisp" ''
       ;; Nyxt init (HM-managed). Safe defaults + Vim-friendly tweaks.
       (in-package :nyxt-user)
 
@@ -53,4 +54,4 @@ with lib;
           ;; Ignore keybinding errors to keep startup resilient.
           nil))
     '')
-  )
+  ])
