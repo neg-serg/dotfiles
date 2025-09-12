@@ -5,11 +5,12 @@
   ...
 }: let
   xdg = import ../lib/xdg-helpers.nix { inherit lib; };
-in {
+in lib.mkMerge [
+  {
   # Install tig and provide its configuration via XDG
   home.packages = config.lib.neg.filterByExclude [pkgs.tig];
-}
-// (xdg.mkXdgText "tig/config" ''
+  }
+  (xdg.mkXdgText "tig/config" ''
       #--[ View settings ]-----------------------------------------------------------------------------------------------
       set main-view = line-number:no,interval=5 id:no date:relative author:full commit-title:yes,graph,refs,overflow=no
       set blame-view = date:relative author:full file-name:auto id:yes,color line-number:no,interval=5 text
@@ -211,3 +212,4 @@ in {
           status.changed=stat-unstaged \
           status.untracked=stat-untracked
 '' )
+]

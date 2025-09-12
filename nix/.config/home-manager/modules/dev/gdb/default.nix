@@ -5,8 +5,10 @@
   ...
 }: let
   xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
-in {
+in lib.mkMerge [
+  {
   # Install gdb and manage its config under XDG
   home.packages = config.lib.neg.filterByExclude [pkgs.gdb];
-}
-// (xdg.mkXdgText "gdb/gdbinit" (builtins.readFile ./gdbinit))
+  }
+  (xdg.mkXdgText "gdb/gdbinit" (builtins.readFile ./gdbinit))
+]

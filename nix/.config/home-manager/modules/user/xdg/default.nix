@@ -126,16 +126,17 @@ with rec {
       };
     };
     mime.enable = true;
-    mimeApps =
+    mimeApps = lib.mkMerge [
       {
         enable = true;
       }
-      // (lib.mkIf config.features.web.enable {
+      (lib.mkIf config.features.web.enable {
         associations.added = my_associations;
         defaultApplications = my_associations;
       })
-      // {
+      {
         associations.removed = associations_removed;
-      };
+      }
+    ];
   };
 }
