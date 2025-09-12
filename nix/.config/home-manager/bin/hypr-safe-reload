@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Safe Hyprland reload: re-source only live-editable parts to avoid
+# triggering autostart/permissions/plugin issues on full reload.
+
+cfg_dir="${XDG_CONFIG_HOME:-"$HOME/.config"}/hypr"
+main_cfg="$cfg_dir/hyprland.conf"
+
+log() { printf '%s\n' "$*"; }
+die() { log "[hypr-safe-reload] $*" >&2; exit 1; }
+
+if ! command -v hyprctl >/dev/null 2>&1; then
+  die "hyprctl not found in PATH"
+fi
+
+# Ensure we are in a running Hyprland session
+if ! hyprctl -j monitors >/dev/null 2>&1; then
+  die "Hyprland not reachable (no monitors). Are you in a Hyprland session?"
+fi
+
+# Verify config syntax if hyprland binary is available
+if command -v hyprland >/dev/null 2>&1; then
+  if ! hyprland --verify-config --config "$main_cfg" >/dev/null 2>&1; then
+    die "hyprland --verify-config failed for $main_cfg"
+  fi
+fi
+
+# Only re-source files that do not execute autostart entries.
+includes=(
+  "$cfg_dir/bindings.conf"
+  "$cfg_dir/rules.conf"
+  "$cfg_dir/workspaces.conf"
+)
+
+missing=()
+for f in "${includes[@]}"; do
+  if [ ! -s "$f" ]; then
+    missing+=("$f")
+  fi
+done
+
+if [ "${#missing[@]}" -gt 0 ]; then
+  log "[hypr-safe-reload] waiting for includes to appear..."
+  sleep 0.5
+  missing=()
+  for f in "${includes[@]}"; do
+    [ -s "$f" ] || missing+=("$f")
+  done
+fi
+
+if [ "${#missing[@]}" -gt 0 ]; then
+  die "missing includes: ${missing[*]}"
+fi
+
+for f in "${includes[@]}"; do
+  hyprctl keyword source "$f" >/dev/null 2>&1 || die "failed to source $f"
+done
+
+log "[hypr-safe-reload] OK"
+
