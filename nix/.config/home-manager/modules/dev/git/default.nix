@@ -18,6 +18,10 @@ with lib;
       gist # manage GitHub gists
     ]);
 
+    # Guard: avoid writing through a symlinked hook path; ensure hooks dir exists later
+    home.activation.fixGitPrecommitSymlink =
+      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/git/hooks/pre-commit";
+
     home.file.".config/git/hooks/pre-commit" = {
       text = ''
         #!/usr/bin/env bash

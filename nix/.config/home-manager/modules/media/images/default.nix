@@ -80,6 +80,12 @@ in {
   home.packages = config.lib.neg.filterByExclude (config.lib.neg.mkEnabledList flags groups);
   home.file.".local/bin/swayimg".source = "${swayimg-first}/bin/swayimg-first";
 
+  # Guard: ensure we don't write through an unexpected symlink or file at ~/.local/bin/swayimg
+  home.activation.fixSwayimgBinSymlink =
+    config.lib.neg.mkRemoveIfSymlink "${config.home.homeDirectory}/.local/bin/swayimg";
+  home.activation.fixSwayimgBinFile =
+    config.lib.neg.mkEnsureAbsent "${config.home.homeDirectory}/.local/bin/swayimg";
+
   # Live-editable Swayimg config: out-of-store symlink to repo copy
   # Remove stale symlink to old HM generations before linking
   home.activation.fixSwayimgConfig =
