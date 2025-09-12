@@ -129,6 +129,7 @@
     ...
   }: let
     inherit (nixpkgs) lib;
+    docs = import ./flake/features-docs.nix { inherit lib; };
     systems = [
       "x86_64-linux"
       "aarch64-linux"
@@ -177,64 +178,7 @@
         nurPkgs = nur.packages.${system};
         fa = pkgs.nur.repos.rycee.firefox-addons;
         # Collect features.* options once and reuse for MD/JSON
-        featureOptionsItems = let
-          eval = lib.evalModules {
-            modules = [
-              # Provide minimal mkBool to avoid depending on pkgs during eval
-              ({ lib, ... }: {
-                config.lib.neg.mkBool = desc: default: (lib.mkEnableOption desc) // { inherit default; };
-              })
-              ./modules/features.nix
-              # Shim to allow modules with `config.assertions` during plain eval
-              ({lib, ...}: {
-                options.assertions = lib.mkOption {
-                  type = lib.types.anything;
-                  visible = false;
-                  description = "internal";
-                };
-              })
-            ];
-            # Allow setting config.lib.neg.mkBool without declaring an option
-            check = false;
-          };
-          opts = eval.options;
-          toList = optSet: prefix:
-            lib.concatLists (
-              lib.mapAttrsToList (
-                name: v: let
-                  cur = lib.optionalString (prefix != "") (prefix + ".") + name;
-                in
-                  if (v ? _type) && (v._type == "option")
-                  then [
-                    {
-                      path = cur;
-                      description = v.description or "";
-                      # Keep short alias used by MD renderer
-                      desc = v.description or "";
-                      type =
-                        if (v ? type) && (v.type ? name)
-                        then v.type.name
-                        else (v.type.description or "unknown");
-                      default = v.default or null;
-                      defaultText = v.defaultText or null;
-                      # String form used in Markdown table
-                      def =
-                        v.defaultText or (
-                          if v ? default
-                          then builtins.toJSON v.default
-                          else ""
-                        );
-                    }
-                  ]
-                  else if builtins.isAttrs v
-                  then toList v cur
-                  else []
-              )
-              optSet
-            );
-          items = toList opts "";
-        in
-          lib.filter (o: !(lib.hasPrefix "assertions" o.path)) items;
+        featureOptionsItems = docs.getFeatureOptionsItems ./modules/features.nix;
 
         # Common toolsets for devShells to avoid duplication
         devNixTools = with pkgs; [
@@ -317,38 +261,16 @@
                     else ""
                 )
                 keys);
-              deltas = ''
-                ## Full vs Lite (feature deltas)
-
-                | Option | neg (full) | neg-lite |
-                |---|---|---|
-                ${lib.concatStringsSep "\n" (lib.filter (x: x != "") (lib.splitString "\n" rows))}
-              '';
+              deltas = docs.renderDeltasMd { inherit flatNeg flatLite; };
             in
               (builtins.readFile ./OPTIONS.md)
               + "\n\n"
               + deltas
           );
           # Auto-generated docs for features.* options (from shared items)
-          features-options-md = pkgs.writeText "features-options.md" (
-            let
-              items = featureOptionsItems;
-              esc = s: lib.replaceStrings ["\n" "|"] [" " "\\|"] (toString s);
-              rows = lib.concatStringsSep "\n" (
-                map (o: "| ${o.path} | " + esc o.type + " | " + esc o.def + " | " + esc o.desc + " |") items
-              );
-            in ''
-              # Features Options (auto-generated)
+          features-options-md = pkgs.writeText "features-options.md" (docs.renderFeaturesOptionsMd featureOptionsItems);
 
-              | Option | Type | Default | Description |
-              |---|---|---|---|
-              ${rows}
-            ''
-          );
-
-          features-options-json = pkgs.writeText "features-options.json" (
-            let items = featureOptionsItems; in builtins.toJSON items
-          );
+          features-options-json = pkgs.writeText "features-options.json" (docs.renderFeaturesOptionsJson featureOptionsItems);
         };
 
         # Formatter: treefmt wrapper pinned to repo config
@@ -371,9 +293,36 @@
         };
 
         # Checks: fail if formatting or linters would change files
-        checks = import ./flake/checks.nix {
+        checks = (import ./flake/checks.nix {
           inherit pkgs self system;
           treefmtToml = ./treefmt.toml;
+        }) // {
+          caches-consistency = pkgs.runCommand "caches-consistency" {} ''
+            set -eu
+            root=${./.}
+            subf="$root/caches/substituters.nix"
+            keysf="$root/caches/trusted-public-keys.nix"
+            # Ensure every entry listed in these files appears in flake.nix nixConfig
+            fail=0
+            sanitize() {
+              sed -e 's/#.*$//' -e 's/[",]//g' -e 's/^\s*//' -e 's/\s*$//' \
+                  -e '/^$/d' -e '/^\[/d' -e '/^\]/d'
+            }
+            while IFS= read -r s; do
+              if ! grep -q -- "\"$s\"" "$root/flake.nix"; then
+                echo "Missing in flake.nix nixConfig.extra-substituters: $s" >&2
+                fail=1
+              fi
+            done < <(sanitize < "$subf")
+            while IFS= read -r s; do
+              if ! grep -q -- "\"$s\"" "$root/flake.nix"; then
+                echo "Missing in flake.nix nixConfig.extra-trusted-public-keys: $s" >&2
+                fail=1
+              fi
+            done < <(sanitize < "$keysf")
+            [ $fail -eq 0 ]
+            touch $out
+          '';
         };
       }
     );
