@@ -41,3 +41,10 @@
   - Paths: usually want `default.target` so the path unit is active in the session.
     - Example:
       `systemd.user.paths.my-path = lib.recursiveUpdate { Unit.Description = "Watch foo"; Path.PathChanged = "%h/.config/foo/config"; } (config.lib.neg.systemdUser.mkUnitFromPresets { presets = ["defaultWanted"]; });`
+
+- Commit messages
+  - Use bracketed scope: `[scope] subject` (English imperative, concise).
+    - Examples: `[activation] add guards for xyz`, `[docs] update OPTIONS.md`.
+    - Multi-scope allowed: `[gui/hypr][rules] normalize web classes`.
+  - Exceptions allowed: `Merge ...`, `Revert ...`, `fixup!`, `squash!`, `WIP`.
+  - A `commit-msg` hook enforces this locally (see modules/dev/git/default.nix).

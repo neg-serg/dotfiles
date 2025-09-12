@@ -22,6 +22,10 @@ with lib;
     home.activation.fixGitPrecommitSymlink =
       config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/git/hooks/pre-commit";
 
+    # Guard: avoid writing through a symlinked commit-msg hook
+    home.activation.fixGitCommitMsgSymlink =
+      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/git/hooks/commit-msg";
+
     home.file.".config/git/hooks/pre-commit" = {
       text = ''
         #!/usr/bin/env bash
@@ -34,6 +38,30 @@ with lib;
         git diff --check
         # Stage any formatter changes
         git add -u
+      '';
+      executable = true;
+    };
+
+    # Enforce bracketed commit style: "[scope] subject"; allow Merge/Revert/fixup!/squash!/WIP
+    home.file.".config/git/hooks/commit-msg" = {
+      text = ''
+        #!/usr/bin/env bash
+        set -euo pipefail
+        f="$1"
+        first_line="$(sed -n '1p' "$f" | tr -d '\r')"
+        # Allowed exceptions
+        case "$first_line" in
+          Merge\ *|Revert\ *|fixup!*|squash!*|WIP:*|WIP\ *)
+            exit 0 ;;
+        esac
+        # Require one or more [scope] blocks followed by a space
+        if echo "$first_line" | ${pkgs.gnugrep}/bin/grep -qE '^\[[^][]+\]( \[[^][]+\])*\s'; then
+          exit 0
+        fi
+        echo "Commit message must start with [scope] subject" >&2
+        echo "Got: '$first_line'" >&2
+        echo "Examples: [activation] ..., [docs] ..., [features] ..., [symlinks] ..." >&2
+        exit 1
       '';
       executable = true;
     };
