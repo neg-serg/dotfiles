@@ -5,10 +5,7 @@
 }: {
   # Keep existing config directory as-is; only remove if symlink is broken.
   # This avoids nuking a valid symlinked external config (preserves history/resume).
-  # Ensure the configuration directory exists as a real dir before the daemon starts
-  # Consolidated to reduce activation noise (parent fixups handled by XDG aggregator)
-  home.activation.prepareUserPaths =
-    config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/transmission-daemon";
+  # Prepared via global prepareUserPaths action
 
   # Link selected config files from repo; runtime subdirs (resume,torrents) remain local
   xdg.configFile."transmission-daemon/settings.json" =

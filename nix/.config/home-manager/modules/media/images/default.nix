@@ -83,13 +83,7 @@ in lib.mkMerge [
 
   # Guard: ensure we don't write through an unexpected symlink or file at ~/.local/bin/swayimg
   # Collapse to a single step that removes any pre-existing file/dir/symlink.
-  home.activation.prepareUserPaths = lib.hm.dag.entryBefore ["linkGeneration"] ''
-    set -eu
-    tgt="${config.home.homeDirectory}/.local/bin/swayimg"
-    if [ -e "$tgt" ] || [ -L "$tgt" ]; then
-      rm -rf "$tgt"
-    fi
-  '';
+  # Prepared via global prepareUserPaths action
 
   # Live-editable Swayimg config via helper (guards parent dir and target)
   }

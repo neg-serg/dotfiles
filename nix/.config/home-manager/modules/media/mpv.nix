@@ -4,8 +4,7 @@
   pkgs,
   ...
 }: {
-  # Ensure ~/.config/mpv is a real directory (use shared key to consolidate output)
-  home.activation.prepareUserPaths = config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/mpv";
+  # Prepared via global prepareUserPaths action
 
   programs.mpv = {
     enable = true;

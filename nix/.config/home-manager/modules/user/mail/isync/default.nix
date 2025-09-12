@@ -56,13 +56,7 @@ with lib;
     ];
 
     # Create base maildir on activation (mbsync can also create, but this avoids first-run hiccups)
-    # Use a shared activation key to consolidate output with other minor ensures
-    home.activation.prepareUserPaths = config.lib.neg.mkEnsureMaildirs "$HOME/.local/mail/gmail" [
-      "INBOX"
-      "[Gmail]/Sent Mail"
-      "[Gmail]/Drafts"
-      "[Gmail]/All Mail"
-    ];
+    # Maildir creation handled by global prepareUserPaths action
 
     # Periodic sync in addition to imapnotify (fallback / catch-up)
     systemd.user.services."mbsync-gmail" = lib.recursiveUpdate {
