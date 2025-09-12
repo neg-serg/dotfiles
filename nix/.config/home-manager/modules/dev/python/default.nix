@@ -22,13 +22,13 @@
       fontforge # font tools (for monospacifier)
       pynvim # Python client for Neovim
     ];
-  pyPackages = ps:
-    let
-      groups = {
-        core = core ps;
-        tools = tools ps;
-      };
-    in config.lib.neg.mkEnabledList config.features.dev.python groups;
+  pyPackages = ps: let
+    groups = {
+      core = core ps;
+      tools = tools ps;
+    };
+  in
+    config.lib.neg.mkEnabledList config.features.dev.python groups;
 in
   lib.mkIf config.features.dev.enable {
     nixpkgs = {

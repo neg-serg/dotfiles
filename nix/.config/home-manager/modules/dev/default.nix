@@ -1,4 +1,8 @@
-{lib, config, ...}:
+{
+  lib,
+  config,
+  ...
+}:
 with lib; {
   options.features.dev = {
     iac = {

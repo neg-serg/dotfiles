@@ -47,7 +47,7 @@ in {
         (config.features.dev.pkgs.iac or false)
         && ((config.features.dev.iac.backend or "terraform") == "terraform")
       ) {
-      features.allowUnfree.extra = iac;
-    })
+        features.allowUnfree.extra = iac;
+      })
   ];
 }

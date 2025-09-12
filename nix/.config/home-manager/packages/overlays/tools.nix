@@ -14,4 +14,3 @@ in {
     "rofi-games" = rofi_games;
   };
 }
-

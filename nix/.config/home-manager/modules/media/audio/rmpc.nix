@@ -1,7 +1,11 @@
-{ lib, config, pkgs, ... }:
 {
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   # Ensure rmpc is installed
-  home.packages = config.lib.neg.filterByExclude [ pkgs.rmpc ];
+  home.packages = config.lib.neg.filterByExclude [pkgs.rmpc];
 
   # Remove stale ~/.config/rmpc symlink from older generations, then link live
   home.activation.fixRmpcConfigDir =

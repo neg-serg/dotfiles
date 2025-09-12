@@ -5,7 +5,7 @@
   ...
 }:
 with rec {
-  browserRec = import ../web/default-browser-lib.nix { inherit lib pkgs config; };
+  browserRec = import ../web/default-browser-lib.nix {inherit lib pkgs config;};
   defaultApplications = {
     terminal = {
       cmd = "${pkgs.kitty}/bin/kitty";

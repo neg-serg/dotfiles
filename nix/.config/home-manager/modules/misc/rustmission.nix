@@ -1,5 +1,8 @@
-{ lib, config, ... }:
 {
+  lib,
+  config,
+  ...
+}: {
   # Remove stale ~/.config/rustmission symlink before linking
   home.activation.fixRustmissionConfigDir =
     config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/rustmission";

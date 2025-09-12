@@ -1,7 +1,11 @@
-{ pkgs, rustBaseTools, rustExtraTools, devNixTools }:
 {
+  pkgs,
+  rustBaseTools,
+  rustExtraTools,
+  devNixTools,
+}: {
   # Basic Nix/dev tools
-  default = pkgs.mkShell { packages = devNixTools; };
+  default = pkgs.mkShell {packages = devNixTools;};
 
   # Consolidated from shell/flake.nix
   rust = pkgs.mkShell {
@@ -13,7 +17,6 @@
   fhs =
     (pkgs.buildFHSEnv {
       name = "fhs-env";
-      targetPkgs = pkgs: with pkgs; [ zsh ];
+      targetPkgs = pkgs: with pkgs; [zsh];
     }).env;
 }
-

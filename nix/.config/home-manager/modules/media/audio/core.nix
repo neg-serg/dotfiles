@@ -19,7 +19,10 @@ lib.mkIf config.features.media.audio.core.enable (
         open-music-kontrollers.patchmatrix # alternative patcher
       ];
     };
-    flags = (builtins.listToAttrs (map (n: { name = n; value = true; }) (builtins.attrNames groups)));
+    flags = builtins.listToAttrs (map (n: {
+      name = n;
+      value = true;
+    }) (builtins.attrNames groups));
   in {
     home.packages = config.lib.neg.filterByExclude (config.lib.neg.mkEnabledList flags groups);
   }

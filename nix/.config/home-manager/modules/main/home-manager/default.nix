@@ -1,5 +1,8 @@
-{ lib, config, ... }:
 {
+  lib,
+  config,
+  ...
+}: {
   programs = {
     home-manager.enable = true; # Let Home Manager install and manage itself.
   };

@@ -7,7 +7,10 @@
 }:
 with lib; let
   dlDir = "${config.home.homeDirectory}/dw";
-  fa' = if fa != null then fa else pkgs.nur.repos.rycee.firefox-addons; # requires NUR
+  fa' =
+    if fa != null
+    then fa
+    else pkgs.nur.repos.rycee.firefox-addons; # requires NUR
   addons = config.lib.neg.browserAddons fa';
 
   nativeMessagingHosts = [

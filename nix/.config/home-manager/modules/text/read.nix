@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }: {
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   # Remove stale ~/.config/zathura symlink that may point into this repo from older setups
   home.activation.fixZathuraConfigDir =
     config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/zathura";

@@ -1,5 +1,8 @@
-{ lib, config, ... }:
 {
+  lib,
+  config,
+  ...
+}: {
   # Remove stale ~/.config/dircolors symlink from older generations before linking
   home.activation.fixDircolorsConfigDir =
     config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/dircolors";

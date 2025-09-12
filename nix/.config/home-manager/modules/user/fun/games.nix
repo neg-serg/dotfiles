@@ -1,4 +1,8 @@
-{pkgs, config, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   home.packages = config.lib.neg.filterByExclude (with pkgs; [
     abuse # classic side-scrolling shooter customizable with LISP
     airshipper # for veloren voxel game

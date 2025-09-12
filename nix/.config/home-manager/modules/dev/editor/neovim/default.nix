@@ -3,7 +3,7 @@
   pkgs,
   ...
 }:
-with { }; {
+with {}; {
   home.packages = config.lib.neg.filterByExclude (with pkgs; [
     bash-language-server # Bash LSP
     neovim # Neovim editor

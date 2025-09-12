@@ -5,7 +5,7 @@
   ...
 }:
 lib.mkIf (config.features.web.enable && config.features.web.floorp.enable) (let
-  common = import ./mozilla-common-lib.nix { inherit lib pkgs config; };
+  common = import ./mozilla-common-lib.nix {inherit lib pkgs config;};
 in {
   programs.floorp = {
     enable = true;
@@ -14,7 +14,7 @@ in {
     profiles.${common.profileId} = {
       isDefault = true;
       # Declarative extensions (NUR where available)
-      extensions = { packages = common.addons.common; };
+      extensions = {packages = common.addons.common;};
 
       # about:config prefs
       settings = common.settings;

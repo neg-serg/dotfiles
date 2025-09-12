@@ -1,6 +1,11 @@
-{pkgs, lib, config, ...}: let
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: let
   excluded = config.features.excludePkgs or [];
-  notExcluded = p: let n = (p.pname or (lib.getName p)); in !(lib.elem n excluded);
+  notExcluded = p: let n = p.pname or (lib.getName p); in !(lib.elem n excluded);
   notBroken = p: !(((p.meta or {}).broken or false));
 in {
   home.packages = lib.filter notBroken (lib.filter notExcluded (with pkgs; [

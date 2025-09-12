@@ -129,7 +129,7 @@
     ...
   }: let
     inherit (nixpkgs) lib;
-    docs = import ./flake/features-docs.nix { inherit lib; };
+    docs = import ./flake/features-docs.nix {inherit lib;};
     systems = [
       "x86_64-linux"
       "aarch64-linux"
@@ -261,7 +261,7 @@
                     else ""
                 )
                 keys);
-              deltas = docs.renderDeltasMd { inherit flatNeg flatLite; };
+              deltas = docs.renderDeltasMd {inherit flatNeg flatLite;};
             in
               (builtins.readFile ./OPTIONS.md)
               + "\n\n"
@@ -293,37 +293,39 @@
         };
 
         # Checks: fail if formatting or linters would change files
-        checks = (import ./flake/checks.nix {
-          inherit pkgs self system;
-          treefmtToml = ./treefmt.toml;
-        }) // {
-          caches-consistency = pkgs.runCommand "caches-consistency" {} ''
-            set -eu
-            root=${./.}
-            subf="$root/caches/substituters.nix"
-            keysf="$root/caches/trusted-public-keys.nix"
-            # Ensure every entry listed in these files appears in flake.nix nixConfig
-            fail=0
-            sanitize() {
-              sed -e 's/#.*$//' -e 's/[",]//g' -e 's/^\s*//' -e 's/\s*$//' \
-                  -e '/^$/d' -e '/^\[/d' -e '/^\]/d'
-            }
-            while IFS= read -r s; do
-              if ! grep -q -- "\"$s\"" "$root/flake.nix"; then
-                echo "Missing in flake.nix nixConfig.extra-substituters: $s" >&2
-                fail=1
-              fi
-            done < <(sanitize < "$subf")
-            while IFS= read -r s; do
-              if ! grep -q -- "\"$s\"" "$root/flake.nix"; then
-                echo "Missing in flake.nix nixConfig.extra-trusted-public-keys: $s" >&2
-                fail=1
-              fi
-            done < <(sanitize < "$keysf")
-            [ $fail -eq 0 ]
-            touch $out
-          '';
-        };
+        checks =
+          (import ./flake/checks.nix {
+            inherit pkgs self system;
+            treefmtToml = ./treefmt.toml;
+          })
+          // {
+            caches-consistency = pkgs.runCommand "caches-consistency" {} ''
+              set -eu
+              root=${./.}
+              subf="$root/caches/substituters.nix"
+              keysf="$root/caches/trusted-public-keys.nix"
+              # Ensure every entry listed in these files appears in flake.nix nixConfig
+              fail=0
+              sanitize() {
+                sed -e 's/#.*$//' -e 's/[",]//g' -e 's/^\s*//' -e 's/\s*$//' \
+                    -e '/^$/d' -e '/^\[/d' -e '/^\]/d'
+              }
+              while IFS= read -r s; do
+                if ! grep -q -- "\"$s\"" "$root/flake.nix"; then
+                  echo "Missing in flake.nix nixConfig.extra-substituters: $s" >&2
+                  fail=1
+                fi
+              done < <(sanitize < "$subf")
+              while IFS= read -r s; do
+                if ! grep -q -- "\"$s\"" "$root/flake.nix"; then
+                  echo "Missing in flake.nix nixConfig.extra-trusted-public-keys: $s" >&2
+                  fail=1
+                fi
+              done < <(sanitize < "$keysf")
+              [ $fail -eq 0 ]
+              touch $out
+            '';
+          };
       }
     );
 
@@ -348,19 +350,29 @@
                   extra = [(_: {features.emulators.retroarch.full = retroFlag;})];
                 };
               };
-            in perSystem.${s}.pkgs.writeText
-              "hm-eval-${if profile == "lite" then "lite" else "neg"}-retro-${if retroFlag then "on" else "off"}.json"
+            in
+              perSystem.${s}.pkgs.writeText
+              "hm-eval-${
+                if profile == "lite"
+                then "lite"
+                else "neg"
+              }-retro-${
+                if retroFlag
+                then "on"
+                else "off"
+              }.json"
               (builtins.toJSON hmCfg.config.features);
           in {
-          # Run treefmt in check mode to ensure no changes would be made
-          hm = self.homeConfigurations."neg".activationPackage;
-          hm-lite = self.homeConfigurations."neg-lite".activationPackage;
-          # Fast eval matrix for RetroArch toggles (no heavy builds)
-          hm-eval-neg-retro-on = evalWith null true;
-          hm-eval-neg-retro-off = evalWith null false;
-          hm-eval-lite-retro-on = evalWith "lite" true;
-          hm-eval-lite-retro-off = evalWith "lite" false;
-        })
+            # Run treefmt in check mode to ensure no changes would be made
+            hm = self.homeConfigurations."neg".activationPackage;
+            hm-lite = self.homeConfigurations."neg-lite".activationPackage;
+            # Fast eval matrix for RetroArch toggles (no heavy builds)
+            hm-eval-neg-retro-on = evalWith null true;
+            hm-eval-neg-retro-off = evalWith null false;
+            hm-eval-lite-retro-on = evalWith "lite" true;
+            hm-eval-lite-retro-off = evalWith "lite" false;
+          }
+        )
     );
 
     homeConfigurations."neg" = homeManagerInput.lib.homeManagerConfiguration {

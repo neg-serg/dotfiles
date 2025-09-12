@@ -1,7 +1,11 @@
-{ lib, config, pkgs, ... }:
 {
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   # Install gdb and manage its config under XDG
-  home.packages = config.lib.neg.filterByExclude [ pkgs.gdb ];
+  home.packages = config.lib.neg.filterByExclude [pkgs.gdb];
 
   # Write the gdbinit contents directly from a file embedded in this module
   xdg.configFile."gdb/gdbinit" = {

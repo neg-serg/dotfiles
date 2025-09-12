@@ -8,7 +8,7 @@
 }:
 with lib; let
   cfg = config.features.web;
-  browser = import ./default-browser-lib.nix { inherit lib pkgs config yandexBrowser nyxt4; };
+  browser = import ./default-browser-lib.nix {inherit lib pkgs config yandexBrowser nyxt4;};
 in {
   # Choose the default browser for system-wide handlers and $BROWSER
   options.features.web.default = mkOption {
@@ -18,7 +18,7 @@ in {
   };
 
   # Expose derived default browser under lib.neg for reuse
-  config.lib.neg.web = mkIf cfg.enable { defaultBrowser = browser; };
+  config.lib.neg.web = mkIf cfg.enable {defaultBrowser = browser;};
 
   # Provide common env defaults (can be overridden elsewhere if needed)
   config.home.sessionVariables = mkIf cfg.enable {

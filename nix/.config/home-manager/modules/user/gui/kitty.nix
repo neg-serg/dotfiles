@@ -1,5 +1,8 @@
-{ lib, config, ... }:
 {
+  lib,
+  config,
+  ...
+}: {
   # Remove stale ~/.config/kitty symlink from older generations before linking
   home.activation.fixKittyConfigDir =
     config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/kitty";

@@ -4,7 +4,7 @@
   config,
   ...
 }: let
-  browserRec = import ../web/default-browser-lib.nix { inherit lib pkgs config; };
+  browserRec = import ../web/default-browser-lib.nix {inherit lib pkgs config;};
 in {
   services.dunst = {
     enable = true;

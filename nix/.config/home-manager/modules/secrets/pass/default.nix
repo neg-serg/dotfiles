@@ -1,4 +1,8 @@
-{pkgs, config, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   home.packages = config.lib.neg.filterByExclude (with pkgs; [
     tomb # file encryption in linux
     keepass # password manager with strong cryptography

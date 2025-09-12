@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }: let
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
   repoSwayimgConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/media/images/swayimg/conf";
   # Wrapper: start swayimg, export SWAYIMG_IPC, jump to first image via IPC.
   swayimg-first = pkgs.writeShellScriptBin "swayimg-first" ''
@@ -67,7 +72,10 @@ in let
       viu # console image viewer
     ];
   };
-  flags = (builtins.listToAttrs (map (n: { name = n; value = true; }) (builtins.attrNames groups)));
+  flags = builtins.listToAttrs (map (n: {
+    name = n;
+    value = true;
+  }) (builtins.attrNames groups));
 in {
   home.packages = config.lib.neg.filterByExclude (config.lib.neg.mkEnabledList flags groups);
   home.file.".local/bin/swayimg".source = "${swayimg-first}/bin/swayimg-first";

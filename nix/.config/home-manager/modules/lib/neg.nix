@@ -194,26 +194,24 @@
 
     # Ensure directories exist after HM writes files
     # Useful for app runtime dirs that must be present before services start.
-    mkEnsureDirsAfterWrite = paths:
-      let
-        quoted = lib.concatStringsSep " " (map (p: "\"" + p + "\"") paths);
-      in
-        lib.hm.dag.entryAfter ["writeBoundary"] ''
-          set -eu
-          mkdir -p ${quoted}
-        '';
+    mkEnsureDirsAfterWrite = paths: let
+      quoted = lib.concatStringsSep " " (map (p: "\"" + p + "\"") paths);
+    in
+      lib.hm.dag.entryAfter ["writeBoundary"] ''
+        set -eu
+        mkdir -p ${quoted}
+      '';
 
     # Ensure a set of Maildir-style folders exist under a base path.
     # Example: mkEnsureMaildirs "$HOME/.local/mail/gmail" ["INBOX" "[Gmail]/Sent Mail" ...]
-    mkEnsureMaildirs = base: boxes:
-      let
-        mkLine = b: ''mkdir -p "${base}/${b}/cur" "${base}/${b}/new" "${base}/${b}/tmp"'';
-        body = lib.concatStringsSep "\n" (map mkLine boxes);
-      in
-        lib.hm.dag.entryAfter ["writeBoundary"] ''
-          set -eu
-          ${body}
-        '';
+    mkEnsureMaildirs = base: boxes: let
+      mkLine = b: ''mkdir -p "${base}/${b}/cur" "${base}/${b}/new" "${base}/${b}/tmp"'';
+      body = lib.concatStringsSep "\n" (map mkLine boxes);
+    in
+      lib.hm.dag.entryAfter ["writeBoundary"] ''
+        set -eu
+        ${body}
+      '';
 
     # Ensure a path is absent before HM links/writes files.
     # Removes regular files with rm -f and directories with rm -rf, ignores symlinks
@@ -230,19 +228,18 @@
         fi
       '';
 
-    mkEnsureAbsentMany = paths:
-      let
-        scriptFor = p: ''
-          if [ -e "${p}" ] && [ ! -L "${p}" ]; then
-            if [ -d "${p}" ]; then rm -rf "${p}"; else rm -f "${p}"; fi
-          fi
-        '';
-        body = lib.concatStringsSep "\n" (map scriptFor paths);
-      in
-        lib.hm.dag.entryBefore ["linkGeneration"] ''
-          set -eu
-          ${body}
-        '';
+    mkEnsureAbsentMany = paths: let
+      scriptFor = p: ''
+        if [ -e "${p}" ] && [ ! -L "${p}" ]; then
+          if [ -d "${p}" ]; then rm -rf "${p}"; else rm -f "${p}"; fi
+        fi
+      '';
+      body = lib.concatStringsSep "\n" (map scriptFor paths);
+    in
+      lib.hm.dag.entryBefore ["linkGeneration"] ''
+        set -eu
+        ${body}
+      '';
   };
 
   # Provide a typed option for dotfiles root, and mirror it under lib.neg

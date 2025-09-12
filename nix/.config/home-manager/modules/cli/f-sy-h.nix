@@ -1,5 +1,8 @@
-{ lib, config, ... }:
 {
+  lib,
+  config,
+  ...
+}: {
   # Remove stale ~/.config/f-sy-h symlink from older generations before linking
   home.activation.fixFSyHConfigDir =
     config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/f-sy-h";

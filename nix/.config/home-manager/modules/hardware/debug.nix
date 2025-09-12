@@ -1,4 +1,8 @@
-{pkgs, config, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   home.packages = config.lib.neg.filterByExclude (with pkgs; [
     flashrom # Identify, read, write, erase, and verify BIOS/ROM/flash chips
     minicom # Friendly menu driven serial communication program

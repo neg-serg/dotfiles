@@ -1,7 +1,11 @@
-{ lib, config, pkgs, ... }:
 {
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   # Ensure Nushell is available
-  home.packages = config.lib.neg.filterByExclude [ pkgs.nushell ];
+  home.packages = config.lib.neg.filterByExclude [pkgs.nushell];
 
   # Remove stale ~/.config/nushell symlink from older generations before linking
   home.activation.fixNuConfigDir =

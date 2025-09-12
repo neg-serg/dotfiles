@@ -8,7 +8,7 @@ with lib; let
   mkBool =
     if (config ? lib) && (config.lib ? neg) && (config.lib.neg ? mkBool)
     then config.lib.neg.mkBool
-    else (desc: default: (lib.mkEnableOption desc) // { inherit default; });
+    else (desc: default: (lib.mkEnableOption desc) // {inherit default;});
 in {
   options.features = {
     # Global package exclusions for curated lists in modules that adopt this filter.

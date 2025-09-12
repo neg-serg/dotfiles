@@ -1,4 +1,8 @@
-{pkgs, config, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   programs.jqp.enable = true; # interactive jq
   home.packages = config.lib.neg.filterByExclude (with pkgs; [
     gron # greppable json

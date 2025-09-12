@@ -1,4 +1,8 @@
-{pkgs, config, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   home.packages = config.lib.neg.filterByExclude (with pkgs; [
     asciinema-agg # asciinema files to gif
     asciinema # record terminal
