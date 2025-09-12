@@ -50,12 +50,17 @@
   - A `commit-msg` hook enforces this locally (see modules/dev/git/default.nix).
 
 - XDG file helpers
-  - Prefer `config.lib.neg.mkXdgText` and `mkXdgSource` instead of hand-written
-    activation guards + `xdg.configFile` assignments.
-    - They ensure the parent directory is a real directory, remove a stray
-      symlink or regular file at the target path, then write/link the file.
+  - Prefer the pure helpers from `modules/lib/xdg-helpers.nix` (import locally):
+    - Config (text/link): `mkXdgText`, `mkXdgSource`
+    - Data (text/link): `mkXdgDataText`, `mkXdgDataSource`
+    - Cache (text/link): `mkXdgCacheText`, `mkXdgCacheSource`
+    - They ensure parent directories are real dirs (not symlinks), remove a
+      stray symlink/regular file at target path, then write/link the file.
   - Examples:
-    - Text: `(config.lib.neg.mkXdgText "nyxt/init.lisp" "... Lisp ...")`
-    - Source: `(config.lib.neg.mkXdgSource "swayimg" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/media/images/swayimg/conf" true))`
-  - For `xdg.dataFile` and `xdg.cacheFile`, ensure target directories are real
-    via `mkEnsureRealDir` before writing `.keep` files.
+    - Config text: `(xdg.mkXdgText "nyxt/init.lisp" "... Lisp ...")`
+    - Config source: `(xdg.mkXdgSource "swayimg" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/media/images/swayimg/conf" true))`
+    - Data keep: `(xdg.mkXdgDataText "ansible/roles/.keep" "")`
+    - Cache keep: `(xdg.mkXdgCacheText "ansible/facts/.keep" "")`
+  - Import tip (robust for docs eval): 
+    - From `modules/dev/...` or `modules/media/...`: `let xdg = import ../../lib/xdg-helpers.nix { inherit lib; };`
+    - From `modules/user/mail/...`: `let xdg = import ../../../lib/xdg-helpers.nix { inherit lib; };`
