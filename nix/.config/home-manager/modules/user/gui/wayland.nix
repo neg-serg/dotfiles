@@ -17,7 +17,7 @@ with lib;
       inputs.iwmenu.packages.${pkgs.system}.default # wifi menu
       slurp # select region in wayland compositor
       swww # wallpaper daemon for wayland
-      waybar # install temporary
+      waybar # status bar (Wayland)
       waypipe # proxy for wayland similar to ssh -X
       wev # xev for wayland
       wf-recorder # tool to make screencasts
