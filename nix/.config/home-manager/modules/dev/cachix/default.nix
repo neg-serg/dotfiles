@@ -7,7 +7,7 @@
   cfg = config.services.cachix.watchStore;
 in {
   options.services.cachix.watchStore = {
-    enable = lib.mkEnableOption "Run cachix watch-store as a user service";
+    enable = config.lib.neg.mkBool "Run cachix watch-store as a user service" false;
 
     cacheName = lib.mkOption {
       type = lib.types.str;
