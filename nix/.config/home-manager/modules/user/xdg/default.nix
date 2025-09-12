@@ -104,6 +104,75 @@ with rec {
     handlr # xdg-open replacement with per-handler rules
     xdg-ninja # detect mislocated files in $HOME
   ]);
+  # Aggregate XDG fixups to reduce activation noise and avoid per-file steps.
+  # Prepare parent directories (un-symlink) and remove conflicting targets
+  # for all declared xdg.{config,data,cache}File entries before linkGeneration.
+  home.activation.xdgFixParents = lib.hm.dag.entryBefore ["linkGeneration"] (
+    let
+      cfgs = builtins.attrNames (config.xdg.configFile or {});
+      datas = builtins.attrNames (config.xdg.dataFile or {});
+      caches = builtins.attrNames (config.xdg.cacheFile or {});
+      q = s: "\"" + s + "\"";
+      join = xs: lib.concatStringsSep " " (map q xs);
+    in ''
+      set -eu
+      config_home="$XDG_CONFIG_HOME"; [ -n "$config_home" ] || config_home="$HOME/.config"
+      data_home="$XDG_DATA_HOME";   [ -n "$data_home" ]   || data_home="$HOME/.local/share"
+      cache_home="$XDG_CACHE_HOME"; [ -n "$cache_home" ]  || cache_home="$HOME/.cache"
+
+      for rel in ${join cfgs}; do
+        tgt="$config_home/$rel"; parent="$(dirname "$tgt")"
+        if [ -L "$parent" ]; then rm -f "$parent"; fi
+        mkdir -p "$parent"
+      done
+      for rel in ${join datas}; do
+        tgt="$data_home/$rel"; parent="$(dirname "$tgt")"
+        if [ -L "$parent" ]; then rm -f "$parent"; fi
+        mkdir -p "$parent"
+      done
+      for rel in ${join caches}; do
+        tgt="$cache_home/$rel"; parent="$(dirname "$tgt")"
+        if [ -L "$parent" ]; then rm -f "$parent"; fi
+        mkdir -p "$parent"
+      done
+    ''
+  );
+  home.activation.xdgFixTargets = lib.hm.dag.entryBefore ["linkGeneration"] (
+    let
+      cfgs = builtins.attrNames (config.xdg.configFile or {});
+      datas = builtins.attrNames (config.xdg.dataFile or {});
+      caches = builtins.attrNames (config.xdg.cacheFile or {});
+      q = s: "\"" + s + "\"";
+      join = xs: lib.concatStringsSep " " (map q xs);
+    in ''
+      set -eu
+      config_home="$XDG_CONFIG_HOME"; [ -n "$config_home" ] || config_home="$HOME/.config"
+      data_home="$XDG_DATA_HOME";   [ -n "$data_home" ]   || data_home="$HOME/.local/share"
+      cache_home="$XDG_CACHE_HOME"; [ -n "$cache_home" ]  || cache_home="$HOME/.cache"
+
+      for rel in ${join cfgs}; do
+        tgt="$config_home/$rel"
+        if [ -L "$tgt" ]; then rm -f "$tgt"; fi
+        if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then
+          if [ -d "$tgt" ]; then rm -rf "$tgt"; else rm -f "$tgt"; fi
+        fi
+      done
+      for rel in ${join datas}; do
+        tgt="$data_home/$rel"
+        if [ -L "$tgt" ]; then rm -f "$tgt"; fi
+        if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then
+          if [ -d "$tgt" ]; then rm -rf "$tgt"; else rm -f "$tgt"; fi
+        fi
+      done
+      for rel in ${join caches}; do
+        tgt="$cache_home/$rel"
+        if [ -L "$tgt" ]; then rm -f "$tgt"; fi
+        if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then
+          if [ -d "$tgt" ]; then rm -rf "$tgt"; else rm -f "$tgt"; fi
+        fi
+      done
+    ''
+  );
   xdg = {
     enable = true;
     userDirs = {
