@@ -5,7 +5,6 @@
   ...
 }: let
   xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
-  repoSwayimgConf = "${config.lib.neg.dotfilesRoot}/nix/.config/home-manager/modules/media/images/swayimg/conf";
   # Wrapper: start swayimg, export SWAYIMG_IPC, jump to first image via IPC.
   swayimg-first = pkgs.writeShellScriptBin "swayimg-first" ''
     set -euo pipefail
