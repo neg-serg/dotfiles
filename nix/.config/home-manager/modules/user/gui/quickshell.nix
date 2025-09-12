@@ -6,6 +6,7 @@
   ...
 }:
 with lib; let
+  xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
   qsPath = pkgs.lib.makeBinPath [
     pkgs.fd # fast file finder used by QS scripts
     pkgs.coreutils # basic CLI utilities
@@ -32,8 +33,9 @@ with lib; let
     '';
   };
 in
-  mkIf config.features.gui.enable {
-    home.packages = config.lib.neg.filterByExclude (with pkgs; [
+  mkIf config.features.gui.enable (lib.mkMerge [
+    {
+      home.packages = config.lib.neg.filterByExclude (with pkgs; [
       cantarell-fonts # GNOME Cantarell fonts
       cava # console audio visualizer
       inputs.rsmetrx.packages.${pkgs.system}.default # metrics/telemetry helper
@@ -55,14 +57,9 @@ in
       networkmanager # nmcli and helpers
       qt6.qtimageformats # extra image formats (Qt6)
       qt6.qtsvg # SVG support (Qt6)
-      quickshellWrapped # wrapper with required env paths
-    ]);
-
-    # Remove stale ~/.config/quickshell symlink from older generations before linking
-    home.activation.fixQuickshellConfigDir =
-      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/quickshell";
-
-    # Live-editable config: out-of-store symlink to repo copy
-    xdg.configFile."quickshell" =
-      config.lib.neg.mkDotfilesSymlink "quickshell/.config/quickshell" true;
-  }
+        quickshellWrapped # wrapper with required env paths
+      ]);
+    }
+    # Live-editable config via helper (guards parent dir and target)
+    (xdg.mkXdgSource "quickshell" (config.lib.neg.mkDotfilesSymlink "quickshell/.config/quickshell" true))
+  ])

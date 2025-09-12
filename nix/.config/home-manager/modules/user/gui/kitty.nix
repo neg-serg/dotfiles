@@ -2,12 +2,9 @@
   lib,
   config,
   ...
-}: {
-  # Remove stale ~/.config/kitty symlink from older generations before linking
-  home.activation.fixKittyConfigDir =
-    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/kitty";
-
-  # Live-editable config: out-of-store symlink to repo copy
-  xdg.configFile."kitty" =
-    config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/kitty/conf" true;
-}
+}: let
+  xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
+in lib.mkMerge [
+  # Live-editable config via helper (guards parent dir and target)
+  (xdg.mkXdgSource "kitty" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/kitty/conf" true))
+]
