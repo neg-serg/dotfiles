@@ -48,3 +48,14 @@
     - Multi-scope allowed: `[gui/hypr][rules] normalize web classes`.
   - Exceptions allowed: `Merge ...`, `Revert ...`, `fixup!`, `squash!`, `WIP`.
   - A `commit-msg` hook enforces this locally (see modules/dev/git/default.nix).
+
+- XDG file helpers
+  - Prefer `config.lib.neg.mkXdgText` and `mkXdgSource` instead of hand-written
+    activation guards + `xdg.configFile` assignments.
+    - They ensure the parent directory is a real directory, remove a stray
+      symlink or regular file at the target path, then write/link the file.
+  - Examples:
+    - Text: `(config.lib.neg.mkXdgText "nyxt/init.lisp" "... Lisp ...")`
+    - Source: `(config.lib.neg.mkXdgSource "swayimg" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/media/images/swayimg/conf" true))`
+  - For `xdg.dataFile` and `xdg.cacheFile`, ensure target directories are real
+    via `mkEnsureRealDir` before writing `.keep` files.
