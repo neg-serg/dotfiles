@@ -1,11 +1,14 @@
 {
   pkgs,
+  lib,
   config,
   ...
-}: {
-  home.packages = config.lib.neg.filterByExclude [pkgs.handlr];
-  # Remove stale ~/.config/handlr symlink before linking
-  home.activation.fixHandlrConfigDir =
-    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/handlr";
-  xdg.configFile."handlr".source = ./handlr-conf;
-}
+}:
+let
+  xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
+in lib.mkMerge [
+  {
+    home.packages = config.lib.neg.filterByExclude [pkgs.handlr];
+  }
+  (xdg.mkXdgSource "handlr" { source = ./handlr-conf; })
+]
