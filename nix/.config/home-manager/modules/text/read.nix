@@ -4,9 +4,7 @@
   pkgs,
   ...
 }: {
-  # Remove stale ~/.config/zathura symlink that may point into this repo from older setups
-  home.activation.fixZathuraConfigDir =
-    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/zathura";
+  # Consolidate minor activation tasks via shared key in other modules
 
   home.packages = config.lib.neg.filterByExclude (with pkgs; [
     amfora # terminal browser for gemini

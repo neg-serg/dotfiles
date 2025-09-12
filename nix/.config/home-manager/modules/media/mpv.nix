@@ -4,8 +4,8 @@
   pkgs,
   ...
 }: {
-  # Ensure ~/.config/mpv is a real directory (single aggregated fix)
-  home.activation.ensureMpvConfigDir = config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/mpv";
+  # Ensure ~/.config/mpv is a real directory (use shared key to consolidate output)
+  home.activation.prepareUserPaths = config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/mpv";
 
   programs.mpv = {
     enable = true;

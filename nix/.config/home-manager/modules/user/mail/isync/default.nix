@@ -56,7 +56,8 @@ with lib;
     ];
 
     # Create base maildir on activation (mbsync can also create, but this avoids first-run hiccups)
-    home.activation.createMaildirs = config.lib.neg.mkEnsureMaildirs "$HOME/.local/mail/gmail" [
+    # Use a shared activation key to consolidate output with other minor ensures
+    home.activation.prepareUserPaths = config.lib.neg.mkEnsureMaildirs "$HOME/.local/mail/gmail" [
       "INBOX"
       "[Gmail]/Sent Mail"
       "[Gmail]/Drafts"
