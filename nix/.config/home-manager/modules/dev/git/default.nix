@@ -6,6 +6,9 @@
 }:
 with lib;
   mkIf config.features.dev.enable {
+    # Ensure ~/.config/git is a real directory before linking files into it
+    home.activation.fixGitConfigDir =
+      config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/git";
     # Link user excludes file from repo into ~/.config/git/ignore
     xdg.configFile."git/ignore" = config.lib.neg.mkDotfilesSymlink "git/.config/git/ignore" false;
     home.packages = config.lib.neg.filterByExclude (with pkgs; [
