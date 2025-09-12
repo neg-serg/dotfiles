@@ -30,6 +30,9 @@ in {
     "weevely"
   ];
 
+  # Temporarily disable Vdirsyncer units/timer until credentials are configured
+  features.mail.vdirsyncer.enable = false;
+
   # Unfree policy centralized in modules/misc/unfree.nix (features.allowUnfree.allowed)
 
   nix = {

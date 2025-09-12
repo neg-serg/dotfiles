@@ -25,6 +25,7 @@ in {
 
     gui.enable = mkBool "enable GUI stack (wayland/hyprland, quickshell, etc.)" true;
     mail.enable = mkBool "enable Mail stack (notmuch, isync, vdirsyncer, etc.)" true;
+    mail.vdirsyncer.enable = mkBool "enable Vdirsyncer sync service/timer" true;
     hack.enable = mkBool "enable Hack/security tooling stack" true;
     dev = {
       enable = mkBool "enable Dev stack (toolchains, editors, hack tooling)" true;

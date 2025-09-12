@@ -8,7 +8,7 @@ let
   # Robust relative import: resolves in normal and docs eval (same modules/ tree)
   xdg = import ../../../lib/xdg-helpers.nix { inherit lib; };
 in with lib;
-  mkIf config.features.mail.enable (lib.mkMerge [
+  mkIf (config.features.mail.enable && config.features.mail.vdirsyncer.enable) (lib.mkMerge [
     {
       home.packages = config.lib.neg.filterByExclude (with pkgs; [
         vdirsyncer # add vdirsyncer binary for sync and initialization
