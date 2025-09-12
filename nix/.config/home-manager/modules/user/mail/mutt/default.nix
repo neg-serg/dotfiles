@@ -3,13 +3,11 @@
   config,
   ...
 }:
-with lib;
-  mkIf config.features.mail.enable {
-    # Remove stale ~/.config/mutt symlink from older generations before linking
-    home.activation.fixMuttConfigDir =
-      config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/mutt";
-
-    # Provide full mutt/neomutt configuration under XDG from embedded sources
-    # This avoids any symlinks to ~/.dotfiles and keeps it HM-managed
-    xdg.configFile."mutt".source = ./conf;
-  }
+let
+  xdg = import ../../../lib/xdg-helpers.nix { inherit lib; };
+in with lib;
+  mkIf config.features.mail.enable (
+    lib.mkMerge [
+      (xdg.mkXdgSource "mutt" { source = ./conf; })
+    ]
+  )

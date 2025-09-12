@@ -1,14 +1,15 @@
 {
   pkgs,
+  lib,
   config,
   ...
-}: {
-  # Install amfora and provide its config via XDG
-  home.packages = config.lib.neg.filterByExclude [pkgs.amfora];
-
-  # Remove stale ~/.config/amfora symlink before linking
-  home.activation.fixAmforaConfigDir =
-    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/amfora";
-
-  xdg.configFile."amfora".source = ./amfora-conf;
-}
+}:
+let
+  xdg = import ../lib/xdg-helpers.nix { inherit lib; };
+in lib.mkMerge [
+  {
+    # Install amfora and provide its config via XDG
+    home.packages = config.lib.neg.filterByExclude [pkgs.amfora];
+  }
+  (xdg.mkXdgSource "amfora" { source = ./amfora-conf; })
+]
