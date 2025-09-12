@@ -46,7 +46,7 @@ in
     {
       home.activation.hyprlandSafeReload = lib.hm.dag.entryAfter ["linkGeneration"] ''
         set -eu
-        cfg_dir="${config.xdg.configHome or "${config.home.homeDirectory}/.config"}/hypr"
+        cfg_dir="${config.xdg.configHome}/hypr"
         main_cfg="$cfg_dir/hyprland.conf"
 
         log() { printf "%s\n" "$*"; }
@@ -65,9 +65,9 @@ in
           while IFS= read -r line; do
             case "$line" in
               source*=*)
-                src="${line#*=}"
+                src="''${line#*=}"
                 # Trim possible surrounding spaces
-                src="${src# }"; src="${src% }"
+                src="''${src# }"; src="''${src% }"
                 # Expand ~ for our test
                 eval src_expanded="$src"
                 if [ ! -s "$src_expanded" ]; then
@@ -98,8 +98,8 @@ in
                 while IFS= read -r line; do
                   case "$line" in
                     source*=*)
-                      src="${line#*=}"
-                      src="${src# }"; src="${src% }"
+                      src="''${line#*=}"
+                      src="''${src# }"; src="''${src% }"
                       eval src_expanded="$src"
                       if [ ! -s "$src_expanded" ]; then
                         src_missing=1
