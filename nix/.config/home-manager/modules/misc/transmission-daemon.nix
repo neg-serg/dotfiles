@@ -8,6 +8,10 @@
   home.activation.fixTransmissionDaemonDir =
     config.lib.neg.mkRemoveIfBrokenSymlink "${config.xdg.configHome}/transmission-daemon";
 
+  # Ensure the configuration directory exists as a real dir before the daemon starts
+  home.activation.ensureTransmissionDaemonDir =
+    config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/transmission-daemon";
+
   # Link selected config files from repo; runtime subdirs (resume,torrents) remain local
   xdg.configFile."transmission-daemon/settings.json" =
     config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/misc/transmission-daemon/conf/settings.json" false;

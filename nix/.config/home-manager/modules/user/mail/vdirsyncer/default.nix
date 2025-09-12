@@ -20,6 +20,12 @@ in with lib;
         "$HOME/.config/vdirsyncer/contacts"
       ];
 
+      # Ensure status path under XDG state exists to avoid first-run hiccups
+      home.activation.vdirsyncerStateDir =
+        config.lib.neg.mkEnsureDirsAfterWrite [
+          "${config.xdg.stateHome or "$HOME/.local/state"}/vdirsyncer"
+        ];
+
       systemd.user.services.vdirsyncer = lib.recursiveUpdate {
         Unit.Description = "Vdirsyncer synchronization service";
         Service = {
