@@ -39,6 +39,19 @@ in
       ]);
       programs.hyprlock.enable = true;
     }
+    # Ensure Hyprland reload happens after all files are linked/written, to avoid
+    # a brief window where configs are absent (which could trigger prompts/crashes).
+    {
+      home.activation.hyprlandSafeReload = lib.hm.dag.entryAfter ["linkGeneration"] ''
+        set -eu
+        if command -v hyprctl >/dev/null 2>&1; then
+          # Probe that we can talk to a running Hyprland instance before reloading
+          if hyprctl -j monitors >/dev/null 2>&1; then
+            hyprctl reload >/dev/null 2>&1 || true
+          fi
+        fi
+      '';
+    }
     # Live-editable Hyprland configuration (safe guards via helper)
     # Permissions + plugin load prelude (ensures correct order on first start)
     (xdg.mkXdgText "hypr/permissions.conf" ''
