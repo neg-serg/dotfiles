@@ -16,20 +16,14 @@ in
         package = null;
         portalPackage = null;
         settings = {
-        source = [
-          "${config.xdg.configHome}/hypr/init.conf"
-        ];
-        permission = [
-          "${hy3Plugin}/lib/libhy3.so, plugin, allow"
-          "${pkgs.grim}/bin/grim, screencopy, allow"
-          "${pkgs.hyprlock}/bin/hyprlock, screencopy, allow"
-        ];
+          # Load permissions first, then the main init
+          source = [
+            "${config.xdg.configHome}/hypr/permissions.conf"
+            "${config.xdg.configHome}/hypr/init.conf"
+          ];
+        };
+        systemd.variables = ["--all"];
       };
-      plugins = [
-        hy3Plugin
-      ];
-      systemd.variables = ["--all"];
-    };
       home.packages = config.lib.neg.filterByExclude (with pkgs; [
         hyprcursor # modern cursor theme format (replaces xcursor)
         hypridle # idle daemon
@@ -46,6 +40,16 @@ in
       programs.hyprlock.enable = true;
     }
     # Live-editable Hyprland configuration (safe guards via helper)
+    # Permissions + plugin load prelude (ensures correct order on first start)
+    (xdg.mkXdgText "hypr/permissions.conf" ''
+      ecosystem {
+        enforce_permissions = 1
+      }
+      permission = ${hy3Plugin}/lib/libhy3.so, plugin, allow
+      permission = ${pkgs.grim}/bin/grim, screencopy, allow
+      permission = ${pkgs.hyprlock}/bin/hyprlock, screencopy, allow
+      plugin = ${hy3Plugin}/lib/libhy3.so
+    '')
     (xdg.mkXdgSource "hypr/init.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/init.conf" false))
     (xdg.mkXdgSource "hypr/rules.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/rules.conf" false))
     (xdg.mkXdgSource "hypr/bindings.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings.conf" false))
