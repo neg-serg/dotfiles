@@ -15,6 +15,43 @@ with lib;
       if (config ? lib) && (config.lib ? neg) && (config.lib.neg ? mkBool)
       then config.lib.neg.mkBool
       else (desc: default: (lib.mkEnableOption desc) // { inherit default; });
+    # Minimal local presets helper for systemd user units
+    presets = {
+      defaultWanted = {
+        after = [];
+        wants = [];
+        wantedBy = ["default.target"];
+        partOf = [];
+      };
+      tmpfiles = {
+        after = ["systemd-tmpfiles-setup.service"];
+        wants = [];
+        wantedBy = [];
+        partOf = [];
+      };
+    };
+    mkUnitFromPresets = args: let
+      # args: { presets = ["defaultWanted" ...]; after ? [], wants ? [], partOf ? [], wantedBy ? [] }
+      names = args.presets or [];
+      accum = lib.foldl' (acc: n: {
+        after = acc.after ++ (presets.${n}.after or []);
+        wants = acc.wants ++ (presets.${n}.wants or []);
+        partOf = acc.partOf ++ (presets.${n}.partOf or []);
+        wantedBy = acc.wantedBy ++ (presets.${n}.wantedBy or []);
+      }) { after = []; wants = []; partOf = []; wantedBy = []; } names;
+      merged = {
+        after = lib.unique (accum.after ++ (args.after or []));
+        wants = lib.unique (accum.wants ++ (args.wants or []));
+        partOf = lib.unique (accum.partOf ++ (args.partOf or []));
+        wantedBy = lib.unique (accum.wantedBy ++ (args.wantedBy or []));
+      };
+    in {
+      Unit =
+        lib.optionalAttrs (merged.after != []) { After = merged.after; }
+        // lib.optionalAttrs (merged.wants != []) { Wants = merged.wants; }
+        // lib.optionalAttrs (merged.partOf != []) { PartOf = merged.partOf; };
+      Install = lib.optionalAttrs (merged.wantedBy != []) { WantedBy = merged.wantedBy; };
+    };
   in {
     options.modules.audio-nix.yabridgemgr = {
       enable = mkBool "Yabridgemgr" false;
@@ -60,38 +97,29 @@ with lib;
             wineprefix = build_prefix;
           };
           umount_prefix = pkgs.callPackage ./plumbing/umount_prefix.nix {};
-        in {
-          description = "Mount yabridge prefix";
-          after = [
-            "systemd-tmpfiles-setup.service" # ensure tmpfiles have run
-          ];
-          wantedBy = [
-            "default.target" # start by default in user session
-          ];
-          serviceConfig = {
+        in (lib.recursiveUpdate {
+          Unit.Description = "Mount yabridge prefix";
+          Service = {
             RuntimeDirectory = "yabridgemgr";
             ExecStart = "${mount_prefix}/bin/mount_prefix";
             ExecStop = "${umount_prefix}/bin/umount_prefix";
             RemainAfterExit = "yes";
           };
-          unitConfig = {ConditionUser = "${cfg.user}";};
-        };
-        yabridgemgr_sync = {
-          description = "yabridgectl sync";
-          after = [
-            "yabridgemgr_mountprefix.service" # mount prefix before sync
-          ];
-          wantedBy = [
-            "default.target" # start by default in user session
-          ];
-          serviceConfig = {
-            ExecStart = "${pkgs.yabridgectl}/bin/yabridgectl sync";
-            ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
-            Environment = "NIX_PROFILES=/run/current-system/sw";
-            RemainAfterExit = "yes";
-          };
-          unitConfig = {ConditionUser = "${cfg.user}";};
-        };
+          Unit.ConditionUser = "${cfg.user}";
+        } (mkUnitFromPresets { presets = ["tmpfiles" "defaultWanted"]; }))
+        ;
+        yabridgemgr_sync =
+          (lib.recursiveUpdate {
+            Unit.Description = "yabridgectl sync";
+            Service = {
+              ExecStart = "${pkgs.yabridgectl}/bin/yabridgectl sync";
+              ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
+              Environment = "NIX_PROFILES=/run/current-system/sw";
+              RemainAfterExit = "yes";
+            };
+            Unit.ConditionUser = "${cfg.user}";
+          } (mkUnitFromPresets { presets = ["defaultWanted"]; after = ["yabridgemgr_mountprefix.service"]; }))
+        ;
       };
     };
   }
