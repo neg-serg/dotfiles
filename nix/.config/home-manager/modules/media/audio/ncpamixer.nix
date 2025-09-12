@@ -1,8 +1,6 @@
-{ config, ... }: {
-  # Guard: avoid writing through an unexpected symlink
-  home.activation.fixNcpamixerConfSymlink =
-    config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/ncpamixer.conf";
-
-  # Write ncpamixer config file under XDG
-  xdg.configFile."ncpamixer.conf".text = builtins.readFile ./ncpamixer.conf;
-}
+{ lib, ... }:
+let
+  xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
+in lib.mkMerge [
+  (xdg.mkXdgText "ncpamixer.conf" (builtins.readFile ./ncpamixer.conf))
+]
