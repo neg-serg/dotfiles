@@ -1,12 +1,13 @@
 {
   pkgs,
   lib,
+  config,
   ...
 }: {
-  home.packages = with pkgs; [
+  home.packages = config.lib.neg.filterByExclude (with pkgs; [
     fastfetch # modern, fast system fetch
     onefetch # repository summary in terminal
-  ];
+  ]);
   xdg.configFile."fastfetch/skull".text = ''
                           :::!~!!!!!:.
                       .xUHWH!! !!?M88WHX:.

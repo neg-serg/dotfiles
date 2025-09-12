@@ -1,7 +1,7 @@
 { lib, config, pkgs, ... }:
 {
   # Install tig and provide its configuration via XDG
-  home.packages = [ pkgs.tig ];
+  home.packages = config.lib.neg.filterByExclude [ pkgs.tig ];
 
   # Ensure ~/.config/tig is a real directory (remove stale/broken symlink)
   home.activation.fixTigConfigDir =

@@ -8,7 +8,7 @@
 with lib;
   mkIf config.features.gui.enable {
     home.sessionVariables = {};
-    home.packages = with pkgs; [
+    home.packages = config.lib.neg.filterByExclude (with pkgs; [
       dragon-drop # drag-n-drop from console
       fuzzel # wayland launcher
       gowall # tool to convert a Wallpaper's color scheme / palette
@@ -25,5 +25,5 @@ with lib;
       wl-clip-persist # clipboard persistence tool
       wtype # typing for wayland
       ydotool # xdotool systemwide
-    ];
+    ]);
   }

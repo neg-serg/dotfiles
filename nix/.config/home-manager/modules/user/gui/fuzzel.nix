@@ -1,6 +1,5 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
-  home.packages = [ pkgs.fuzzel ];
+  home.packages = config.lib.neg.filterByExclude [ pkgs.fuzzel ];
   xdg.configFile."fuzzel".source = ./fuzzel-conf;
 }
-

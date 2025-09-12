@@ -9,7 +9,7 @@ mkIf (config.features.web.enable && config.features.web.nyxt.enable) (let
   nyxtPkg = pkgs.nyxt;
   dlDir = "${config.home.homeDirectory}/dw";
 in {
-  home.packages = [ nyxtPkg ];
+  home.packages = config.lib.neg.filterByExclude [ nyxtPkg ];
 
   # Ensure Nyxt config dir exists and file is not blocking linking
   home.activation.fixNyxtConfigDir =

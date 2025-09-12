@@ -25,13 +25,11 @@ with lib; {
       ];
     }
     (mkIf config.features.web.enable {
-      home.packages = with pkgs;
-        [
-          passff-host # host app for the WebExtension PassFF
-        ]
-        ++ (optionals (yandexBrowser != null && config.features.web.yandex.enable) [
-          yandexBrowser.yandex-browser-stable # Yandex Browser (Chromium)
-        ]);
+      home.packages = config.lib.neg.filterByExclude ((with pkgs; [
+        passff-host # host app for the WebExtension PassFF
+      ]) ++ (optionals (yandexBrowser != null && config.features.web.yandex.enable) [
+        yandexBrowser.yandex-browser-stable # Yandex Browser (Chromium)
+      ]));
     })
   ];
 }

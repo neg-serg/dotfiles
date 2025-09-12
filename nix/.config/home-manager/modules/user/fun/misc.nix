@@ -1,5 +1,5 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
+{pkgs, config, ...}: {
+  home.packages = config.lib.neg.filterByExclude (with pkgs; [
     almonds # TUI fractal viewer
     bucklespring # for keyboard sounds
     cool-retro-term # a retro terminal emulator
@@ -16,5 +16,5 @@
     toilet # text banners
     xephem # astronomy app
     xlife # cellular automata
-  ];
+  ]);
 }

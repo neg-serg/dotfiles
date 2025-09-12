@@ -38,6 +38,6 @@ lib.mkIf config.features.media.audio.apps.enable (
     # Enable all groups by default; can be refined later if needed
     flags = (builtins.listToAttrs (map (n: { name = n; value = true; }) (builtins.attrNames groups)));
   in {
-    home.packages = config.lib.neg.mkEnabledList flags groups;
+    home.packages = config.lib.neg.filterByExclude (config.lib.neg.mkEnabledList flags groups);
   }
 )

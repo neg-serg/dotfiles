@@ -36,7 +36,7 @@ with lib; let
   };
 in
   mkIf config.features.gui.enable {
-    home.packages = with pkgs; [
+    home.packages = config.lib.neg.filterByExclude (with pkgs; [
       cantarell-fonts # GNOME Cantarell fonts
       cava # console audio visualizer
       inputs.rsmetrx.packages.${pkgs.system}.default # metrics/telemetry helper
@@ -59,7 +59,7 @@ in
       qt6.qtimageformats # extra image formats (Qt6)
       qt6.qtsvg # SVG support (Qt6)
       quickshellWrapped # wrapper with required env paths
-    ];
+    ]);
 
     # Remove stale ~/.config/quickshell symlink from older generations before linking
     home.activation.fixQuickshellConfigDir =

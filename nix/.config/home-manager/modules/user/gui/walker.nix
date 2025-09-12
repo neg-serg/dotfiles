@@ -1,7 +1,7 @@
 { lib, config, pkgs, ... }:
 with lib;
   mkIf config.features.gui.enable {
-    home.packages = [ pkgs.walker ];
+    home.packages = config.lib.neg.filterByExclude [ pkgs.walker ];
 
     # Remove stale ~/.config/walker symlink from older generations before linking
     home.activation.fixWalkerConfigDir =

@@ -42,8 +42,8 @@ in
         };
       };
     };
-    home.packages = with pkgs; [
+    home.packages = config.lib.neg.filterByExclude (with pkgs; [
       pipx # isolated Python apps installer
       (python3-lto.withPackages pyPackages) # optimized Python with selected libs
-    ];
+    ]);
   }

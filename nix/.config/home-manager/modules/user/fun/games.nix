@@ -1,5 +1,5 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
+{pkgs, config, ...}: {
+  home.packages = config.lib.neg.filterByExclude (with pkgs; [
     abuse # classic side-scrolling shooter customizable with LISP
     airshipper # for veloren voxel game
     angband # roguelike
@@ -17,5 +17,5 @@
     shattered-pixel-dungeon # roguelike
     # unnethack # roguelike
     xaos # smooth fractal explorer
-  ];
+  ]);
 }

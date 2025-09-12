@@ -8,12 +8,12 @@ with lib;
   mkIf config.features.dev.enable {
     # Link user excludes file from repo into ~/.config/git/ignore
     xdg.configFile."git/ignore" = config.lib.neg.mkDotfilesSymlink "git/.config/git/ignore" false;
-    home.packages = with pkgs; [
+    home.packages = config.lib.neg.filterByExclude (with pkgs; [
       act # run GitHub Actions locally
       difftastic # syntax-aware diff viewer
       gh # GitHub CLI
       gist # manage GitHub gists
-    ];
+    ]);
 
     home.file.".config/git/hooks/pre-commit" = {
       text = ''

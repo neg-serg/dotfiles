@@ -12,15 +12,18 @@ with lib; {
         message = "RetroArch full mode enabled but pkgs.retroarchFull is not available on this system.";
       }
     ];
-    home.packages = with pkgs;
-      [
-        pcem # emulator for ibm pc and clones
-        pcsx2 # ps2 emulator
-      ]
-      ++ (
-        if config.features.emulators.retroarch.full
-        then [retroarchFull]
-        else [retroarch]
-      ); # frontend (full|free cores)
+    home.packages = config.lib.neg.filterByExclude (
+      with pkgs; (
+        [
+          pcem # emulator for ibm pc and clones
+          pcsx2 # ps2 emulator
+        ]
+        ++ (
+          if config.features.emulators.retroarch.full
+          then [retroarchFull]
+          else [retroarch]
+        )
+      )
+    ); # frontend (full|free cores)
   };
 }

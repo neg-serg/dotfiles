@@ -3,7 +3,7 @@
   home.activation.fixZathuraConfigDir =
     config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/zathura";
 
-  home.packages = with pkgs; [
+  home.packages = config.lib.neg.filterByExclude (with pkgs; [
     amfora # terminal browser for gemini
     antiword # convert ms word to text or ps
     epr # cli epub reader
@@ -13,7 +13,7 @@
     sioyek # nice zathura alternative
     tesseract # ocr
     zotero # tool to organize cites
-  ];
+  ]);
   programs.zathura = {
     enable = true;
     options = {

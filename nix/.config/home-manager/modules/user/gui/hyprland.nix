@@ -37,7 +37,7 @@ in
       "hypr/workspaces.conf" = config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/workspaces.conf" false;
       "hypr/pyprland.toml" = config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/pyprland.toml" false;
     };
-    home.packages = with pkgs; [
+    home.packages = config.lib.neg.filterByExclude (with pkgs; [
       hyprcursor # modern cursor theme format (replaces xcursor)
       hypridle # idle daemon
       hyprland-qt-support # Qt integration fixes
@@ -49,6 +49,6 @@ in
       kdePackages.qt6ct # Qt6 config tool
       pyprland # Hyprland plugin system
       upower # power management daemon
-    ];
+    ]);
     programs.hyprlock.enable = true;
   }

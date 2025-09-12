@@ -1,5 +1,5 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
+{pkgs, config, ...}: {
+  home.packages = config.lib.neg.filterByExclude (with pkgs; [
     tomb # file encryption in linux
     keepass # password manager with strong cryptography
     pass-git-helper # git credential helper interfacing with pass
@@ -12,5 +12,5 @@
         pass-tomb # encrypt all password tree inside a tomb
         pass-update # easy flow to update passwords
       ]))
-  ];
+  ]);
 }

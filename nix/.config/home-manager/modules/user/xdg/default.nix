@@ -100,10 +100,10 @@ with rec {
     "image/png" = ["wine-extension-png.desktop"];
   };
 }; {
-  home.packages = with pkgs; [
+  home.packages = config.lib.neg.filterByExclude (with pkgs; [
     handlr # xdg-open replacement with per-handler rules
     xdg-ninja # detect mislocated files in $HOME
-  ];
+  ]);
   xdg = {
     enable = true;
     userDirs = {

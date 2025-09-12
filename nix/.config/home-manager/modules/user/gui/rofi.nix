@@ -10,7 +10,7 @@ with lib;
     home.activation.fixRofiConfigDir =
       config.lib.neg.mkRemoveIfSymlink "${config.xdg.configHome}/rofi";
 
-    home.packages = with pkgs; [
+    home.packages = config.lib.neg.filterByExclude (with pkgs; [
       rofi-pass-wayland # pass interface for rofi-wayland
       (rofi.override {
         plugins = [
@@ -19,7 +19,7 @@ with lib;
         ];
       }) # modern dmenu alternative
       # cliphist is provided in gui/apps.nix; no need for greenclip/clipmenu
-    ];
+    ]);
 
     # Live-editable config: out-of-store symlink pointing to repo files
     xdg.configFile."rofi" =

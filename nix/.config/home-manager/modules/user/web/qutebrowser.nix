@@ -1,5 +1,5 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
+{pkgs, config, ...}: {
+  home.packages = config.lib.neg.filterByExclude (with pkgs; [
     (qutebrowser.overrideAttrs (oldAttrs: {
       qtWrapperArgs =
         (oldAttrs.qtWrapperArgs or [])
@@ -17,5 +17,5 @@
             --add-flags "--qt-flag disable-features=UseChromeOSDirectVideoDecoder"
         '';
     }))
-  ];
+  ]);
 }

@@ -5,7 +5,7 @@
   ...
 }:
 lib.mkIf config.features.media.audio.creation.enable {
-  home.packages = with pkgs; [
+  home.packages = config.lib.neg.filterByExclude (with pkgs; [
     bespokesynth # nice modular synth
     dexed # nice yamaha dx7-like fm synth
     noisetorch # virtual microphone to suppress the noise
@@ -15,5 +15,5 @@ lib.mkIf config.features.media.audio.creation.enable {
     stochas # nice free sequencer
     vcv-rack # powerful soft modular synth
     vital # serum-like digital synth
-  ];
+  ]);
 }

@@ -6,9 +6,9 @@
 }:
 with lib;
   mkIf config.features.mail.enable {
-    home.packages = with pkgs; [
+    home.packages = config.lib.neg.filterByExclude (with pkgs; [
       vdirsyncer # add vdirsyncer binary for sync and initialization
-    ];
+    ]);
 
     # Ensure local storage directories exist
     home.activation.vdirsyncerDirs = config.lib.neg.mkEnsureDirsAfterWrite [

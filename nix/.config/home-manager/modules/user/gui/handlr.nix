@@ -1,6 +1,5 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
-  home.packages = [ pkgs.handlr ];
+  home.packages = config.lib.neg.filterByExclude [ pkgs.handlr ];
   xdg.configFile."handlr".source = ./handlr-conf;
 }
-
