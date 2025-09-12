@@ -66,3 +66,23 @@
   - Import tip (robust for docs eval): 
     - From `modules/dev/...` or `modules/media/...`: `let xdg = import ../../lib/xdg-helpers.nix { inherit lib; };`
     - From `modules/user/mail/...`: `let xdg = import ../../../lib/xdg-helpers.nix { inherit lib; };`
+
+- Merging attrsets
+  - Prefer `lib.mkMerge [ a b ... ]` over top-level `//` for combining module fragments.
+  - Keep each logical piece in its own attrset within `mkMerge` (e.g., package set, xdg helpers, systemd units).
+
+- Runtime directories (first-run safety)
+  - Ensure required runtime/state directories exist before services start or files are written.
+    - After write: `home.activation.ensureDirs = config.lib.neg.mkEnsureDirsAfterWrite ["$XDG_STATE_HOME/zsh"];`
+    - Real config dir: `home.activation.fixFoo = config.lib.neg.mkEnsureRealDir "${config.xdg.configHome}/foo";`
+    - Maildir trees: `config.lib.neg.mkEnsureMaildirs "$HOME/.local/mail/gmail" ["INBOX" ...]`
+  - Use these in addition to xdg helpers when apps require extra runtime dirs (sockets, logs, caches) outside XDG config files.
+
+- Out-of-store dotfile links
+  - For live-editable configs stored in this repo, prefer: `config.lib.neg.mkDotfilesSymlink "path/in/repo" <recursive?>`.
+  - Combine with `xdg.mkXdgSource` to get guards + correct placement under XDG.
+
+- Imports (xdg helpers) — convention
+  - Use a local binding near the top of a module:
+    - `let xdg = import ../../lib/xdg-helpers.nix { inherit lib; }; in lib.mkMerge [ ... ]`
+  - Choose `../../` depth according to the module path.
