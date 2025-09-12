@@ -11,9 +11,13 @@ with lib;
 # Base config for all Linux systems
   let
     cfg = config.modules.audio-nix.yabridgemgr;
+    mkBool =
+      if (config ? lib) && (config.lib ? neg) && (config.lib.neg ? mkBool)
+      then config.lib.neg.mkBool
+      else (desc: default: (lib.mkEnableOption desc) // { inherit default; });
   in {
     options.modules.audio-nix.yabridgemgr = {
-      enable = mkEnableOption "Yabridgemgr";
+      enable = mkBool "Yabridgemgr" false;
       user = mkOption {
         type = types.str;
         description = "User for yabridgemgr";
