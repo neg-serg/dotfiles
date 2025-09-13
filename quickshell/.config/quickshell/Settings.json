@@ -18,8 +18,7 @@
     "ignoredPlayers": [
     ],
     "lastActivePlayers": [
-        "Music Player Daemon",
-        "mpv"
+        "Music Player Daemon"
     ],
     "mediaTitleSeparator": "—",
     "monitorScaleOverrides": {
