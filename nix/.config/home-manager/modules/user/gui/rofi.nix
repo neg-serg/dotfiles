@@ -72,9 +72,18 @@ with lib;
     (xdg.mkXdgDataSource "rofi/themes/neg.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/neg.rasi" false))
     (xdg.mkXdgDataSource "rofi/themes/pass.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/pass.rasi" false))
     (xdg.mkXdgDataSource "rofi/themes/theme.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/theme.rasi" false))
-    (xdg.mkXdgDataSource "rofi/themes/win/no_gap.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/win/no_gap.rasi" false))
-    (xdg.mkXdgDataSource "rofi/themes/win/center_btm.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/win/center_btm.rasi" false))
+    # Window fragments used by config-loaded themes live only in ~/.config/rofi
+    # to avoid duplicate links and stale XDG data paths.
     (xdg.mkXdgDataSource "rofi/themes/clip.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/clip.rasi" false))
     (xdg.mkXdgDataSource "rofi/themes/sxiv.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/sxiv.rasi" false))
     (xdg.mkXdgDataSource "rofi/themes/win/left_btm.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/win/left_btm.rasi" false))
+    {
+      # Clean up old unmanaged XDG data theme fragments from pre-refactor
+      home.activation.cleanupOldRofiWinThemes =
+        let d = xdgDataHome; in
+        config.lib.neg.mkEnsureAbsentMany [
+          "${d}/rofi/themes/win/center_btm.rasi"
+          "${d}/rofi/themes/win/no_gap.rasi"
+        ];
+    }
   ])
