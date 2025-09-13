@@ -45,6 +45,9 @@ in {
       librewolf.enable = mkBool "enable LibreWolf browser" false;
       nyxt.enable = mkBool "enable Nyxt browser" true;
       yandex.enable = mkBool "enable Yandex browser" true;
+      prefs = {
+        fastfox.enable = mkBool "enable FastFox-like perf prefs for Mozilla browsers" true;
+      };
     };
 
     media = {
@@ -92,6 +95,7 @@ in {
           tools.enable = mkDefault false;
           floorp.enable = mkDefault false;
           yandex.enable = mkDefault false;
+          prefs.fastfox.enable = mkDefault false;
         };
         emulators.retroarch.full = mkDefault false;
         fun.enable = mkDefault false;
@@ -108,6 +112,7 @@ in {
           librewolf.enable = mkDefault false;
           nyxt.enable = mkDefault true;
           yandex.enable = mkDefault true;
+          prefs.fastfox.enable = mkDefault true;
         };
         media.audio = {
           core.enable = mkDefault true;
@@ -129,6 +134,7 @@ in {
         librewolf.enable = mkDefault false;
         nyxt.enable = mkDefault false;
         yandex.enable = mkDefault false;
+        prefs.fastfox.enable = mkDefault false;
       };
     })
     (mkIf (! cfg.dev.enable) {

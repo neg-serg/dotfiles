@@ -7,10 +7,7 @@
 }:
 with lib; let
   dlDir = "${config.home.homeDirectory}/dw";
-  fa' =
-    if fa != null
-    then fa
-    else pkgs.nur.repos.rycee.firefox-addons;
+  fa' = if fa != null then fa else pkgs.nur.repos.rycee.firefox-addons;
   addons = config.lib.neg.browserAddons fa';
 
   nativeMessagingHosts = [
@@ -18,34 +15,45 @@ with lib; let
     pkgs.tridactyl-native
   ];
 
-  settings = {
+  baseSettings = {
+    # Locale/region
     "browser.region.update.region" = "US";
     "browser.search.region" = "US";
     "intl.locale.requested" = "en-US";
-
+    # Downloads and userChrome support
     "browser.download.dir" = dlDir;
     "browser.download.useDownloadDir" = true;
+    "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+    # Content blocking and notifications
+    "browser.contentblocking.category" = "standard";
+    "permissions.default.desktop-notification" = 2;
+    # HW video decoding (Wayland/VA-API)
+    "media.ffmpeg.vaapi.enabled" = true;
+    "media.hardware-video-decoding.enabled" = true;
+    # Disable autoplay
+    "media.autoplay.default" = 1; # block audible
+    "media.autoplay.blocking_policy" = 2;
+    "media.autoplay.block-webaudio" = true;
+    "media.block-autoplay-until-in-foreground" = true;
+  };
+
+  fastfoxSettings = {
+    # UX / warnings / minor QoL
     "general.warnOnAboutConfig" = false;
     "accessibility.typeaheadfind.flashBar" = 0;
     "browser.bookmarks.addedImportButton" = false;
     "browser.bookmarks.restore_default_bookmarks" = false;
-    "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-
-    "browser.contentblocking.category" = "standard";
-
-    "permissions.default.desktop-notification" = 2;
-
-    "privacy.resistFingerprinting.block_mozAddonManager" = true;
-
+    # PDF viewer tightening
     "pdfjs.disabled" = true;
     "pdfjs.enableScripting" = false;
     "pdfjs.enableXFA" = false;
-
+    # Color management
     "gfx.color_management.enabled" = true;
     "gfx.color_management.enablev4" = false;
-
+    # Process model and site isolation
     "dom.ipc.processCount" = 8;
     "fission.autostart" = true;
+    # Networking concurrency and caches
     "network.http.max-connections" = 1800;
     "network.http.max-persistent-connections-per-server" = 10;
     "network.http.max-urgent-start-excessive-connections-per-host" = 6;
@@ -53,30 +61,21 @@ with lib; let
     "network.dnsCacheExpirationGracePeriod" = 240;
     "network.ssl_tokens_cache_capacity" = 32768;
     "network.speculative-connection.enabled" = true;
+    # Memory / tabs
     "browser.tabs.unloadOnLowMemory" = true;
     "browser.sessionstore.restore_tabs_lazily" = true;
+    # Rendering
     "gfx.webrender.all" = true;
     "gfx.webrender.precache-shaders" = true;
-
-    "media.ffmpeg.vaapi.enabled" = true;
-    "media.hardware-video-decoding.enabled" = true;
-
-    "media.autoplay.default" = 1;
-    "media.autoplay.blocking_policy" = 2;
-    "media.autoplay.block-webaudio" = true;
-    "media.block-autoplay-until-in-foreground" = true;
-
+    # Misc
     "browser.startup.preXulSkeletonUI" = false;
+    # Optional: MAM exposure under RFP (can break AMO)
+    "privacy.resistFingerprinting.block_mozAddonManager" = true;
   };
 
-  extraConfig = ''
-    // Optional / disabled prefs (enable only if you really want them)
-    // user_pref("extensions.webextensions.restrictedDomains", "");
-    // user_pref("xpinstall.signatures.required", false);
-    // user_pref("network.trr.mode", 3);
-    // user_pref("network.trr.uri", "https://dns.example/dns-query");
-    // user_pref("network.trr.bootstrapAddress", "9.9.9.9");
-  '';
+  settings = baseSettings // (optionalAttrs (config.features.web.prefs.fastfox.enable or false) fastfoxSettings);
+
+  extraConfig = "";
 
   userChrome = ''
     /* Hide buttons you don't use */
