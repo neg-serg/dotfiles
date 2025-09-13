@@ -12,7 +12,7 @@
     ./notmuch
     ./vdirsyncer
   ];
-  home.packages = config.lib.neg.filterByExclude (with pkgs;
+  home.packages = with pkgs; config.lib.neg.pkgsList (
     lib.optionals config.features.mail.enable [
       himalaya # modern cli for mail
       kyotocabinet # mail client helper library
