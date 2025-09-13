@@ -57,6 +57,14 @@ in lib.mkMerge [
     swayimg swayimg-first viu
   ];
   home.file.".local/bin/swayimg".source = "${swayimg-first}/bin/swayimg-first";
+  home.file.".local/bin/sx" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      set -euo pipefail
+      exec swayimg-first "$@"
+    '';
+  };
   home.file.".local/bin/sxivnc".text = ''
     #!/usr/bin/env bash
     set -euo pipefail
