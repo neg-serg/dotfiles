@@ -193,6 +193,21 @@
         mkdir -p "${path}"
       '';
 
+    # Ensure multiple directories exist before linkGeneration and are real dirs (not symlinks)
+    # For each path: if path is a symlink, remove it, then mkdir -p path
+    mkEnsureRealDirsMany = paths: let
+      quoted = lib.concatStringsSep " " (map (p: "\"" + p + "\"") paths);
+    in
+      lib.hm.dag.entryBefore ["linkGeneration"] ''
+        set -eu
+        for p in ${quoted}; do
+          if [ -L "$p" ]; then
+            rm -f "$p"
+          fi
+          mkdir -p "$p"
+        done
+      '';
+
     mkRemoveIfNotSymlink = path:
       lib.hm.dag.entryBefore ["linkGeneration"] ''
         set -eu

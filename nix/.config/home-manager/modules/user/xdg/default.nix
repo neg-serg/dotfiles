@@ -208,35 +208,26 @@ with rec {
       }
     ];
   };
-  # Consolidated minor pre-link tasks to minimize activation noise
-  home.activation.prepareUserPaths = lib.hm.dag.entryBefore ["linkGeneration"] ''
-    set -eu
-    config_home="$XDG_CONFIG_HOME"; [ -n "$config_home" ] || config_home="$HOME/.config"
-    state_home="$XDG_STATE_HOME";   [ -n "$state_home" ]   || state_home="$HOME/.local/state"
-    bin_home="$HOME/.local/bin"
+  # Replace ad-hoc ensure/clean steps with lib.neg helpers
+  # Ensure common runtime/config dirs exist as real directories
+  home.activation.ensureCommonDirs =
+    config.lib.neg.mkEnsureRealDirsMany [
+      "${config.xdg.configHome}/mpv"
+      "${config.xdg.configHome}/transmission-daemon"
+      "${config.xdg.stateHome}/zsh"
+      "${config.home.homeDirectory}/.local/bin"
+    ];
 
-    # Ensure common runtime/config dirs exist
-    mkdir -p "$config_home/mpv" \
-             "$config_home/transmission-daemon" \
-             "$state_home/zsh" \
-             "$bin_home"
+  # Ensure swayimg wrapper target is absent before linking the wrapper
+  home.activation.cleanSwayimgWrapper =
+    config.lib.neg.mkEnsureAbsent "${config.home.homeDirectory}/.local/bin/swayimg";
 
-    # Ensure swayimg wrapper target is clean before link
-    tgt="$bin_home/swayimg"
-    if [ -e "$tgt" ] || [ -L "$tgt" ]; then rm -rf "$tgt"; fi
-
-    # Ensure Maildir tree for gmail
-    ensure_maildir() {
-      base="$1"
-      shift
-      for box in "$@"; do
-        mkdir -p "$base/$box/cur" "$base/$box/new" "$base/$box/tmp"
-      done
-    }
-    ensure_maildir "$HOME/.local/mail/gmail" \
-      "INBOX" \
-      "[Gmail]/Sent Mail" \
-      "[Gmail]/Drafts" \
+  # Ensure Gmail Maildir tree exists (INBOX, Sent, Drafts, All Mail)
+  home.activation.ensureGmailMaildirs =
+    config.lib.neg.mkEnsureMaildirs "${config.home.homeDirectory}/.local/mail/gmail" [
+      "INBOX"
+      "[Gmail]/Sent Mail"
+      "[Gmail]/Drafts"
       "[Gmail]/All Mail"
-  '';
+    ];
 }
