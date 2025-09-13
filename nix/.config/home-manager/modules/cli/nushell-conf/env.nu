@@ -96,4 +96,6 @@ $env.config.history = {
 }
 
 # Also reflect the history path if supported
-$env.config = ($env.config | upsert history ($env.config.history | upsert path $env.NU_HISTORY_PATH))
+# Note: Some Nushell versions do not support `history.path` in config.
+# Rely on the default history location; `$env.NU_HISTORY_PATH` is set above
+# but we avoid injecting an unsupported `history.path` key into `$env.config`.
