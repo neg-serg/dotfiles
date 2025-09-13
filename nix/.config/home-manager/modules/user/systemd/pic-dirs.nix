@@ -14,5 +14,5 @@
       Restart = "on-failure";
       RestartSec = "1";
     };
-  } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["defaultWanted" "socketsTarget"];});
+  } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["defaultWanted"];});
 }
