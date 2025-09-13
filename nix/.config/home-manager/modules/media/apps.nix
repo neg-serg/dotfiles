@@ -5,7 +5,7 @@
   ...
 }:
 lib.mkIf (config.features.media.audio.apps.enable or false) {
-  home.packages = config.lib.neg.filterByExclude (with pkgs; [
+  home.packages = with pkgs; config.lib.neg.pkgsList [
     ffmpeg-full # famous multimedia lib
     ffmpegthumbnailer # thumbnail for video
     gmic # new framework for image processing
@@ -15,5 +15,5 @@ lib.mkIf (config.features.media.audio.apps.enable or false) {
     pkgs.neg.mkvcleaner # clean mkv files from useless data
     mpvc # CLI controller for mpv
     playerctl # media controller for everything
-  ]);
+  ];
 }

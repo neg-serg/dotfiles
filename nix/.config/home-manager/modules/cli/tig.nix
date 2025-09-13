@@ -8,7 +8,7 @@
 in lib.mkMerge [
   {
   # Install tig and provide its configuration via XDG
-  home.packages = config.lib.neg.filterByExclude [pkgs.tig];
+  home.packages = config.lib.neg.pkgsList [pkgs.tig];
   }
   (xdg.mkXdgText "tig/config" ''
       #--[ View settings ]-----------------------------------------------------------------------------------------------

@@ -24,7 +24,7 @@ in
         };
         systemd.variables = ["--all"];
       };
-      home.packages = config.lib.neg.filterByExclude (with pkgs; [
+      home.packages = with pkgs; config.lib.neg.pkgsList [
         hyprcursor # modern cursor theme format (replaces xcursor)
         hypridle # idle daemon
         hyprland-qt-support # Qt integration fixes
@@ -36,7 +36,7 @@ in
         kdePackages.qt6ct # Qt6 config tool
         pyprland # Hyprland plugin system
         upower # power management daemon
-      ]);
+      ];
       programs.hyprlock.enable = true;
     }
     # Ensure Hyprland reload happens after all files are linked/written, to avoid

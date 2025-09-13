@@ -10,9 +10,9 @@ let
 in with lib;
   mkIf (config.features.mail.enable && config.features.mail.vdirsyncer.enable) (lib.mkMerge [
     {
-      home.packages = config.lib.neg.filterByExclude (with pkgs; [
+      home.packages = with pkgs; config.lib.neg.pkgsList [
         vdirsyncer # add vdirsyncer binary for sync and initialization
-      ]);
+      ];
 
       # Ensure local storage directories exist
       home.activation.vdirsyncerDirs = config.lib.neg.mkEnsureDirsAfterWrite [

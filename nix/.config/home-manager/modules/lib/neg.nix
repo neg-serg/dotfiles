@@ -29,6 +29,11 @@
     filterByExclude = pkgsList:
       config.lib.neg.filterByNames (config.features.excludePkgs or []) pkgsList;
 
+    # Shorthand: apply global excludePkgs filter to a list of packages
+    # Usage:
+    #   home.packages = with pkgs; config.lib.neg.pkgsList [ foo bar ];
+    pkgsList = xs: config.lib.neg.filterByExclude xs;
+
     # Emit a warning (non-fatal) when condition holds
     mkWarnIf = cond: msg: {
       warnings = lib.optional cond msg;

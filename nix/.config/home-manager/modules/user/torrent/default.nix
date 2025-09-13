@@ -7,11 +7,11 @@
 with {
   transmission = pkgs.transmission_4;
 }; {
-  home.packages = config.lib.neg.filterByExclude (with pkgs; [
+  home.packages = with pkgs; config.lib.neg.pkgsList [
     bitmagnet # dht crawler
     pkgs.neg.bt_migrate # torrent migrator
     rustmission # new transmission client
-  ]);
+  ];
 
   systemd.user.services.transmission-daemon = lib.recursiveUpdate {
     Unit = {

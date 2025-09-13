@@ -3,7 +3,7 @@
   config,
   ...
 }: {
-  home.packages = config.lib.neg.filterByExclude (with pkgs; [
+  home.packages = with pkgs; config.lib.neg.pkgsList [
     almonds # TUI fractal viewer
     bucklespring # for keyboard sounds
     cool-retro-term # a retro terminal emulator
@@ -20,5 +20,5 @@
     toilet # text banners
     xephem # astronomy app
     xlife # cellular automata
-  ]);
+  ];
 }

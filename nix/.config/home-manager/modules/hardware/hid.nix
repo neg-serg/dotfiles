@@ -3,8 +3,8 @@
   config,
   ...
 }: {
-  home.packages = config.lib.neg.filterByExclude (with pkgs; [
+  home.packages = with pkgs; config.lib.neg.pkgsList [
     evhz # show mouse refresh rate
     openrgb # manage rgb highlight
-  ]);
+  ];
 }

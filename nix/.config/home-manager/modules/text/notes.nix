@@ -3,7 +3,7 @@
   config,
   ...
 }: {
-  home.packages = config.lib.neg.filterByExclude (with pkgs; [
+  home.packages = with pkgs; config.lib.neg.pkgsList [
     zk # notes database
-  ]);
+  ];
 }

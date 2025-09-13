@@ -7,10 +7,10 @@
   xdg = import ../lib/xdg-helpers.nix { inherit lib; };
 in lib.mkMerge [
   {
-    home.packages = config.lib.neg.filterByExclude (with pkgs; [
+    home.packages = with pkgs; config.lib.neg.pkgsList [
       fastfetch # modern, fast system fetch
       onefetch # repository summary in terminal
-    ]);
+    ];
   }
   (xdg.mkXdgText "fastfetch/skull" ''
                           :::!~!!!!!:.

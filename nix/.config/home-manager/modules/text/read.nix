@@ -6,7 +6,7 @@
 }: {
   # Consolidate minor activation tasks via shared key in other modules
 
-  home.packages = config.lib.neg.filterByExclude (with pkgs; [
+  home.packages = with pkgs; config.lib.neg.pkgsList [
     amfora # terminal browser for gemini
     antiword # convert ms word to text or ps
     epr # cli epub reader
@@ -16,7 +16,7 @@
     sioyek # nice zathura alternative
     tesseract # ocr
     zotero # tool to organize cites
-  ]);
+  ];
   programs.zathura = {
     enable = true;
     options = {

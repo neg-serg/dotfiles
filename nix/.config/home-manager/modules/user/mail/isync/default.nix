@@ -45,7 +45,7 @@ with lib;
 
     # Optional: ensure the binary is present even if HM changes defaults
     # Also provide a non-blocking trigger to start sync in background
-    home.packages = config.lib.neg.filterByExclude [
+    home.packages = config.lib.neg.pkgsList [
       pkgs.isync # mbsync binary (isync)
       (pkgs.writeShellScriptBin "sync-mail" ''
         #!/usr/bin/env bash

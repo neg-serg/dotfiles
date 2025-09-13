@@ -4,7 +4,7 @@
   ...
 }:
 with {}; {
-  home.packages = config.lib.neg.filterByExclude (with pkgs; [
+  home.packages = with pkgs; config.lib.neg.pkgsList [
     bash-language-server # Bash LSP
     neovim # Neovim editor
     neovim-remote # nvr (remote control for Neovim)
@@ -13,7 +13,7 @@ with {}; {
     pyright # Python LSP
     ruff # Python linter
     rust-analyzer # Rust LSP
-  ]);
+  ];
   programs.neovim = {
     plugins = with pkgs.vimPlugins; [
       clangd_extensions-nvim # llvm-based engine

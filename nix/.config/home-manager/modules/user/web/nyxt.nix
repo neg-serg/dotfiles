@@ -11,7 +11,7 @@ with lib;
     xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
   in lib.mkMerge [
     {
-      home.packages = config.lib.neg.filterByExclude [nyxtPkg];
+      home.packages = config.lib.neg.pkgsList [nyxtPkg];
     }
     # Nyxt 4 config with vim-friendly behavior (pure XDG helper handles guards)
     (xdg.mkXdgText "nyxt/init.lisp" ''

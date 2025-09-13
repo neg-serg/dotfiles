@@ -35,7 +35,7 @@ with lib; let
 in
   mkIf config.features.gui.enable (lib.mkMerge [
     {
-      home.packages = config.lib.neg.filterByExclude (with pkgs; [
+      home.packages = with pkgs; config.lib.neg.pkgsList [
       cantarell-fonts # GNOME Cantarell fonts
       cava # console audio visualizer
       inputs.rsmetrx.packages.${pkgs.system}.default # metrics/telemetry helper
@@ -58,7 +58,7 @@ in
       qt6.qtimageformats # extra image formats (Qt6)
       qt6.qtsvg # SVG support (Qt6)
         quickshellWrapped # wrapper with required env paths
-      ]);
+      ];
     }
     # Live-editable config via helper (guards parent dir and target)
     (xdg.mkXdgSource "quickshell" (config.lib.neg.mkDotfilesSymlink "quickshell/.config/quickshell" true))

@@ -52,10 +52,10 @@ with rec {
     "application/x-shellscript" = editor;
   };
 }; {
-  home.packages = config.lib.neg.filterByExclude (with pkgs; [
+  home.packages = with pkgs; config.lib.neg.pkgsList [
     handlr # xdg-open replacement with per-handler rules
     xdg-ninja # detect mislocated files in $HOME
-  ]);
+  ];
   # Aggregate XDG fixups to reduce activation noise and avoid per-file steps.
   # Prepare parent directories (un-symlink) and remove conflicting targets
   # for all declared xdg.{config,data,cache}File entries before linkGeneration.

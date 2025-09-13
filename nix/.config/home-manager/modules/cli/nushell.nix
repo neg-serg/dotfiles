@@ -9,7 +9,7 @@
 in lib.mkMerge [
   {
     # Ensure Nushell is available
-    home.packages = config.lib.neg.filterByExclude [pkgs.nushell];
+    home.packages = config.lib.neg.pkgsList [pkgs.nushell];
   }
   # Live-editable config via helper (guards parent dir and target)
   (xdg.mkXdgSource "nushell" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/cli/nushell-conf" true))

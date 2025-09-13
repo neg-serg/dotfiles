@@ -47,12 +47,12 @@ with lib;
       executable = true;
     })
     {
-    home.packages = config.lib.neg.filterByExclude (with pkgs; [
+    home.packages = with pkgs; config.lib.neg.pkgsList [
       act # run GitHub Actions locally
       difftastic # syntax-aware diff viewer
       gh # GitHub CLI
       gist # manage GitHub gists
-    ]);
+    ];
 
     programs.git = {
       enable = true;

@@ -5,9 +5,9 @@
   ...
 }:
   lib.mkIf config.features.media.audio.mpd.enable {
-    home.packages = config.lib.neg.filterByExclude (with pkgs; [
+    home.packages = with pkgs; config.lib.neg.pkgsList [
       rmpc # alternative tui client with album cover
-    ]);
+    ];
 
     services.mpd = {
       enable = false;
