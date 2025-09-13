@@ -71,6 +71,7 @@ in {
     obs = config.lib.neg.mkBool "enable observability/log tools" true;
     sys = config.lib.neg.mkBool "enable system fetch utilities" true;
     dev = config.lib.neg.mkBool "enable dev helpers/diffs/automation" true;
+    icedteaWeb.enable = config.lib.neg.mkBool "enable IcedTea Web (netx) and user config" false;
   };
   imports = [
     ./direnv.nix # auto-load per-dir env with nix integration
