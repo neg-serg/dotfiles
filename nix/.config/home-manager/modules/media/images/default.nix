@@ -39,46 +39,38 @@
     [ -S "$sock" ] && rm -f "$sock" || true # Best-effort cleanup
     exit $rc
   '';
-  groups = with pkgs; {
-    metadata = [
-      exiftool # extract media metadata
-      exiv2 # metadata manipulation
-      mediainfo # extract media info
-    ];
-    editors = [
-      gimp # image editor
-      rawtherapee # RAW editor
-      graphviz # graph visualization
-    ];
-    optimizers = [
-      jpegoptim # jpeg optimization
-      optipng # optimize png
-      pngquant # downsample RGBA to 8-bit with alpha
-      advancecomp # ADVANCE COMP PNG compression utility
-      scour # svg optimizer
-    ];
-    color = [
-      pastel # CLI color manipulation
-      lutgen # fast LUT generator
-    ];
-    qr = [
-      qrencode # qr encoding
-      zbar # qr/barcode reader
-    ];
-    viewers = [
-      swayimg # image viewer (Wayland)
-      swayimg-first # wrapper: start from the first file
-      viu # console image viewer
-    ];
-  };
-  flags = builtins.listToAttrs (map (n: {
-    name = n;
-    value = true;
-  }) (builtins.attrNames groups));
+  # Package selection kept simple: apply global exclude filter only.
 in lib.mkMerge [
   {
-  home.packages = config.lib.neg.pkgsList (config.lib.neg.mkEnabledList flags groups);
+  home.packages = with pkgs; config.lib.neg.pkgsList [
+    # metadata
+    exiftool exiv2 mediainfo
+    # editors
+    gimp rawtherapee graphviz
+    # optimizers
+    jpegoptim optipng pngquant advancecomp scour
+    # color
+    pastel lutgen
+    # qr
+    qrencode zbar
+    # viewers
+    swayimg swayimg-first viu
+  ];
   home.file.".local/bin/swayimg".source = "${swayimg-first}/bin/swayimg-first";
+  home.file.".local/bin/sxivnc".text = ''
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if command -v nsxiv >/dev/null 2>&1; then
+      exec nsxiv -n -c "$@"
+    elif command -v sxiv >/dev/null 2>&1; then
+      exec sxiv -n -c "$@"
+    elif command -v swayimg >/dev/null 2>&1; then
+      exec swayimg "$@"
+    else
+      echo "sxivnc: no nsxiv/sxiv/swayimg in PATH" >&2
+      exit 127
+    fi
+  '';
 
   # Guard: ensure we don't write through an unexpected symlink or file at ~/.local/bin/swayimg
   # Collapse to a single step that removes any pre-existing file/dir/symlink.
