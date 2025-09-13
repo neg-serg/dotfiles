@@ -1,0 +1,15 @@
+disabled = [
+  # too noisy in this repo; intentional style in places
+  'useless_parens',        # W08
+  'manual_inherit_from',   # W04
+  'repeated_keys',         # W20
+  'empty_pattern'          # W10
+]
+nix_version = '2.4'
+ignore = [
+  '.direnv',
+  'result',
+  '*/result/*',
+  '.git',
+  'flake.lock'
+]

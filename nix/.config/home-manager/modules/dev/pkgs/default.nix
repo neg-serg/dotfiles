@@ -4,7 +4,6 @@
   config,
   ...
 }: let
-  inherit (lib) optionals;
   groups = with pkgs; rec {
     formatters = [
       shfmt # shell script formatter

@@ -4,7 +4,6 @@
   config,
   ...
 }: let
-  inherit (lib) optionals;
   core = ps:
     with ps; [
       colored # terminal colors utilities

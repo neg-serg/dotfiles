@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{ config, ... }: {
   home.sessionPath = [
     "$HOME/.local/share/cargo/bin"
   ];

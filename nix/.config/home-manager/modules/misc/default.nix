@@ -1,9 +1,4 @@
-{
-  lib,
-  config,
-  pkgs,
-  ...
-}: {
+{ ... }: {
   imports = [
     ./apps.nix
     ./unfree.nix

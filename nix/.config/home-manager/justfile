@@ -10,10 +10,11 @@ lint:
     deadnix --fail .
     if git ls-files -- '*.py' >/dev/null 2>&1; then \
       ruff check -- .; \
-      black --check --line-length 100 .; \
+      black --check --line-length 100 --extend-exclude '(secrets/crypted|modules/user/gui/kitty/conf/tab_bar.py)' .; \
     fi
-    if git ls-files -- '*.sh' '*.bash' >/dev/null 2>&1; then \
-      shellcheck -S style -x $(git ls-files '*.sh' '*.bash'); \
+    files=$(git ls-files '*.sh' '*.bash' || true); \
+    if [ -n "$files" ]; then \
+      shellcheck -S style -x $files; \
     fi
 
 hm-neg:
@@ -37,4 +38,3 @@ clean-caches:
     rm -rf "$XDG_CACHE_HOME/zsh" || true
     rm -rf "$XDG_CACHE_HOME/nu" "$XDG_CACHE_HOME/nushell" || true
     rm -f "$XDG_STATE_HOME/nushell/history.sqlite3"* || true
-

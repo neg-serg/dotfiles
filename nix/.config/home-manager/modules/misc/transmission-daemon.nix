@@ -1,8 +1,4 @@
-{
-  lib,
-  config,
-  ...
-}: {
+{ config, ... }: {
   # Keep existing config directory as-is; only remove if symlink is broken.
   # This avoids nuking a valid symlinked external config (preserves history/resume).
   # Prepared via global prepareUserPaths action

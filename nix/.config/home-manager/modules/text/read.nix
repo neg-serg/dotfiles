@@ -1,9 +1,4 @@
-{
-  lib,
-  config,
-  pkgs,
-  ...
-}: {
+{ config, pkgs, ... }: {
   # Consolidate minor activation tasks via shared key in other modules
 
   home.packages = with pkgs; config.lib.neg.pkgsList [

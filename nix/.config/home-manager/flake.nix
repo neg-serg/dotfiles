@@ -255,17 +255,6 @@
                 ) {} (builtins.attrNames set);
               flatNeg = toFlat fNeg "features";
               flatLite = toFlat fLite "features";
-              keys = lib.unique ((builtins.attrNames flatNeg) ++ (builtins.attrNames flatLite));
-              rows = lib.concatStringsSep "\n" (map (
-                  k: let
-                    a = flatNeg.${k} or null;
-                    b = flatLite.${k} or null;
-                  in
-                    if a != b
-                    then "| ${k} | ${toString a} | ${toString b} |"
-                    else ""
-                )
-                keys);
               deltas = docs.renderDeltasMd {inherit flatNeg flatLite;};
             in
               (builtins.readFile ./OPTIONS.md)

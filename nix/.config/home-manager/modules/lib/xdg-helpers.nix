@@ -1,7 +1,5 @@
-{ lib }:
-let
-  sanitize = s: lib.replaceStrings ["/" "." "-" " "] ["_" "_" "_" "_"] s;
-in {
+{ ... }:
+{
   mkXdgText = relPath: text: {
     # Aggregated XDG fixups handle parent/target state; just declare the file.
     xdg.configFile."${relPath}".text = text;

@@ -39,7 +39,6 @@
     [ -S "$sock" ] && rm -f "$sock" || true # Best-effort cleanup
     exit $rc
   '';
-in let
   groups = with pkgs; {
     metadata = [
       exiftool # extract media metadata
