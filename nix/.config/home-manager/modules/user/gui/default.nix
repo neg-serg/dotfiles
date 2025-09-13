@@ -5,7 +5,6 @@
     ./hyprland.nix
     ./kitty.nix
     ./walker.nix
-    ./fuzzel.nix
     ./handlr.nix
     ./rofi.nix
     ./wayland.nix
