@@ -1,9 +1,0 @@
-#window {
-    background-color: @blackdarkest;
-    width: 70%;
-    padding: 0.1em;
-    location: south west;
-    anchor: south west;
-    y-offset: -2.5%;
-    x-offset: 0;
-}
