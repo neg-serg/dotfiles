@@ -9,11 +9,10 @@ if [[ "$subject" =~ ^(Merge|Revert|fixup!|squash!)\b ]]; then
   exit 0
 fi
 
-if [[ ! "$subject" =~ ^\[[^][]+\][[:space:]] ]]; then
+if [[ ! "$subject" =~ ^(\[[^][]+\])+[[:space:]] ]]; then
   echo "Commit subject must start with [scope] prefix, e.g. [user/web] ..." >&2
   echo "Got: $subject" >&2
   exit 1
 fi
 
 exit 0
-
