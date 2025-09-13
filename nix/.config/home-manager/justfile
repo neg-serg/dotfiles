@@ -24,7 +24,7 @@ hm-lite:
     home-manager switch --flake .#neg-lite
 
 hooks-enable:
-    git config core.hooksPath nix/.config/home-manager/.githooks
+    git config core.hooksPath .githooks
 
 clean-caches:
     set -eu
