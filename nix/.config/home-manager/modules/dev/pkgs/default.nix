@@ -46,7 +46,7 @@
 in
   lib.mkIf config.features.dev.enable {
     home.packages =
-      config.lib.neg.filterByExclude (
+      config.lib.neg.pkgsList (
         config.lib.neg.mkEnabledList config.features.dev.pkgs groups
       );
   }

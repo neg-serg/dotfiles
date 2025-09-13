@@ -30,7 +30,7 @@
   };
 in {
   home.packages =
-    config.lib.neg.filterByExclude (
+    config.lib.neg.pkgsList (
       config.lib.neg.mkEnabledList config.features.dev.hack.forensics groups
     );
 }

@@ -18,6 +18,7 @@
     "ignoredPlayers": [
     ],
     "lastActivePlayers": [
+        "mpv",
         "Music Player Daemon"
     ],
     "mediaTitleSeparator": "—",

@@ -26,7 +26,7 @@ in {
   ];
   config = mkIf (config.features.dev.enable && config.features.hack.enable) {
     home.packages =
-      config.lib.neg.filterByExclude (
+      config.lib.neg.pkgsList (
         config.lib.neg.mkEnabledList config.features.dev.hack.core groups
       );
   };

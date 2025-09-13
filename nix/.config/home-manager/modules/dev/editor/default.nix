@@ -8,8 +8,7 @@ with lib; {
   imports = [./neovim];
   config =
     (mkIf config.features.dev.enable {
-      home.packages = config.lib.neg.filterByExclude (
-        with pkgs; (
+      home.packages = with pkgs; config.lib.neg.pkgsList (
           [
             code-cursor-fhs # AI-powered code editor built on VS Code
             lapce # fast code editor in Rust
@@ -18,7 +17,7 @@ with lib; {
             lmstudio # desktop app for local/open LLMs
           ])
         )
-      );
+      ;
     })
     // (mkIf (config.features.dev.ai.enable or false) {
       programs.claude-code.enable = true;

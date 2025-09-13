@@ -24,6 +24,6 @@ lib.mkIf config.features.media.audio.core.enable (
       value = true;
     }) (builtins.attrNames groups));
   in {
-    home.packages = config.lib.neg.filterByExclude (config.lib.neg.mkEnabledList flags groups);
+    home.packages = config.lib.neg.pkgsList (config.lib.neg.mkEnabledList flags groups);
   }
 )

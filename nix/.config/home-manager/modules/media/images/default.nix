@@ -78,7 +78,7 @@ in let
   }) (builtins.attrNames groups));
 in lib.mkMerge [
   {
-  home.packages = config.lib.neg.filterByExclude (config.lib.neg.mkEnabledList flags groups);
+  home.packages = config.lib.neg.pkgsList (config.lib.neg.mkEnabledList flags groups);
   home.file.".local/bin/swayimg".source = "${swayimg-first}/bin/swayimg-first";
 
   # Guard: ensure we don't write through an unexpected symlink or file at ~/.local/bin/swayimg
