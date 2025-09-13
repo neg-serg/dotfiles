@@ -31,73 +31,25 @@ with rec {
   image = "swayimg.desktop";
   editor = "${defaultApplications.editor.desktop}.desktop";
 
+  # Minimal associations to keep noise low; handlr covers the rest
   my_associations = {
-    "text/html*" = browser;
+    # Browsing
+    "text/html" = browser;
+    "application/xhtml+xml" = browser;
     "x-scheme-handler/http" = browser;
     "x-scheme-handler/https" = browser;
-    "x-scheme-handler/ftp" = browser;
-    "x-scheme-handler/about" = browser;
-    "x-scheme-handler/unknown" = browser;
-    "x-scheme-handler/chrome" = browser;
-    "application/x-extension-htm" = browser;
-    "application/x-extension-html" = browser;
-    "application/x-extension-shtml" = browser;
-    "application/xhtml+xml" = browser;
-    "application/x-extension-xhtml" = browser;
-    "application/x-extension-xht" = browser;
-
+    # Media
     "audio/*" = video;
     "video/*" = video;
     "image/*" = image;
     "application/pdf" = pdfreader;
-    "application/postscript" = pdfreader;
-    "application/epub+zip" = pdfreader;
-    "x-scheme-handler/tg" = telegram;
-    "x-scheme-handler/vkteams" = ["vkteamsdesktop.desktop"];
-    "x-scheme-handler/spotify" = ["spotify.desktop"];
-    "x-scheme-handler/discord" = ["vesktop.desktop"];
+    # Misc handlers
     "x-scheme-handler/magnet" = torrent;
-    "x-scheme-handler/application/x-bittorrent" = torrent;
-
-    "x-scheme-handler/nxm" = ["vortex-downloads-handler.desktop"];
-    "x-scheme-handler/nxm-protocol" = ["vortex-downloads-handler.desktop"];
-
-    "text/english" = editor;
+    "x-scheme-handler/tg" = telegram;
+    # Editing
     "text/plain" = editor;
-    "text/x-makefile" = editor;
-    "text/x-c++hdr" = editor;
-    "text/x-c++src" = editor;
-    "text/x-chdr" = editor;
-    "text/x-csrc" = editor;
-    "text/x-java" = editor;
-    "text/x-moc" = editor;
-    "text/x-pascal" = editor;
-    "text/x-tcl" = editor;
-    "text/x-tex" = editor;
-    "application/x-shellscript" = editor;
     "application/json" = editor;
-    "application/xml" = editor;
-    "text/xml" = editor;
-    "text/x-c" = editor;
-    "text/x-c++" = editor;
-  };
-
-  associations_removed = {
-    "application/vnd.ms-htmlhelp" = "wine-extension-chm.desktop";
-    "image/gif" = ["wine-extension-gif.desktop"];
-    "application/winhlp" = "wine-extension-hlp.desktop";
-    "application/x-wine-extension-ini" = "wine-extension-ini.desktop";
-    "application/x-wine-extension-msp" = "wine-extension-msp.desktop";
-    "application/pdf" = ["wine-extension-pdf.desktop"];
-    "application/rtf" = "wine-extension-rtf.desktop";
-    "text/plain" = "wine-extension-txt.desktop";
-    "application/x-mswinurl" = "wine-extension-url.desktop";
-    "application/x-wine-extension-vbs" = "wine-extension-vbs.desktop";
-    "application/x-mswrite" = "wine-extension-wri.desktop";
-    "application/xml" = "wine-extension-xml.desktop";
-    "text/html" = ["wine-extension-htm.desktop"];
-    "image/jpeg" = ["wine-extension-jfif.desktop" "wine-extension-jpe.desktop"];
-    "image/png" = ["wine-extension-png.desktop"];
+    "application/x-shellscript" = editor;
   };
 }; {
   home.packages = config.lib.neg.filterByExclude (with pkgs; [
@@ -203,9 +155,6 @@ with rec {
         associations.added = my_associations;
         defaultApplications = my_associations;
       })
-      {
-        associations.removed = associations_removed;
-      }
     ];
   };
   # Replace ad-hoc ensure/clean steps with lib.neg helpers
