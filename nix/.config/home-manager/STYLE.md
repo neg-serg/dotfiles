@@ -1,5 +1,7 @@
 # Coding Style (Nix / Home Manager)
 
+See also: AGENTS.md for a short guide on helpers, activation aggregators, systemd presets, commit message format, and quick `just` commands.
+
 - with pkgs usage
   - Localize `with pkgs;` right next to the list or group where it’s used.
     - Good: `home.packages = with pkgs; [ foo bar ];`
