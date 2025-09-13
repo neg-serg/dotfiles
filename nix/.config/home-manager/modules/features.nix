@@ -151,8 +151,10 @@ in {
         # If either pin changes, fail early with a helpful message.
         (let
           # Best-effort extraction of versions from flake inputs without forcing builds
-          hyprlandVersion = lib.attrByPath ["packages" pkgs.system "hyprland" "version"] null inputs.hyprland or null;
-          hy3Rev = lib.attrByPath ["rev"] null hy3 or null;
+          # lib.attrByPath already returns the provided default (null) when the path is missing,
+          # so avoid using the attribute-selection fallback syntax (`or`) here.
+          hyprlandVersion = lib.attrByPath ["packages" pkgs.system "hyprland" "version"] null inputs.hyprland;
+          hy3Rev = lib.attrByPath ["rev"] null hy3;
           # Known compatible matrix (extend as you update pins)
           compatible = [
             {
@@ -160,18 +162,20 @@ in {
               rev = "1fdc0a291f8c23b22d27d6dabb466d018757243c";
             }
           ];
-          matches = c: (
-            (hyprlandVersion == null || hyprlandVersion == c.hv)
-          ) && (
-            (hy3Rev == null || hy3Rev == c.rev)
-          );
+          # Normalize Hyprland version like "0.50.1+date=2025-07-19_4e242d0" -> "0.50.1"
+          hvNorm =
+            if hyprlandVersion == null then null
+            else let s = toString hyprlandVersion; in (builtins.head (lib.splitString "+" s));
+          matches = c:
+            (hvNorm == null || hvNorm == c.hv)
+            && (hy3Rev == null || hy3Rev == c.rev);
           ok = lib.any matches compatible;
         in {
           assertion = ok;
           message = ''
             Incompatible Hyprland/hy3 pins detected.
             Expected one of: ${builtins.concatStringsSep ", " (map (c: "Hyprland " + c.hv + " + hy3 " + builtins.substring 0 7 c.rev) compatible)}
-            Got: Hyprland ${toString hyprlandVersion} + hy3 ${toString (if hy3Rev == null then "<unknown>" else builtins.substring 0 7 hy3Rev)}
+            Got: Hyprland ${toString (if hvNorm == null then "<unknown>" else hvNorm)} + hy3 ${toString (if hy3Rev == null then "<unknown>" else builtins.substring 0 7 hy3Rev)}
             Update flake.nix pins or extend the compatibility matrix in modules/features.nix.
           '';
         })
