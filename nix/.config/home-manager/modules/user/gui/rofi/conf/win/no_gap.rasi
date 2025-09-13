@@ -1,0 +1,19 @@
+/* Minimal window layout without outer gaps */
+window {
+    transparency:                     "real";
+    border-radius:                    0px;
+    padding:                          0px;
+    margin:                           0px;
+    background-color:                 @blackdarkest;
+}
+
+mainbox {
+    padding:                          0px;
+    margin:                           0px;
+    background-color:                 transparent;
+}
+
+inputbar, listview, message, sidebar, textbox, prompt, entry {
+    margin:                           0px;
+}
+
