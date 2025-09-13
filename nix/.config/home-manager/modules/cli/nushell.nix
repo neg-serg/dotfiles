@@ -13,6 +13,14 @@ in lib.mkMerge [
   }
   # Live-editable config via helper (guards parent dir and target)
   (xdg.mkXdgSource "nushell" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/cli/nushell-conf" true))
-  # Provide nupm modules via flake input instead of vendoring sources
-  (xdg.mkXdgSource "nushell/modules/nupm" { source = "${inputs.nupm}/modules/nupm"; recursive = true; })
+  # Provide Nushell module search path via NU_LIB_DIRS, pointing to the nupm modules in the store
+  # and the user's local modules directory for overrides.
+  {
+    home.sessionVariables.NU_LIB_DIRS = lib.concatStringsSep ":" [
+      # flake-provided Nushell modules (includes nupm)
+      "${inputs.nupm}/modules"
+      # user-local modules remain discoverable
+      "${config.xdg.configHome}/nushell/modules"
+    ];
+  }
 ]
