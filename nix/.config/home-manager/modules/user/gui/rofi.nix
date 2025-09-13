@@ -20,7 +20,6 @@ with lib;
       home.packages = with pkgs; config.lib.neg.pkgsList [
         rofi-pass-wayland # pass interface for rofi-wayland
         rofiPkg # modern dmenu alternative with plugins
-        rofimoji # emoji picker frontend for rofi
         # cliphist is provided in gui/apps.nix; no need for greenclip/clipmenu
       ];
       # Wrap rofi to ensure '-theme <name|name.rasi>' works even when caller uses a relative theme path.
