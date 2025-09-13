@@ -1,0 +1,3 @@
+# Prevent committing local Quickshell settings
+quickshell/.config/quickshell/Settings.json
+
