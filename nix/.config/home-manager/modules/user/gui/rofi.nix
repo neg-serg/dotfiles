@@ -31,8 +31,11 @@ with lib;
           set -euo pipefail
           rofi_bin="${rofiPkg}/bin/rofi"
           xdg_data="${xdgDataHome}"
+          xdg_conf="${config.xdg.configHome}"
           themes_dir="$xdg_data/rofi/themes"
-          need_cd=0
+          # Default to config dir to make @import in config.rasi resolve relative files
+          cd_dir="$xdg_conf/rofi"
+          need_cd=1
           prev_is_theme=0
           for arg in "$@"; do
             if [ "$prev_is_theme" -eq 1 ]; then
@@ -41,10 +44,7 @@ with lib;
               case "$val" in
                 /*|*/*) : ;; # absolute or contains path component -> leave as-is
                 *)
-                  case "$val" in
-                    *.rasi|*.rasi:*) need_cd=1 ;;
-                    *) : ;;
-                  esac
+                  case "$val" in *.rasi|*.rasi:*) cd_dir="$themes_dir" ;; esac
                 ;;
               esac
             fi
@@ -54,13 +54,13 @@ with lib;
                 val=$(printf '%s' "$arg" | sed -e 's/^-theme=//')
                 case "$val" in
                   /*|*/*) : ;;
-                  *) case "$val" in *.rasi|*.rasi:*) need_cd=1 ;; esac ;;
+                  *) case "$val" in *.rasi|*.rasi:*) cd_dir="$themes_dir" ;; esac ;;
                 esac
               ;;
             esac
           done
-          if [ "$need_cd" -eq 1 ] && [ -d "$themes_dir" ]; then
-            cd "$themes_dir"
+          if [ "$need_cd" -eq 1 ] && [ -d "$cd_dir" ]; then
+            cd "$cd_dir"
           fi
           exec "$rofi_bin" "$@"
         '';
