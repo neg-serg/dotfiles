@@ -74,25 +74,19 @@ in {
     icedteaWeb.enable = config.lib.neg.mkBool "enable IcedTea Web (netx) and user config" false;
   };
   imports = [
-    ./direnv.nix # auto-load per-dir env with nix integration
+    ./core-tools.nix # fd, ripgrep, direnv, shell helpers
     ./bat.nix # better cat
     ./broot.nix # nested fuzzy finding
     ./btop.nix
     ./fastfetch.nix
-    ./fd.nix # better find
     ./nushell.nix
-    ./zsh.nix
-    ./dircolors.nix
-    ./f-sy-h.nix
+    ./config-links.nix # dircolors, f-sy-h, zsh, inputrc
     ./amfora.nix
     ./icedtea-web.nix
     ./dosbox.nix
     ./fzf.nix
     ./tmux.nix
-    ./ripgrep.nix
-    ./inputrc.nix
     ./tig.nix
-    ./shell.nix # shells which not in nixOs and their completions
     ./yazi.nix
   ];
   config = {
