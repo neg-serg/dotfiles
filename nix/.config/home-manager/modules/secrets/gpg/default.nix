@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{ pkgs, lib, config, ... }:
 with {
   pinentryRofi = pkgs.writeShellApplication {
     name = "pinentry-rofi-with-env";
@@ -7,7 +7,9 @@ with {
       "${pkgs.pinentry-rofi}/bin/pinentry-rofi" "$@"
     '';
   };
-}; {
+};
+with lib;
+mkIf config.features.gpg.enable {
   programs.wayprompt = {
     enable = true;
     settings = {

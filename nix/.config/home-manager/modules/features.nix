@@ -61,6 +61,9 @@ in {
     fun = {
       enable = mkBool "enable fun extras (art collections, etc.)" true;
     };
+
+    # GPG stack (gpg, gpg-agent, pinentry)
+    gpg.enable = mkBool "enable GPG and gpg-agent (creates ~/.gnupg)" true;
   };
 
   # Apply profile defaults. Users can still override flags after this.
