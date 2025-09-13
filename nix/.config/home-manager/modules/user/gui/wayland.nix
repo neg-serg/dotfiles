@@ -10,7 +10,6 @@ with lib;
     home.sessionVariables = {};
     home.packages = with pkgs; config.lib.neg.pkgsList [
       dragon-drop # drag-n-drop from console
-      fuzzel # wayland launcher
       gowall # tool to convert a Wallpaper's color scheme / palette
       grimblast # hyprland screenshot tool
       grim # to take screenshots
