@@ -20,4 +20,10 @@ with lib;
     }
     # Live-editable config via helper (guards parent dir and target)
     (xdg.mkXdgSource "rofi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf" true))
+    # Make themes discoverable via -theme <name> too (for external scripts)
+    (xdg.mkXdgDataSource "rofi/themes/neg.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/neg.rasi" false))
+    (xdg.mkXdgDataSource "rofi/themes/pass.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/pass.rasi" false))
+    (xdg.mkXdgDataSource "rofi/themes/theme.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/theme.rasi" false))
+    (xdg.mkXdgDataSource "rofi/themes/win/no_gap.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/win/no_gap.rasi" false))
+    (xdg.mkXdgDataSource "rofi/themes/win/center_btm.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/win/center_btm.rasi" false))
   ])
