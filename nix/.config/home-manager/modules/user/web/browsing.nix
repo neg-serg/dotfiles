@@ -7,7 +7,6 @@
 }:
 with lib; {
   imports = [
-    ./mozilla-common.nix
     ./defaults.nix
     ./floorp.nix
     ./firefox.nix
