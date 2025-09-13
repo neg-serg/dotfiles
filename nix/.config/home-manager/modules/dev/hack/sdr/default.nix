@@ -15,7 +15,7 @@ in {
     kalibrate-rtl # Calculate local oscillator frequency offset using GSM base stations
     multimon-ng # Digital radio transmission decoder
     rtl-sdr-librtlsdr # Software to turn the RTL2832U into a SDR receiver
-  ]));
+  ]);
   # NOT FOUND
   # gr-air-modes # Gnuradio Mode-S/ADS-B radio
   # gr-iqbal # GNU Radio Blind IQ imbalance estimator and correction

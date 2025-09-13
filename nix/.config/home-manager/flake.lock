@@ -886,6 +886,22 @@
         "type": "github"
       }
     },
+    "nupm": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1755245631,
+        "narHash": "sha256-7WIHtnu/SOyir29QCllQekGXAguNwxgAynCRX7F8UNE=",
+        "owner": "nushell",
+        "repo": "nupm",
+        "rev": "faa76f7c8dd295fdd3c6ecde3a121ea57ee81c8b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nushell",
+        "repo": "nupm",
+        "type": "github"
+      }
+    },
     "nur": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -1014,6 +1030,7 @@
         ],
         "iwmenu": "iwmenu",
         "nixpkgs": "nixpkgs_3",
+        "nupm": "nupm",
         "nur": "nur",
         "nvfetcher": "nvfetcher",
         "quickshell": "quickshell",
