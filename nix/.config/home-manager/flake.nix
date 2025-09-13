@@ -78,10 +78,10 @@
       url = "github:e-tho/iwmenu";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Nushell package manager as a flake input to avoid vendoring sources
+    # Nushell package manager (non-flake repo) to avoid vendoring sources
     nupm = {
       url = "github:nushell/nupm";
-      inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
     nixpkgs = {url = "github:nixos/nixpkgs";};
     nvfetcher = {
