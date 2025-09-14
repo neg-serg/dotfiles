@@ -12,7 +12,19 @@ _final: prev: {
       # Small helper to override attrs of a derivation
       # withOverrideAttrs drv f = drv.overrideAttrs f
       withOverrideAttrs = drv: f: drv.overrideAttrs f;
+
+      # --- Language-specific convenience helpers ---
+      # Rust (buildRustPackage): override cargo hash (aka vendor hash)
+      # Works with both cargoHash (new) and cargoSha256 (legacy)
+      overrideRustCrates = drv: hash:
+        drv.overrideAttrs (_: {
+          cargoHash = hash;
+          cargoSha256 = hash;
+        });
+
+      # Go (buildGoModule): override vendor hash
+      overrideGoModule = drv: hash:
+        drv.overrideAttrs (_: { vendorHash = hash; });
     };
   };
 }
-
