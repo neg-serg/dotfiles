@@ -65,6 +65,28 @@ in lib.mkMerge [
       exec swayimg-first "$@"
     '';
   };
+  # Stub for swayimg custom actions referenced by config; safe no-ops by default.
+  home.file.".local/bin/swayimg-actions.sh" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      set -euo pipefail
+      action="${1:-}"; shift || true
+      file="${1:-}"
+      case "$action" in
+        copyname)
+          [ -n "$file" ] && basename -- "$file" | wl-copy || true ;;
+        cp)
+          # Copy file path to clipboard
+          [ -n "$file" ] && printf '%s' "$file" | wl-copy || true ;;
+        repeat|rotate-left|rotate-right|rotate-ccw|rotate-180|mv|wall-*)
+          # No-op stub; customize as needed
+          : ;;
+        *) : ;;
+      esac
+      exit 0
+    '';
+  };
   home.file.".local/bin/sxivnc".text = ''
     #!/usr/bin/env bash
     set -euo pipefail
