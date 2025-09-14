@@ -26,12 +26,6 @@ hm-lite:
 hooks-enable:
     git config core.hooksPath .githooks
 
-hypr-reload:
-    hyprctl reload
-
-hm-check:
-    home-manager build --flake .#neg --dry-run -b
-
 clean-caches:
     set -eu
     repo=$(git rev-parse --show-toplevel)

@@ -28,47 +28,7 @@ with lib;
         rofiPkg # modern dmenu alternative with plugins
         # cliphist is provided in gui/apps.nix; no need for greenclip/clipmenu
       ];
-      # Minimal emoji picker without external packages; customize list as needed.
-      home.file.".local/bin/rofi-emoji" = {
-        executable = true;
-        text = ''
-          #!/usr/bin/env bash
-          set -euo pipefail
-          list=${EMOJI_LIST:-}
-          if [ -z "$list" ]; then
-            # format: "emoji<TAB>description"; shown as lines in rofi
-            list=$(cat <<'EOF'
-😀\tgrinning
-😁\tbeaming
-😂\ttears of joy
-🤣\tROFL
-😊\tsmile
-😍\theart eyes
-😘\tblow kiss
-😎\tsunglasses
-🤔\tthink
-🙃\tupside-down
-😉\twink
-👍\tthumbs up
-🙏\tpray
-🔥\tfire
-✨\tsparkles
-🎉\tparty
-⚠️\twarning
-☕\tcoffee
-📎\tclip
-📝\tnote
-📋\tclipboard
-🗑️\ttrash
-EOF
-)
-          fi
-          sel=$(printf '%b' "$list" | cut -f1,2 | rofi -dmenu -matching fuzzy -i -p "Emoji" -theme clip || true)
-          [ -n "$sel" ] || exit 0
-          emoji="$(printf '%b' "$sel" | cut -f1)"
-          printf '%s' "$emoji" | wl-copy
-        '';
-      };
+      
       # Wrap rofi to ensure '-theme <name|name.rasi>' works even when caller uses a relative theme path.
       # If a theme is given without a path, we `cd` into the themes directory so rofi finds the file.
       home.file.".local/bin/rofi" = {
