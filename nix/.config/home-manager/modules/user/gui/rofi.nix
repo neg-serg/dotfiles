@@ -15,7 +15,13 @@ with lib;
     });
     xdgDataHome = config.xdg.dataHome or ("${config.home.homeDirectory}/.local/share");
     xdgConfigHome = config.xdg.configHome or ("${config.home.homeDirectory}/.config");
-  in lib.mkMerge [
+    themeLinks = [
+      { dst = "rofi/themes/theme.rasi";       src = "conf/theme.rasi"; }
+      { dst = "rofi/themes/clip.rasi";        src = "conf/clip.rasi"; }
+      { dst = "rofi/themes/sxiv.rasi";        src = "conf/sxiv.rasi"; }
+      { dst = "rofi/themes/win/left_btm.rasi"; src = "conf/win/left_btm.rasi"; }
+    ];
+  in lib.mkMerge (
     {
       home.packages = with pkgs; config.lib.neg.pkgsList [
         rofi-pass-wayland # pass interface for rofi-wayland
@@ -68,14 +74,9 @@ with lib;
     }
     # Live-editable config via helper (guards parent dir and target)
     (xdg.mkXdgSource "rofi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf" true))
-    # Make themes discoverable via -theme <name> too (for external scripts)
-    # neg/pass live only in ~/.config/rofi; wrapper ensures @import resolution
-    (xdg.mkXdgDataSource "rofi/themes/theme.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/theme.rasi" false))
-    # Window fragments used by config-loaded themes live only in ~/.config/rofi
-    # to avoid duplicate links and stale XDG data paths.
-    (xdg.mkXdgDataSource "rofi/themes/clip.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/clip.rasi" false))
-    (xdg.mkXdgDataSource "rofi/themes/sxiv.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/sxiv.rasi" false))
-    (xdg.mkXdgDataSource "rofi/themes/win/left_btm.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/win/left_btm.rasi" false))
+  ]
+  ++ (map (e: xdg.mkXdgDataSource e.dst (config.lib.neg.mkDotfilesSymlink ("nix/.config/home-manager/modules/user/gui/rofi/" + e.src) false)) themeLinks)
+  ++ [
     {
       # Clean up old unmanaged XDG data theme fragments from pre-refactor
       home.activation.cleanupOldRofiWinThemes =
