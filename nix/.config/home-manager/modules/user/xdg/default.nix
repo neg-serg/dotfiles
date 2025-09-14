@@ -74,8 +74,14 @@ with rec {
 
       for rel in ${join cfgs}; do
         tgt="$config_home/$rel"; parent="$(dirname "$tgt")"
-        if [ -L "$parent" ]; then rm -f "$parent"; fi
-        mkdir -p "$parent"
+        case "$rel" in
+          transmission-daemon/*)
+            # Preserve user symlinked transmission config dir (resume/history)
+            : ;;
+          *)
+            if [ -L "$parent" ]; then rm -f "$parent"; fi
+            mkdir -p "$parent" ;;
+        esac
       done
       for rel in ${join datas}; do
         tgt="$data_home/$rel"; parent="$(dirname "$tgt")"
