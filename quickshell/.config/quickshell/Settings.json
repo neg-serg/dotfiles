@@ -1,0 +1,76 @@
+{
+    "activeVisualizerProfile": "classic",
+    "barMonitors": [
+    ],
+    "cavaBars": 86,
+    "cavaFramerate": 24,
+    "cavaGravity": 150000,
+    "cavaMonstercat": false,
+    "cavaNoiseReduction": 12,
+    "collapseSystemTray": true,
+    "collapsedTrayIcon": "expand_more",
+    "contrastThreshold": 0.5,
+    "contrastWarnRatio": 4.5,
+    "debugLogs": false,
+    "debugNetwork": false,
+    "dimPanels": true,
+    "fontSizeMultiplier": 1.2,
+    "ignoredPlayers": [
+    ],
+    "lastActivePlayers": [
+        "Music Player Daemon"
+    ],
+    "mediaTitleSeparator": "—",
+    "monitorScaleOverrides": {
+    },
+    "musicPopupHeight": 250,
+    "musicPopupPadding": 12,
+    "musicPopupWidth": 840,
+    "networkNoInternetColor": "#FF6E00",
+    "networkNoLinkColor": "#D81B60",
+    "networkPingIntervalMs": 30000,
+    "pinnedPlayers": [
+    ],
+    "playerSelectionPreset": "default",
+    "playerSelectionPriority": [
+        "mpdPlaying",
+        "anyPlaying",
+        "mpdRecent",
+        "recent",
+        "manual",
+        "first"
+    ],
+    "reverseDayMonth": false,
+    "showMediaInBar": true,
+    "showMediaVisualizer": false,
+    "showSpectrumTopHalf": false,
+    "showWeatherInBar": false,
+    "spectrumBarGap": 1,
+    "spectrumFillOpacity": 0.35,
+    "spectrumHeightFactor": 1.2,
+    "spectrumMirror": false,
+    "spectrumOverlapFactor": 0.2,
+    "spectrumUseGradient": false,
+    "spectrumVerticalRaise": 0.75,
+    "strictThemeTokens": true,
+    "timeBracketStyle": "round",
+    "trayFallbackIcon": "broken_image",
+    "use12HourClock": false,
+    "useFahrenheit": false,
+    "userAgent": "NegPanel",
+    "visualizerProfiles": {
+        "classic": {
+            "cavaBars": 86,
+            "cavaFramerate": 24,
+            "cavaGravity": 150000,
+            "cavaMonstercat": false,
+            "cavaNoiseReduction": 12,
+            "spectrumBarGap": 1,
+            "spectrumFillOpacity": 0.35,
+            "spectrumHeightFactor": 1.2,
+            "spectrumOverlapFactor": 0.2,
+            "spectrumVerticalRaise": 0.75
+        }
+    },
+    "weatherCity": "Moscow"
+}
