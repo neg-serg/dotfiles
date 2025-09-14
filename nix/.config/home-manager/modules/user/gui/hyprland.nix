@@ -10,29 +10,23 @@ with lib; let
   xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
 in
   mkIf config.features.gui.enable (let
-    coreFiles = [
-      "init.conf"
-      "vars.conf"
-      "classes.conf"
-      "rules.conf"
-      "bindings.conf"
-      "autostart.conf"
-      "workspaces.conf"
-      "pyprland.toml"
-    ];
-    bindingFiles = [
-      "resize.conf"
-      "apps.conf"
-      "special.conf"
-      "wallpaper.conf"
-      "tiling.conf"
-      "tiling-helpers.conf"
-      "media.conf"
-      "notify.conf"
-      "misc.conf"
-      "_resets.conf"
-    ];
+    confRoot = ./hypr/conf;
     mkHyprSource = rel: xdg.mkXdgSource ("hypr/" + rel) (config.lib.neg.mkDotfilesSymlink ("nix/.config/home-manager/modules/user/gui/hypr/conf/" + rel) false);
+    # Auto-discover root-level files (*.conf, *.toml)
+    rootFiles = let
+      listing = builtins.readDir confRoot;
+      names = builtins.attrNames listing;
+      isWanted = n:
+        let t = listing.${n}.type; in
+        t == "regular" && (lib.hasSuffix ".conf" n || lib.hasSuffix ".toml" n);
+    in builtins.sort (a: b: a < b) (builtins.filter isWanted names);
+    # Auto-discover bindings/*.conf
+    bindingFiles = let
+      bdir = confRoot + "/bindings";
+      listing = builtins.readDir bdir;
+      names = builtins.attrNames listing;
+      isWanted = n: listing.${n}.type == "regular" && lib.hasSuffix ".conf" n;
+    in builtins.sort (a: b: a < b) (builtins.filter isWanted names);
   in lib.mkMerge [
     {
       wayland.windowManager.hyprland = {
@@ -80,9 +74,9 @@ in
       permission = ${pkgs.hyprlock}/bin/hyprlock, screencopy, allow
       plugin = ${hy3Plugin}/lib/libhy3.so
     '')
-    # Core configs
-    (lib.mkMerge (map mkHyprSource coreFiles))
-    # Submaps and binding helpers
+    # Core configs (auto-discovered)
+    (lib.mkMerge (map mkHyprSource rootFiles))
+    # Submaps and binding helpers (auto-discovered)
     (lib.mkMerge (map (f: mkHyprSource ("bindings/" + f)) bindingFiles))
     # Tools: window switcher using rofi
     {
