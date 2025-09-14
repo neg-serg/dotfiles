@@ -71,7 +71,7 @@ Notes:
 - Rofi launcher
   - `~/.local/bin/rofi` wrapper ensures theme lookup works (relative to config or via XDG data).
   - `clip.rasi`, `sxiv.rasi` and required `win/*.rasi` are linked into `$XDG_DATA_HOME/rofi/themes` for `-theme` use.
-  - fuzzel and rofimoji are removed; if you want emoji picker, provide your own `~/bin/rofi-emoji` script.
+  - If you want an emoji picker, provide your own `~/bin/rofi-emoji` script.
 
 ## Developer Notes
 

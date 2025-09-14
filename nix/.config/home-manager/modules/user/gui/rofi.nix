@@ -73,33 +73,7 @@ with lib;
         '';
       };
 
-      # Compatibility shim: map fuzzel calls to rofi -dmenu with sensible defaults.
-      home.file.".local/bin/fuzzel" = {
-        executable = true;
-        text = ''
-          #!/usr/bin/env bash
-          set -euo pipefail
-          rofi_wrap="$HOME/.local/bin/rofi"
-          rofi_bin="${rofiPkg}/bin/rofi"
-          if [ -x "$rofi_wrap" ]; then rofi_cmd="$rofi_wrap"; else rofi_cmd="$rofi_bin"; fi
-          args=("-dmenu" "-matching" "fuzzy" "-i" "-theme" "clip")
-          prev=""
-          for a in "$@"; do
-            case "$a" in
-              --dmenu|-d) : ;; # skip, already added
-              --prompt=*) args+=("-p" "${a#--prompt=}") ;;
-              --prompt) prev="--prompt" ;;
-              --config=*) args+=("-config" "${a#--config=}") ;;
-              --config) prev="--config" ;;
-              *)
-                if [ "$prev" = "--prompt" ]; then args+=("-p" "$a"); prev="";
-                elif [ "$prev" = "--config" ]; then args+=("-config" "$a"); prev="";
-                else args+=("$a"); fi ;;
-            esac
-          done
-          exec "$rofi_cmd" "${args[@]}"
-        '';
-      };
+      
     }
     # Live-editable config via helper (guards parent dir and target)
     (xdg.mkXdgSource "rofi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf" true))
