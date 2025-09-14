@@ -95,12 +95,10 @@ with lib;
         ];
     }
     {
-      # Remove leftovers from fuzzel -> rofi and rofimoji removal
+      # Remove leftovers from old launchers
       home.activation.cleanupOldLaunchers =
         let ch = xdgConfigHome; dh = xdgDataHome; in
         config.lib.neg.mkEnsureAbsentMany [
-          "${ch}/fuzzel"
-          "${ch}/fuzzel/fuzzel.ini"
           "${ch}/rofimoji"
           "${dh}/applications/rofimoji.desktop"
         ];
