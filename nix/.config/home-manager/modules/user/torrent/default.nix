@@ -204,7 +204,7 @@ in {
         if argv:
           return [os.path.expanduser(a) for a in argv]
         roots = []
-        home = os.environ.get('HOME','')
+        home = os.environ.get('HOME', "")
         cand = [
           os.path.join(home, '.config', 'transmission-daemon'),
           os.path.join(home, '.config', 'transmission-daemon.bak'),
