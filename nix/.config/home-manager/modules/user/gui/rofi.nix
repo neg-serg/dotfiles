@@ -14,7 +14,7 @@ with lib;
       ];
     });
     xdgDataHome = config.xdg.dataHome or ("${config.home.homeDirectory}/.local/share");
-    # xdgConfigHome kept for reference; not needed by the wrapper now
+    xdgConfigHome = config.xdg.configHome or ("${config.home.homeDirectory}/.config");
   in lib.mkMerge [
     {
       home.packages = with pkgs; config.lib.neg.pkgsList [
@@ -92,6 +92,17 @@ with lib;
         config.lib.neg.mkEnsureAbsentMany [
           "${d}/rofi/themes/neg.rasi"
           "${d}/rofi/themes/pass.rasi"
+        ];
+    }
+    {
+      # Remove leftovers from fuzzel -> rofi and rofimoji removal
+      home.activation.cleanupOldLaunchers =
+        let ch = xdgConfigHome; dh = xdgDataHome; in
+        config.lib.neg.mkEnsureAbsentMany [
+          "${ch}/fuzzel"
+          "${ch}/fuzzel/fuzzel.ini"
+          "${ch}/rofimoji"
+          "${dh}/applications/rofimoji.desktop"
         ];
     }
   ])
