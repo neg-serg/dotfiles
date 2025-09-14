@@ -100,7 +100,23 @@ in
           data="$($hyprctl_bin -j clients 2>/dev/null || true)"
           [ -n "$data" ] || exit 0
 
-          list=$(printf '%s' "$data" | "$jq_bin" -r '[ .[] | select(.mapped==true) | [(.workspace.id|tostring), .class, .title, .address] ] | sort_by(.[0]) | .[] | "[\(.0)] \(.1) - \(.2)\t\(.3)"')
+          list=$(printf '%s' "$data" | "$jq_bin" -r '
+            [ .[]
+              | select(.mapped==true)
+              | {wid: (.workspace.id|tostring),
+                 cls: (.class // ""),
+                 ttl: (.title // ""),
+                 addr: (.address // "")}
+            ]
+            | sort_by(.wid)
+            | .[]
+            | ("[" + .wid + "] "
+               + (.cls | tostring | gsub("[\t\n]"; " "))
+               + " - "
+               + (.ttl | tostring | gsub("[\t\n]"; " "))
+               + "\t"
+               + .addr)
+          ')
           [ -n "$list" ] || exit 0
 
           sel=$(printf '%s\n' "$list" | "$rofi_bin" -dmenu -matching fuzzy -i -p "$prompt" -theme clip) || exit 0
