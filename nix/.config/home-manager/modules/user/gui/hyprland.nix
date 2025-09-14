@@ -84,4 +84,34 @@ in
     (lib.mkMerge (map mkHyprSource coreFiles))
     # Submaps and binding helpers
     (lib.mkMerge (map (f: mkHyprSource ("bindings/" + f)) bindingFiles))
+    # Tools: window switcher using rofi
+    {
+      home.file.".local/bin/hypr-win-list" = {
+        executable = true;
+        text = ''
+          #!/usr/bin/env bash
+          set -euo pipefail
+          # List windows from Hyprland and select via rofi; focus selected.
+          jq_bin="${pkgs.jq}/bin/jq"
+          hyprctl_bin="hyprctl"
+          rofi_bin="rofi"
+          prompt="Windows"
+          theme_opts=( -dmenu -matching fuzzy -i -p "$prompt" -theme clip )
+
+          data="$($hyprctl_bin -j clients 2>/dev/null || true)"
+          [ -n "$data" ] || exit 0
+
+          list=$(printf '%s' "$data" | "$jq_bin" -r '[ .[] | select(.mapped==true) | [.workspace.id, .class, .title, .address] ] | sort_by(.[0]) | .[] | @tsv')
+          [ -n "$list" ] || exit 0
+
+          sel=$(printf '%s\n' "$list" | awk -F '\t' '{ printf("[%2s] %-24s — %s\t%s\n", $1, $2, $3, $4) }' | "$rofi_bin" "${theme_opts[@]}") || exit 0
+          addr="${sel##*\t}"
+          addr="${addr##* }"
+          [ -n "$addr" ] || exit 0
+
+          $hyprctl_bin dispatch focuswindow "address:$addr" >/dev/null 2>&1 || true
+          $hyprctl_bin dispatch bringactivetotop >/dev/null 2>&1 || true
+        '';
+      };
+    }
   ])
