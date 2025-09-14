@@ -28,8 +28,8 @@ with {
       ConditionPathExists = "${transmission}/bin/transmission-daemon";
     };
     Service = {
-      Type = "simple";
-      ExecStart = "${transmission}/bin/transmission-daemon -g ${config.xdg.configHome}/transmission-daemon -f --log-level=error";
+      Type = "notify";
+      ExecStart = "${transmission}/bin/transmission-daemon -g ${config.xdg.configHome}/transmission-daemon -f --log-error";
       Restart = "on-failure";
       RestartSec = "30";
       StartLimitBurst = "8";
