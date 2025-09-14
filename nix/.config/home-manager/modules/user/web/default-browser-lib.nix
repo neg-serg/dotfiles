@@ -50,8 +50,8 @@ in
   }
   else {
     name = "floorp";
-    pkg = pkgs.floorp;
-    bin = "${pkgs.floorp}/bin/floorp";
+    pkg = pkgs.floorp-bin;
+    bin = "${pkgs.floorp-bin}/bin/floorp";
     desktop = "floorp.desktop";
     newTabArg = "-new-tab";
   }

@@ -10,6 +10,7 @@ lib.mkIf (config.features.web.enable && config.features.web.floorp.enable) (let
 in {
   programs.floorp = {
     enable = true;
+    package = pkgs.floorp-bin;
     nativeMessagingHosts = common.nativeMessagingHosts;
     profiles.${common.profileId} = {
       isDefault = true;
