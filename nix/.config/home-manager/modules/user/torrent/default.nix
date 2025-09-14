@@ -132,10 +132,10 @@ in {
         if isinstance(x, (bytes, bytearray)): return str(len(x)).encode()+b':'+bytes(x)
         if isinstance(x, str):
           xb = x.encode('utf-8'); return str(len(xb)).encode()+b':'+xb
-        if isinstance(x, list): return b'l'+b''.join(bencode(v) for v in x)+b'e'
+        if isinstance(x, list): return b'l'+b"".join(bencode(v) for v in x)+b'e'
         if isinstance(x, dict):
           items = sorted(((k if isinstance(k,(bytes,bytearray)) else (k.encode('utf-8') if isinstance(k,str) else None), v) for k,v in x.items()), key=lambda kv: kv[0])
-          return b'd'+b''.join(bencode(k)+bencode(v) for k,v in items)+b'e'
+          return b'd'+b"".join(bencode(k)+bencode(v) for k,v in items)+b'e'
         raise TypeError
       def decode_bytes(d):
         if isinstance(d, dict):
@@ -173,7 +173,7 @@ in {
             except: name = n.decode('latin-1','replace')
         return {'fmt':'bencode','raw': obj, 'infohash': ih, 'name': name}
       def choose_conf():
-        home=os.environ.get('HOME','')
+        home=os.environ.get('HOME', "")
         for p in (
           os.path.join(home,'.config','transmission-daemon'),
           os.path.join(home,'.config','transmission'),
@@ -314,10 +314,10 @@ in {
             xb = x.encode('utf-8')
             return str(len(xb)).encode()+b':'+xb
           if isinstance(x, list):
-            return b'l'+b''.join(bencode(v) for v in x)+b'e'
+            return b'l'+b"".join(bencode(v) for v in x)+b'e'
           if isinstance(x, dict):
             items = sorted(((k if isinstance(k,(bytes,bytearray)) else (k.encode('utf-8') if isinstance(k,str) else None), v) for k,v in x.items()), key=lambda kv: kv[0])
-            return b'd'+b''.join(bencode(k)+bencode(v) for k,v in items)+b'e'
+            return b'd'+b"".join(bencode(k)+bencode(v) for k,v in items)+b'e'
           raise TypeError('cannot bencode')
         info = None
         if isinstance(obj, dict):
