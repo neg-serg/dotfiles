@@ -17,6 +17,10 @@ This document maps the main `features.*` options used by this Home Manager setup
   - Default: true in full, false in lite
 - `features.web.yandex.enable` (Yandex Browser)
   - Default: true in full, false in lite
+ - `features.web.prefs.fastfox.enable` (FastFox‑like Mozilla prefs)
+   - Default: true in full, false in lite
+   - Summary: increases parallelism, enables site isolation (Fission), lazy tab restore, forces WebRender, disables inline PDF.
+   - Caveats: higher memory usage, possible AMO/RFP interaction, inline PDF disabled.
 
 Notes
 - Yandex Browser is passed in via `extraSpecialArgs` as `yandexBrowser` (system‑scoped package set). See `flake.nix` and usage in `modules/user/web/browsing.nix`.
@@ -78,7 +82,7 @@ Switch examples:
 ## Developer Notes
 
 - Commit subjects are enforced to start with `[scope]` via a local hook in `.githooks/commit-msg`.
-  - Enable it with: `git config core.hooksPath nix/.config/home-manager/.githooks`
+  - Enable it with: `git config core.hooksPath .githooks` or `just hooks-enable`
 
 ## IaC (Terraform / OpenTofu)
 
