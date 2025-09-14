@@ -103,7 +103,7 @@ in
 
           list=$("$jq_bin" -nr \
             --argjson clients "$clients_json" \
-            --argjson wss "${workspaces_json:-[]}" '
+            --argjson wss "''${workspaces_json:-[]}" '
               def sanitize: tostring | gsub("[\t\n]"; " ");
               # Build id->name map
               def wmap:
