@@ -20,7 +20,7 @@ with {
     };
     Service = {
       Type = "notify";
-      ExecStart = "${transmission}/bin/transmission-daemon -g %E/transmission-daemon -f --log-error";
+      ExecStart = "${transmission}/bin/transmission-daemon -g ${config.xdg.configHome}/transmission-daemon -f --log-error";
       Restart = "on-failure";
       RestartSec = "30";
       StartLimitBurst = "8";
