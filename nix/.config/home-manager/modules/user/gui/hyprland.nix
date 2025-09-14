@@ -10,6 +10,60 @@ with lib; let
   xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
 in
   mkIf config.features.gui.enable (let
+    hyprWinList = pkgs.writeShellApplication {
+      name = "hypr-win-list";
+      runtimeInputs = [
+        pkgs.jq
+        pkgs.hyprland
+        pkgs.gawk
+        pkgs.coreutils
+        pkgs.gnused
+      ];
+      text = ''
+        set -euo pipefail
+        # List windows from Hyprland and select via rofi; focus selected.
+        prompt="Windows"
+
+        clients_json="$(hyprctl -j clients 2>/dev/null || true)"
+        [ -n "$clients_json" ] || exit 0
+        workspaces_json="$(hyprctl -j workspaces 2>/dev/null || true)"
+
+        list=$(jq -nr \
+          --argjson clients "$clients_json" \
+          --argjson wss "''${workspaces_json:-[]}" '
+            def sanitize: tostring | gsub("[\t\n]"; " ");
+            # Build id->name map
+            def wmap:
+              reduce $wss[] as $w ({}; .[($w.id|tostring)] = (($w.name // ($w.id|tostring))|tostring));
+            . as $in
+            | ($in | wmap) as $wm
+            | [ $clients[]
+                | select(.mapped==true)
+                | {wid: (.workspace.id|tostring),
+                   wname: ($wm[.workspace.id|tostring] // (.workspace.id|tostring)),
+                   cls: (.class // ""),
+                   ttl: (.title // ""),
+                   addr: (.address // "")}
+              ]
+            | sort_by(.wid)
+            | .[]
+            | ("[" + (.wname|sanitize) + "] "
+               + (.cls|sanitize)
+               + " - "
+               + (.ttl|sanitize)
+               + "\t"
+               + .addr)
+          ')
+        [ -n "$list" ] || exit 0
+
+        sel=$(printf '%s\n' "$list" | rofi -dmenu -matching fuzzy -i -p "$prompt" -theme clip) || exit 0
+        addr=$(printf '%s' "$sel" | awk -F '\t' '{print $NF}' | sed 's/^ *//')
+        [ -n "$addr" ] || exit 0
+
+        hyprctl dispatch focuswindow "address:$addr" >/dev/null 2>&1 || true
+        hyprctl dispatch bringactivetotop >/dev/null 2>&1 || true
+      '';
+    };
     coreFiles = [
       "init.conf"
       "vars.conf"
@@ -48,7 +102,7 @@ in
         };
         systemd.variables = ["--all"];
       };
-      home.packages = with pkgs; config.lib.neg.pkgsList [
+      home.packages = with pkgs; config.lib.neg.pkgsList ([
         hyprcursor # modern cursor theme format (replaces xcursor)
         hypridle # idle daemon
         hyprland-qt-support # Qt integration fixes
@@ -60,7 +114,7 @@ in
         kdePackages.qt6ct # Qt6 config tool
         pyprland # Hyprland plugin system
         upower # power management daemon
-      ];
+      ] ++ [ hyprWinList ]);
       programs.hyprlock.enable = true;
     }
     # Ensure Hyprland reload happens after all files are linked/written, to avoid
@@ -85,66 +139,5 @@ in
     # Submaps and binding helpers
     (lib.mkMerge (map (f: mkHyprSource ("bindings/" + f)) bindingFiles))
     # Tools: window switcher using rofi
-    {
-      home.file.".local/bin/hypr-win-list" = {
-        executable = true;
-        text = ''
-          #!/usr/bin/env bash
-          set -euo pipefail
-          # List windows from Hyprland and select via rofi; focus selected.
-          jq_bin="${pkgs.jq}/bin/jq"
-          hyprctl_bin="hyprctl"
-          rofi_bin="rofi"
-          prompt="Windows"
-
-          clients_json="$($hyprctl_bin -j clients 2>/dev/null || true)"
-          [ -n "$clients_json" ] || exit 0
-          workspaces_json="$($hyprctl_bin -j workspaces 2>/dev/null || true)"
-
-          list=$("$jq_bin" -nr \
-            --argjson clients "$clients_json" \
-            --argjson wss "''${workspaces_json:-[]}" '
-              def sanitize: tostring | gsub("[\t\n]"; " ");
-              # Build id->name map
-              def wmap:
-                reduce $wss[] as $w ({}; .[($w.id|tostring)] = (($w.name // ($w.id|tostring))|tostring));
-              . as $in
-              | ($in | wmap) as $wm
-              | [ $clients[]
-                  | select(.mapped==true)
-                  | {wid: (.workspace.id|tostring),
-                     wname: ($wm[.workspace.id|tostring] // (.workspace.id|tostring)),
-                     cls: (.class // ""),
-                     ttl: (.title // ""),
-                     addr: (.address // "")}
-                ]
-              | sort_by(.wid)
-              | .[]
-              | ("[" + (.wname|sanitize) + "] "
-                 + (.cls|sanitize)
-                 + " - "
-                 + (.ttl|sanitize)
-                 + "\t"
-                 + .addr)
-            ')
-          [ -n "$list" ] || exit 0
-
-          sel=$(printf '%s\n' "$list" | "$rofi_bin" -dmenu -matching fuzzy -i -p "$prompt" -theme clip) || exit 0
-          addr=$(printf '%s' "$sel" | awk -F '\t' '{print $NF}' | sed 's/^ *//')
-          [ -n "$addr" ] || exit 0
-
-          $hyprctl_bin dispatch focuswindow "address:$addr" >/dev/null 2>&1 || true
-          $hyprctl_bin dispatch bringactivetotop >/dev/null 2>&1 || true
-        '';
-      };
-      # Ensure legacy ~/bin script is replaced with our wrapper for PATH stability
-      home.activation.removeOldHyprWinList =
-        config.lib.neg.mkEnsureAbsent "${config.home.homeDirectory}/bin/hypr-win-list";
-      # Link wrapper into ~/bin for compatibility
-      home.activation.linkHyprWinListWrapper = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        set -eu
-        mkdir -p "$HOME/bin"
-        ln -sf "$HOME/.local/bin/hypr-win-list" "$HOME/bin/hypr-win-list"
-      '';
-    }
+    { }
   ])
