@@ -96,21 +96,29 @@ in
           hyprctl_bin="hyprctl"
           rofi_bin="rofi"
           prompt="Windows"
-          theme_opts=( -dmenu -matching fuzzy -i -p "$prompt" -theme clip )
 
           data="$($hyprctl_bin -j clients 2>/dev/null || true)"
           [ -n "$data" ] || exit 0
 
-          list=$(printf '%s' "$data" | "$jq_bin" -r '[ .[] | select(.mapped==true) | [.workspace.id, .class, .title, .address] ] | sort_by(.[0]) | .[] | @tsv')
+          list=$(printf '%s' "$data" | "$jq_bin" -r '[ .[] | select(.mapped==true) | [(.workspace.id|tostring), .class, .title, .address] ] | sort_by(.[0]) | .[] | "[\(.0)] \(.1) - \(.2)\t\(.3)"')
           [ -n "$list" ] || exit 0
 
-          sel=$(printf '%s\n' "$list" | awk -F '\t' '{ printf("[%2s] %-24s — %s\t%s\n", $1, $2, $3, $4) }' | "$rofi_bin" "${theme_opts[@]}") || exit 0
-          addr="${sel##*\t}"
-          addr="${addr##* }"
+          sel=$(printf '%s\n' "$list" | "$rofi_bin" -dmenu -matching fuzzy -i -p "$prompt" -theme clip) || exit 0
+          addr=$(printf '%s' "$sel" | awk -F '\t' '{print $NF}' | sed 's/^ *//')
           [ -n "$addr" ] || exit 0
 
           $hyprctl_bin dispatch focuswindow "address:$addr" >/dev/null 2>&1 || true
           $hyprctl_bin dispatch bringactivetotop >/dev/null 2>&1 || true
+        '';
+      };
+      # Ensure legacy ~/bin script is replaced with our wrapper for PATH stability
+      home.activation.removeOldHyprWinList =
+        config.lib.neg.mkEnsureAbsent "${config.home.homeDirectory}/bin/hypr-win-list";
+      home.file."bin/hypr-win-list" = {
+        executable = true;
+        text = ''
+          #!/usr/bin/env bash
+          exec "${config.home.homeDirectory}/.local/bin/hypr-win-list" "$@"
         '';
       };
     }
