@@ -10,6 +10,7 @@ with {
   confDirNew = "${config.xdg.configHome}/transmission-daemon";
   confDirOld = "${config.xdg.configHome}/transmission";
   confDirBak = "${config.xdg.configHome}/transmission-daemon.bak";
+  confDirArchive = "${config.home.homeDirectory}/src/1st_level/@archive/dotfiles_backup/misc/.config/transmission-daemon";
 in {
   # Ensure runtime subdirectories exist even if the config dir is a symlink
   # to an external location. This avoids "resume: No such file or directory"
@@ -34,8 +35,8 @@ in {
   # One-shot copy: merge any .resume files from backup into main resume dir (no overwrite)
   home.activation.mergeTransmissionState = lib.hm.dag.entryAfter ["writeBoundary"] ''
     set -eu
-    # Merge resumes from backup and legacy
-    for src in "${confDirBak}/resume" "${confDirOld}/resume"; do
+    # Merge resumes from backup, legacy, and user archive
+    for src in "${confDirBak}/resume" "${confDirOld}/resume" "${confDirArchive}/resume"; do
       dst="${confDirNew}/resume"
       if [ -d "$src" ] && [ -d "$dst" ]; then
         shopt -s nullglob
@@ -46,8 +47,8 @@ in {
         shopt -u nullglob
       fi
     done
-    # Merge torrents from backup and legacy
-    for src in "${confDirBak}/torrents" "${confDirOld}/torrents"; do
+    # Merge torrents from backup, legacy, and user archive
+    for src in "${confDirBak}/torrents" "${confDirOld}/torrents" "${confDirArchive}/torrents"; do
       dst="${confDirNew}/torrents"
       if [ -d "$src" ] && [ -d "$dst" ]; then
         shopt -s nullglob
