@@ -21,7 +21,7 @@ with lib;
       { dst = "rofi/themes/sxiv.rasi";        src = "conf/sxiv.rasi"; }
       { dst = "rofi/themes/win/left_btm.rasi"; src = "conf/win/left_btm.rasi"; }
     ];
-  in lib.mkMerge (
+  in lib.mkMerge ([
     {
       home.packages = with pkgs; config.lib.neg.pkgsList [
         rofi-pass-wayland # pass interface for rofi-wayland
