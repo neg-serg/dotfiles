@@ -9,7 +9,31 @@ with lib; let
   hy3Plugin = hy3.packages.${pkgs.system}.hy3;
   xdg = import ../../lib/xdg-helpers.nix { inherit lib; };
 in
-  mkIf config.features.gui.enable (lib.mkMerge [
+  mkIf config.features.gui.enable (let
+    coreFiles = [
+      "init.conf"
+      "vars.conf"
+      "classes.conf"
+      "rules.conf"
+      "bindings.conf"
+      "autostart.conf"
+      "workspaces.conf"
+      "pyprland.toml"
+    ];
+    bindingFiles = [
+      "resize.conf"
+      "apps.conf"
+      "special.conf"
+      "wallpaper.conf"
+      "tiling.conf"
+      "tiling-helpers.conf"
+      "media.conf"
+      "notify.conf"
+      "misc.conf"
+      "_resets.conf"
+    ];
+    mkHyprSource = rel: xdg.mkXdgSource ("hypr/" + rel) (config.lib.neg.mkDotfilesSymlink ("nix/.config/home-manager/modules/user/gui/hypr/conf/" + rel) false);
+  in lib.mkMerge [
     {
       wayland.windowManager.hyprland = {
         enable = true;
@@ -56,22 +80,8 @@ in
       permission = ${pkgs.hyprlock}/bin/hyprlock, screencopy, allow
       plugin = ${hy3Plugin}/lib/libhy3.so
     '')
-    (xdg.mkXdgSource "hypr/init.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/init.conf" false))
-    (xdg.mkXdgSource "hypr/vars.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/vars.conf" false))
-    (xdg.mkXdgSource "hypr/classes.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/classes.conf" false))
-    (xdg.mkXdgSource "hypr/rules.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/rules.conf" false))
-    (xdg.mkXdgSource "hypr/bindings.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings.conf" false))
-    # Submaps (split out for readability)
-    (xdg.mkXdgSource "hypr/bindings/resize.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/resize.conf" false))
-    (xdg.mkXdgSource "hypr/bindings/apps.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/apps.conf" false))
-    (xdg.mkXdgSource "hypr/bindings/special.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/special.conf" false))
-    (xdg.mkXdgSource "hypr/bindings/wallpaper.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/wallpaper.conf" false))
-    (xdg.mkXdgSource "hypr/bindings/tiling.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/tiling.conf" false))
-    (xdg.mkXdgSource "hypr/bindings/tiling-helpers.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/tiling-helpers.conf" false))
-    (xdg.mkXdgSource "hypr/bindings/media.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/media.conf" false))
-    (xdg.mkXdgSource "hypr/bindings/notify.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/notify.conf" false))
-    (xdg.mkXdgSource "hypr/bindings/misc.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/misc.conf" false))
-    (xdg.mkXdgSource "hypr/autostart.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/autostart.conf" false))
-    (xdg.mkXdgSource "hypr/workspaces.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/workspaces.conf" false))
-    (xdg.mkXdgSource "hypr/pyprland.toml" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/pyprland.toml" false))
+    # Core configs
+    (lib.mkMerge (map mkHyprSource coreFiles))
+    # Submaps and binding helpers
+    (lib.mkMerge (map (f: mkHyprSource ("bindings/" + f)) bindingFiles))
   ])

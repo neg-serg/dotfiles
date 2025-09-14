@@ -42,7 +42,6 @@ with lib;
           themes_dir="$xdg_data/rofi/themes"
           # Default to config dir to make @import in config.rasi resolve relative files
           cd_dir="$xdg_conf/rofi"
-          need_cd=1
           prev_is_theme=0
           for arg in "$@"; do
             if [ "$prev_is_theme" -eq 1 ]; then
@@ -66,9 +65,7 @@ with lib;
               ;;
             esac
           done
-          if [ "$need_cd" -eq 1 ] && [ -d "$cd_dir" ]; then
-            cd "$cd_dir"
-          fi
+          [ -d "$cd_dir" ] && cd "$cd_dir"
           exec "$rofi_bin" "$@"
         '';
       };
@@ -79,33 +76,17 @@ with lib;
     (xdg.mkXdgSource "rofi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf" true))
   ]
   ++ (map (e: xdg.mkXdgDataSource e.dst (config.lib.neg.mkDotfilesSymlink ("nix/.config/home-manager/modules/user/gui/rofi/" + e.src) false)) themeLinks)
-  ++ [
-    {
-      # Clean up old unmanaged XDG data theme fragments from pre-refactor
-      home.activation.cleanupOldRofiWinThemes =
-        let d = xdgDataHome; in
-        config.lib.neg.mkEnsureAbsentMany [
-          "${d}/rofi/themes/win/center_btm.rasi"
-          "${d}/rofi/themes/win/no_gap.rasi"
-        ];
-    }
-    {
-      # Clean up old neg/pass themes from XDG data to avoid Skipping delete messages
-      home.activation.cleanupOldRofiNegPassThemes =
-        let d = xdgDataHome; in
-        config.lib.neg.mkEnsureAbsentMany [
-          "${d}/rofi/themes/neg.rasi"
-          "${d}/rofi/themes/pass.rasi"
-        ];
-    }
-    {
-      # Remove leftovers from old launchers
-      home.activation.cleanupOldLaunchers =
-        let ch = xdgConfigHome; dh = xdgDataHome; in
-        config.lib.neg.mkEnsureAbsentMany [
-          "${ch}/rofimoji"
-          "${dh}/applications/rofimoji.desktop"
-        ];
-    }
-  ])
+  ++ [{
+    # Clean up leftovers from pre-refactor
+    home.activation.cleanupRofiLeftovers =
+      let ch = xdgConfigHome; d = xdgDataHome; in
+      config.lib.neg.mkEnsureAbsentMany [
+        "${d}/rofi/themes/win/center_btm.rasi"
+        "${d}/rofi/themes/win/no_gap.rasi"
+        "${d}/rofi/themes/neg.rasi"
+        "${d}/rofi/themes/pass.rasi"
+        "${ch}/rofimoji"
+        "${d}/applications/rofimoji.desktop"
+      ];
+  }])
 )
