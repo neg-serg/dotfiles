@@ -1,6 +1,6 @@
 _final: prev: {
   # Targeted fix: tigervnc build needs autoreconf during embedded xserver patching.
-  tigervnc = prev.tigervnc.overrideAttrs (old: {
+  tigervnc = _final.neg.functions.withOverrideAttrs prev.tigervnc (old: {
     nativeBuildInputs =
       (old.nativeBuildInputs or [])
       ++ [
