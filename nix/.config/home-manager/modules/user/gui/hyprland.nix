@@ -114,12 +114,11 @@ in
       # Ensure legacy ~/bin script is replaced with our wrapper for PATH stability
       home.activation.removeOldHyprWinList =
         config.lib.neg.mkEnsureAbsent "${config.home.homeDirectory}/bin/hypr-win-list";
-      home.file."bin/hypr-win-list" = {
-        executable = true;
-        text = ''
-          #!/usr/bin/env bash
-          exec "${config.home.homeDirectory}/.local/bin/hypr-win-list" "$@"
-        '';
-      };
+      # Link wrapper into ~/bin for compatibility
+      home.activation.linkHyprWinListWrapper = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        set -eu
+        mkdir -p "$HOME/bin"
+        ln -sf "$HOME/.local/bin/hypr-win-list" "$HOME/bin/hypr-win-list"
+      '';
     }
   ])
