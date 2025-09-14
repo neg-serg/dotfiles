@@ -69,8 +69,7 @@ with lib;
     # Live-editable config via helper (guards parent dir and target)
     (xdg.mkXdgSource "rofi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf" true))
     # Make themes discoverable via -theme <name> too (for external scripts)
-    (xdg.mkXdgDataSource "rofi/themes/neg.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/neg.rasi" false))
-    (xdg.mkXdgDataSource "rofi/themes/pass.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/pass.rasi" false))
+    # neg/pass live only in ~/.config/rofi; wrapper ensures @import resolution
     (xdg.mkXdgDataSource "rofi/themes/theme.rasi" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/rofi/conf/theme.rasi" false))
     # Window fragments used by config-loaded themes live only in ~/.config/rofi
     # to avoid duplicate links and stale XDG data paths.
@@ -84,6 +83,15 @@ with lib;
         config.lib.neg.mkEnsureAbsentMany [
           "${d}/rofi/themes/win/center_btm.rasi"
           "${d}/rofi/themes/win/no_gap.rasi"
+        ];
+    }
+    {
+      # Clean up old neg/pass themes from XDG data to avoid Skipping delete messages
+      home.activation.cleanupOldRofiNegPassThemes =
+        let d = xdgDataHome; in
+        config.lib.neg.mkEnsureAbsentMany [
+          "${d}/rofi/themes/neg.rasi"
+          "${d}/rofi/themes/pass.rasi"
         ];
     }
   ])
