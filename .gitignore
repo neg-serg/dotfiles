@@ -363,3 +363,5 @@ media/.config/mpv/fonts/
 # Nushell cache and compiled plugins (ignore if present locally)
 shell/.config/nushell/nupm/cache/
 shell/.config/nushell/plugin.msgpackz
+# Quickshell local settings (generated per-machine)
+quickshell/.config/quickshell/Settings.json
