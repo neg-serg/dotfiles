@@ -9,6 +9,7 @@ with {
 }; let
   confDirNew = "${config.xdg.configHome}/transmission-daemon";
   confDirOld = "${config.xdg.configHome}/transmission";
+  confDirBak = "${config.xdg.configHome}/transmission-daemon.bak";
 in {
   # Ensure runtime subdirectories exist even if the config dir is a symlink
   # to an external location. This avoids "resume: No such file or directory"
@@ -28,6 +29,22 @@ in {
     pkgs.neg.bt_migrate # torrent migrator
     rustmission # new transmission client
   ];
+
+  # One-shot copy: merge any .resume files from backup into main resume dir (no overwrite)
+  home.activation.mergeTransmissionResume = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    set -eu
+    src="${confDirBak}/resume"
+    dst="${confDirNew}/resume"
+    if [ -d "$src" ] && [ -d "$dst" ]; then
+      for f in "$src"/*.resume; do
+        [ -e "$f" ] || continue
+        base="$(basename "$f")"
+        if [ ! -e "$dst/$base" ]; then
+          cp -n "$f" "$dst/$base"
+        fi
+      done
+    fi
+  '';
 
   # Wrapper selects existing config dir that contains resume files, preferring the new path
   home.file.".local/bin/transmission-daemon-wrapper" = {
