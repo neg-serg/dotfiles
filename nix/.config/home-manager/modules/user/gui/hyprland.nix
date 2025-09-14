@@ -61,6 +61,7 @@ in
     (xdg.mkXdgSource "hypr/bindings.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings.conf" false))
     # Submaps (split out for readability)
     (xdg.mkXdgSource "hypr/bindings/resize.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/resize.conf" false))
+    (xdg.mkXdgSource "hypr/bindings/apps.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/apps.conf" false))
     (xdg.mkXdgSource "hypr/bindings/special.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/special.conf" false))
     (xdg.mkXdgSource "hypr/bindings/wallpaper.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/wallpaper.conf" false))
     (xdg.mkXdgSource "hypr/bindings/tiling.conf" (config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/user/gui/hypr/conf/bindings/tiling.conf" false))
