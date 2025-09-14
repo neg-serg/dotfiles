@@ -1,8 +1,4 @@
-/* common shared styles; theme variables come from the parent file */
-
-# 1) message / textbox
-# --------------------
-# Shared padding and colors
+/* shared styles; theme variables come from the parent file */
 
 #message {
     padding: 6px 6px;
@@ -14,9 +10,6 @@
     background-color: @blackwidget;
 }
 
-# 2) listview base
-# ----------------
-
 #listview {
     fixed-height: false;
     dynamic: true;
@@ -26,9 +19,6 @@
     margin: 0px 0px 0px 0px;
     background: @blackdarkest;
 }
-
-# 3) element base + states
-# ------------------------
 
 #element {
     padding: 0 4mm;
@@ -82,9 +72,6 @@
     text-color: @maincolor;
 }
 
-# 4) scrollbar / sidebar / button
-# --------------------------------
-
 #scrollbar {
     background-color: @blackwidget;
     handle-color: @darkgray;
@@ -103,9 +90,6 @@
 #button.selected {
     text-color: @maincolor;
 }
-
-# 5) input / prompt / entry / case-indicator
-# ------------------------------------------
 
 #inputbar {
     background-color: @blackdarkest;
@@ -130,9 +114,6 @@
     text-color: @maincolor;
     background-color: @blackwidget;
 }
-
-# 6) element-text
-# ----------------
 
 element-text {
     background-color: inherit;

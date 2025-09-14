@@ -17,6 +17,7 @@ with lib;
     xdgConfigHome = config.xdg.configHome or ("${config.home.homeDirectory}/.config");
     themeLinks = [
       { dst = "rofi/themes/theme.rasi";       src = "conf/theme.rasi"; }
+      { dst = "rofi/themes/common.rasi";      src = "conf/common.rasi"; }
       { dst = "rofi/themes/clip.rasi";        src = "conf/clip.rasi"; }
       { dst = "rofi/themes/sxiv.rasi";        src = "conf/sxiv.rasi"; }
       { dst = "rofi/themes/win/left_btm.rasi"; src = "conf/win/left_btm.rasi"; }
