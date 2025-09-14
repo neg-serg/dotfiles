@@ -28,7 +28,7 @@ with {
       ConditionPathExists = "${transmission}/bin/transmission-daemon";
     };
     Service = {
-      Type = "notify";
+      Type = "simple";
       ExecStart = "${transmission}/bin/transmission-daemon -g ${config.xdg.configHome}/transmission-daemon -f --log-error";
       Restart = "on-failure";
       RestartSec = "30";
