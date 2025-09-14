@@ -1,71 +1,16 @@
 @import "theme.rasi"
 /* @import "win/gap_btm.rasi" */
 @import "win/no_gap.rasi"
+@import "common.rasi"
 
 element-icon {
     size: 2.2ch;
     background-color: transparent;
 }
 
-#message {
-    padding: 6px 6px;
-    background-color: @blackwidget;
-}
-
 #horibox {
     children: [ prompt, entry, listview ];
     orientation: horizontal;
-}
-
-#textbox {
-    text-color: @darkgray;
-    background-color: @blackwidget;
-}
-
-#element {
-    padding: 0 4mm;
-    border-radius: 8px 8px 8px 8px;
-    border: 2px 0px 2px 0px;
-}
-
-#element.normal.normal {
-    background-color: @mainbg;
-    text-color: @fggrey;
-}
-
-#element.alternate.normal {
-    background-color: @mainbg;
-    text-color: @fggrey;
-}
-
-#element.normal.urgent {
-    background-color: @mainbg;
-    text-color: @urgentcolor;
-}
-
-#element.normal.active {
-    background-color: @mainbg;
-    text-color: @maincolor;
-}
-
-#element.selected.normal {
-    background-color: @selectcolor;
-    text-color: @fgwhite;
-}
-
-#element.selected.active {
-    background-color: @selectcolor;
-    text-color: @maincolor;
-}
-
-#element.alternate.urgent {
-    background-color: @mainbg;
-    text-color: @urgentcolor;
-}
-
-#element.alternate.active {
-    background-color: @mainbg;
-    text-color: @maincolor;
 }
 
 #listview {
