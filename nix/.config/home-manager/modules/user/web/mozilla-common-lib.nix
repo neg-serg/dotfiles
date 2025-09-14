@@ -37,23 +37,30 @@ with lib; let
     "media.block-autoplay-until-in-foreground" = true;
   };
 
+  # FastFox-like prefs: performance-leaning overrides gated by features.web.prefs.fastfox.enable.
+  # Summary: boosts parallelism (HTTP/DNS), enables site isolation (fission),
+  # prefers lazy tab restore, WebRender pacing, disables built-in PDF viewer/scripting,
+  # and applies a few UX/QoL toggles.
+  # Caveats: may increase memory footprint (fission, processCount),
+  # can break AMO install flow if RFP MAM is blocked (privacy.resistFingerprinting.block_mozAddonManager),
+  # disables inline PDF viewing (pdfjs.*), and certain render flags may misbehave on rare GPU/driver combos.
   fastfoxSettings = {
     # UX / warnings / minor QoL
     "general.warnOnAboutConfig" = false;
     "accessibility.typeaheadfind.flashBar" = 0;
     "browser.bookmarks.addedImportButton" = false;
     "browser.bookmarks.restore_default_bookmarks" = false;
-    # PDF viewer tightening
+    # PDF viewer tightening (disables inline PDF; use external viewer)
     "pdfjs.disabled" = true;
     "pdfjs.enableScripting" = false;
     "pdfjs.enableXFA" = false;
     # Color management
     "gfx.color_management.enabled" = true;
     "gfx.color_management.enablev4" = false;
-    # Process model and site isolation
+    # Process model and site isolation (more processes; more memory)
     "dom.ipc.processCount" = 8;
     "fission.autostart" = true;
-    # Networking concurrency and caches
+    # Networking concurrency and caches (aggressive parallelism + larger caches)
     "network.http.max-connections" = 1800;
     "network.http.max-persistent-connections-per-server" = 10;
     "network.http.max-urgent-start-excessive-connections-per-host" = 6;
@@ -64,10 +71,10 @@ with lib; let
     # Memory / tabs
     "browser.tabs.unloadOnLowMemory" = true;
     "browser.sessionstore.restore_tabs_lazily" = true;
-    # Rendering
+    # Rendering (force WebRender + precache shaders on supported GPUs)
     "gfx.webrender.all" = true;
     "gfx.webrender.precache-shaders" = true;
-    # Misc
+    # Misc (minor UI and RFP/AMO behavior)
     "browser.startup.preXulSkeletonUI" = false;
     # Optional: MAM exposure under RFP (can break AMO)
     "privacy.resistFingerprinting.block_mozAddonManager" = true;
