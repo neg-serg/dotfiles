@@ -18,8 +18,8 @@ _final: prev: {
   neg = {};
 
   # Workaround: upstream retag changed hash for ncclient v0.7.0.
-  # Override python3Packages.ncclient src hash to the currently served archive.
-  python3Packages = prev.python3Packages.overrideScope (self: super: {
+  # Override python3Packages.ncclient src hash via helper.
+  python3Packages = _final.neg.functions.overridePyScope (self: super: {
     ncclient = super.ncclient.overrideAttrs (_old: {
       src = prev.fetchFromGitHub {
         owner = "ncclient";
