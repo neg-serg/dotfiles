@@ -97,6 +97,140 @@ in {
     '';
   };
 
+  # Audit existing data on disk and suggest a selective restore
+  home.file.".local/bin/transmission-audit-data" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env python3
+      import os, sys, json, hashlib
+      from typing import Tuple, Any
+      
+      # Reuse scanner logic by importing from installed script if possible
+      # To keep it self-contained, embed minimal helpers
+      def bdecode(data: bytes, i: int = 0):
+        c = data[i:i+1]
+        if not c: raise ValueError('eof')
+        if c == b'i':
+          j = data.index(b'e', i+1)
+          return int(data[i+1:j]), j+1
+        if c in (b'l', b'd'):
+          isd = c == b'd'; i += 1; lst = []
+          while data[i:i+1] != b'e':
+            v, i = bdecode(data, i); lst.append(v)
+          i += 1
+          if isd:
+            it = iter(lst)
+            return {k: v for k,v in zip(it, it)}, i
+          return lst, i
+        if b'0' <= c <= b'9':
+          j = data.index(b':', i)
+          ln = int(data[i:j]); j += 1
+          return data[j:j+ln], j+ln
+        raise ValueError('bad')
+      def bencode(x):
+        if isinstance(x, int): return b'i%de' % x
+        if isinstance(x, (bytes, bytearray)): return str(len(x)).encode()+b':'+bytes(x)
+        if isinstance(x, str):
+          xb = x.encode('utf-8'); return str(len(xb)).encode()+b':'+xb
+        if isinstance(x, list): return b'l'+b''.join(bencode(v) for v in x)+b'e'
+        if isinstance(x, dict):
+          items = sorted(((k if isinstance(k,(bytes,bytearray)) else (k.encode('utf-8') if isinstance(k,str) else None), v) for k,v in x.items()), key=lambda kv: kv[0])
+          return b'd'+b''.join(bencode(k)+bencode(v) for k,v in items)+b'e'
+        raise TypeError
+      def decode_bytes(d):
+        if isinstance(d, dict):
+          return { (k.decode('utf-8','replace') if isinstance(k,(bytes,bytearray)) else k): decode_bytes(v) for k,v in d.items() }
+        if isinstance(d, list): return [decode_bytes(v) for v in d]
+        if isinstance(d, (bytes, bytearray)):
+          try: return d.decode('utf-8')
+          except: return d.decode('latin-1','replace')
+        return d
+      def load_resume(path):
+        raw = open(path,'rb').read()
+        if raw[:1] in (b'{',b'['):
+          try: return {'fmt':'json', 'raw': json.loads(raw.decode('utf-8','replace'))}
+          except: pass
+        try:
+          obj,_ = bdecode(raw,0)
+          return {'fmt':'bencode', 'raw': decode_bytes(obj)}
+        except: return {'fmt':'unknown','raw':None}
+      def load_torrent(path):
+        raw = open(path,'rb').read()
+        try: obj,_ = bdecode(raw,0)
+        except: return {'fmt':'unknown','raw':None, 'infohash': None}
+        info = None
+        if isinstance(obj, dict): info = obj.get(b'info') or obj.get('info')
+        ih = None
+        if info is not None:
+          try: ih = hashlib.sha1(bencode(info)).hexdigest()
+          except: ih = None
+        name = None
+        infod = obj.get(b'info') if isinstance(obj, dict) else None
+        if isinstance(infod, dict):
+          n = infod.get(b'name')
+          if isinstance(n,(bytes,bytearray)):
+            try: name = n.decode('utf-8')
+            except: name = n.decode('latin-1','replace')
+        return {'fmt':'bencode','raw': obj, 'infohash': ih, 'name': name}
+      def choose_conf():
+        home=os.environ.get('HOME','')
+        for p in (
+          os.path.join(home,'.config','transmission-daemon'),
+          os.path.join(home,'.config','transmission'),
+        ):
+          if os.path.isdir(p): return p
+        return os.path.join(home,'.config','transmission-daemon')
+      def main():
+        conf = choose_conf()
+        resdir = os.path.join(conf,'resume')
+        tordir = os.path.join(conf,'torrents')
+        print(f'Config: {conf}')
+        R={}; T={}
+        if os.path.isdir(resdir):
+          for fn in os.listdir(resdir):
+            if not fn.endswith('.resume'): continue
+            h=fn[:-7]
+            r=load_resume(os.path.join(resdir,fn))
+            raw=r['raw'] or {}
+            name = raw.get('name') or raw.get('torrentName') or raw.get('added-name')
+            dest = raw.get('downloadDir') or raw.get('destination')
+            R[h]={'name':name,'dest':dest}
+        if os.path.isdir(tordir):
+          for fn in os.listdir(tordir):
+            if not fn.endswith('.torrent'): continue
+            meta=load_torrent(os.path.join(tordir,fn))
+            ih = meta.get('infohash')
+            key = ih or os.path.splitext(fn)[0]
+            T[key]={'name': meta.get('name'), 'file': fn}
+        # audit
+        missing=[]; ok=[]
+        for h,info in R.items():
+          dest=info.get('dest')
+          nm=info.get('name')
+          if not dest:
+            missing.append((h, 'no-dest', nm, dest)); continue
+          # determine path to check
+          top=None
+          if h in T and T[h].get('name'):
+            top = os.path.join(dest, T[h]['name'])
+          elif nm:
+            top = os.path.join(dest, nm)
+          else:
+            # single-file fallback: check dest exists
+            top = dest
+          present = os.path.exists(top)
+          (ok if present else missing).append((h, 'ok' if present else 'missing', nm, dest))
+        # print summary
+        print(f'Present on disk: {sum(1 for _,s,_,_ in ok if s=="ok")}')
+        print(f'Missing on disk: {len(missing)}')
+        if missing:
+          for h,reason,nm,dest in missing[:20]:
+            print(f'  miss {h[:12]}… name={nm} dest={dest} reason={reason}')
+        return 0
+      if __name__=='__main__':
+        raise SystemExit(main())
+    '';
+  };
   # Scanner: search roots and inspect resume/torrent contents (JSON or bencode)
   home.file.".local/bin/transmission-scan" = {
     executable = true;
@@ -134,6 +268,18 @@ in {
           return s, j+ln
         raise ValueError('bad token')
 
+      def _decode_bytes(x):
+        if isinstance(x, (bytes, bytearray)):
+          try:
+            return x.decode('utf-8')
+          except Exception:
+            return x.decode('latin-1', 'replace')
+        if isinstance(x, dict):
+          return { _decode_bytes(k): _decode_bytes(v) for k,v in x.items() }
+        if isinstance(x, list):
+          return [ _decode_bytes(v) for v in x ]
+        return x
+
       def load_resume(path: str):
         with open(path, 'rb') as f:
           raw = f.read()
@@ -147,7 +293,7 @@ in {
             pass
         try:
           obj, _ = bdecode(raw, 0)
-          return {'fmt':'bencode','raw':obj}
+          return {'fmt':'bencode','raw': _decode_bytes(obj)}
         except Exception:
           return {'fmt':'unknown','raw':None}
 
@@ -158,8 +304,31 @@ in {
           obj, _ = bdecode(raw, 0)
         except Exception:
           return {'fmt':'unknown','raw':None}
-        # No attempt to compute infohash from info dict to avoid re-encoding
-        return {'fmt':'bencode','raw':obj}
+        # compute infohash for validation
+        def bencode(x):
+          if isinstance(x, int):
+            return b'i%de' % x
+          if isinstance(x, (bytes, bytearray)):
+            return str(len(x)).encode()+b':'+bytes(x)
+          if isinstance(x, str):
+            xb = x.encode('utf-8')
+            return str(len(xb)).encode()+b':'+xb
+          if isinstance(x, list):
+            return b'l'+b''.join(bencode(v) for v in x)+b'e'
+          if isinstance(x, dict):
+            items = sorted(((k if isinstance(k,(bytes,bytearray)) else (k.encode('utf-8') if isinstance(k,str) else None), v) for k,v in x.items()), key=lambda kv: kv[0])
+            return b'd'+b''.join(bencode(k)+bencode(v) for k,v in items)+b'e'
+          raise TypeError('cannot bencode')
+        info = None
+        if isinstance(obj, dict):
+          info = obj.get(b'info') or obj.get('info')
+        ih = None
+        if info is not None:
+          try:
+            ih = hashlib.sha1(bencode(info)).hexdigest()
+          except Exception:
+            ih = None
+        return {'fmt':'bencode','raw':obj, 'infohash': ih}
 
       def scan_root(root: str):
         resume_dir = os.path.join(root, 'resume')
@@ -197,7 +366,21 @@ in {
                   except: name = n.decode('latin-1', 'replace')
                 elif isinstance(n, str):
                   name = n
-            torrents[h] = {'file': fn, 'path': os.path.join(torrents_dir, fn), 'name': name, 'fmt': meta['fmt']}
+            if not name and isinstance(t, dict):
+              # try alt key if decoded earlier
+              info2 = t.get(b'info') if b'info' in t else None
+              if isinstance(info2, dict):
+                n = info2.get(b'name')
+                if isinstance(n,(bytes,bytearray)):
+                  try: name = n.decode('utf-8')
+                  except: name = n.decode('latin-1','replace')
+            ih = meta.get('infohash')
+            if not ih:
+              # fall back to filename-derived hash when it looks like a hash
+              base = os.path.splitext(fn)[0]
+              if len(base) in (40, 32) and all(c in '0123456789abcdef' for c in base.lower()):
+                ih = base.lower()
+            torrents[ih or h] = {'file': fn, 'path': os.path.join(torrents_dir, fn), 'name': name, 'fmt': meta['fmt']}
         return resumes, torrents
 
       def find_roots(argv):
