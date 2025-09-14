@@ -1,4 +1,4 @@
-@import "theme.rasi"
+/* common shared styles; theme variables come from the parent file */
 
 # 1) message / textbox
 # --------------------
@@ -138,4 +138,3 @@ element-text {
     background-color: inherit;
     text-color:       inherit;
 }
-

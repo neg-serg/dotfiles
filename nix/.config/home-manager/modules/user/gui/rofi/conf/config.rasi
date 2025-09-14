@@ -41,4 +41,4 @@ configuration {
     kb-cancel:                     "Control-c,Escape";
 }
 
-@theme "neg"
+@import "neg.rasi"
