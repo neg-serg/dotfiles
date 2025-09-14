@@ -9,11 +9,7 @@ with lib; let
   dlDir = "${config.home.homeDirectory}/dw";
   fa' = if fa != null then fa else pkgs.nur.repos.rycee.firefox-addons;
   addons = config.lib.neg.browserAddons fa';
-
-  nativeMessagingHosts = [
-    pkgs.pywalfox-native
-    pkgs.tridactyl-native
-  ];
+  nativeMessagingHosts = [ pkgs.pywalfox-native pkgs.tridactyl-native ];
 
   baseSettings = {
     # Locale/region
@@ -90,19 +86,11 @@ with lib; let
     #nav-bar #forward-button,
     #nav-bar #stop-reload-button,
     #nav-bar #home-button { display: none !important; }
-
     /* Bigger, bolder URL bar text */
     :root { --urlbar-min-height: 36px !important; }
-    #urlbar-input {
-      font-size: 17px !important;
-      font-weight: 500 !important;
-    }
-
+    #urlbar-input { font-size: 17px !important; font-weight: 500 !important; }
     .urlbarView-row .urlbarView-title,
-    .urlbarView-row .urlbarView-url {
-      font-size: 14px !important;
-      font-weight: 400 !important;
-    }
+    .urlbarView-row .urlbarView-url { font-size: 14px !important; font-weight: 400 !important; }
   '';
 
   policies = {
@@ -111,27 +99,18 @@ with lib; let
         installation_mode = "force_installed";
         install_url = "https://addons.mozilla.org/firefox/downloads/latest/hide-scrollbars/latest.xpi";
       };
-
-      "{4a311e5c-1ccc-49b7-9c23-3e2b47b6c6d5}" = {
-        installation_mode = "force_installed";
-        install_url = "https://addons.mozilla.org/firefox/downloads/latest/%D1%81%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C-%D0%BC%D1%83%D0%B7%D1%8B%D0%BA%D1%83-%D1%81-%D0%B2%D0%BA-vkd/latest.xpi";
-      };
-
       "kellyc-show-youtube-dislikes@nradiowave" = {
         installation_mode = "force_installed";
         install_url = "https://addons.mozilla.org/firefox/downloads/latest/kellyc-show-youtube-dislikes/latest.xpi";
       };
-
-      # Explicitly block Tampermonkey userscript manager
-      "firefox@tampermonkey.net" = {
-        installation_mode = "blocked";
+      "{4a311e5c-1ccc-49b7-9c23-3e2b47b6c6d5}" = {
+        installation_mode = "force_installed";
+        install_url = "https://addons.mozilla.org/firefox/downloads/latest/%D1%81%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C-%D0%BC%D1%83%D0%B7%D1%8B%D0%BA%D1%83-%D1%81-%D0%B2%D0%BA-vkd/latest.xpi";
       };
+      # Explicitly block Tampermonkey userscript manager
+      "firefox@tampermonkey.net" = { installation_mode = "blocked"; };
     };
-
-    Extensions = {
-      Install = true;
-      Updates = true;
-    };
+    Extensions = { Install = true; Updates = true; };
   };
 in {
   inherit nativeMessagingHosts settings extraConfig userChrome policies addons;
