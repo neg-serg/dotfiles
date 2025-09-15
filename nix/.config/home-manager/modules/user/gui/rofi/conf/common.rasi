@@ -24,8 +24,8 @@ placeholder {
     spacing: @list_spacing;
     padding: @pad @pad @pad @pad;
     margin: @margin0 @margin0 @margin0 @margin0;
-    columns: @columns;
-    lines: @menu_lines;
+    columns: @list_columns;
+    lines: @list_lines;
     background-color: @blackdarkest;
 }
 
