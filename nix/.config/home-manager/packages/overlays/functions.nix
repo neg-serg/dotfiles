@@ -1,4 +1,6 @@
-_final: prev: {
+_final: prev: let
+  lib = prev.lib or _final.lib;
+in {
   # Shared helper functions under pkgs.neg.functions to DRY up overlay patterns
   neg = (prev.neg or {}) // {
     functions = {
@@ -12,6 +14,17 @@ _final: prev: {
       # Small helper to override attrs of a derivation
       # withOverrideAttrs drv f = drv.overrideAttrs f
       withOverrideAttrs = drv: f: drv.overrideAttrs f;
+
+      # Generic helper: overrideScope for a top-level package set by name
+      # Returns an attrs set you can merge in an overlay.
+      # Example usage in overlay file:
+      #   _final.neg.functions.overrideScopeFor "python3Packages" (self: super: {
+      #     ncclient = super.ncclient.overrideAttrs (_: { src = ...; });
+      #   })
+      overrideScopeFor = name: f:
+        if (prev ? ${name}) && (prev.${name} ? overrideScope)
+        then { ${name} = prev.${name}.overrideScope f; }
+        else {};
 
       # --- Language-specific convenience helpers ---
       # Rust (buildRustPackage): override cargo hash (aka vendor hash)
