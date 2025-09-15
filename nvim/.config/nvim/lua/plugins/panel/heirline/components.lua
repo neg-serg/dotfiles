@@ -152,7 +152,20 @@ return function(ctx)
   }
   local LeftComponents = {
     condition = function() return not is_empty() end,
-    { provider = S.folder .. ' ', hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
+    {
+      provider = function()
+        local cwd, home = fn.getcwd(), fn.expand('~')
+        if cwd == home then
+          return (USE_ICONS and ' ' or '~ ')
+        end
+        return S.folder .. ' '
+      end,
+      hl = function()
+        local is_home = (fn.getcwd() == fn.expand('~'))
+        return { fg = (is_home and colors.green or colors.blue), bg = colors.base_bg }
+      end,
+      update = { 'DirChanged' },
+    },
     CurrentDir,
     -- vertical separator between cwd and file info
     { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
@@ -536,7 +549,20 @@ return function(ctx)
 
   local EmptyLeft = {
     condition = is_empty,
-    { provider = S.folder .. ' ', hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
+    {
+      provider = function()
+        local cwd, home = fn.getcwd(), fn.expand('~')
+        if cwd == home then
+          return (USE_ICONS and ' ' or '~ ')
+        end
+        return S.folder .. ' '
+      end,
+      hl = function()
+        local is_home = (fn.getcwd() == fn.expand('~'))
+        return { fg = (is_home and colors.green or colors.blue), bg = colors.base_bg }
+      end,
+      update = { 'DirChanged' },
+    },
     {
       provider = prof('Empty.Cwd', function() return fn.fnamemodify(fn.getcwd(), ':~') .. ' ' end),
       hl = function() return { fg = colors.white, bg = colors.base_bg } end,
