@@ -60,12 +60,12 @@ entry {
     spacing: 0px;
     padding: 8px 8px;
     background-color: @blackwidget;
-    text-color: @maincolor;
+    text-color: @fgwhite;
 }
 
 #case-indicator {
     padding: 8px 8px;
-    text-color: @maincolor;
+    text-color: @fgwhite;
     background-color: @blackwidget;
 }
 

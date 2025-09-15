@@ -23,18 +23,18 @@
 #element {
     padding: 0 4mm;
     border-radius: 2px 2px 2px 2px;
-    border: 2px 0px 2px 0px;
+    border: 0px;
 }
 
 #element.normal.normal {
     padding: 0px 0px;
     background-color: @mainbg;
-    text-color: @fggrey;
+    text-color: @fgwhite;
 }
 
 #element.alternate.normal {
     background-color: @mainbg;
-    text-color: @fggrey;
+    text-color: @fgwhite;
 }
 
 #element.normal.urgent {
@@ -44,7 +44,7 @@
 
 #element.normal.active {
     background-color: @mainbg;
-    text-color: @maincolor;
+    text-color: @fgwhite;
 }
 
 #element.selected.normal {
@@ -59,7 +59,7 @@
 
 #element.selected.active {
     background-color: @selectcolor;
-    text-color: @maincolor;
+    text-color: @fgwhite;
 }
 
 #element.alternate.urgent {
@@ -84,11 +84,11 @@
 
 #button {
     background-color: @blackwidget;
-    text-color: @darkgray;
+    text-color: @fgwhite;
 }
 
 #button.selected {
-    text-color: @maincolor;
+    text-color: @fgwhite;
 }
 
 #inputbar {
