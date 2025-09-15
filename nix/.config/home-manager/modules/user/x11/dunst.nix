@@ -4,7 +4,10 @@
   config,
   ...
 }: let
-  browserRec = import ../web/default-browser-lib.nix {inherit lib pkgs config;};
+  # Be robust if defaultBrowser is not set yet
+  db = config.lib.neg.web.defaultBrowser or {};
+  browserBin = (if db ? bin then db.bin else "${pkgs.xdg-utils}/bin/xdg-open");
+  browserArg = (if db ? newTabArg then db.newTabArg else "");
 in {
   services.dunst = {
     enable = true;
@@ -15,7 +18,7 @@ in {
     settings = {
       global = {
         alignment = "left";
-        browser = "${browserRec.bin} ${browserRec.newTabArg}";
+        browser = "${browserBin} ${browserArg}";
         corner_radius = 4;
         ellipsize = "end";
         follow = "mouse";

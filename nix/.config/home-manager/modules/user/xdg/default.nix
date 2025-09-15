@@ -5,7 +5,11 @@
   ...
 }:
 with rec {
-  browserRec = import ../web/default-browser-lib.nix {inherit lib pkgs config;};
+  db = config.lib.neg.web.defaultBrowser or {};
+  browserRec = {
+    bin = db.bin or "${pkgs.xdg-utils}/bin/xdg-open";
+    desktop = db.desktop or "floorp.desktop";
+  };
   defaultApplications = {
     terminal = {
       cmd = "${pkgs.kitty}/bin/kitty";
