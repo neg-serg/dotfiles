@@ -17,14 +17,25 @@ This document maps the main `features.*` options used by this Home Manager setup
   - Default: true in full, false in lite
 - `features.web.yandex.enable` (Yandex Browser)
   - Default: true in full, false in lite
- - `features.web.prefs.fastfox.enable` (FastFox‑like Mozilla prefs)
-   - Default: true in full, false in lite
-   - Summary: increases parallelism, enables site isolation (Fission), lazy tab restore, forces WebRender, disables inline PDF.
-   - Caveats: higher memory usage, possible AMO/RFP interaction, inline PDF disabled.
+- `features.web.prefs.fastfox.enable` (FastFox‑like Mozilla prefs)
+  - Default: true in full, false in lite
+  - Summary: increases parallelism, enables site isolation (Fission), lazy tab restore, forces WebRender, disables inline PDF.
+  - Caveats: higher memory usage, possible AMO/RFP interaction, inline PDF disabled.
+- `features.web.default` (default browser)
+  - Type: one of `"floorp" | "firefox" | "librewolf" | "nyxt" | "yandex"`
+  - Default: `"floorp"`
+  - Selected browser record is exposed at `config.lib.neg.web.defaultBrowser` with fields `{ name, pkg, bin, desktop, newTabArg }`.
+  - The full table is available as `config.lib.neg.web.browsers`.
 
 Notes
 - Yandex Browser is passed in via `extraSpecialArgs` as `yandexBrowser` (system‑scoped package set). See `flake.nix` and usage in `modules/user/web/browsing.nix`.
 - Floorp profile and prefs live in `modules/user/web/floorp.nix`.
+
+Mozilla browsers
+- Firefox, LibreWolf and Floorp share a unified constructor in `modules/user/web/mozilla-common-lib.nix`:
+  - `mkBrowser { name, package, profileId ? "default", settingsExtra ? {}, defaults ? {}, addonsExtra ? [], nativeMessagingExtra ? [], policiesExtra ? {}, profileExtra ? {} }`
+  - Browser modules call this to produce their `programs.<name>` blocks, avoiding duplication.
+  - Use the `*Extra` fields to extend settings/policies/addons per browser.
 
 ## Audio Stack (`modules/media/audio`)
 
