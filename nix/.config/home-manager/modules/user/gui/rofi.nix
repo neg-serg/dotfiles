@@ -38,6 +38,8 @@ with lib;
           #!/usr/bin/env bash
           set -euo pipefail
           rofi_bin="${rofiPkg}/bin/rofi"
+          jq_bin="${pkgs.jq}/bin/jq"
+          hyprctl_bin="${pkgs.hyprland}/bin/hyprctl"
           xdg_data="${xdgDataHome}"
           xdg_conf="${config.xdg.configHome}"
           themes_dir="$xdg_data/rofi/themes"
@@ -80,12 +82,12 @@ with lib;
             # Defaults if quickshell or jq/hyprctl unavailable
             ph=28; sm=18; ay=4; scale=1
             if [ -f "$theme_json" ]; then
-              ph=$(jq -r 'try .panel.height // 28' "$theme_json" 2>/dev/null || echo 28)
-              sm=$(jq -r 'try .panel.sideMargin // 18' "$theme_json" 2>/dev/null || echo 18)
-              ay=$(jq -r 'try .panel.menu.anchorYOffset // 4' "$theme_json" 2>/dev/null || echo 4)
+              ph=$("$jq_bin" -r 'try .panel.height // 28' "$theme_json" 2>/dev/null || echo 28)
+              sm=$("$jq_bin" -r 'try .panel.sideMargin // 18' "$theme_json" 2>/dev/null || echo 18)
+              ay=$("$jq_bin" -r 'try .panel.menu.anchorYOffset // 4' "$theme_json" 2>/dev/null || echo 4)
             fi
             # Hyprland monitor scale (focused)
-            scale=$(hyprctl -j monitors 2>/dev/null | jq -r 'try (.[ ] | select(.focused==true) | .scale) // 1' 2>/dev/null || echo 1)
+            scale=$("$hyprctl_bin" -j monitors 2>/dev/null | "$jq_bin" -r 'try (.[ ] | select(.focused==true) | .scale) // 1' 2>/dev/null || echo 1)
             # Round offsets to ints
             xoff=$(printf '%.0f\n' "$(awk -v a="$sm" -v s="$scale" 'BEGIN{printf a*s}')")
             yoff=$(printf '%.0f\n' "$(awk -v a="$ay" -v s="$scale" 'BEGIN{printf -a*s}')")
