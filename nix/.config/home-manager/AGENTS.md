@@ -18,8 +18,10 @@ This repo is configured for Home Manager + flakes with a small set of helpers to
   - `mkEnsureAbsent path` / `mkEnsureAbsentMany [..]` — remove conflicting files/dirs pre‑link
   - `mkEnsureDirsAfterWrite [..]` — create runtime dirs after writeBoundary
   - `mkEnsureMaildirs base [boxes..]` — create Maildir trees after writeBoundary
-  - Aggregated XDG fixups are already enabled in `modules/user/xdg/default.nix`:
-    - `home.activation.xdgFixParents`, `home.activation.xdgFixTargets`
+  - Aggregated XDG fixups (new helpers):
+    - `mkXdgFixParents { configs = attrNames config.xdg.configFile; datas = attrNames config.xdg.dataFile; caches = attrNames config.xdg.cacheFile; preserveConfigPatterns = [ "transmission-daemon/*" ]; }`
+    - `mkXdgFixTargets { configs = …; datas = …; caches = …; }`
+    - These are wired in `modules/user/xdg/default.nix` as `home.activation.xdgFixParents` and `home.activation.xdgFixTargets`.
   - Common user paths prepared via:
     - `ensureCommonDirs`, `cleanSwayimgWrapper`, `ensureGmailMaildirs`
 - systemd (user) presets
@@ -71,4 +73,3 @@ This repo is configured for Home Manager + flakes with a small set of helpers to
 - Update pins in `flake.nix` and extend the matrix in `modules/features.nix`:
   - Add `{ hv = "<hyprland version>"; rev = "<hy3 commit>"; }` to `compatible`.
   - Keep Hyprland and hy3 in lock‑step to avoid API breaks.
-

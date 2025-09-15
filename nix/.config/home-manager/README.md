@@ -19,8 +19,9 @@ Notes:
    - bindings/*.conf: apps, media, notify, resize, tiling, tiling-helpers, wallpaper, misc
    - init.conf, rules.conf, workspaces.conf, autostart.conf (with concise section headers)
    - Files are symlinked into ~/.config/hypr via Home Manager.
- - Rofi: wrapper ~/.local/bin/rofi ensures theme lookup works (config-relative and XDG data themes).
-   - Themes live in ~/.config/rofi and ~/.local/share/rofi/themes; Mod4+c uses the clip theme.
+- Rofi: wrapper ~/.local/bin/rofi ensures theme lookup works (config-relative and XDG data themes).
+  - Themes live in ~/.config/rofi and ~/.local/share/rofi/themes; Mod4+c uses the clip theme.
+  - Theme links are generated from a compact list (no manual duplication in the module).
 
 ## Getting Started
 
@@ -42,6 +43,9 @@ Notes:
   - Toggle stacks in `home.nix` under `features.*` (e.g., `features.gui.enable`, `features.mail.vdirsyncer.enable`).
   - GPG stack is controlled by `features.gpg.enable`.
   - Mozilla prefs: `features.web.prefs.fastfox.enable` gates FastFox-like tweaks (enabled in full, disabled in lite).
+  - Default browser: set `features.web.default` to one of `floorp | firefox | librewolf | nyxt | yandex`.
+    - Selected browser record is exposed as `config.lib.neg.web.defaultBrowser`.
+    - The full map is available at `config.lib.neg.web.browsers` for reuse.
 
 - Secrets (sops-nix)
   - Secrets are managed under `secrets/` with sops-nix, referenced from `home.nix` and modules.
@@ -72,6 +76,11 @@ Notes:
   - `~/.local/bin/rofi` wrapper ensures theme lookup works (relative to config or via XDG data).
   - `clip.rasi`, `sxiv.rasi` and required `win/*.rasi` are linked into `$XDG_DATA_HOME/rofi/themes` for `-theme` use.
   - If you want an emoji picker, provide your own `~/bin/rofi-emoji` script.
+
+- Mozilla browsers
+  - Firefox, LibreWolf and Floorp are configured via a single constructor `mkBrowser` in `modules/user/web/mozilla-common-lib.nix`.
+  - Each browser module calls `common.mkBrowser { name, package, profileId ? "default"; }` and may extend with extras.
+  - Use `settingsExtra`, `addonsExtra`, `policiesExtra`, `nativeMessagingExtra`, `profileExtra` for per-browser overrides.
 
 ## Developer Notes
 
