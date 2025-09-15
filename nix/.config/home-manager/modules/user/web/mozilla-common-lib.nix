@@ -115,4 +115,34 @@ with lib; let
 in {
   inherit nativeMessagingHosts settings extraConfig userChrome policies addons;
   profileId = "bqtlgdxw.default";
+  # mkBrowser: build a module fragment for programs.<name>
+  # args: { name, package, profileId ? "default", defaults ? {} }
+  mkBrowser = {
+    name,
+    package,
+    profileId ? "default",
+    defaults ? {},
+  }:
+    let
+      pid = profileId;
+      mergedSettings = settings // defaults;
+    in {
+      programs = {
+        "${name}" = {
+          enable = true;
+          package = package;
+          nativeMessagingHosts = nativeMessagingHosts;
+          profiles = {
+            "${pid}" = {
+              isDefault = true;
+              extensions = { packages = addons.common; };
+              settings = mergedSettings;
+              extraConfig = extraConfig;
+              userChrome = userChrome;
+            };
+          };
+          policies = policies;
+        };
+      };
+    };
 }
