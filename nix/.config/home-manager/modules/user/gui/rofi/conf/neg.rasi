@@ -3,7 +3,7 @@
 @import "common.rasi"
 
 element-icon {
-    size: 2.2ch;
+    size: 1.8ch;
     background-color: transparent;
 }
 
@@ -19,15 +19,15 @@ element-icon {
     fixed-columns: false;
     lines: 2;
     margin: 0px 0px 0px 0px;
-    padding: 6px 6px 6px 6px;
+    padding: 3px 3px 3px 3px;
     scrollbar: false;
-    spacing: 5px;
+    spacing: 2px;
 }
 
 entry {
     expand: true;
-    width: 8em;
-    padding: 8px 8px;
+    width: 6em;
+    padding: 4px 4px;
     background-color: @blackwidget;
     text-color: @fgwhite;
 }
@@ -58,13 +58,13 @@ entry {
 
 #prompt {
     spacing: 0px;
-    padding: 8px 8px;
+    padding: 4px 4px;
     background-color: @blackwidget;
     text-color: @fgwhite;
 }
 
 #case-indicator {
-    padding: 8px 8px;
+    padding: 4px 4px;
     text-color: @fgwhite;
     background-color: @blackwidget;
 }
