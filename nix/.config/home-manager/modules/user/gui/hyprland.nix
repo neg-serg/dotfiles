@@ -159,19 +159,29 @@ in
         };
         systemd.variables = ["--all"];
       };
-      home.packages = with pkgs; config.lib.neg.pkgsList ([
-        hyprcursor # modern cursor theme format (replaces xcursor)
-        hypridle # idle daemon
-        hyprland-qt-support # Qt integration fixes
-        hyprland-qtutils # Hyprland Qt helpers
-        hyprpicker # color picker
-        hyprpolkitagent # polkit agent
-        hyprprop # xprop-like tool for Hyprland
-        hyprutils # core utils for Hyprland
-        kdePackages.qt6ct # Qt6 config tool
-        pyprland # Hyprland plugin system
-        upower # power management daemon
-      ] ++ [ hyprWinList ]);
+      # Package groups flattened via mkEnabledList
+      home.packages = with pkgs;
+        config.lib.neg.pkgsList (
+          let
+            groups = {
+              core = [
+                hyprcursor # modern cursor theme format (replaces xcursor)
+                hypridle # idle daemon
+                hyprland-qt-support # Qt integration fixes
+                hyprland-qtutils # Hyprland Qt helpers
+                hyprpicker # color picker
+                hyprpolkitagent # polkit agent
+                hyprprop # xprop-like tool for Hyprland
+                hyprutils # core utils for Hyprland
+                kdePackages.qt6ct # Qt6 config tool
+                pyprland # Hyprland plugin system
+                upower # power management daemon
+              ];
+              tools = [ hyprWinList ];
+            };
+            flags = { core = true; tools = true; };
+          in config.lib.neg.mkEnabledList flags groups
+        );
       programs.hyprlock.enable = true;
     }
     # Ensure Hyprland reload happens after all files are linked/written, to avoid

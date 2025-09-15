@@ -24,12 +24,20 @@ with lib; {
       ];
     }
     (mkIf config.features.web.enable {
-      home.packages = with pkgs; config.lib.neg.pkgsList (
-        [ passff-host ]
-        ++ (optionals (yandexBrowser != null && config.features.web.yandex.enable) [
-          yandexBrowser.yandex-browser-stable # Yandex Browser (Chromium)
-        ])
-      );
+      # Collect package groups and flatten via mkEnabledList to reduce scattered optionals
+      home.packages = with pkgs;
+        config.lib.neg.pkgsList (
+          let
+            groups = {
+              core = [ passff-host ];
+              yandex = lib.optionals (yandexBrowser != null) [ yandexBrowser.yandex-browser-stable ];
+            };
+            flags = {
+              core = true;
+              yandex = (yandexBrowser != null) && (config.features.web.yandex.enable or false);
+            };
+          in config.lib.neg.mkEnabledList flags groups
+        );
     })
   ];
 }
