@@ -123,4 +123,5 @@ placeholder {
 element-text {
     background-color: inherit;
     text-color:       inherit;
+    horizontal-align: 0.0; /* left align text */
 }

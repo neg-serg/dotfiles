@@ -14,10 +14,10 @@ element-icon {
 
 #listview {
     background: @blackdarkest;
-    columns: 12;
+    columns: 1;
     dynamic: true;
     fixed-columns: false;
-    lines: 2;
+    lines: 12;
     margin: 0px 0px 0px 0px;
     padding: 3px 3px 3px 3px;
     scrollbar: false;
