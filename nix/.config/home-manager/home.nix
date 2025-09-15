@@ -54,6 +54,11 @@ in {
       trusted-public-keys =
         ["cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="]
         ++ cachixTrustedKeys;
+      # Parallelism/robustness for downloads
+      http-connections = 50;          # total open HTTP connections
+      max-substitution-jobs = 12;     # parallel downloads from caches
+      connect-timeout = 10;           # seconds to fail fast on bad routes
+      download-attempts = 10;         # retry transient failures
     };
   };
   imports = [
