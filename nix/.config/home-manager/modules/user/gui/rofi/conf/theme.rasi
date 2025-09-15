@@ -6,8 +6,8 @@
     blackwidget: #00000044;
     mainbg: #02040444;
 
-    /* Use kitty color15 (bold white) for text */
-    fgwhite: #617287;
+    /* Restore original bright text color */
+    fgwhite: #b8c5d9;
     fggrey: #828b99;
     /* Near-black translucent background for rofi */
     blackdarkest: #00000099;
