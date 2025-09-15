@@ -34,8 +34,6 @@ in
     ];
     workspacesConf = let
       wsLines = builtins.concatStringsSep "\n" (map (w: "workspace = ${toString w.id}, defaultName:${w.name}") workspaces);
-      routeLines = builtins.concatStringsSep "\n" (map (w: if (w.var or null) != null then "windowrulev2 = workspace name:${w.name}, $${w.var}" else "") workspaces);
-      routeLinesNonEmpty = builtins.concatStringsSep "\n" (lib.filter (s: s != "") (lib.splitString "\n" routeLines));
     in ''
       ${wsLines}
 
@@ -50,13 +48,25 @@ in
       windowrulev2 = float, class:^(swayimg)$
       windowrulev2 = size 1200 800, class:^(swayimg)$
       windowrulev2 = move 100 100, class:^(swayimg)$
-
-      # routing
-      windowrulev2 = noblur, $term
-      ${routeLinesNonEmpty}
-
       # special
       windowrulev2 = fullscreen, $pic
+    '';
+    # Routing rules are window rules; include them from rules.conf directly.
+    routesConf = let
+      routeLines = builtins.concatStringsSep "\n" (
+        lib.filter (s: s != "") (
+          map (
+            w:
+              if (w.var or null) != null
+              then "windowrulev2 = workspace name:${w.name}, $" + w.var
+              else ""
+          ) workspaces
+        )
+      );
+    in ''
+      # routing
+      windowrulev2 = noblur, $term
+      ${routeLines}
     '';
     hyprWinList = pkgs.writeShellApplication {
       name = "hypr-win-list";
@@ -183,8 +193,10 @@ in
     '')
     # Core configs
     (lib.mkMerge (map mkHyprSource coreFiles))
-    # Generated workspaces
+    # Generated workspaces (names, specials)
     (xdg.mkXdgText "hypr/workspaces.conf" workspacesConf)
+    # Generated routing rules, sourced from rules.conf
+    (xdg.mkXdgText "hypr/rules-routing.conf" routesConf)
     # Submaps and binding helpers
     (lib.mkMerge (map (f: mkHyprSource ("bindings/" + f)) bindingFiles))
     # Tools: window switcher using rofi
