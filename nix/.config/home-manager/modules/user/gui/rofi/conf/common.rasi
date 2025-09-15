@@ -6,8 +6,13 @@
 }
 
 #textbox {
-    text-color: @darkgray;
+    text-color: @fgwhite;
     background-color: @blackwidget;
+}
+
+/* Ensure entry placeholder text is light */
+placeholder {
+    text-color: @fgwhite;
 }
 
 #listview {
