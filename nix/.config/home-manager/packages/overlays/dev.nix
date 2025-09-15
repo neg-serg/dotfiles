@@ -21,13 +21,13 @@ _final: prev: {
   # Override python3Packages.ncclient src hash via helper.
   # Demonstrates the generic overrideScopeFor pattern.
   # Merge this result with the overlay output (it returns an attrset).
-} // (_final.neg.functions.overrideScopeFor "python3Packages" (self: super: {
-  ncclient = super.ncclient.overrideAttrs (_old: {
-    src = prev.fetchFromGitHub {
-      owner = "ncclient";
-      repo = "ncclient";
-      rev = "v0.7.0";
-      hash = "sha256-vSX+9nTl4r6vnP/vmavdmdChzOC8P2G093/DQNMQwS4=";
-    };
+  python3Packages = prev.python3Packages.overrideScope (self: super: {
+    ncclient = super.ncclient.overrideAttrs (_old: {
+      src = prev.fetchFromGitHub {
+        owner = "ncclient";
+        repo = "ncclient";
+        rev = "v0.7.0";
+        hash = "sha256-vSX+9nTl4r6vnP/vmavdmdChzOC8P2G093/DQNMQwS4=";
+      };
+    });
   });
-}))
