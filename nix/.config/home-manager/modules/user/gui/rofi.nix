@@ -44,6 +44,8 @@ with lib;
           # Default to config dir to make @import in config.rasi resolve relative files
           cd_dir="$xdg_conf/rofi"
           prev_is_theme=0
+          want_offsets=1
+          have_xoff=0; have_yoff=0; have_loc=0
           for arg in "$@"; do
             if [ "$prev_is_theme" -eq 1 ]; then
               val="$arg"
@@ -63,10 +65,37 @@ with lib;
                   /*|*/*) : ;;
                   *) case "$val" in *.rasi|*.rasi:*) cd_dir="$themes_dir" ;; esac ;;
                 esac
-              ;;
+                ;;
+              -xoffset| -xoffset=*) have_xoff=1 ;;
+              -yoffset| -yoffset=*) have_yoff=1 ;;
+              -location| -location=*) have_loc=1 ;;
             esac
           done
           [ -d "$cd_dir" ] && cd "$cd_dir"
+
+          # Compute offsets from Quickshell Theme + Hyprland scale to align with panel
+          # Only when caller did not specify offsets explicitly
+          if [ "$want_offsets" -eq 1 ] && [ "$have_xoff" -eq 0 ] && [ "$have_yoff" -eq 0 ]; then
+            theme_json="$HOME/.config/quickshell/Theme.json"
+            # Defaults if quickshell or jq/hyprctl unavailable
+            ph=28; sm=18; ay=4; scale=1
+            if [ -f "$theme_json" ]; then
+              ph=$(jq -r 'try .panel.height // 28' "$theme_json" 2>/dev/null || echo 28)
+              sm=$(jq -r 'try .panel.sideMargin // 18' "$theme_json" 2>/dev/null || echo 18)
+              ay=$(jq -r 'try .panel.menu.anchorYOffset // 4' "$theme_json" 2>/dev/null || echo 4)
+            fi
+            # Hyprland monitor scale (focused)
+            scale=$(hyprctl -j monitors 2>/dev/null | jq -r 'try (.[ ] | select(.focused==true) | .scale) // 1' 2>/dev/null || echo 1)
+            # Round offsets to ints
+            xoff=$(printf '%.0f\n' "$(awk -v a="$sm" -v s="$scale" 'BEGIN{printf a*s}')")
+            yoff=$(printf '%.0f\n' "$(awk -v a="$ay" -v s="$scale" 'BEGIN{printf -a*s}')")
+            set -- "$@" -xoffset "$xoff" -yoffset "$yoff"
+            # Ensure bottom-left if not specified
+            if [ "$have_loc" -eq 0 ]; then
+              set -- "$@" -location 7
+            fi
+          fi
+
           exec "$rofi_bin" "$@"
         '';
       };
