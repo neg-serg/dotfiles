@@ -15,4 +15,5 @@ mainbox {
 
 listview {
     lines:                            8;
+    columns:                          1;
 }
