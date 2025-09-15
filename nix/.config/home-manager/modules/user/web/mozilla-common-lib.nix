@@ -116,32 +116,57 @@ in {
   inherit nativeMessagingHosts settings extraConfig userChrome policies addons;
   profileId = "bqtlgdxw.default";
   # mkBrowser: build a module fragment for programs.<name>
-  # args: { name, package, profileId ? "default", defaults ? {} }
+  # args: {
+  #   name,
+  #   package,
+  #   profileId ? "default",
+  #   # Settings overrides merged into base settings
+  #   settingsExtra ? {},
+  #   # Back-compat alias for settingsExtra (will be merged too)
+  #   defaults ? {},
+  #   # Extra extension packages to install
+  #   addonsExtra ? [],
+  #   # Extra native messaging hosts to add
+  #   nativeMessagingExtra ? [],
+  #   # Extra/override Firefox enterprise policies
+  #   policiesExtra ? {},
+  #   # Extra profile fields to merge (e.g., isDefault, bookmarks, search)
+  #   profileExtra ? {},
+  # }
   mkBrowser = {
     name,
     package,
     profileId ? "default",
+    settingsExtra ? {},
     defaults ? {},
+    addonsExtra ? [],
+    nativeMessagingExtra ? [],
+    policiesExtra ? {},
+    profileExtra ? {},
   }:
     let
       pid = profileId;
-      mergedSettings = settings // defaults;
+      mergedSettings = settings // defaults // settingsExtra;
+      mergedNMH = nativeMessagingHosts ++ nativeMessagingExtra;
+      mergedPolicies = policies // policiesExtra;
+      profileBase = {
+        isDefault = true;
+        extensions = { packages = addons.common ++ addonsExtra; };
+        settings = mergedSettings;
+        extraConfig = extraConfig;
+        userChrome = userChrome;
+      };
+      profile = profileBase // profileExtra;
     in {
       programs = {
         "${name}" = {
           enable = true;
           package = package;
-          nativeMessagingHosts = nativeMessagingHosts;
+          nativeMessagingHosts = mergedNMH;
           profiles = {
-            "${pid}" = {
-              isDefault = true;
-              extensions = { packages = addons.common; };
-              settings = mergedSettings;
-              extraConfig = extraConfig;
-              userChrome = userChrome;
-            };
+            "${pid}" = profile;
           };
-          policies = policies;
+          policies = mergedPolicies;
         };
       };
     };
