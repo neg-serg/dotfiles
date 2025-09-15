@@ -154,9 +154,11 @@ return function(ctx)
     condition = function() return not is_empty() end,
     { provider = S.folder .. ' ', hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
     CurrentDir,
-    -- remove blue separator for empty view
+    -- vertical separator between cwd and file info
+    { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
     FileIcon,
     FileNameClickable,
+    { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
     Readonly,
     {
       condition = function() return vim.bo.modified end,
@@ -565,7 +567,8 @@ return function(ctx)
 
   local EmptyActions = {
     condition = function() return is_empty() and not is_narrow() end,
-    -- no separator before actions in empty view
+    -- vertical separator before actions in empty view
+    { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
     {
       provider = function() return ' ' .. S.plus .. ' New ' end,
       hl = function() return { fg = colors.green, bg = colors.base_bg } end,
