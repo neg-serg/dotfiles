@@ -1,7 +1,7 @@
 /* shared styles; theme variables come from the parent file */
 
 #message {
-    padding: var(pad) var(pad);
+    padding: 6px 6px;
     background-color: var(blackwidget);
 }
 
@@ -21,12 +21,12 @@ placeholder {
     fixed-height: false;
     dynamic: true;
     scrollbar: true;
-    spacing: var(row-spacing);
-    padding: var(pad) var(pad) var(pad) var(pad);
-    margin: var(zero) var(zero) var(zero) var(zero);
+    spacing: 2px;
+    padding: 6px 6px 6px 6px;
+    margin: 0px 0px 0px 0px;
     background-color: var(blackdarkest);
-    columns: var(default-columns);
-    lines: var(default-lines);
+    columns: 1;
+    lines: 12;
 }
 
 #element {
@@ -84,7 +84,7 @@ placeholder {
 #scrollbar {
     background-color: var(blackwidget);
     handle-color: var(darkgray);
-    handle-width: var(scroll-handle);
+    handle-width: 2px;
 }
 
 #sidebar {
@@ -107,19 +107,19 @@ placeholder {
 
 #prompt {
     spacing: 0px;
-    padding: var(pad-small) var(pad-small);
+    padding: 4px 4px;
     background-color: var(blackwidget);
     text-color: var(maincolor);
 }
 
 #entry {
-    padding: var(pad-small) var(pad-small);
+    padding: 4px 4px;
     background-color: var(blackwidget);
     text-color: var(fgwhite);
 }
 
 #case-indicator {
-    padding: var(pad-small) var(pad-small);
+    padding: 4px 4px;
     text-color: var(maincolor);
     background-color: var(blackwidget);
 }
