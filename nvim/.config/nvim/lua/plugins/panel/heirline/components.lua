@@ -158,7 +158,12 @@ return function(ctx)
     { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
     FileIcon,
     FileNameClickable,
-    { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
+    {
+      -- show the second separator only when there is something to separate
+      condition = function() return (vim.bo.readonly or not vim.bo.modifiable) or vim.bo.modified end,
+      provider = S.sep,
+      hl = function() return { fg = colors.blue, bg = colors.base_bg } end,
+    },
     Readonly,
     {
       condition = function() return vim.bo.modified end,
