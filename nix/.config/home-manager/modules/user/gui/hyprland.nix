@@ -167,19 +167,25 @@ in
               core = [
                 hyprcursor # modern cursor theme format (replaces xcursor)
                 hypridle # idle daemon
-                hyprland-qt-support # Qt integration fixes
-                hyprland-qtutils # Hyprland Qt helpers
                 hyprpicker # color picker
                 hyprpolkitagent # polkit agent
                 hyprprop # xprop-like tool for Hyprland
                 hyprutils # core utils for Hyprland
-                kdePackages.qt6ct # Qt6 config tool
                 pyprland # Hyprland plugin system
                 upower # power management daemon
               ];
+              qt = [
+                hyprland-qt-support # Qt integration fixes
+                hyprland-qtutils # Hyprland Qt helpers
+                kdePackages.qt6ct # Qt6 config tool
+              ];
               tools = [ hyprWinList ];
             };
-            flags = { core = true; tools = true; };
+            flags = {
+              core = true;
+              tools = true;
+              qt = config.features.gui.qt.enable;
+            };
           in config.lib.neg.mkEnabledList flags groups
         );
       programs.hyprlock.enable = true;
