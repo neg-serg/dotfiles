@@ -15,6 +15,13 @@ placeholder {
     text-color: @fgwhite;
 }
 
+/* Ensure the entry widget's placeholder ("type to filter") is light */
+entry {
+    placeholder {
+        text-color: @fgwhite;
+    }
+}
+
 #listview {
     fixed-height: false;
     dynamic: true;
