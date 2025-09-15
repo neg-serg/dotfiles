@@ -8,7 +8,8 @@
 
     fgwhite: #b8c5d9;
     fggrey: #828b99;
-    blackdarkest: #04090999;
+    /* Use quickshell primary hue (#005f87) darkened by ~20% for rofi background */
+    blackdarkest: #004c6c99;
     selectcolor: #002d59;
     darkgray: #315c70;
     ultra: #005faf55;

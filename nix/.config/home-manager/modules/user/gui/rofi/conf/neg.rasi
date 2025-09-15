@@ -1,6 +1,5 @@
 @import "theme.rasi"
-/* @import "win/gap_btm.rasi" */
-@import "win/no_gap.rasi"
+@import "win/center_btm.rasi"
 @import "common.rasi"
 
 element-icon {
