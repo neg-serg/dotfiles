@@ -167,8 +167,10 @@ return function(ctx)
       update = { 'DirChanged' },
     },
     CurrentDir,
-    -- vertical separator between cwd and file info
-    { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
+  }
+
+  -- Buffer info (center block): file icon, name, and flags
+  local BufferInfo = {
     FileIcon,
     FileNameClickable,
     {
@@ -569,7 +571,7 @@ return function(ctx)
       update = { 'DirChanged', 'WinResized' },
       on_click = { callback = vim.schedule_wrap(function() dbg_push('click: empty cwd'); open_file_browser_cwd() end), name = 'heirline_empty_cwd_open' },
     },
-    { provider = S.sep, hl = function() return { fg = colors.blue, bg = colors.base_bg } end },
+    -- no extra separators in empty view
     {
       provider = prof('Empty.Buffers', function()
         return ' ' .. (USE_ICONS and '' or '[buf]') .. ' ' .. listed_buffer_count() .. ' '
@@ -643,15 +645,20 @@ return function(ctx)
     },
   }
   local DefaultStatusline = {
+    -- Left: cwd and actions (no buffer info here)
     utils.surround({ '', '' }, colors.base_bg, {
       EmptyLeft,
       EmptyActions,
       LeftComponents,
-      components.search,
     }),
+    -- Center: buffer info
+    align,
+    BufferInfo,
+    align,
+    -- Right: diagnostics, git, pos, etc.
     {
+      components.search,
       components.macro,
-      align,
       components.diag,
       components.lsp,
       components.lsp_progress,
