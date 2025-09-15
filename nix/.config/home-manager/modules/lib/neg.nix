@@ -231,6 +231,86 @@
         mkdir -p ${quoted}
       '';
 
+    # XDG activation helpers
+    # Prepare parent directories (un-symlink) for all declared xdg.{config,data,cache}File
+    # entries before linkGeneration. Accepts relative paths (attrNames of the HM attrsets).
+    mkXdgFixParents = {
+      configs ? [],
+      datas ? [],
+      caches ? [],
+      # Patterns (shell case) under config to preserve parent handling (skip mkdir/unlink of parent)
+      preserveConfigPatterns ? [ "transmission-daemon/*" ],
+    }:
+      let
+        q = s: "\"" + s + "\"";
+        join = xs: lib.concatStringsSep " " (map q xs);
+        preserve = lib.concatStringsSep "|" preserveConfigPatterns;
+      in lib.hm.dag.entryBefore ["linkGeneration"] ''
+        set -eu
+        config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
+        data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+        cache_home="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+        for rel in ${join configs}; do
+          tgt="$config_home/$rel"; parent="$(dirname "$tgt")"
+          case "$rel" in
+            ${lib.concatMapStringsSep "|" (p: p) preserveConfigPatterns})
+              : ;;
+            *)
+              if [ -L "$parent" ]; then rm -f "$parent"; fi
+              mkdir -p "$parent" ;;
+          esac
+        done
+        for rel in ${join datas}; do
+          tgt="$data_home/$rel"; parent="$(dirname "$tgt")"
+          if [ -L "$parent" ]; then rm -f "$parent"; fi
+          mkdir -p "$parent"
+        done
+        for rel in ${join caches}; do
+          tgt="$cache_home/$rel"; parent="$(dirname "$tgt")"
+          if [ -L "$parent" ]; then rm -f "$parent"; fi
+          mkdir -p "$parent"
+        done
+      '';
+
+    # Remove conflicting targets for all declared xdg.{config,data,cache}File entries before linkGeneration
+    mkXdgFixTargets = {
+      configs ? [],
+      datas ? [],
+      caches ? [],
+    }:
+      let
+        q = s: "\"" + s + "\"";
+        join = xs: lib.concatStringsSep " " (map q xs);
+      in lib.hm.dag.entryBefore ["linkGeneration"] ''
+        set -eu
+        config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
+        data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+        cache_home="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+        for rel in ${join configs}; do
+          tgt="$config_home/$rel"
+          if [ -L "$tgt" ]; then rm -f "$tgt"; fi
+          if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then
+            if [ -d "$tgt" ]; then rm -rf "$tgt"; else rm -f "$tgt"; fi
+          fi
+        done
+        for rel in ${join datas}; do
+          tgt="$data_home/$rel"
+          if [ -L "$tgt" ]; then rm -f "$tgt"; fi
+          if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then
+            if [ -d "$tgt" ]; then rm -rf "$tgt"; else rm -f "$tgt"; fi
+          fi
+        done
+        for rel in ${join caches}; do
+          tgt="$cache_home/$rel"
+          if [ -L "$tgt" ]; then rm -f "$tgt"; fi
+          if [ -e "$tgt" ] && [ ! -L "$tgt" ]; then
+            if [ -d "$tgt" ]; then rm -rf "$tgt"; else rm -f "$tgt"; fi
+          fi
+        done
+      '';
+
     # Ensure a set of Maildir-style folders exist under a base path.
     # Example: mkEnsureMaildirs "$HOME/.local/mail/gmail" ["INBOX" "[Gmail]/Sent Mail" ...]
     mkEnsureMaildirs = base: boxes: let
