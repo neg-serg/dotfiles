@@ -1,8 +1,7 @@
 configuration {
     terminal:                      "kitty";
     run-command:                   "{cmd}";
-    /* rofi 2.0: keep default run-shell-command to avoid parse issues; terminal is set above */
-    /* run-shell-command:             "kitty {cmd}"; */
+    
     sort:                          true;
     parse-hosts:                   false;
     auto-select:                   false;
