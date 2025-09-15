@@ -15,12 +15,7 @@ placeholder {
     text-color: @fgwhite;
 }
 
-/* Ensure the entry widget's placeholder ("type to filter") is light */
-entry {
-    placeholder {
-        text-color: @fgwhite;
-    }
-}
+/* Rofi supports a top-level 'placeholder' style; nested blocks may break parsing on some versions. */
 
 #listview {
     fixed-height: false;
@@ -29,7 +24,7 @@ entry {
     spacing: 2px;
     padding: 6px 6px 6px 6px;
     margin: 0px 0px 0px 0px;
-    background: @blackdarkest;
+    background-color: @blackdarkest;
 }
 
 #element {
@@ -130,5 +125,5 @@ entry {
 element-text {
     background-color: inherit;
     text-color:       inherit;
-    horizontal-align: 0.0; /* left align text */
+    /* Some rofi versions don't support horizontal-align here; relying on columns=1 ensures left alignment */
 }
