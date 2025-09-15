@@ -18,4 +18,13 @@
     font: "Iosevka Medium 16";
     background-color: @blackdarkest;
     text-color: @fgwhite;
+
+    /* Common spacing/size variables */
+    pad: 6px;              /* generic padding unit */
+    pad_small: 4px;        /* compact padding unit */
+    list_spacing: 2px;     /* spacing between rows */
+    margin0: 0px;          /* zero margin helper */
+    handle_w: 2px;         /* scrollbar handle width */
+    columns: 1;            /* default list columns */
+    menu_lines: 12;        /* default rows */
 }

@@ -1,7 +1,7 @@
 /* shared styles; theme variables come from the parent file */
 
 #message {
-    padding: 6px 6px;
+    padding: @pad @pad;
     background-color: @blackwidget;
 }
 
@@ -21,9 +21,11 @@ placeholder {
     fixed-height: false;
     dynamic: true;
     scrollbar: true;
-    spacing: 2px;
-    padding: 6px 6px 6px 6px;
-    margin: 0px 0px 0px 0px;
+    spacing: @list_spacing;
+    padding: @pad @pad @pad @pad;
+    margin: @margin0 @margin0 @margin0 @margin0;
+    columns: @columns;
+    lines: @menu_lines;
     background-color: @blackdarkest;
 }
 
@@ -82,7 +84,7 @@ placeholder {
 #scrollbar {
     background-color: @blackwidget;
     handle-color: @darkgray;
-    handle-width: 2px;
+    handle-width: @handle_w;
 }
 
 #sidebar {
@@ -105,19 +107,19 @@ placeholder {
 
 #prompt {
     spacing: 0px;
-    padding: 4px 4px;
+    padding: @pad_small @pad_small;
     background-color: @blackwidget;
     text-color: @maincolor;
 }
 
 #entry {
-    padding: 4px 4px;
+    padding: @pad_small @pad_small;
     background-color: @blackwidget;
     text-color: @fgwhite;
 }
 
 #case-indicator {
-    padding: 4px 4px;
+    padding: @pad_small @pad_small;
     text-color: @maincolor;
     background-color: @blackwidget;
 }

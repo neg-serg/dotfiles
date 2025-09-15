@@ -13,37 +13,17 @@ element-icon {
 }
 
 #listview {
-    background: @blackdarkest;
-    columns: 1;
-    dynamic: true;
     fixed-columns: false;
-    lines: 12;
-    margin: 0px 0px 0px 0px;
     padding: 3px 3px 3px 3px;
     scrollbar: false;
-    spacing: 2px;
 }
 
 entry {
     expand: true;
     width: 6em;
-    padding: 4px 4px;
-    background-color: @blackwidget;
-    text-color: @fgwhite;
-}
-
-#scrollbar {
-    background-color: @blackwidget;
-    handle-color: @darkgray;
-    handle-width: 2px;
-}
-
-#sidebar {
-    background-color: @blackwidget;
 }
 
 #button {
-    background-color: @blackwidget;
     text-color: @darkgray;
 }
 
@@ -51,23 +31,8 @@ entry {
     text-color: @maincolor;
 }
 
-#inputbar {
-    background-color: @blackdarkest;
-    spacing: 0px;
-}
-
-#prompt {
-    spacing: 0px;
-    padding: 4px 4px;
-    background-color: @blackwidget;
-    text-color: @fgwhite;
-}
-
-#case-indicator {
-    padding: 4px 4px;
-    text-color: @fgwhite;
-    background-color: @blackwidget;
-}
+#prompt { text-color: @fgwhite; }
+#case-indicator { text-color: @fgwhite; }
 
 element-text {
     background-color: inherit;
