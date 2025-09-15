@@ -6,7 +6,8 @@
     blackwidget: #00000044;
     mainbg: #02040444;
 
-    fgwhite: #b8c5d9;
+    /* Match kitty foreground color for text */
+    fgwhite: #6C7E96;
     fggrey: #828b99;
     /* Near-black translucent background for rofi */
     blackdarkest: #00000099;
