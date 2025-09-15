@@ -1,8 +1,10 @@
-#window {
-    background-color: @blackdarkest;
-    location: south west;
-    anchor: south west;
-    y-offset: 0;
-    width: 50%;
+/* Bottom-left window position and sizing */
+window {
+    location:                         south west;
+    anchor:                           south west;
+    x-offset:                         0;
+    y-offset:                         -8;
+    width:                            48%;
+    border-radius:                    2px;
+    background-color:                 @blackdarkest;
 }
-

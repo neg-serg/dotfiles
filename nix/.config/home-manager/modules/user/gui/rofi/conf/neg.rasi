@@ -1,5 +1,5 @@
 @import "theme.rasi"
-@import "win/center_btm.rasi"
+@import "win/left_btm.rasi"
 @import "common.rasi"
 
 element-icon {
