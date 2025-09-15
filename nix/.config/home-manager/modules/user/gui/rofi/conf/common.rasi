@@ -2,17 +2,17 @@
 
 #message {
     padding: 6px 6px;
-    background-color: @blackwidget;
+    background-color: var(blackwidget);
 }
 
 #textbox {
-    text-color: @fgwhite;
-    background-color: @blackwidget;
+    text-color: var(fgwhite);
+    background-color: var(blackwidget);
 }
 
 /* Ensure entry placeholder text is light */
 placeholder {
-    text-color: @fgwhite;
+    text-color: var(fgwhite);
 }
 
 /* Rofi supports a top-level 'placeholder' style; nested blocks may break parsing on some versions. */
@@ -24,7 +24,7 @@ placeholder {
     spacing: 2px;
     padding: 6px 6px 6px 6px;
     margin: 0px 0px 0px 0px;
-    background-color: @blackdarkest;
+    background-color: var(blackdarkest);
 }
 
 #element {
@@ -35,91 +35,91 @@ placeholder {
 
 #element.normal.normal {
     padding: 0px 0px;
-    background-color: @mainbg;
-    text-color: @fgwhite;
+    background-color: var(mainbg);
+    text-color: var(fgwhite);
 }
 
 #element.alternate.normal {
-    background-color: @mainbg;
-    text-color: @fgwhite;
+    background-color: var(mainbg);
+    text-color: var(fgwhite);
 }
 
 #element.normal.urgent {
-    background-color: @mainbg;
-    text-color: @urgentcolor;
+    background-color: var(mainbg);
+    text-color: var(urgentcolor);
 }
 
 #element.normal.active {
-    background-color: @mainbg;
-    text-color: @fgwhite;
+    background-color: var(mainbg);
+    text-color: var(fgwhite);
 }
 
 #element.selected.normal {
-    background-color: @selectcolor;
-    text-color: @fgwhite;
+    background-color: var(selectcolor);
+    text-color: var(fgwhite);
 }
 
 #element.selected.urgent {
-    background-color: @urgentcolor;
-    text-color: @blackdarkest;
+    background-color: var(urgentcolor);
+    text-color: var(blackdarkest);
 }
 
 #element.selected.active {
-    background-color: @selectcolor;
-    text-color: @fgwhite;
+    background-color: var(selectcolor);
+    text-color: var(fgwhite);
 }
 
 #element.alternate.urgent {
-    background-color: @mainbg;
-    text-color: @urgentcolor;
+    background-color: var(mainbg);
+    text-color: var(urgentcolor);
 }
 
 #element.alternate.active {
-    background-color: @mainbg;
-    text-color: @maincolor;
+    background-color: var(mainbg);
+    text-color: var(maincolor);
 }
 
 #scrollbar {
-    background-color: @blackwidget;
-    handle-color: @darkgray;
+    background-color: var(blackwidget);
+    handle-color: var(darkgray);
     handle-width: 2px;
 }
 
 #sidebar {
-    background-color: @blackwidget;
+    background-color: var(blackwidget);
 }
 
 #button {
-    background-color: @blackwidget;
-    text-color: @fgwhite;
+    background-color: var(blackwidget);
+    text-color: var(fgwhite);
 }
 
 #button.selected {
-    text-color: @fgwhite;
+    text-color: var(fgwhite);
 }
 
 #inputbar {
-    background-color: @blackdarkest;
+    background-color: var(blackdarkest);
     spacing: 0px;
 }
 
 #prompt {
     spacing: 0px;
     padding: 4px 4px;
-    background-color: @blackwidget;
-    text-color: @maincolor;
+    background-color: var(blackwidget);
+    text-color: var(maincolor);
 }
 
 #entry {
     padding: 4px 4px;
-    background-color: @blackwidget;
-    text-color: @fgwhite;
+    background-color: var(blackwidget);
+    text-color: var(fgwhite);
 }
 
 #case-indicator {
     padding: 4px 4px;
-    text-color: @maincolor;
-    background-color: @blackwidget;
+    text-color: var(maincolor);
+    background-color: var(blackwidget);
 }
 
 element-text {

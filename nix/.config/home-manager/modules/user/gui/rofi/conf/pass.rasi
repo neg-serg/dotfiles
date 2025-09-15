@@ -4,5 +4,4 @@
 
 #listview { lines: 4; columns: 10; }
 
-#element { border-color: @blackdarkest; }
-
+#element { border-color: var(blackdarkest); }

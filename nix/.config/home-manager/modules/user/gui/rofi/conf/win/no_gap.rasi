@@ -4,7 +4,7 @@ window {
     border-radius:                    0px;
     padding:                          0px;
     margin:                           0px;
-    background-color:                 @blackdarkest;
+    background-color:                 var(blackdarkest);
 }
 
 mainbox {
@@ -16,4 +16,3 @@ mainbox {
 inputbar, listview, message, sidebar, textbox, prompt, entry {
     margin:                           0px;
 }
-

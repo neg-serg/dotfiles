@@ -26,15 +26,15 @@ entry {
 }
 
 #button {
-    text-color: @darkgray;
+    text-color: var(darkgray);
 }
 
 #button.selected {
     text-color: @maincolor;
 }
 
-#prompt { text-color: @fgwhite; }
-#case-indicator { text-color: @fgwhite; }
+#prompt { text-color: var(fgwhite); }
+#case-indicator { text-color: var(fgwhite); }
 
 element-text {
     background-color: inherit;

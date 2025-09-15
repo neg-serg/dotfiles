@@ -3,12 +3,12 @@
 
 #message {
     padding: 6px 6px;
-    background-color: @blackwidget;
+    background-color: var(blackwidget);
 }
 
 #textbox {
-    text-color: @darkgray;
-    background-color: @blackwidget;
+    text-color: var(darkgray);
+    background-color: var(blackwidget);
 }
 
 #listview { lines: 12; }
@@ -20,5 +20,5 @@
     y-offset: 20;
     location: north;
     anchor: north;
-    background-color: @blackdarkest;
+    background-color: var(blackdarkest);
 }

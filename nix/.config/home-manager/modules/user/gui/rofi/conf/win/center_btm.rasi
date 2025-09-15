@@ -6,7 +6,7 @@ window {
     y-offset:                         -8;
     width:                            48%;
     border-radius:                    2px;
-    background-color:                 @blackdarkest;
+    background-color:                 var(blackdarkest);
 }
 
 mainbox {
