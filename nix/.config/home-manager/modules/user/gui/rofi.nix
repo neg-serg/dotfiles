@@ -84,7 +84,7 @@ with lib;
             if [ -f "$theme_json" ]; then
               ph=$("$jq_bin" -r 'try .panel.height // 28' "$theme_json" 2>/dev/null || echo 28)
               sm=$("$jq_bin" -r 'try .panel.sideMargin // 18' "$theme_json" 2>/dev/null || echo 18)
-              ay=$("$jq_bin" -r 'try .panel.menu.anchorYOffset // 4' "$theme_json" 2>/dev/null || echo 4)
+              ay=$("$jq_bin" -r 'try .panel.menuYOffset // 8' "$theme_json" 2>/dev/null || echo 8)
             fi
             # Hyprland monitor scale (focused)
             scale=$("$hyprctl_bin" -j monitors 2>/dev/null | "$jq_bin" -r 'try (.[ ] | select(.focused==true) | .scale) // 1' 2>/dev/null || echo 1)
