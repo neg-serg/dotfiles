@@ -450,12 +450,22 @@ in {
       "${confDirOld}/torrents"
       "${confDirOld}/blocklists"
     ];
-  home.packages = with pkgs; config.lib.neg.pkgsList ([
-    transmission # provides transmission-remote for repair script
-    bitmagnet # dht crawler
-    pkgs.neg.bt_migrate # torrent migrator
-    rustmission # new transmission client
-  ] ++ [ transRepair transScan transIndex transPrune ]);
+  # Group torrent tools and scripts; flatten via mkEnabledList
+  home.packages = with pkgs;
+    config.lib.neg.pkgsList (
+      let
+        groups = {
+          core = [
+            transmission # provides transmission-remote for repair script
+            bitmagnet # dht crawler
+            pkgs.neg.bt_migrate # torrent migrator
+            rustmission # new transmission client
+          ];
+          scripts = [ transRepair transScan transIndex transPrune ];
+        };
+        flags = { core = true; scripts = true; };
+      in config.lib.neg.mkEnabledList flags groups
+    );
 
   # One-shot copy: merge any .resume files from backup into main resume dir (no overwrite)
   home.activation.mergeTransmissionState = lib.hm.dag.entryAfter ["writeBoundary"] ''
