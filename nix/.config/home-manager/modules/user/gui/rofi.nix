@@ -15,13 +15,18 @@ with lib;
     });
     xdgDataHome = config.xdg.dataHome or ("${config.home.homeDirectory}/.local/share");
     xdgConfigHome = config.xdg.configHome or ("${config.home.homeDirectory}/.config");
-    themeLinks = [
-      { dst = "rofi/themes/theme.rasi";       src = "conf/theme.rasi"; }
-      { dst = "rofi/themes/common.rasi";      src = "conf/common.rasi"; }
-      { dst = "rofi/themes/clip.rasi";        src = "conf/clip.rasi"; }
-      { dst = "rofi/themes/sxiv.rasi";        src = "conf/sxiv.rasi"; }
-      { dst = "rofi/themes/win/left_btm.rasi"; src = "conf/win/left_btm.rasi"; }
+    # Build theme link descriptors from a compact list of relative paths.
+    themeFiles = [
+      "theme.rasi"
+      "common.rasi"
+      "clip.rasi"
+      "sxiv.rasi"
+      "win/left_btm.rasi"
     ];
+    themeLinks = map (rel: {
+      dst = "rofi/themes/${rel}";
+      src = "conf/${rel}";
+    }) themeFiles;
   in lib.mkMerge ([
     {
       home.packages = with pkgs; config.lib.neg.pkgsList [
