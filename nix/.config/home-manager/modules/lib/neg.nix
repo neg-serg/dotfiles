@@ -247,9 +247,9 @@
         preserve = lib.concatStringsSep "|" preserveConfigPatterns;
       in lib.hm.dag.entryBefore ["linkGeneration"] ''
         set -eu
-        config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
-        data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
-        cache_home="${XDG_CACHE_HOME:-$HOME/.cache}"
+        config_home="$XDG_CONFIG_HOME"; [ -n "$config_home" ] || config_home="$HOME/.config"
+        data_home="$XDG_DATA_HOME";   [ -n "$data_home" ]   || data_home="$HOME/.local/share"
+        cache_home="$XDG_CACHE_HOME"; [ -n "$cache_home" ]  || cache_home="$HOME/.cache"
 
         for rel in ${join configs}; do
           tgt="$config_home/$rel"; parent="$(dirname "$tgt")"
@@ -284,9 +284,9 @@
         join = xs: lib.concatStringsSep " " (map q xs);
       in lib.hm.dag.entryBefore ["linkGeneration"] ''
         set -eu
-        config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
-        data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
-        cache_home="${XDG_CACHE_HOME:-$HOME/.cache}"
+        config_home="$XDG_CONFIG_HOME"; [ -n "$config_home" ] || config_home="$HOME/.config"
+        data_home="$XDG_DATA_HOME";   [ -n "$data_home" ]   || data_home="$HOME/.local/share"
+        cache_home="$XDG_CACHE_HOME"; [ -n "$cache_home" ]  || cache_home="$HOME/.cache"
 
         for rel in ${join configs}; do
           tgt="$config_home/$rel"
