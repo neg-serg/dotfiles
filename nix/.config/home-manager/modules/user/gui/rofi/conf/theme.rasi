@@ -17,5 +17,13 @@
     font: "Iosevka Medium 16";
     background-color: var(blackdarkest);
     text-color: var(fgwhite);
-    
+
+    /* Numeric variables compatible with rofi 2.0 parser */
+    pad: 6px;
+    pad-small: 4px;
+    row-spacing: 2px;
+    zero: 0px;
+    scroll-handle: 2px;
+    default-columns: 1;
+    default-lines: 12;
 }

@@ -13,8 +13,6 @@ element-icon {
 }
 
 #listview {
-    columns: 1;
-    lines: 12;
     fixed-columns: false;
     padding: 3px 3px 3px 3px;
     scrollbar: false;
