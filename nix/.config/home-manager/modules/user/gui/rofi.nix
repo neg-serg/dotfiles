@@ -46,6 +46,7 @@ with lib;
           # Default to config dir to make @import in config.rasi resolve relative files
           cd_dir="$xdg_conf/rofi"
           prev_is_theme=0
+          have_cfg=0
           want_offsets=1
           have_xoff=0; have_yoff=0; have_loc=0
           for arg in "$@"; do
@@ -68,6 +69,7 @@ with lib;
                   *) case "$val" in *.rasi|*.rasi:*) cd_dir="$themes_dir" ;; esac ;;
                 esac
                 ;;
+              -no-config| -config| -config=*) have_cfg=1 ;;
               -xoffset| -xoffset=*) have_xoff=1 ;;
               -yoffset| -yoffset=*) have_yoff=1 ;;
               -location| -location=*) have_loc=1 ;;
@@ -98,6 +100,10 @@ with lib;
             fi
           fi
 
+          # Avoid parsing user/system config if not explicitly requested (rofi 2.0 parser is strict)
+          if [ "$have_cfg" -eq 0 ]; then
+            set -- -no-config "$@"
+          fi
           exec "$rofi_bin" "$@"
         '';
       };
