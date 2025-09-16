@@ -4,9 +4,8 @@
   config,
   ...
 }:
-with {
-  transmission = pkgs.transmission_4;
-}; let
+let
+  transmissionPkg = pkgs.transmission_4;
   confDirNew = "${config.xdg.configHome}/transmission-daemon";
   confDirOld = "${config.xdg.configHome}/transmission";
 in {
@@ -31,11 +30,11 @@ in {
     ];
 
   # Core torrent tools (migration helpers removed)
-  home.packages = with pkgs; config.lib.neg.pkgsList [
-    transmission
-    bitmagnet
+  home.packages = config.lib.neg.pkgsList [
+    transmissionPkg
+    pkgs.bitmagnet
     pkgs.neg.bt_migrate
-    rustmission
+    pkgs.rustmission
   ];
 
   # Wrapper selects existing config dir that contains resume files, preferring the new path
@@ -54,14 +53,14 @@ in {
         echo "$c1"
       }
       gdir=$(choose_dir)
-      exec "${transmission}/bin/transmission-daemon" -g "$gdir" -f --log-level=error
+      exec "${transmissionPkg}/bin/transmission-daemon" -g "$gdir" -f --log-level=error
     '';
   };
 
   systemd.user.services.transmission-daemon = lib.recursiveUpdate {
     Unit = {
       Description = "transmission service";
-      ConditionPathExists = "${transmission}/bin/transmission-daemon";
+      ConditionPathExists = "${transmissionPkg}/bin/transmission-daemon";
     };
     Service = {
       Type = "simple";
