@@ -244,7 +244,6 @@
       let
         q = s: "\"" + s + "\"";
         join = xs: lib.concatStringsSep " " (map q xs);
-        preserve = lib.concatStringsSep "|" preserveConfigPatterns;
       in lib.hm.dag.entryBefore ["linkGeneration"] ''
         set -eu
         config_home="$XDG_CONFIG_HOME"; [ -n "$config_home" ] || config_home="$HOME/.config"

@@ -21,7 +21,7 @@ in {
   # Expose derived default browser under lib.neg for reuse
   config.lib.neg.web = mkIf cfg.enable {
     defaultBrowser = browser;
-    browsers = browsers;
+    inherit browsers;
   };
 
   # Provide common env defaults (can be overridden elsewhere if needed)

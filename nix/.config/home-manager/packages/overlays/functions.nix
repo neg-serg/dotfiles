@@ -1,6 +1,4 @@
-_final: prev: let
-  lib = prev.lib or _final.lib;
-in {
+_final: prev: {
   # Shared helper functions under pkgs.neg.functions to DRY up overlay patterns
   neg = (prev.neg or {}) // {
     functions = {

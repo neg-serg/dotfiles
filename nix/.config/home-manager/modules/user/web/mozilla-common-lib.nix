@@ -153,15 +153,14 @@ in {
         isDefault = true;
         extensions = { packages = addons.common ++ addonsExtra; };
         settings = mergedSettings;
-        extraConfig = extraConfig;
-        userChrome = userChrome;
+        inherit extraConfig userChrome;
       };
       profile = profileBase // profileExtra;
     in {
       programs = {
         "${name}" = {
           enable = true;
-          package = package;
+          inherit package;
           nativeMessagingHosts = mergedNMH;
           profiles = {
             "${pid}" = profile;

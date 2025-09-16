@@ -6,8 +6,8 @@
 }: let
   # Be robust if defaultBrowser is not set yet
   db = config.lib.neg.web.defaultBrowser or {};
-  browserBin = (if db ? bin then db.bin else "${pkgs.xdg-utils}/bin/xdg-open");
-  browserArg = (if db ? newTabArg then db.newTabArg else "");
+  browserBin = db.bin or "${pkgs.xdg-utils}/bin/xdg-open";
+  browserArg = db.newTabArg or "";
 in {
   services.dunst = {
     enable = true;
