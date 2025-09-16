@@ -7,6 +7,164 @@
 with {
   transmission = pkgs.transmission_4;
 }; let
+  # Shared Python helpers for Transmission tools
+  translib = pkgs.writeTextDir "translib/__init__.py" ''
+    import os, json, hashlib
+
+    def bdecode(data: bytes, i: int = 0):
+        c = data[i:i+1]
+        if not c:
+            raise ValueError('eof')
+        if c == b'i':
+            j = data.index(b'e', i+1)
+            return int(data[i+1:j]), j+1
+        if c in (b'l', b'd'):
+            isd = c == b'd'; i += 1; lst = []
+            while data[i:i+1] != b'e':
+                v, i = bdecode(data, i); lst.append(v)
+            i += 1
+            if isd:
+                it = iter(lst)
+                return {k: v for k, v in zip(it, it)}, i
+            return lst, i
+        if b'0' <= c <= b'9':
+            j = data.index(b':', i)
+            ln = int(data[i:j]); j += 1
+            return data[j:j+ln], j+ln
+        raise ValueError('bad')
+
+    def bencode(x):
+        if isinstance(x, int): return b'i%de' % x
+        if isinstance(x, (bytes, bytearray)): return str(len(x)).encode()+b':'+bytes(x)
+        if isinstance(x, str):
+            xb = x.encode('utf-8'); return str(len(xb)).encode()+b':'+xb
+        if isinstance(x, list): return b'l'+b"".join(bencode(v) for v in x)+b'e'
+        if isinstance(x, dict):
+            items = sorted(((k if isinstance(k,(bytes,bytearray)) else (k.encode('utf-8') if isinstance(k,str) else None), v) for k,v in x.items()), key=lambda kv: kv[0])
+            return b'd'+b"".join(bencode(k)+bencode(v) for k,v in items)+b'e'
+        raise TypeError
+
+    def _decode_bytes(x):
+        if isinstance(x, (bytes, bytearray)):
+            try: return x.decode('utf-8')
+            except Exception: return x.decode('latin-1','replace')
+        if isinstance(x, dict):
+            return { _decode_bytes(k): _decode_bytes(v) for k,v in x.items() }
+        if isinstance(x, list):
+            return [ _decode_bytes(v) for v in x ]
+        return x
+
+    def load_resume(path: str):
+        raw = open(path, 'rb').read()
+        fmt = 'unknown'; obj = None
+        if raw[:1] in (b'{', b'['):
+            try:
+                obj = json.loads(raw.decode('utf-8', 'replace'))
+                fmt = 'json'
+            except Exception:
+                obj = None
+        if obj is None:
+            try:
+                obj, _ = bdecode(raw, 0)
+                obj = _decode_bytes(obj)
+                fmt = 'bencode'
+            except Exception:
+                obj = None; fmt = 'unknown'
+        name = None; dest = None
+        if isinstance(obj, dict):
+            name = obj.get('name') or obj.get('torrentName') or obj.get('added-name')
+            dest = obj.get('downloadDir') or obj.get('destination')
+        return {'fmt': fmt, 'raw': obj, 'name': name, 'dest': dest}
+
+    def load_torrent(path: str):
+        raw = open(path, 'rb').read()
+        try:
+            obj, _ = bdecode(raw, 0)
+        except Exception:
+            return {'fmt': 'unknown', 'raw': None, 'infohash': None, 'name': None}
+        info = None
+        if isinstance(obj, dict):
+            info = obj.get(b'info') or obj.get('info')
+        ih = None
+        if info is not None:
+            try:
+                ih = hashlib.sha1(bencode(info)).hexdigest()
+            except Exception:
+                ih = None
+        name = None
+        infod = obj.get(b'info') if isinstance(obj, dict) else None
+        if isinstance(infod, dict):
+            n = infod.get(b'name')
+            if isinstance(n,(bytes,bytearray)):
+                try: name = n.decode('utf-8')
+                except: name = n.decode('latin-1','replace')
+        return {'fmt':'bencode','raw': obj, 'infohash': ih, 'name': name}
+
+    def infohash_from_file(path: str):
+        raw = open(path,'rb').read()
+        obj,_ = bdecode(raw,0)
+        info = None
+        if isinstance(obj, dict): info = obj.get(b'info') or obj.get('info')
+        if info is None: return None
+        return hashlib.sha1(bencode(info)).hexdigest()
+
+    def choose_conf():
+        env = os.environ.get('TRANSMISSION_DIR')
+        if env and os.path.isdir(os.path.expanduser(env)):
+            return os.path.expanduser(env)
+        home=os.environ.get('HOME', "")
+        for p in (
+            os.path.join(home,'.config','transmission-daemon'),
+            os.path.join(home,'.config','transmission'),
+        ):
+            if os.path.isdir(p): return p
+        return os.path.join(home,'.config','transmission-daemon')
+
+    def scan_root(root: str):
+        resume_dir = os.path.join(root, 'resume')
+        torrents_dir = os.path.join(root, 'torrents')
+        resumes = {}
+        torrents = {}
+        if os.path.isdir(resume_dir):
+            for fn in os.listdir(resume_dir):
+                if not fn.endswith('.resume'): continue
+                h = fn[:-7]
+                meta = load_resume(os.path.join(resume_dir, fn))
+                resumes[h] = {'file': fn, 'path': os.path.join(resume_dir, fn), 'name': meta.get('name'), 'dest': meta.get('dest'), 'fmt': meta.get('fmt')}
+        if os.path.isdir(torrents_dir):
+            for fn in os.listdir(torrents_dir):
+                if not fn.endswith('.torrent'): continue
+                h = fn[:-8]
+                meta = load_torrent(os.path.join(torrents_dir, fn))
+                ih = meta.get('infohash')
+                if not ih:
+                    base = os.path.splitext(fn)[0]
+                    if len(base) in (40, 32) and all(c in '0123456789abcdef' for c in base.lower()):
+                        ih = base.lower()
+                torrents[ih or h] = {'file': fn, 'path': os.path.join(torrents_dir, fn), 'name': meta.get('name'), 'fmt': meta.get('fmt')}
+        return resumes, torrents
+
+    def find_roots(argv):
+        if argv:
+            return [os.path.expanduser(a) for a in argv]
+        roots = []
+        home = os.environ.get('HOME', "")
+        cand = [
+            os.path.join(home, '.config', 'transmission-daemon'),
+            os.path.join(home, '.config', 'transmission-daemon.bak'),
+            os.path.join(home, '.config', 'transmission'),
+        ]
+        for r in cand:
+            if os.path.isdir(r): roots.append(r)
+        for r,dirs,files in os.walk(home):
+            base = os.path.basename(r)
+            if base in ('transmission','transmission-daemon'):
+                roots.append(r)
+        seen=set(); out=[]
+        for r in roots:
+            if r not in seen: seen.add(r); out.append(r)
+        return out
+  '';
   confDirNew = "${config.xdg.configHome}/transmission-daemon";
   confDirOld = "${config.xdg.configHome}/transmission";
   confDirBak = "${config.xdg.configHome}/transmission-daemon.bak";
@@ -49,176 +207,18 @@ with {
     runtimeInputs = [ pkgs.python3 ];
     text = ''
       set -euo pipefail
+      export PYTHONPATH="${translib}:$PYTHONPATH"
       exec python3 - <<'PY'
-      import os, sys, json, hashlib
-      from typing import Tuple, Any
-      
-      def bdecode(data: bytes, i: int = 0) -> Tuple[Any, int]:
-          c = data[i:i+1]
-          if not c:
-              raise ValueError('unexpected end')
-          if c == b'i':
-              j = data.index(b'e', i+1)
-              val = int(data[i+1:j])
-              return val, j+1
-          if c == b'l' or c == b'd':
-              is_dict = c == b'd'
-              i += 1
-              lst = []
-              while data[i:i+1] != b'e':
-                  v, i = bdecode(data, i)
-                  lst.append(v)
-              i += 1
-              if is_dict:
-                  it = iter(lst)
-                  return {k.decode('utf-8','replace') if isinstance(k, (bytes,bytearray)) else k: v for k, v in zip(it, it)}, i
-              return lst, i
-          if b'0' <= c <= b'9':
-              j = data.index(b':', i)
-              ln = int(data[i:j])
-              j += 1
-              s = data[j:j+ln]
-              return s, j+ln
-          raise ValueError('bad token')
-      
-      def _decode_bytes(x):
-          if isinstance(x, (bytes, bytearray)):
-              try:
-                  return x.decode('utf-8')
-              except Exception:
-                  return x.decode('latin-1', 'replace')
-          if isinstance(x, dict):
-              return { _decode_bytes(k): _decode_bytes(v) for k,v in x.items() }
-          if isinstance(x, list):
-              return [ _decode_bytes(v) for v in x ]
-          return x
-      
-      def load_resume(path: str):
-          with open(path, 'rb') as f:
-              raw = f.read()
-          first = raw[:1]
-          if first in (b'{', b'['):
-              try:
-                  obj = json.loads(raw.decode('utf-8', 'replace'))
-                  return {'fmt':'json','raw':obj}
-              except Exception:
-                  pass
-          try:
-              obj, _ = bdecode(raw, 0)
-              return {'fmt':'bencode','raw': _decode_bytes(obj)}
-          except Exception:
-              return {'fmt':'unknown','raw':None}
-      
-      def load_torrent(path: str):
-          with open(path, 'rb') as f:
-              raw = f.read()
-          try:
-              obj, _ = bdecode(raw, 0)
-          except Exception:
-              return {'fmt':'unknown','raw':None}
-          def bencode(x):
-              if isinstance(x, int):
-                  return b'i%de' % x
-              if isinstance(x, (bytes, bytearray)):
-                  return str(len(x)).encode()+b':'+bytes(x)
-              if isinstance(x, str):
-                  xb = x.encode('utf-8')
-                  return str(len(xb)).encode()+b':'+xb
-              if isinstance(x, list):
-                  return b'l'+b"".join(bencode(v) for v in x)+b'e'
-              if isinstance(x, dict):
-                  items = sorted(((k if isinstance(k,(bytes,bytearray)) else (k.encode('utf-8') if isinstance(k,str) else None), v) for k,v in x.items()), key=lambda kv: kv[0])
-                  return b'd'+b"".join(bencode(k)+bencode(v) for k,v in items)+b'e'
-              raise TypeError('cannot bencode')
-          info = None
-          if isinstance(obj, dict):
-              info = obj.get(b'info') or obj.get('info')
-          ih = None
-          if info is not None:
-              try:
-                  import hashlib
-                  ih = hashlib.sha1(bencode(info)).hexdigest()
-              except Exception:
-                  ih = None
-          return {'fmt':'bencode','raw':obj, 'infohash': ih}
-      
-      def scan_root(root: str):
-          resume_dir = os.path.join(root, 'resume')
-          torrents_dir = os.path.join(root, 'torrents')
-          resumes = {}
-          torrents = {}
-          if os.path.isdir(resume_dir):
-              for fn in os.listdir(resume_dir):
-                  if not fn.endswith('.resume'): continue
-                  h = fn[:-7]
-                  meta = load_resume(os.path.join(resume_dir, fn))
-                  name = None; dest = None
-                  r = meta.get('raw')
-                  if isinstance(r, dict):
-                      name = r.get('name') or r.get('torrentName') or r.get('added-name')
-                      dest = r.get('downloadDir') or r.get('destination')
-                  elif isinstance(r, (list,)):
-                      pass
-                  resumes[h] = {'file': fn, 'path': os.path.join(resume_dir, fn), 'name': name, 'dest': dest, 'fmt': meta['fmt']}
-          if os.path.isdir(torrents_dir):
-              for fn in os.listdir(torrents_dir):
-                  if not fn.endswith('.torrent'): continue
-                  h = fn[:-8]
-                  meta = load_torrent(os.path.join(torrents_dir, fn))
-                  name = None
-                  t = meta.get('raw')
-                  if isinstance(t, dict):
-                      info = t.get('info')
-                      if isinstance(info, dict):
-                          n = info.get('name')
-                          if isinstance(n, (bytes, bytearray)):
-                              try: name = n.decode('utf-8')
-                              except: name = n.decode('latin-1', 'replace')
-                          elif isinstance(n, str):
-                              name = n
-                  if not name and isinstance(t, dict):
-                      info2 = t.get(b'info') if b'info' in t else None
-                      if isinstance(info2, dict):
-                          n = info2.get(b'name')
-                          if isinstance(n,(bytes,bytearray)):
-                              try: name = n.decode('utf-8')
-                              except: name = n.decode('latin-1','replace')
-                  ih = meta.get('infohash')
-                  if not ih:
-                      base = os.path.splitext(fn)[0]
-                      if len(base) in (40, 32) and all(c in '0123456789abcdef' for c in base.lower()):
-                          ih = base.lower()
-                  torrents[ih or h] = {'file': fn, 'path': os.path.join(torrents_dir, fn), 'name': name, 'fmt': meta['fmt']}
-          return resumes, torrents
-      
-      def find_roots(argv):
-          if argv:
-              return [os.path.expanduser(a) for a in argv]
-          roots = []
-          home = os.environ.get('HOME', "")
-          cand = [
-              os.path.join(home, '.config', 'transmission-daemon'),
-              os.path.join(home, '.config', 'transmission-daemon.bak'),
-              os.path.join(home, '.config', 'transmission'),
-          ]
-          for r in cand:
-              if os.path.isdir(r): roots.append(r)
-          for r,dirs,files in os.walk(home):
-              base = os.path.basename(r)
-              if base in ('transmission','transmission-daemon'):
-                  roots.append(r)
-          seen=set(); out=[]
-          for r in roots:
-              if r not in seen: seen.add(r); out.append(r)
-          return out
+      import sys
+      import translib as tl
       
       def main():
-          roots = find_roots(sys.argv[1:])
+          roots = tl.find_roots(sys.argv[1:])
           if not roots:
               print('No candidate roots found', file=sys.stderr)
               return 1
           for root in roots:
-              resumes, torrents = scan_root(root)
+              resumes, torrents = tl.scan_root(root)
               print(f"Root: {root}")
               print(f"  resumes: {len(resumes)} | torrents: {len(torrents)}")
               missing_t = sorted([h for h in resumes.keys() if h not in torrents])
@@ -244,57 +244,13 @@ with {
     runtimeInputs = [ pkgs.python3 ];
     text = ''
       set -euo pipefail
+      export PYTHONPATH="${translib}:$PYTHONPATH"
       exec python3 - <<'PY'
-      import os, sys, hashlib, shutil
-      from typing import Tuple, Any
+      import os, sys, shutil
+      import translib as tl
       
-      def bdecode(data: bytes, i: int = 0):
-          c = data[i:i+1]
-          if not c: raise ValueError('eof')
-          if c == b'i':
-              j = data.index(b'e', i+1)
-              return int(data[i+1:j]), j+1
-          if c in (b'l', b'd'):
-              isd = c == b'd'; i += 1; lst = []
-              while data[i:i+1] != b'e':
-                  v, i = bdecode(data, i); lst.append(v)
-              i += 1
-              if isd:
-                  it = iter(lst)
-                  return {k: v for k,v in zip(it, it)}, i
-              return lst, i
-          if b'0' <= c <= b'9':
-              j = data.index(b':', i)
-              ln = int(data[i:j]); j += 1
-              return data[j:j+ln], j+ln
-          raise ValueError('bad')
-      def bencode(x):
-          if isinstance(x, int): return b'i%de' % x
-          if isinstance(x, (bytes, bytearray)): return str(len(x)).encode()+b':'+bytes(x)
-          if isinstance(x, str):
-              xb = x.encode('utf-8'); return str(len(xb)).encode()+b':'+xb
-          if isinstance(x, list): return b'l'+b"".join(bencode(v) for v in x)+b'e'
-          if isinstance(x, dict):
-              items = sorted(((k if isinstance(k,(bytes,bytearray)) else (k.encode('utf-8') if isinstance(k,str) else None), v) for k,v in x.items()), key=lambda kv: kv[0])
-              return b'd'+b"".join(bencode(k)+bencode(v) for k,v in items)+b'e'
-          raise TypeError
-      def infohash_from_file(path: str):
-          raw = open(path,'rb').read()
-          obj,_ = bdecode(raw,0)
-          info = None
-          if isinstance(obj, dict): info = obj.get(b'info') or obj.get('info')
-          if info is None: return None
-          return hashlib.sha1(bencode(info)).hexdigest()
-      def choose_conf():
-          home=os.environ.get('HOME', "")
-          for p in (
-              os.path.join(home,'.config','transmission-daemon'),
-              os.path.join(home,'.config','transmission'),
-          ):
-              if os.path.isdir(p): return p
-          return os.path.join(home,'.config','transmission-daemon')
       def main():
-          conf = choose_conf()
+          conf = tl.choose_conf()
           resdir = os.path.join(conf,'resume'); tordir = os.path.join(conf,'torrents')
           os.makedirs(tordir, exist_ok=True)
           resumes = set()
@@ -321,8 +277,8 @@ with {
                       if not f.endswith('.torrent'): continue
                       p = os.path.join(root,f)
                       try:
-                          ih = infohash_from_file(p)
-                      except Exception:
+                          ih = tl.infohash_from_file(p)
+                       except Exception:
                           continue
                       if ih and ih not in index:
                           index[ih] = p
@@ -348,8 +304,10 @@ with {
     runtimeInputs = [ pkgs.python3 ];
     text = ''
       set -euo pipefail
+      export PYTHONPATH="${translib}:$PYTHONPATH"
       exec python3 - <<'PY'
-      import os, sys, time, shutil, json
+      import os, sys, time, shutil
+      import translib as tl
       def bdecode(data: bytes, i: int = 0):
           c = data[i:i+1]
           if not c: raise ValueError('eof')
@@ -370,35 +328,9 @@ with {
               ln = int(data[i:j]); j += 1
               return data[j:j+ln], j+ln
           raise ValueError('bad')
-      def choose_conf():
-          home=os.environ.get('HOME', "")
-          for p in (
-              os.path.join(home,'.config','transmission-daemon'),
-              os.path.join(home,'.config','transmission'),
-          ):
-              if os.path.isdir(p): return p
-          return os.path.join(home,'.config','transmission-daemon')
-      def load_resume(path):
-          raw=open(path,'rb').read()
-          if raw[:1] in (b'{',b'['):
-              try: import json; return json.loads(raw.decode('utf-8','replace'))
-              except: return {}
-          try:
-              obj,_=bdecode(raw,0)
-          except: return {}
-          out={}
-          if isinstance(obj, dict):
-              for k in ('name','torrentName','added-name','downloadDir','destination'):
-                  kb = k.encode('utf-8')
-                  v = obj.get(kb) or obj.get(k)
-                  if isinstance(v,(bytes,bytearray)):
-                      try: v=v.decode('utf-8')
-                      except: v=v.decode('latin-1','replace')
-                  out[k]=v
-          return out
       def main():
           commit = '--commit' in sys.argv
-          conf = choose_conf()
+          conf = tl.choose_conf()
           resdir = os.path.join(conf,'resume'); tordir = os.path.join(conf,'torrents')
           ts = time.strftime('%Y%m%d-%H%M%S')
           backup = os.path.join(conf, f'pruned-{ts}')
@@ -407,9 +339,9 @@ with {
           for fn in os.listdir(resdir):
               if not fn.endswith('.resume'): continue
               h = fn[:-7]
-              meta = load_resume(os.path.join(resdir,fn))
-              name = meta.get('name') or meta.get('torrentName') or meta.get('added-name')
-              dest = meta.get('downloadDir') or meta.get('destination')
+              meta = tl.load_resume(os.path.join(resdir,fn))
+              name = meta.get('name')
+              dest = meta.get('dest')
               top = None
               if name and dest:
                   top = os.path.join(dest, name)
@@ -503,86 +435,12 @@ in {
     executable = true;
     text = ''
       #!/usr/bin/env python3
-      import os, sys, json, hashlib
-      from typing import Tuple, Any
-      
-      # Reuse scanner logic by importing from installed script if possible
-      # To keep it self-contained, embed minimal helpers
-      def bdecode(data: bytes, i: int = 0):
-        c = data[i:i+1]
-        if not c: raise ValueError('eof')
-        if c == b'i':
-          j = data.index(b'e', i+1)
-          return int(data[i+1:j]), j+1
-        if c in (b'l', b'd'):
-          isd = c == b'd'; i += 1; lst = []
-          while data[i:i+1] != b'e':
-            v, i = bdecode(data, i); lst.append(v)
-          i += 1
-          if isd:
-            it = iter(lst)
-            return {k: v for k,v in zip(it, it)}, i
-          return lst, i
-        if b'0' <= c <= b'9':
-          j = data.index(b':', i)
-          ln = int(data[i:j]); j += 1
-          return data[j:j+ln], j+ln
-        raise ValueError('bad')
-      def bencode(x):
-        if isinstance(x, int): return b'i%de' % x
-        if isinstance(x, (bytes, bytearray)): return str(len(x)).encode()+b':'+bytes(x)
-        if isinstance(x, str):
-          xb = x.encode('utf-8'); return str(len(xb)).encode()+b':'+xb
-        if isinstance(x, list): return b'l'+b"".join(bencode(v) for v in x)+b'e'
-        if isinstance(x, dict):
-          items = sorted(((k if isinstance(k,(bytes,bytearray)) else (k.encode('utf-8') if isinstance(k,str) else None), v) for k,v in x.items()), key=lambda kv: kv[0])
-          return b'd'+b"".join(bencode(k)+bencode(v) for k,v in items)+b'e'
-        raise TypeError
-      def decode_bytes(d):
-        if isinstance(d, dict):
-          return { (k.decode('utf-8','replace') if isinstance(k,(bytes,bytearray)) else k): decode_bytes(v) for k,v in d.items() }
-        if isinstance(d, list): return [decode_bytes(v) for v in d]
-        if isinstance(d, (bytes, bytearray)):
-          try: return d.decode('utf-8')
-          except: return d.decode('latin-1','replace')
-        return d
-      def load_resume(path):
-        raw = open(path,'rb').read()
-        if raw[:1] in (b'{',b'['):
-          try: return {'fmt':'json', 'raw': json.loads(raw.decode('utf-8','replace'))}
-          except: pass
-        try:
-          obj,_ = bdecode(raw,0)
-          return {'fmt':'bencode', 'raw': decode_bytes(obj)}
-        except: return {'fmt':'unknown','raw':None}
-      def load_torrent(path):
-        raw = open(path,'rb').read()
-        try: obj,_ = bdecode(raw,0)
-        except: return {'fmt':'unknown','raw':None, 'infohash': None}
-        info = None
-        if isinstance(obj, dict): info = obj.get(b'info') or obj.get('info')
-        ih = None
-        if info is not None:
-          try: ih = hashlib.sha1(bencode(info)).hexdigest()
-          except: ih = None
-        name = None
-        infod = obj.get(b'info') if isinstance(obj, dict) else None
-        if isinstance(infod, dict):
-          n = infod.get(b'name')
-          if isinstance(n,(bytes,bytearray)):
-            try: name = n.decode('utf-8')
-            except: name = n.decode('latin-1','replace')
-        return {'fmt':'bencode','raw': obj, 'infohash': ih, 'name': name}
-      def choose_conf():
-        home=os.environ.get('HOME', "")
-        for p in (
-          os.path.join(home,'.config','transmission-daemon'),
-          os.path.join(home,'.config','transmission'),
-        ):
-          if os.path.isdir(p): return p
-        return os.path.join(home,'.config','transmission-daemon')
+      import os, sys
+      sys.path.insert(0, "${translib}")
+      import translib as tl
+
       def main():
-        conf = choose_conf()
+        conf = tl.choose_conf()
         resdir = os.path.join(conf,'resume')
         tordir = os.path.join(conf,'torrents')
         print(f'Config: {conf}')
@@ -591,37 +449,32 @@ in {
           for fn in os.listdir(resdir):
             if not fn.endswith('.resume'): continue
             h=fn[:-7]
-            r=load_resume(os.path.join(resdir,fn))
-            raw=r['raw'] or {}
-            name = raw.get('name') or raw.get('torrentName') or raw.get('added-name')
-            dest = raw.get('downloadDir') or raw.get('destination')
+            r=tl.load_resume(os.path.join(resdir,fn))
+            name = r.get('name')
+            dest = r.get('dest')
             R[h]={'name':name,'dest':dest}
         if os.path.isdir(tordir):
           for fn in os.listdir(tordir):
             if not fn.endswith('.torrent'): continue
-            meta=load_torrent(os.path.join(tordir,fn))
+            meta=tl.load_torrent(os.path.join(tordir,fn))
             ih = meta.get('infohash')
             key = ih or os.path.splitext(fn)[0]
             T[key]={'name': meta.get('name'), 'file': fn}
-        # audit
         missing=[]; ok=[]
         for h,info in R.items():
           dest=info.get('dest')
           nm=info.get('name')
           if not dest:
             missing.append((h, 'no-dest', nm, dest)); continue
-          # determine path to check
           top=None
           if h in T and T[h].get('name'):
             top = os.path.join(dest, T[h]['name'])
           elif nm:
             top = os.path.join(dest, nm)
           else:
-            # single-file fallback: check dest exists
             top = dest
           present = os.path.exists(top)
           (ok if present else missing).append((h, 'ok' if present else 'missing', nm, dest))
-        # print summary
         print(f'Present on disk: {sum(1 for _,s,_,_ in ok if s=="ok")}')
         print(f'Missing on disk: {len(missing)}')
         if missing:
