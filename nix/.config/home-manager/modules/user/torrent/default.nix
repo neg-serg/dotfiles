@@ -10,6 +10,12 @@ with {
   confDirNew = "${config.xdg.configHome}/transmission-daemon";
   confDirOld = "${config.xdg.configHome}/transmission";
 in {
+  # Link selected Transmission config files from repo; runtime subdirs remain local
+  xdg.configFile."transmission-daemon/settings.json" =
+    config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/misc/transmission-daemon/conf/settings.json" false;
+  xdg.configFile."transmission-daemon/bandwidth-groups.json" =
+    config.lib.neg.mkDotfilesSymlink "nix/.config/home-manager/modules/misc/transmission-daemon/conf/bandwidth-groups.json" false;
+
   # Ensure runtime subdirectories exist even if the config dir is a symlink
   # to an external location. This avoids "resume: No such file or directory"
   # on first start after activation.
@@ -67,4 +73,3 @@ in {
     };
   } (config.lib.neg.systemdUser.mkUnitFromPresets {presets = ["net" "defaultWanted"];});
 }
-
