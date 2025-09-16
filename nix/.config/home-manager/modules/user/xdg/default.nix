@@ -30,7 +30,8 @@ with rec {
   browser = browserRec.desktop;
   pdfreader = "org.pwmt.zathura.desktop";
   telegram = "org.telegram.desktop.desktop";
-  torrent = "transmission.desktop";
+  # Transmission 4 desktop ID (explicit to avoid legacy alias)
+  torrent = "org.transmissionbt.Transmission.desktop";
   video = "mpv.desktop";
   image = "swayimg.desktop";
   editor = "${defaultApplications.editor.desktop}.desktop";
@@ -65,7 +66,6 @@ with rec {
     configs = builtins.attrNames (config.xdg.configFile or {});
     datas = builtins.attrNames (config.xdg.dataFile or {});
     caches = builtins.attrNames (config.xdg.cacheFile or {});
-    preserveConfigPatterns = [ "transmission-daemon/*" ];
   };
   home.activation.xdgFixTargets = config.lib.neg.mkXdgFixTargets {
     configs = builtins.attrNames (config.xdg.configFile or {});
