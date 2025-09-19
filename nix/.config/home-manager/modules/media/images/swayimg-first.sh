@@ -28,5 +28,7 @@ if [ -S "$sock" ]; then
 fi
 wait "$pid" # Forward exit code
 rc=$?
-[ -S "$sock" ] && rm -f "$sock" || true # Best-effort cleanup
+if [ -S "$sock" ]; then
+  rm -f "$sock"
+fi # Best-effort cleanup
 exit $rc

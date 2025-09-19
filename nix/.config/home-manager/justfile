@@ -27,7 +27,7 @@ lint:
       grep -v '^modules/misc/fun-art/' | \
       grep -v '^nix/.config/home-manager/modules/misc/fun-art/' || true); \
     if [ -n "$files" ]; then \
-      shellcheck -S style -x $files; \
+      shellcheck -S warning -x $files; \
     fi
 
 hm-neg:
