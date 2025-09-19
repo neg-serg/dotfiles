@@ -81,17 +81,17 @@
           pkgs.cmake # build helper for C deps
         ];
 
-        buildInputs = with pkgs; [
-          rustc # Rust compiler
-          cargo # package manager/build tool
-          rust-analyzer # IDE language server
-          ffmpeg # audio decoding
-          stdenv.cc.cc.lib # libstdc++
-          stdenv.cc.libc.dev # libc headers
-          llvmPackages.libclang # headers for bindgen
-          sqlite # database client/libs
-          clang # C/CPP compiler
-          libcxx # libc++ runtime
+        buildInputs = [
+          pkgs.rustc # Rust compiler
+          pkgs.cargo # package manager/build tool
+          pkgs.rust-analyzer # IDE language server
+          pkgs.ffmpeg # audio decoding
+          pkgs.stdenv.cc.cc.lib # libstdc++
+          pkgs.stdenv.cc.libc.dev # libc headers
+          pkgs.llvmPackages.libclang # headers for bindgen
+          pkgs.sqlite # database client/libs
+          clang # C/CPP compiler (local let var)
+          pkgs.libcxx # libc++ runtime
         ];
 
         shellHook = ''

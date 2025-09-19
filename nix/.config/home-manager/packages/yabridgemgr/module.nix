@@ -71,7 +71,7 @@ with lib;
     };
 
     config = mkIf cfg.enable {
-      environment.systemPackages = with pkgs; [yabridge yabridgectl];
+      environment.systemPackages = [ pkgs.yabridge pkgs.yabridgectl ];
       systemd.user.tmpfiles.users."${cfg.user}".rules = let
         userHome = config.users.users.${cfg.user}.home;
         ybcfg = pkgs.writeText "yabridgecfg" ''
