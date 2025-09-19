@@ -94,20 +94,30 @@
       fi
       touch "$out"
     '';
-in {
-  fmt-check = fmtCheck;
-  lint = lintCheck;
-  # Back-compat: keep old 'treefmt' name
-  treefmt = fmtCheck;
+in
+  let
+    hasDocs = builtins.hasAttr "docs" self && builtins.hasAttr system self.docs;
+    hasFeaturesMd = hasDocs && builtins.hasAttr "features-options-md" self.docs.${system};
+    hasFeaturesJson = hasDocs && builtins.hasAttr "features-options-json" self.docs.${system};
+  in {
+    fmt-check = fmtCheck;
+    lint = lintCheck;
+    # Back-compat: keep old 'treefmt' name
+    treefmt = fmtCheck;
 
-  # Build the options documentation as part of checks
-  options-md = pkgs.runCommand "options-md" {} ''
-    cp ${self.docs.${system}.options-md} "$out"
-  '';
-  features-options-md = pkgs.runCommand "features-options-md" {} ''
-    cp ${self.docs.${system}.features-options-md} "$out"
-  '';
-  features-options-json = pkgs.runCommand "features-options-json" {} ''
-    cp ${self.docs.${system}.features-options-json} "$out"
-  '';
-}
+    # Build the options documentation as part of checks
+    options-md = pkgs.runCommand "options-md" {} ''
+      cp ${self.docs.${system}.options-md} "$out"
+    '';
+  }
+  // lib.optionalAttrs hasFeaturesMd {
+    features-options-md = pkgs.runCommand "features-options-md" {} ''
+      cp ${self.docs.${system}.features-options-md} "$out"
+    '';
+  }
+  // lib.optionalAttrs hasFeaturesJson {
+    features-options-json = pkgs.runCommand "features-options-json" {} ''
+      cp ${self.docs.${system}.features-options-json} "$out"
+    '';
+  }
+;
