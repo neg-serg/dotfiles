@@ -120,4 +120,3 @@ in
       cp ${self.docs.${system}.features-options-json} "$out"
     '';
   }
-;
