@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  pkgs,
   inputs,
   hy3,
   ...
@@ -165,15 +164,16 @@ in {
     })
     # If parent feature is disabled, default child toggles to false to avoid contradictions
     (mkIf (! cfg.web.enable) {
+      # Parent off must force-disable children to avoid priority conflicts
       features.web = {
-        tools.enable = mkDefault false;
-        addonsFromNUR.enable = mkDefault false;
-        floorp.enable = mkDefault false;
-        firefox.enable = mkDefault false;
-        librewolf.enable = mkDefault false;
-        nyxt.enable = mkDefault false;
-        yandex.enable = mkDefault false;
-        prefs.fastfox.enable = mkDefault false;
+        tools.enable = mkForce false;
+        addonsFromNUR.enable = mkForce false;
+        floorp.enable = mkForce false;
+        firefox.enable = mkForce false;
+        librewolf.enable = mkForce false;
+        nyxt.enable = mkForce false;
+        yandex.enable = mkForce false;
+        prefs.fastfox.enable = mkForce false;
       };
     })
     (mkIf (! cfg.dev.enable) {
