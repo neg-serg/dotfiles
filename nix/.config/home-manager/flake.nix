@@ -199,26 +199,26 @@
         # NUR is accessed lazily via faProvider in mkHMArgs only when needed.
 
         # Common toolsets for devShells to avoid duplication
-        devNixTools = with pkgs; [
-          alejandra # Nix formatter
-          age # modern encryption tool (for sops)
-          deadnix # find dead Nix code
-          git-absorb # autosquash fixups into commits
-          gitoxide # fast Rust Git tools
-          just # task runner
-          nil # Nix language server
-          sops # secrets management
-          statix # Nix linter
-          treefmt # formatter orchestrator
+        devNixTools = [
+          pkgs.alejandra # Nix formatter
+          pkgs.age # modern encryption tool (for sops)
+          pkgs.deadnix # find dead Nix code
+          pkgs.git-absorb # autosquash fixups into commits
+          pkgs.gitoxide # fast Rust Git tools
+          pkgs.just # task runner
+          pkgs.nil # Nix language server
+          pkgs.sops # secrets management
+          pkgs.statix # Nix linter
+          pkgs.treefmt # formatter orchestrator
         ];
-        rustBaseTools = with pkgs; [
-          cargo # Rust build tool
-          rustc # Rust compiler
+        rustBaseTools = [
+          pkgs.cargo # Rust build tool
+          pkgs.rustc # Rust compiler
         ];
-        rustExtraTools = with pkgs; [
-          hyperfine # CLI benchmarking
-          kitty # terminal (for graphics/testing)
-          wl-clipboard # Wayland clipboard helpers
+        rustExtraTools = [
+          pkgs.hyperfine # CLI benchmarking
+          pkgs.kitty # terminal (for graphics/testing)
+          pkgs.wl-clipboard # Wayland clipboard helpers
         ];
       in {
         inherit pkgs iosevkaNeg;

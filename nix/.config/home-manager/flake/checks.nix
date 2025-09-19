@@ -81,6 +81,17 @@
         find . -type f \( -name '*.sh' -o -name '*.bash' \) -print0 \
           | xargs -0 shellcheck -S style -x
       fi
+      # 4) Style guard: discourage `with pkgs; [ ... ]` lists and FHS targetPkgs using `with pkgs`
+      if grep -R -nE --include='*.nix' --exclude='flake/checks.nix' --exclude='checks.nix' 'with[[:space:]]+pkgs;[[:space:]]*\[' . | grep -q .; then
+        echo 'Found discouraged pattern: use explicit pkgs.* items instead of `with pkgs; [...]`' >&2
+        grep -R -nE --include='*.nix' --exclude='flake/checks.nix' --exclude='checks.nix' 'with[[:space:]]+pkgs;[[:space:]]*\[' . || true
+        exit 1
+      fi
+      if grep -R -nE --include='*.nix' --exclude='flake/checks.nix' --exclude='checks.nix' 'targetPkgs[[:space:]]*=[[:space:]]*pkgs:[[:space:]]*with[[:space:]]+pkgs' . | grep -q .; then
+        echo 'Found discouraged pattern in FHS targetPkgs: avoid `with pkgs`' >&2
+        grep -R -nE --include='*.nix' --exclude='flake/checks.nix' --exclude='checks.nix' 'targetPkgs[[:space:]]*=[[:space:]]*pkgs:[[:space:]]*with[[:space:]]+pkgs' . || true
+        exit 1
+      fi
       touch "$out"
     '';
 in {

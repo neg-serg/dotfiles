@@ -8,6 +8,17 @@ lint:
     set -eu
     statix check -- .
     deadnix --fail .
+    # Guard: discourage `with pkgs; [ ... ]` lists (prefer explicit pkgs.*)
+    if grep -R -nE --include='*.nix' --exclude='flake/checks.nix' --exclude='checks.nix' 'with[[:space:]]+pkgs;[[:space:]]*\[' . | grep -q .; then \
+      echo 'Found discouraged pattern: use explicit pkgs.* items instead of `with pkgs; [...]`' >&2; \
+      grep -R -nE --include='*.nix' --exclude='flake/checks.nix' --exclude='checks.nix' 'with[[:space:]]+pkgs;[[:space:]]*\[' . || true; \
+      exit 1; \
+    fi; \
+    if grep -R -nE --include='*.nix' --exclude='flake/checks.nix' --exclude='checks.nix' 'targetPkgs[[:space:]]*=[[:space:]]*pkgs:[[:space:]]*with[[:space:]]+pkgs' . | grep -q .; then \
+      echo 'Found discouraged pattern in FHS targetPkgs: avoid `with pkgs`' >&2; \
+      grep -R -nE --include='*.nix' --exclude='flake/checks.nix' --exclude='checks.nix' 'targetPkgs[[:space:]]*=[[:space:]]*pkgs:[[:space:]]*with[[:space:]]+pkgs' . || true; \
+      exit 1; \
+    fi
     if git ls-files -- '*.py' >/dev/null 2>&1; then \
       ruff check -- .; \
       black --check --line-length 100 --extend-exclude '(secrets/crypted|modules/user/gui/kitty/conf/tab_bar.py)' .; \
