@@ -109,13 +109,11 @@ in
     options-md = pkgs.runCommand "options-md" {} ''
       cp ${self.docs.${system}.options-md} "$out"
     '';
-  }
-  // lib.optionalAttrs hasFeaturesMd {
+  } // pkgs.lib.optionalAttrs hasFeaturesMd {
     features-options-md = pkgs.runCommand "features-options-md" {} ''
       cp ${self.docs.${system}.features-options-md} "$out"
     '';
-  }
-  // lib.optionalAttrs hasFeaturesJson {
+  } // pkgs.lib.optionalAttrs hasFeaturesJson {
     features-options-json = pkgs.runCommand "features-options-json" {} ''
       cp ${self.docs.${system}.features-options-json} "$out"
     '';
