@@ -32,9 +32,9 @@
       builtins.filter (p: !(builtins.elem (pnameOf p) (config.features.excludePkgs or []))) pkgsList;
 
     # Shorthand: apply global excludePkgs filter to a list of packages
-    # Usage:
-    #   home.packages = with pkgs; config.lib.neg.pkgsList [ foo bar ];
-    pkgsList = xs: filterByExclude xs;
+    # Usage (preferred explicit pkgs.* form):
+    #   home.packages = config.lib.neg.pkgsList [ pkgs.foo pkgs.bar ];
+    pkgsList = filterByExclude;
 
     # Emit a warning (non-fatal) when condition holds
     mkWarnIf = cond: msg: {
@@ -501,8 +501,10 @@
     # This ensures any pre-existing path (regular file/dir/symlink) is removed before linking,
     # avoiding conflicts across refactors.
     mkLocalBin = name: text: {
+      # Avoid referencing config.home.homeDirectory here to prevent eager
+      # evaluation cycles during module fixpoint; resolve $HOME at activation/runtime.
       home.activation."cleanBin_${name}" =
-        mkEnsureAbsent "${config.home.homeDirectory}/.local/bin/${name}";
+        mkEnsureAbsent "$HOME/.local/bin/${name}";
       home.file.".local/bin/${name}" = {
         executable = true;
         inherit text;

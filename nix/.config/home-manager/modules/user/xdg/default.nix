@@ -65,10 +65,10 @@ with rec {
   dataNames = builtins.attrNames (config.xdg.dataFile or {});
   cacheNames = builtins.attrNames (config.xdg.cacheFile or {});
 in {
-  home.packages = config.lib.neg.pkgsList (with pkgs; [
-    handlr # xdg-open replacement with per-handler rules
-    xdg-ninja # detect mislocated files in $HOME
-  ]);
+  home.packages = config.lib.neg.pkgsList [
+    pkgs.handlr # xdg-open replacement with per-handler rules
+    pkgs.xdg-ninja # detect mislocated files in $HOME
+  ];
   # Aggregate XDG fixups via lib.neg helpers for readability and reuse.
   home.activation.xdgFixParents = config.lib.neg.mkXdgFixParents {
     configs = cfgNames;
@@ -113,10 +113,6 @@ in {
       "${config.xdg.stateHome}/zsh"
       "${config.home.homeDirectory}/.local/bin"
     ];
-
-  # Ensure swayimg wrapper target is absent before linking the wrapper
-  home.activation.cleanSwayimgWrapper =
-    config.lib.neg.mkEnsureAbsent "${config.home.homeDirectory}/.local/bin/swayimg";
 
   # Ensure Gmail Maildir tree exists (INBOX, Sent, Drafts, All Mail)
   home.activation.ensureGmailMaildirs =
