@@ -2,22 +2,21 @@
   config,
   pkgs,
   ...
-}:
-with {}; {
-  home.packages = config.lib.neg.pkgsList (with pkgs; [
-    bash-language-server # Bash LSP
-    neovim # Neovim editor
-    neovim-remote # nvr (remote control for Neovim)
-    nil # Nix language server
-    pylyzer # Python type checker
-    pyright # Python LSP
-    ruff # Python linter
-    rust-analyzer # Rust LSP
-  ]);
+}: {
+  home.packages = config.lib.neg.pkgsList [
+    pkgs.bash-language-server # Bash LSP
+    pkgs.neovim # Neovim editor
+    pkgs.neovim-remote # nvr (remote control for Neovim)
+    pkgs.nil # Nix language server
+    pkgs.pylyzer # Python type checker
+    pkgs.pyright # Python LSP
+    pkgs.ruff # Python linter
+    pkgs.rust-analyzer # Rust LSP
+  ];
   programs.neovim = {
-    plugins = with pkgs.vimPlugins; [
-      clangd_extensions-nvim # llvm-based engine
-      nvim-treesitter # ts support
+    plugins = [
+      pkgs.vimPlugins.clangd_extensions-nvim # llvm-based engine
+      pkgs.vimPlugins.nvim-treesitter # ts support
     ];
     extraLuaConfig = ''
       -- put parsers in a writable dir and ensure it is early on rtp
@@ -30,7 +29,7 @@ with {}; {
       vim.opt.runtimepath:prepend(parser_dir)
       vim.g.ts_install_dir = parser_dir
     '';
-    extraLuaPackages = [luajitPackages.magick];
+    extraLuaPackages = [ pkgs.luajitPackages.magick ];
     extraPackages = [pkgs.imagemagick];
   };
   xdg.configFile = {

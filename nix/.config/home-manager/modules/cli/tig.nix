@@ -1,7 +1,5 @@
 { lib, config, pkgs, xdg, ... }:
-let
-  
-in lib.mkMerge [
+lib.mkMerge [
   {
   # Install tig and provide its configuration via XDG
   home.packages = config.lib.neg.pkgsList [pkgs.tig];

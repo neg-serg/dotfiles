@@ -23,11 +23,11 @@ with lib;
     }) themeFiles;
   in lib.mkMerge ([
     {
-      home.packages = config.lib.neg.pkgsList (with pkgs; [
-        rofi-pass-wayland # pass interface for rofi-wayland
+      home.packages = config.lib.neg.pkgsList [
+        pkgs.rofi-pass-wayland # pass interface for rofi-wayland
         rofiPkg # modern dmenu alternative with plugins
         # cliphist is provided in gui/apps.nix; no need for greenclip/clipmenu
-      ]);
+      ];
     }
     # Wrap rofi to ensure '-theme <name|name.rasi>' works even when caller uses a relative theme path.
     # If a theme is given without a path, we cd into the themes directory so rofi finds the file.

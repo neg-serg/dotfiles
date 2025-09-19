@@ -9,15 +9,15 @@ with {
   alkano-aio = pkgs.callPackage ./alkano-aio.nix {};
 }; {
   home = lib.mkIf (config.features.gui.enable or false) {
-    packages = with pkgs;
+    packages =
       [
-        adw-gtk3 # adwaita port to gtk3
-        dconf # gnome registry
+        pkgs.adw-gtk3 # adwaita port to gtk3
+        pkgs.dconf # gnome registry
         iosevkaNeg.nerd-font # install my custom iosevka build
       ]
       ++ lib.optionals (config.features.gui.qt.enable or false) [
-        kdePackages.qtstyleplugin-kvantum # nice qt6 themes
-        libsForQt5.qtstyleplugin-kvantum # nice qt5 themes
+        pkgs.kdePackages.qtstyleplugin-kvantum # nice qt6 themes
+        pkgs.libsForQt5.qtstyleplugin-kvantum # nice qt5 themes
       ];
     pointerCursor = {
       gtk.enable = true;

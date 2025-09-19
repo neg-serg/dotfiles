@@ -10,12 +10,12 @@ with lib;
     (xdg.mkXdgSource "git/hooks/pre-commit" { source = ./hooks/pre-commit.sh; executable = true; })
     (xdg.mkXdgSource "git/hooks/commit-msg" { source = ./hooks/commit-msg.sh; executable = true; })
     {
-    home.packages = config.lib.neg.pkgsList (with pkgs; [
-      act # run GitHub Actions locally
-      difftastic # syntax-aware diff viewer
-      gh # GitHub CLI
-      gist # manage GitHub gists
-    ]);
+    home.packages = config.lib.neg.pkgsList [
+      pkgs.act # run GitHub Actions locally
+      pkgs.difftastic # syntax-aware diff viewer
+      pkgs.gh # GitHub CLI
+      pkgs.gist # manage GitHub gists
+    ];
 
     programs.git = {
       enable = true;

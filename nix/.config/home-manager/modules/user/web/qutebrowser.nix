@@ -3,8 +3,8 @@
   config,
   ...
 }: {
-  home.packages = config.lib.neg.pkgsList (with pkgs; [
-    (qutebrowser.overrideAttrs (oldAttrs: {
+  home.packages = config.lib.neg.pkgsList [
+    (pkgs.qutebrowser.overrideAttrs (oldAttrs: {
       qtWrapperArgs =
         (oldAttrs.qtWrapperArgs or [])
         ++ [
@@ -21,5 +21,5 @@
             --add-flags "--qt-flag disable-features=UseChromeOSDirectVideoDecoder"
         '';
     }))
-  ]);
+  ];
 }

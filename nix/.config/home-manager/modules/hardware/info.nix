@@ -3,10 +3,10 @@
   config,
   ...
 }: {
-  home.packages = config.lib.neg.pkgsList (with pkgs; [
-    acpi # acpi stuff
-    hwinfo # suse hardware info
-    inxi # show hardware
-    lshw # linux hardware listner
-  ]);
+  home.packages = config.lib.neg.pkgsList [
+    pkgs.acpi # acpi stuff
+    pkgs.hwinfo # suse hardware info
+    pkgs.inxi # show hardware
+    pkgs.lshw # linux hardware listner
+  ];
 }

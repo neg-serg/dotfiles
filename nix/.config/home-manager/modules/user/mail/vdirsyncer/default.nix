@@ -2,9 +2,9 @@
 with lib;
   mkIf (config.features.mail.enable && config.features.mail.vdirsyncer.enable) (let xdg = import ../../../lib/xdg-helpers.nix { inherit lib; }; in lib.mkMerge [
     {
-      home.packages = config.lib.neg.pkgsList (with pkgs; [
-        vdirsyncer # add vdirsyncer binary for sync and initialization
-      ]);
+      home.packages = config.lib.neg.pkgsList [
+        pkgs.vdirsyncer # add vdirsyncer binary for sync and initialization
+      ];
 
       # Ensure local storage directories exist
       home.activation.vdirsyncerDirs = config.lib.neg.mkEnsureDirsAfterWrite [

@@ -3,7 +3,7 @@
   lib,
   pkgs,
   ...
-}: {
+}: lib.mkIf (config.features.gui.enable or false) {
   # Prepared via global prepareUserPaths action
 
   programs.mpv = {

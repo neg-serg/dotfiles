@@ -10,20 +10,20 @@ with lib;
     let
       devSpeed = config.features.devSpeed.enable or false;
       groups = {
-        core = with pkgs; [
-          dragon-drop # drag-n-drop from console
-          gowall # tool to convert a Wallpaper's color scheme / palette
-          grimblast # hyprland screenshot tool
-          grim # to take screenshots
-          slurp # select region in wayland compositor
-          swww # wallpaper daemon for wayland
-          waybar # status bar (Wayland)
-          waypipe # proxy for wayland similar to ssh -X
-          wev # xev for wayland
-          wf-recorder # tool to make screencasts
-          wl-clipboard # copy-paste for wayland
-          wl-clip-persist # clipboard persistence tool
-          wtype # typing for wayland
+        core = [
+          pkgs.dragon-drop # drag-n-drop from console
+          pkgs.gowall # tool to convert a Wallpaper's color scheme / palette
+          pkgs.grimblast # hyprland screenshot tool
+          pkgs.grim # to take screenshots
+          pkgs.slurp # select region in wayland compositor
+          pkgs.swww # wallpaper daemon for wayland
+          pkgs.waybar # status bar (Wayland)
+          pkgs.waypipe # proxy for wayland similar to ssh -X
+          pkgs.wev # xev for wayland
+          pkgs.wf-recorder # tool to make screencasts
+          pkgs.wl-clipboard # copy-paste for wayland
+          pkgs.wl-clip-persist # clipboard persistence tool
+          pkgs.wtype # typing for wayland
         ];
         # extras evaluated only when enabled (prevents pulling input in dev-speed)
         extras = lib.optionals (! devSpeed && (iwmenuProvider != null)) [ (iwmenuProvider pkgs) ];

@@ -1,17 +1,17 @@
 { config, pkgs, ... }: {
   # Consolidate minor activation tasks via shared key in other modules
 
-  home.packages = config.lib.neg.pkgsList (with pkgs; [
-    amfora # terminal browser for gemini
-    antiword # convert ms word to text or ps
-    epr # cli epub reader
-    glow # markdown viewer
-    lowdown # cat for markdown
-    recoll # full-text search tool
-    sioyek # nice zathura alternative
-    tesseract # ocr
-    zotero # tool to organize cites
-  ]);
+  home.packages = config.lib.neg.pkgsList [
+    pkgs.amfora # terminal browser for gemini
+    pkgs.antiword # convert ms word to text or ps
+    pkgs.epr # cli epub reader
+    pkgs.glow # markdown viewer
+    pkgs.lowdown # cat for markdown
+    pkgs.recoll # full-text search tool
+    pkgs.sioyek # nice zathura alternative
+    pkgs.tesseract # ocr
+    pkgs.zotero # tool to organize cites
+  ];
   programs.zathura = {
     enable = true;
     options = {

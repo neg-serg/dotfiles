@@ -6,11 +6,11 @@
 }:
 lib.mkIf config.features.media.audio.core.enable (
   {
-    home.packages = config.lib.neg.pkgsList (with pkgs; [
+    home.packages = config.lib.neg.pkgsList [
       # utils
-      alsa-utils coppwr pw-volume pwvucontrol
+      pkgs.alsa-utils pkgs.coppwr pkgs.pw-volume pkgs.pwvucontrol
       # routers
-      helvum qpwgraph open-music-kontrollers.patchmatrix
-    ]);
+      pkgs.helvum pkgs.qpwgraph pkgs.open-music-kontrollers.patchmatrix
+    ];
   }
 )

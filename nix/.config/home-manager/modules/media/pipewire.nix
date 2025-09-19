@@ -1,4 +1,5 @@
-{config, ...}: {
+{ lib, config, ... }:
+lib.mkIf (config.features.media.audio.core.enable or false) {
   xdg.configFile = {
     "wireplumber" = {
       source = config.lib.file.mkOutOfStoreSymlink "${config.neg.dotfilesRoot}/media/.config/wireplumber";

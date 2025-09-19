@@ -13,10 +13,10 @@ with lib; {
       }
     ];
     home.packages = config.lib.neg.pkgsList (
-      (with pkgs; [
-        pcem # emulator for ibm pc and clones
-        pcsx2 # ps2 emulator
-      ]) ++ (
+      [
+        pkgs.pcem # emulator for ibm pc and clones
+        pkgs.pcsx2 # ps2 emulator
+      ] ++ (
         if config.features.emulators.retroarch.full
         then [pkgs.retroarchFull]
         else [pkgs.retroarch]

@@ -9,12 +9,12 @@
       pkgs.wineWow64Packages.full # full 32/64-bit Wine
     ];
   };
-  home.packages = config.lib.neg.pkgsList (with pkgs; [
-    proton-caller # launch Proton games via proton-caller
-    protonplus # Wine/Proton manager
-    protontricks # Winetricks wrapper for Proton prefixes
-    protonup # install/update Proton-GE builds
-    vkbasalt # Vulkan post-processing layer
-    vkbasalt-cli # CLI for vkBasalt
-  ]);
+  home.packages = config.lib.neg.pkgsList [
+    pkgs.proton-caller # launch Proton games via proton-caller
+    pkgs.protonplus # Wine/Proton manager
+    pkgs.protontricks # Winetricks wrapper for Proton prefixes
+    pkgs.protonup # install/update Proton-GE builds
+    pkgs.vkbasalt # Vulkan post-processing layer
+    pkgs.vkbasalt-cli # CLI for vkBasalt
+  ];
 }

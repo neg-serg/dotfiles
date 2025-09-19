@@ -35,13 +35,13 @@
     # Haskell toolchain and related tools
     haskell =
       [
-        ghc
-        cabal-install
-        stack
-        haskell-language-server
-        hlint
-        ormolu
-        ghcid
+        pkgs.ghc
+        pkgs.cabal-install
+        pkgs.stack
+        pkgs.haskell-language-server
+        pkgs.hlint
+        pkgs.ormolu
+        pkgs.ghcid
       ]
       # Some Haskell tools may be unavailable on a given nixpkgs pin — include conditionally.
       ++ (lib.optionals (pkgs ? fourmolu) [ pkgs.fourmolu ])

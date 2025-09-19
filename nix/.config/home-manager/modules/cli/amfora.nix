@@ -1,7 +1,5 @@
 { pkgs, lib, config, xdg, ... }:
-let
-  
-in lib.mkMerge [
+lib.mkMerge [
   {
     # Install amfora and provide its config via XDG
     home.packages = config.lib.neg.pkgsList [pkgs.amfora];

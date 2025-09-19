@@ -1,6 +1,5 @@
 {
   lib,
-  config,
   ...
 }:
 with lib; let mkBool = desc: default: (lib.mkEnableOption desc) // { inherit default; };

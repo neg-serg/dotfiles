@@ -1,12 +1,10 @@
 { pkgs, lib, config, xdg, ... }:
-let
-  
-in lib.mkMerge [
+lib.mkMerge [
   {
-    home.packages = config.lib.neg.pkgsList (with pkgs; [
-      fastfetch # modern, fast system fetch
-      onefetch # repository summary in terminal
-    ]);
+    home.packages = config.lib.neg.pkgsList [
+      pkgs.fastfetch # modern, fast system fetch
+      pkgs.onefetch # repository summary in terminal
+    ];
   }
   # Link static configuration directory (config.jsonc + skull) from repo
   (xdg.mkXdgSource "fastfetch" {

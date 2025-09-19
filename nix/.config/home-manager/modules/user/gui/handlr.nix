@@ -1,5 +1,5 @@
 { pkgs, lib, config, xdg, ... }:
-lib.mkMerge [
+lib.mkIf (config.features.gui.enable or false) (lib.mkMerge [
   {
     home.packages = config.lib.neg.pkgsList [pkgs.handlr];
   }
@@ -7,4 +7,4 @@ lib.mkMerge [
     enable_selector = false;
     selector = "rofi -dmenu -p 'Open With: '";
   })
-]
+])

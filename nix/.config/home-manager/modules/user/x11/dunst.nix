@@ -7,7 +7,7 @@
   db = config.lib.neg.web.defaultBrowser or {};
   browserBin = db.bin or "${lib.getExe' pkgs.xdg-utils "xdg-open"}";
   browserArg = db.newTabArg or "";
-in {
+in lib.mkIf (config.features.gui.enable or false) {
   services.dunst = {
     enable = true;
     iconTheme = {

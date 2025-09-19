@@ -1,7 +1,5 @@
 { lib, pkgs, config, xdg, ... }:
-let
-  
-in lib.mkIf config.features.cli.icedteaWeb.enable (
+lib.mkIf config.features.cli.icedteaWeb.enable (
   lib.mkMerge [
     # Install icedtea-web if available and ship its config via XDG
     {

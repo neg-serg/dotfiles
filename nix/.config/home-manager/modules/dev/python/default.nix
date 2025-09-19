@@ -41,8 +41,8 @@ in
         };
       };
     };
-    home.packages = config.lib.neg.pkgsList (with pkgs; [
-      pipx # isolated Python apps installer
-      (python3-lto.withPackages pyPackages) # optimized Python with selected libs
-    ]);
+    home.packages = config.lib.neg.pkgsList [
+      pkgs.pipx # isolated Python apps installer
+      (pkgs.python3-lto.withPackages pyPackages) # optimized Python with selected libs
+    ];
   }

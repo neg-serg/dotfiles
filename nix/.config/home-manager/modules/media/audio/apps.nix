@@ -6,19 +6,19 @@
 }:
 lib.mkIf config.features.media.audio.apps.enable (
   {
-  home.packages = config.lib.neg.pkgsList (with pkgs; [
+  home.packages = config.lib.neg.pkgsList [
       # codecs / ripping / players
-      ape cdparanoia cider
+      pkgs.ape pkgs.cdparanoia pkgs.cider
       # analysis
-      dr14_tmeter essentia-extractor opensoundmeter sonic-visualiser roomeqwizard
+      pkgs.dr14_tmeter pkgs.essentia-extractor pkgs.opensoundmeter pkgs.sonic-visualiser pkgs.roomeqwizard
       # tagging
-      id3v2 picard unflac
+      pkgs.id3v2 pkgs.picard pkgs.unflac
       # cli
-      ncpamixer sox
+      pkgs.ncpamixer pkgs.sox
       # net
-      nicotine-plus scdl streamlink
+      pkgs.nicotine-plus pkgs.scdl pkgs.streamlink
       # misc
-      screenkey
-  ]);
+      pkgs.screenkey
+  ];
   }
 )
