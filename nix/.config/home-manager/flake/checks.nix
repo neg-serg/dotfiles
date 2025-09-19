@@ -94,12 +94,11 @@
       fi
       touch "$out"
     '';
-in
-  let
-    hasDocs = builtins.hasAttr "docs" self && builtins.hasAttr system self.docs;
-    hasFeaturesMd = hasDocs && builtins.hasAttr "features-options-md" self.docs.${system};
-    hasFeaturesJson = hasDocs && builtins.hasAttr "features-options-json" self.docs.${system};
-  in {
+  # Docs presence flags used to optionally expose docs-related checks
+  hasDocs = builtins.hasAttr "docs" self && builtins.hasAttr system self.docs;
+  hasFeaturesMd = hasDocs && builtins.hasAttr "features-options-md" self.docs.${system};
+  hasFeaturesJson = hasDocs && builtins.hasAttr "features-options-json" self.docs.${system};
+in {
     fmt-check = fmtCheck;
     lint = lintCheck;
     # Back-compat: keep old 'treefmt' name
