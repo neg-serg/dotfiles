@@ -98,7 +98,8 @@
   hasDocs = builtins.hasAttr "docs" self && builtins.hasAttr system self.docs;
   hasFeaturesMd = hasDocs && builtins.hasAttr "features-options-md" self.docs.${system};
   hasFeaturesJson = hasDocs && builtins.hasAttr "features-options-json" self.docs.${system};
-in {
+in
+  {
     fmt-check = fmtCheck;
     lint = lintCheck;
     # Back-compat: keep old 'treefmt' name
@@ -108,11 +109,13 @@ in {
     options-md = pkgs.runCommand "options-md" {} ''
       cp ${self.docs.${system}.options-md} "$out"
     '';
-  } // pkgs.lib.optionalAttrs hasFeaturesMd {
+  }
+  // pkgs.lib.optionalAttrs hasFeaturesMd {
     features-options-md = pkgs.runCommand "features-options-md" {} ''
       cp ${self.docs.${system}.features-options-md} "$out"
     '';
-  } // pkgs.lib.optionalAttrs hasFeaturesJson {
+  }
+  // pkgs.lib.optionalAttrs hasFeaturesJson {
     features-options-json = pkgs.runCommand "features-options-json" {} ''
       cp ${self.docs.${system}.features-options-json} "$out"
     '';

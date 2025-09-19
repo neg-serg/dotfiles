@@ -17,6 +17,6 @@
   fhs =
     (pkgs.buildFHSEnv {
       name = "fhs-env";
-      targetPkgs = ps: [ ps.zsh ];
+      targetPkgs = ps: [ps.zsh];
     }).env;
 }
