@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -euo pipefail
 uid="$(id -u)" # Unique socket path for this instance
 rt="$XDG_RUNTIME_DIR"; [ -n "$rt" ] || rt="/run/user/$uid"

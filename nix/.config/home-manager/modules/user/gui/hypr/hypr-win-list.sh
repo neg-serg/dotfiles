@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -euo pipefail
 # List windows from Hyprland and select via rofi; focus selected.
 prompt="Windows"

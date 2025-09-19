@@ -23,7 +23,9 @@ lint:
       ruff check -- .; \
       black --check --line-length 100 --extend-exclude '(secrets/crypted|modules/user/gui/kitty/conf/tab_bar.py)' .; \
     fi
-    files=$(git ls-files '*.sh' '*.bash' || true); \
+    files=$(git ls-files '*.sh' '*.bash' | \
+      grep -v '^modules/misc/fun-art/' | \
+      grep -v '^nix/.config/home-manager/modules/misc/fun-art/' || true); \
     if [ -n "$files" ]; then \
       shellcheck -S style -x $files; \
     fi
